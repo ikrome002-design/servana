@@ -1,0 +1,39 @@
+{
+  "schema": "servana.ui15.gate-disposition.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "checked_at": "2026-10-11",
+  "external_gate_w_closed": true,
+  "phase_20d_w_closed": true,
+  "phase_21n_closed": true,
+  "evidence": [
+    "docs/integrations/wallet/gate-w-evidence.md is absent (asserted by Ui07NavigationContractTest)",
+    "docs/PROGRESS.md records 20D-W / 21R-B / 21N as blocked_external_gate",
+    "no notification persistence, read or mark-read runtime exists in routes/api.php"
+  ],
+  "entries": [
+    {
+      "screen_key": "notifications",
+      "route_path": "/notifications",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "baseline_gate": "external_gate_w",
+      "gate_change_reason": "Aligns with the UI-13/UI-14 precedent: the owning runtime is Phase 21N, which itself waits on External Gate W; the page remains blocked either way.",
+      "owner": "Phase 21N after Phase 20D-W and External Gate W",
+      "entry_condition": "Gate W opens with real Wallet contract/sandbox evidence, 20D-W verified, 21N authorized and delivers branch-scoped notification persistence, read and mark-read APIs",
+      "route_exists": false,
+      "component_exists": false,
+      "network_runtime_exists": false,
+      "navigation_treatment": "visible, aria-disabled, no href, names Phase 21N and External Gate W",
+      "proof": "tests/e2e/ui-15-audit-experience.spec.ts — 'Notifications stays visible, disabled…' and 'Notifications has no route, component, unread count or network runtime'"
+    }
+  ],
+  "not_gated_by_21n": [
+    { "capability": "Audit exports (request, history, download, revoke)", "owner": "Phase 19 (shipped)", "note": "Scheduled reports belong to 21N; audit exports do not and are implemented." }
+  ],
+  "excluded_runtime": [
+    "Wallet subscription payment attempts on Finance Audit — 20D-W behind Gate W; not shown",
+    "Refer & Earn qualification events — 21R-B; not started",
+    "Notification preferences on Account — 21N; absent"
+  ]
+}

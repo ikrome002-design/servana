@@ -37,7 +37,46 @@ decodes CSS Color 4 instead of silently treating it as black. Thirty focused
 browser checks pass with transparent/matching-text negative controls; replacement
 exact-head five-job CI remains mandatory.
 
-### Phase UI-14 — Personnel experience (`phase-ui-14-personnel-experience`) — local_complete; final release checks and GitHub lifecycle pending
+### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — local_complete pending Codex release
+
+Implements the 15-page Audit account on `audit.servana.ke` (UI/UX plan Phase UI-15, Appendix A §12):
+**14 implemented / 1 disabled_by_gate (Notifications, Phase 21N behind External Gate W) / 0 planned /
+0 removed**. The global 160-page contract now holds no planned page.
+
+- **Routes:** host-relative canonical tree (`/dashboard`, `/get-started`, `/audit`, `/audit/:eventUlid`,
+  `/audit/flags`, five `/audit/*` views, `/audit/integrity`, `/exports`, `/exports/history`, `/account`)
+  with supporting flag and export records; the Phase 19 `/audit/events|flagged|exports` paths redirect
+  on the same host with filters and ids preserved; the non-contract `/audit` landing is retired.
+- **Narrow read seams (no permission, no migration):** server-decided review lenses
+  (`AuditReviewView`: operational, access, privacy_preferred), `flagged` and `correlation_id` filters,
+  a review-status summary kept apart from immutable severity, and `GET /audit-integrity` — a bounded,
+  read-only segment verification of the caller's merchant chain with the canonical hasher; `verified`
+  only from genesis, `partial` otherwise, out-of-branch breaks unnamed. OpenAPI 306/357 → 307/358;
+  permissions 169/134/35 unchanged.
+- **Experience:** risk command centre, URL-held investigation filters, time-led evidence cards,
+  structured before/after diff, triage queue with review age, inline masked-export workspace with a
+  masking preview and server-count estimate, export history, truthful integrity page, Profile-style
+  account with export/masking level; separate severity and review vocabularies; light and dark.
+- **Shared fixes:** `SvBreadcrumbs` links meet 44px; seven curated icons; Audit hero in Get Started.
+- **Defects:** 14 recorded and closed locally (`docs/frontend/audits/ui-15/defect-closure.json`);
+  UI15-SEC-OBS-001 subsequently authorized for Codex export-domain repair; UI15-INT-RES-001 remains deferred.
+- **Gates:** API 13/13; full PostgreSQL 3,025 passed / 14 environment-or-placeholder skips / 0 failed
+  (after one traceability wording fix); Pint, Larastan L8, Composer validate/audit clean; Vitest
+  1,449/1,449; focused UI-15 Playwright 50/50; whole-product 1,721/1,721 with predecessor evidence
+  restored exactly; production PHP `81d42ff0…` + Nginx `b7930e97…`, `audit.servana.ke` host proof 48/48;
+  npm audit 0; gitleaks 0. Details in `docs/proof/ui-15.md`.
+
+Claude Code made no commit, push or PR; Codex Prompt 2 owns the GitHub lifecycle.
+
+### Phase UI-14 — Personnel experience (`phase-ui-14-personnel-experience`) — verified complete
+
+Reconciled live exactly once on the UI-15 branch (2026-10-11): PR #65 merged by normal squash
+`20c27dcac7d0663d93a566d8a3ff42aa566171d7` (parent `43b623c0…`), final reviewed head
+`92603fa612ffc94e790de2575c7df203defa2f49`, equal reviewed/merge tree `93ec8269…`, exact-head CI
+`38089104875` Backend/Frontend/Docker/Security/E2E all success, governance comment `6102827769`,
+blank decision with 0 reviews and 0 approvals (not independent approval), source branch absent.
+All 31 UI-14 closures are promoted to `verified_complete`. The entry below is the original
+pre-merge record and is preserved as authored.
 
 Current Codex release checkpoint (2026-10-10): REM-DEP-003 PR #64 is verified merged as `43b623c0e484c0ead76cca8c9d02ad41694c700e`, exact-head CI `37863919256` all five jobs success. The complete PostgreSQL result is **3,578 passed / five exact authorized skips / zero failed / 52,419 assertions**; six collector negative controls reject. Accepted Vitest 1,426, Personnel browser 73, Tailwind compatibility 17 and whole-product Playwright 1,653 remain attributable to the frozen source; 69 captures and 535 predecessor hashes are preserved. The identical Tailwind key removal has ordered-config and **652-file byte parity**, including the actual new Nginx image. Current PHP and Nginx production builds pass; PostgreSQL 16.14 connects, all 132 migrations pass, `nginx -t` passes and **43/43 staff.servana.ke checks** pass. Exact owned proof resources were removed; development services and volumes were untouched. Final documentation/security/contract/scope checks precede the first implementation commit. UI14 PR CI/governance/merge are still pending; UI15/UI16/UI17/Phase25 and Gate-W-dependent phases were not started.
 
@@ -5235,3 +5274,26 @@ gates.
 - Confirmed `.env` never entered git history; gitleaks gate clean on staged
   content. Pre-existing malformed local `.env` preserved as
   `.env.local-notes.bak` (gitignored).
+
+## Codex security closeout — product-owner authorization (2026-10-11)
+
+The same-session continuation authorizes UI15-SEC-OBS-001 only: live `audit.export` plus every
+selected domain read key at creation, queued generation and both signed file access paths.
+Original 228-path Claude handoff matched before amendments; its hashes remain historical.
+Pre-fix PostgreSQL cases reproduced Finance and Compensation request acceptance (201 instead of
+403). Initial fixture run failed before authorization because the permission catalogue was not
+seeded; corrected without changing an assertion. Post-fix verification is blocked by Docker/WSL unresponsiveness (`Wsl/Service/0x8007274c`);
+no passing result is claimed. Release lifecycle remains pending. `codex-security-closeout.json` will record exact amendment hashes and accepted results.
+No UI/route/resource schema, permission key, migration, financial calculation or source-audit write
+capability changed. UI-16 owns cross-account convergence including the mandatory UI-08–UI-12 visual
+revision after UI-15 merges; UI-17, Phase 25 and Gate-W-dependent work remain unstarted.
+
+**Codex stop (2026-10-11):** `STOP — UI-15 NOT RELEASED`. Docker exec commands stopped
+responding during affected PostgreSQL and Larastan runs; direct `wsl -d docker-desktop` diagnostics
+failed with `Wsl/Service/0x8007274c`. The repair remains unverified. No source was staged,
+committed, pushed or merged. Restore Docker/WSL, determine whether the owned test processes
+remain running, then rerun the affected security and quality gates against the dedicated
+`servana_ui15_codex_test` database. Current production PHP image verification remains pending
+because PHP authorization source changed; unchanged frontend visual evidence is retained.
+
+**Codex resume checkpoint (2026-10-11):** The preceding stop is historical. Bounded Docker server probes and normal Desktop restart/start timed out. Owner-authorized CI-first validation now permits a feature commit and non-draft PR; local post-fix PostgreSQL/full static checks remain unverified. A named PostgreSQL Audit/private-file CI step retains JUnit evidence alongside the full suite. Merge remains blocked until security proof and all five exact-head jobs pass. The prior 48 host checks remain valid only for unchanged shell/routing/assets; current authorization requires independent backend CI. No UI-16 work started.

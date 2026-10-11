@@ -150,14 +150,74 @@ while the repository records said the work was complete.
 | UI-11 | Human Resource experience (19 pages) | ✅ `verified_complete` | PR [#61](https://github.com/ikrome002-design/servana/pull/61) merged — normal squash `dc74e28a…`, final reviewed head `38bb9014…`, equal reviewed/merge tree `ce181099…`, merged `2026-08-13T18:30:14Z`. Initial run `31727621418` preserved its UI-06 current-projection failure; replacement exact-head run `31728277786` passed Backend/Frontend/Docker/Security/E2E. Governance comment `5284811253`; blank/NONE decision, 0 reviews, 0 approvals (**not** independent approval); source branches absent. **15 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 19**; all eleven closures promoted. | [ui-11.md](proof/ui-11.md) | Reconciled live exactly once on the UI-12 branch |
 | UI-12 | Finance experience (24 pages) | ✅ `verified_complete` | PR [#62](https://github.com/ikrome002-design/servana/pull/62) merged — normal squash `6796d82b…`, final reviewed head `df541979…`, equal reviewed/merge tree `7609bfa1…`, merged `2026-08-14T03:17:40Z`. Exact-head CI `31764745586` passed Backend/Frontend/Docker/Security/E2E; governance comment `5288994536`; blank decision and 0 reviews/approvals (**not** independent approval); source branches absent. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; all seventeen closures promoted. | [ui-12.md](proof/ui-12.md) | Reconciled live exactly once on the UI-13 branch |
 | UI-13 | Front Office experience (19 pages) | ✅ `verified_complete` | PR [#63](https://github.com/ikrome002-design/servana/pull/63) merged — normal squash `14cfadcb…`, final reviewed head `126756b3…`, equal reviewed/merge tree `9d91b415…`, merged `2026-08-20T13:36:11Z`. Exact-head CI `32371896795` passed Backend/Frontend/Docker/Security/E2E; governance comment `5356633232`; blank/NONE decision and 0 reviews/approvals (**not** independent approval); source branches absent. **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**; all 24 closures promoted. | [ui-13.md](proof/ui-13.md) | Reconciled live exactly once on the UI-14 branch |
-| UI-14 | Personnel experience (20 pages) | 🔴 Release blocked: test runtime | Original implementation preserved; REM-DEP-003 merged and audits zero; authoritative full PostgreSQL/fresh production proof pending after Docker timeouts | [ui-14.md](proof/ui-14.md) | 19 implemented / 1 gated / 0 planned; UI15 not started |
-| UI-15 | Audit experience (15 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-14 | Personnel experience (20 pages) | ✅ `verified_complete` | PR [#65](https://github.com/ikrome002-design/servana/pull/65) merged — normal squash `20c27dca…` (single parent `43b623c0…`, REM-DEP-003), implementation commit `04b68169…`, final reviewed head `92603fa6…`, equal reviewed/merge tree `93ec8269…`, merged `2026-10-10T22:25:00Z`. Exact-head CI `38089104875` (attempt 1, the only run on the branch) passed Backend/Frontend/Docker/Security/E2E; governance comment `6102827769`; blank/NONE decision, 0 submitted reviews, 0 approvals (**not** independent approval); source branch absent local + remote. **19 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 20**. | [ui-14.md](proof/ui-14.md) | Reconciled live exactly once on the UI-15 branch (2026-10-11) |
+| UI-15 | Audit experience (15 pages) | 🟡 `local_complete` — uncommitted handoff; PR/CI/merge pending | `phase-ui-15-audit-experience` from `20c27dca…`; **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15** | [ui-15.md](proof/ui-15.md) | Codex Prompt 2 release |
 | UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
 | UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
 
-### Phase UI-14 — Personnel experience — local_complete; final release checks and GitHub lifecycle pending
+### Phase UI-15 — Audit experience — local_complete — uncommitted handoff; PR/CI/merge pending
 
-Current Codex release checkpoint (2026-10-10): REM-DEP-003 PR #64 is verified merged as `43b623c0e484c0ead76cca8c9d02ad41694c700e`, exact-head CI `37863919256` all five jobs success. The complete PostgreSQL result is **3,578 passed / five exact authorized skips / zero failed / 52,419 assertions**; six collector negative controls reject. Accepted Vitest 1,426, Personnel browser 73, Tailwind compatibility 17 and whole-product Playwright 1,653 remain attributable to the frozen source; 69 captures and 535 predecessor hashes are preserved. The identical Tailwind key removal has ordered-config and **652-file byte parity**, including the actual new Nginx image. Current PHP and Nginx production builds pass; PostgreSQL 16.14 connects, all 132 migrations pass, `nginx -t` passes and **43/43 staff.servana.ke checks** pass. Exact owned proof resources were removed; development services and volumes were untouched. Final documentation/security/contract/scope checks precede the first implementation commit. UI14 PR CI/governance/merge are still pending; UI15/UI16/UI17/Phase25 and Gate-W-dependent phases were not started.
+Branch `phase-ui-15-audit-experience` from verified base `20c27dcac7d0663d93a566d8a3ff42aa566171d7`
+(UI-14 PR #65, reconciled once above). **Claude Code made no commit, staged nothing, pushed nothing and
+opened no PR.** PR, exact-head CI, governance, merge and branch cleanup are `not_started` — owned by
+Codex Prompt 2. Proof: [ui-15.md](proof/ui-15.md); evidence: `docs/frontend/audits/ui-15/`; handoff:
+`docs/frontend/audits/ui-15/claude-to-codex-handoff.{md,json}`.
+
+**Pages:** starting contract 7 implemented / 7 planned / 1 gated → **14 implemented + 1 disabled_by_gate
++ 0 removed = 15; planned 0**. Notifications is `disabled_by_gate` (`phase_21n_blocked_by_external_gate_w`).
+The global 160-page contract now has no planned page.
+
+| Deliverable | Evidence | Status |
+|---|---|---|
+| Canonical host-relative Audit routes + 8 same-host Phase 19 redirects; `/audit` landing retired | `route-activation.json`, `auditRoutes.spec.ts`, `nav:check`, negative controls 24/24 | local_complete |
+| Read seams: `view` lenses, `flagged`, `correlation_id`, review summary, `GET /audit-integrity` | `Ui15AuditExperienceApiTest` 13/13; OpenAPI **306/357 → 307/358**; permissions **169/134/35 unchanged**; no migration or policy change | local_complete |
+| 14 pages + flag/export records, shared `components/audit/*` | `page-readiness-matrix.json`; visual rubric **14/14, min 28/30** | local_complete |
+| Security, flag, export and integrity truth | Claude baseline matrices; UI15-SEC-OBS-001 authorized for Codex repair; UI15-INT-RES-001 routed to owner | local_complete |
+| Backend gates | full PostgreSQL **3,025 passed / 14 skipped / 0 failed** (one traceability wording fix; sole CSV consumer rerun 15/15); Pint, Larastan L8, Composer validate/audit clean | local_complete |
+| Frontend gates | vue-tsc 0; ESLint 0 errors; Vitest **1,449/1,449**; production build | local_complete |
+| Browser | focused **50/50**; reconciled audit/role specs 123/123; whole-product **1,721/1,721** (59.7 min); 7 widths × 16 pages 0 overflow; 200% with footer reserve; axe light+dark 0 serious/critical; 44px floor; 64 hashed captures | local_complete |
+| Historical evidence | 13 scopes frozen; 247 rewritten files restored individually, 85 run additions removed; 13/13 MATCH | local_complete |
+| Production | PHP `81d42ff0…`, Nginx `b7930e97…`; PostgreSQL 16.14 no-volume topology; 132 migrations; 365 routes; `nginx -t` ok; `audit.servana.ke` host proof **48/48**; resources removed | local_complete |
+| Security scans | npm audit 0; gitleaks 0 over 226 changed/untracked paths + HEAD (after UI15-SEC-002 data-shape fix); `git diff --check`, `git fsck --full` exit 0 | local_complete |
+
+**Defects:** 14 recorded (UI15-NAV-001, RESP-001, A11Y-001/002/003, VIS-001/002, COPY-001, CSS-001,
+TEST-001, TOOL-001, ENV-001/002, SEC-002), all `local_complete`, none open — `defect-closure.json`.
+
+**Skipped / deferred / pending (not UI-15 blockers):**
+
+| ID / work | Reason not UI-15 | Owner and entry condition | User impact |
+|---|---|---|---|
+| UI15-INT-RES-001 daily full-chain results + incident timeline | verifier persists nothing; needs new persistence | Phase 25 §71 or product-owner-authorized verifier-run store | Audit sees on-demand segment checks; the page says so |
+| UI15-SEC-OBS-001 | Product owner authorized Codex closure in UI-15 | Codex repair implemented at request, worker, signed-link and both stream boundaries; verification BLOCKED by Docker/WSL | broader REM-PERM-002 remains separately pending |
+| Exceptional unmask, flag assign/escalate/category, export cancel/retry, saved filters, live push, export requester | no backend capability or authority exists | future product-owner-authorized backend phase | controls not offered rather than faked |
+| Notifications runtime + preferences | Gate W / 20D-W / 21N closed | Phase 21N after Gate W | inert gated nav |
+| Cross-account visual convergence (UI-08…UI-12), primitive registry, UI-08 breadcrumb check, Get Started body, `sm:`/`xl:` sweep, `rounded-pill` check | UI-16 owns convergence | UI-16 after UI-15 merges (`visual-language-continuity.md`) | older accounts unchanged |
+| UI14-RES-001 legacy `Earnings.vue` | UI-17 cleanup | UI-17 after UI-16 | none |
+| Perf/security/deploy closeout; backend Phase 25 | later phases | UI-17; Phase 25 (own authorization) | — |
+| REM-EXP-001 · REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 | pre-existing residuals, unchanged | 21N · dedicated pre-25 remediation · authorized owner pre-25 · pre-25 SMS verification | as recorded |
+| REM-DEP-003 | — | **discharged** (PR #64 merged) | — |
+
+UI-16, UI-17, Phase 25 and Gate-W-dependent phases (20D-W, 21R-B, 21N) have **not** started.
+**Next permitted action:** Codex Prompt 2 — validate the UI-15 handoff manifest and run the GitHub
+release. Not a new phase.
+
+### Phase UI-14 — Personnel experience — verified complete
+
+Live reconciliation on the UI-15 branch (2026-10-11, read-only `git`/`gh`): PR #65 *Phase UI-14:
+Implement personnel experience* is `MERGED` at `2026-10-10T22:25:00Z` by a normal squash,
+`20c27dcac7d0663d93a566d8a3ff42aa566171d7`, whose sole parent is the REM-DEP-003 merge
+`43b623c0e484c0ead76cca8c9d02ad41694c700e`. The PR carries the implementation commit
+`04b68169035608c1d17ca5cf411ea2c7b90e8af7` and the final reviewed head
+`92603fa612ffc94e790de2575c7df203defa2f49` (a merge of `origin/main` into the branch); the reviewed
+head tree and the merge tree are both `93ec8269e40da2ec2d5993ea5910fd8f6d82c19e`. Exact-head CI run
+`38089104875` (attempt 1 — the only run recorded for the branch) concluded `success` with all five
+required jobs successful: Backend, Frontend, Docker, Security, E2E. Governance comment
+`6102827769` records the solo-maintainer exception; the review decision is blank/NONE with 0
+submitted reviews and 0 approvals — **no independent approval is claimed**. The source branch is
+absent locally and remotely. The historical checkpoints below are preserved as authored; only the
+current-state label changed from `local_complete` to `verified_complete`.
+
+Historical Codex release checkpoint (2026-10-10): REM-DEP-003 PR #64 is verified merged as `43b623c0e484c0ead76cca8c9d02ad41694c700e`, exact-head CI `37863919256` all five jobs success. The complete PostgreSQL result is **3,578 passed / five exact authorized skips / zero failed / 52,419 assertions**; six collector negative controls reject. Accepted Vitest 1,426, Personnel browser 73, Tailwind compatibility 17 and whole-product Playwright 1,653 remain attributable to the frozen source; 69 captures and 535 predecessor hashes are preserved. The identical Tailwind key removal has ordered-config and **652-file byte parity**, including the actual new Nginx image. Current PHP and Nginx production builds pass; PostgreSQL 16.14 connects, all 132 migrations pass, `nginx -t` passes and **43/43 staff.servana.ke checks** pass. Exact owned proof resources were removed; development services and volumes were untouched. Final documentation/security/contract/scope checks precede the first implementation commit. UI14 PR CI/governance/merge are still pending; UI15/UI16/UI17/Phase25 and Gate-W-dependent phases were not started.
 
 Final recovery gates (2026-10-11 Africa/Nairobi): fresh npm audit zero at every severity; current production locked Composer audit zero advisories/abandoned and strict validation exit 0; current nav/UI14/UI06/OpenAPI/token/content/asset/source-inventory checks pass; gitleaks tracked/diff/untracked scans zero findings; complete 373-path authorized scope passes; git diff --check and git fsck --full exit 0. Changed-document PostgreSQL consumers: **111 passed / 8,756 assertions / zero failures, errors or skips**; complete JUnit hash `1a62eab44519e456964ecf115792ef7be33b8f3cd5cb31b2b2e1e38bb0ad1503`. Exact owned test resources returned to stopped. Local mandatory gates are green; implementation commit, clean REM ancestry integration and the full UI14 GitHub lifecycle remain to be executed. No independent approval or future phase is claimed.
 
@@ -5056,3 +5116,26 @@ Skipped:
 - CI to be confirmed green on the first PR push.
 - CVE-2026-48019 (Laravel 11 email-rule advisory) ignored with documented
   rationale — revisit at Laravel 12 upgrade / Phase 5.
+
+## Codex security closeout — product-owner authorization (2026-10-11)
+
+The same-session continuation authorizes UI15-SEC-OBS-001 only: live `audit.export` plus every
+selected domain read key at creation, queued generation and both signed file access paths.
+Original 228-path Claude handoff matched before amendments; its hashes remain historical.
+Pre-fix PostgreSQL cases reproduced Finance and Compensation request acceptance (201 instead of
+403). Initial fixture run failed before authorization because the permission catalogue was not
+seeded; corrected without changing an assertion. Post-fix verification is blocked by Docker/WSL unresponsiveness (`Wsl/Service/0x8007274c`);
+no passing result is claimed. Release lifecycle remains pending. `codex-security-closeout.json` will record exact amendment hashes and accepted results.
+No UI/route/resource schema, permission key, migration, financial calculation or source-audit write
+capability changed. UI-16 owns cross-account convergence including the mandatory UI-08–UI-12 visual
+revision after UI-15 merges; UI-17, Phase 25 and Gate-W-dependent work remain unstarted.
+
+**Codex stop (2026-10-11):** `STOP — UI-15 NOT RELEASED`. Docker exec commands stopped
+responding during affected PostgreSQL and Larastan runs; direct `wsl -d docker-desktop` diagnostics
+failed with `Wsl/Service/0x8007274c`. The repair remains unverified. No source was staged,
+committed, pushed or merged. Restore Docker/WSL, determine whether the owned test processes
+remain running, then rerun the affected security and quality gates against the dedicated
+`servana_ui15_codex_test` database. Current production PHP image verification remains pending
+because PHP authorization source changed; unchanged frontend visual evidence is retained.
+
+**Codex resume checkpoint (2026-10-11):** The preceding stop is historical. Bounded Docker server probes and normal Desktop restart/start timed out. Owner-authorized CI-first validation now permits a feature commit and non-draft PR; local post-fix PostgreSQL/full static checks remain unverified. A named PostgreSQL Audit/private-file CI step retains JUnit evidence alongside the full suite. Merge remains blocked until security proof and all five exact-head jobs pass. The prior 48 host checks remain valid only for unchanged shell/routing/assets; current authorization requires independent backend CI. No UI-16 work started.

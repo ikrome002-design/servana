@@ -1,0 +1,164 @@
+{
+  "schema": "servana.ui15.audit-security-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "boundary": "The API (EnsurePermission + AuditLogPolicy + TenantContext branch scope) is the security boundary; the browser checks are UX only.",
+  "permission_catalogue": {
+    "before": {
+      "total": 169,
+      "active": 134,
+      "planned": 35
+    },
+    "after": {
+      "total": 169,
+      "active": 134,
+      "planned": 35
+    },
+    "delta": 0
+  },
+  "rows": [
+    {
+      "case": "unauthenticated read",
+      "surface": "GET /audit-integrity",
+      "expected": 401,
+      "test": "Ui15AuditExperienceApiTest › denies integrity status…",
+      "result": "pass"
+    },
+    {
+      "case": "roles without an audit read key (FO, BM, HR, Personnel, MA)",
+      "surface": "GET /audit-integrity",
+      "expected": 403,
+      "test": "Ui15AuditExperienceApiTest › denies integrity status…",
+      "result": "pass"
+    },
+    {
+      "case": "Audit member with no assigned branch",
+      "surface": "GET /audit-integrity",
+      "expected": 403,
+      "test": "Ui15AuditExperienceApiTest › denies integrity status…",
+      "result": "pass"
+    },
+    {
+      "case": "same-tenant other branch excluded from review lens",
+      "surface": "GET /audit-logs?view=operational",
+      "expected": "own-branch row only",
+      "test": "Ui15AuditExperienceApiTest › keeps a review view inside the caller assigned branch",
+      "result": "pass"
+    },
+    {
+      "case": "lens cannot widen the segment (finance/compensation never selected)",
+      "surface": "GET /audit-logs?view=*",
+      "expected": "general-domain actions only",
+      "test": "Ui15AuditExperienceApiTest › classifies every review view inside the general segment only; narrows the branch log…",
+      "result": "pass"
+    },
+    {
+      "case": "invalid view / flagged value",
+      "surface": "GET /audit-logs",
+      "expected": "422 validation_failed",
+      "test": "Ui15AuditExperienceApiTest",
+      "result": "pass"
+    },
+    {
+      "case": "hash columns never in read payload",
+      "surface": "GET /audit-logs/{ulid}",
+      "expected": "no hash, previous_hash, ip_address",
+      "test": "Ui15AuditExperienceApiTest › never exposes hash-chain columns",
+      "result": "pass"
+    },
+    {
+      "case": "no write verb on audit-log or integrity surfaces",
+      "surface": "POST/PUT/PATCH/DELETE",
+      "expected": 405,
+      "test": "Ui15AuditExperienceApiTest › offers no write verb…",
+      "result": "pass"
+    },
+    {
+      "case": "audit_logs UPDATE/DELETE blocked by trigger",
+      "surface": "database",
+      "expected": "exception",
+      "test": "AuditImmutabilityTest (Phase 19, unchanged)",
+      "result": "pass (existing suite)"
+    },
+    {
+      "case": "source business mutation denied to Audit",
+      "surface": "finance/compensation/operations writes",
+      "expected": 403,
+      "test": "AuditSourceMutationDenialTest (Phase 19, unchanged)",
+      "result": "pass (existing suite)"
+    },
+    {
+      "case": "merchant-level rows (branch_id null) excluded",
+      "surface": "GET /audit-logs",
+      "expected": "excluded",
+      "test": "AuditBranchScopeTest (Phase 19, unchanged)",
+      "result": "pass (existing suite)"
+    },
+    {
+      "case": "foreign merchant / unknown event id",
+      "surface": "GET /audit-logs/{ulid}",
+      "expected": "404, browser 'unavailable' without enumeration",
+      "test": "AuditMaskedReadTest; ui-15-audit-experience.spec.ts › an unknown or foreign event id…",
+      "result": "pass"
+    },
+    {
+      "case": "wrong account role on audit host",
+      "surface": "browser",
+      "expected": "access denied, no Audit content",
+      "test": "ui-15-audit-experience.spec.ts › a wrong account role cannot render the Audit shell",
+      "result": "pass"
+    },
+    {
+      "case": "mismatched host context",
+      "surface": "browser",
+      "expected": "Audit page never mounts",
+      "test": "ui-15-audit-experience.spec.ts › a mismatched host context fails closed",
+      "result": "pass"
+    },
+    {
+      "case": "inactive session",
+      "surface": "browser",
+      "expected": "redirect to Magic Link sign-in",
+      "test": "ui-15-audit-experience.spec.ts › an inactive session is redirected…",
+      "result": "pass"
+    },
+    {
+      "case": "low-privilege reader (no export/flag keys)",
+      "surface": "browser",
+      "expected": "no flag control, no export entry, /exports guarded",
+      "test": "ui-15-audit-experience.spec.ts › a reader without export or flag permissions…",
+      "result": "pass"
+    },
+    {
+      "case": "no source-mutation control on any page",
+      "surface": "browser",
+      "expected": "zero edit/delete/validate/approve/refund/reverse/reissue/mark-paid/reassign/escalate/unmask/repair controls",
+      "test": "ui-15-audit-experience.spec.ts › no source-mutation control exists on any Audit page",
+      "result": "pass"
+    },
+    {
+      "case": "no hash, raw JSON, signed URL or storage path in DOM",
+      "surface": "browser",
+      "expected": "absent",
+      "test": "ui-15-audit-experience.spec.ts › evidence never renders hashes…",
+      "result": "pass"
+    }
+  ],
+  "observations": [
+    {
+      "id": "UI15-SEC-OBS-001",
+      "summary": "POST /audit-exports accepts domains finance/compensation for any holder of audit.export; it does not re-check audit.finance.view / audit.compensation.view per requested domain.",
+      "impact": "Only matters if a merchant revokes a domain read key from an Audit user while leaving audit.export; the default Audit role holds all three keys.",
+      "ui15_handling": "Owner authorized conjunctive domain-read checks at request, generation and both file access boundaries; implemented, post-fix verification blocked by Docker/WSL. Not deferred to REM-PERM-002.",
+      "owner": "Codex UI-15 closeout; broader REM-PERM-002 remains separately pending",
+      "status": "release_blocker_pending_codex_verification",
+      "original_claude_status": "open (not a UI-15 acceptance blocker)"
+    }
+  ],
+  "codex_closeout": {
+    "status": "ci_validation_pending",
+    "authorization": "Product owner same-session continuation, 2026-10-11",
+    "evidence": "codex-security-closeout.json; named PostgreSQL CI/JUnit required before closure",
+    "blocker": "Docker/WSL unresponsive; Wsl/Service/0x8007274c"
+  }
+}

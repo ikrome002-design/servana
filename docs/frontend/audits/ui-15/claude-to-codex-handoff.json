@@ -1,0 +1,2403 @@
+{
+  "schema_version": "servana.ui15.claude-to-codex-handoff.v1",
+  "phase": "UI-15",
+  "branch": "phase-ui-15-audit-experience",
+  "base_commit": "20c27dcac7d0663d93a566d8a3ff42aa566171d7",
+  "expected_head": "20c27dcac7d0663d93a566d8a3ff42aa566171d7",
+  "origin_main_verified_sha": "20c27dcac7d0663d93a566d8a3ff42aa566171d7",
+  "merge_base": "20c27dcac7d0663d93a566d8a3ff42aa566171d7",
+  "divergence_origin_main_vs_head": "0 0",
+  "commits_added_by_claude": 0,
+  "staged_entries": [],
+  "generated_at_utc": "2026-10-11T12:24:12.070Z",
+  "manifest_list_sha256": "ada7415ca3f7369fc51f2181e3f483f9407eb9d1ff7c2dbb60a7ca3d466dab27",
+  "manifest_list_algorithm": "SHA-256 over sorted lines \"<path>\\0<status>\\0<sha256|->\" joined by LF; the manifest file itself is listed with sha256 null",
+  "signature": "none — this is an integrity manifest, not a cryptographic attestation",
+  "scope_categories": [
+    "canonical_contract_source",
+    "generated_current_projection",
+    "handoff",
+    "project_records",
+    "ui14_lifecycle_reconciliation",
+    "ui15_backend",
+    "ui15_evidence",
+    "ui15_frontend",
+    "ui15_frontend_tests",
+    "ui15_tests",
+    "ui15_tooling"
+  ],
+  "unclassified_paths": [],
+  "files": [
+    {
+      "path": "app/Domain/Audit/Enums/AuditReviewView.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_backend",
+      "sha256": "48261ebfd4710df3c0b6966ad9470bd52fb0ef050167a4ce90d43c8a2742b6fb",
+      "bytes": 7570,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Domain/Audit/Models/AuditLog.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "38b4580fcd20bcbf4e94a77b71c1283a96641ed51f3c90012f33f1f41ba233b9",
+      "bytes": 3249,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Domain/Audit/Services/AuditChainSegmentVerifier.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_backend",
+      "sha256": "023fac98e832a61499efc19ccac08b59dc26a2f17bb768c242eb2ddf7d813a2e",
+      "bytes": 3285,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Domain/Audit/Support/AuditChainSegmentResult.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_backend",
+      "sha256": "826b0d946a98e88996f4c1c837513db720de7eb6d031a26f0e8e1c3a7f4c371c",
+      "bytes": 1877,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Controllers/Api/V1/Audit/AuditIntegrityController.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_backend",
+      "sha256": "538f59dd15e10a10f912c1a6a31fd22a1d3b61c6cb4cdb4a99fef11fbae7e031",
+      "bytes": 1590,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Controllers/Api/V1/Audit/AuditLogController.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "95a8e59e86b3a8c1f87d99c3b6025b24fd8bc101f3ba19dc435c05289bf1ac2a",
+      "bytes": 4937,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Controllers/Api/V1/Audit/FiltersAuditLogs.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "4bdd95dd1973f6e27865ad7545576bf752227644692ae4c17ad0b85272d59881",
+      "bytes": 3828,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Requests/Audit/AuditLogIndexRequest.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "01898cab9290e1ab7f67fa7136a941fe9913f0493dc369a8f537dac4f6e4c192",
+      "bytes": 2636,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Resources/AuditIntegrityResource.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_backend",
+      "sha256": "c4e1662b43f25d731cc54b1136817c2fa541d3a3bcc5513b8fffd17fc725d55c",
+      "bytes": 3130,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "app/Http/Resources/AuditLogResource.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "32db362661361eb2a57a23a68d10d8faed8da5b948fe289a5f5631a165b6390d",
+      "bytes": 3061,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/api/openapi.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "723ad8132119e87dd2cb85f5d979606ea93dac28911fbed862bb814f91680a38",
+      "bytes": 2621822,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "project_records",
+      "sha256": "1ed7b4b2a4481477a443487a878a350fa89592d0951d47c91f27ea1005f089e8",
+      "bytes": 392428,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-06/public-route-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "600f6b927e667f9fb9b07ce47a8e9bcd82f14f980a129935a6ae378e2c6c64e0",
+      "bytes": 37410,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/account-page-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "563cbf629bcd9b016865eb1b8f0dec95823cb89a784f86d4004344e59e5d615f",
+      "bytes": 101995,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/browser-proof.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "753412ba49d6b1c043169e6a4a56ee16dc2d58e13a83ba45b2fd16e1e3f183c3",
+      "bytes": 5243,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/code-splitting-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "ba94bba06a077a801ed1aeae18da120f84475b7574531075273e1dde65bf573e",
+      "bytes": 40068,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/inventory-parity.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "6cb6d4918acb89c046fb1c88f922d79801a70805a7f1a8bee0d423e637abe8d8",
+      "bytes": 7053,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/navigation-parity.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "7965e3b1444dbede9f2ee0c2ec44f7560b882e700c926a847b3e09ba8eb3bd54",
+      "bytes": 4412,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/owner-phase-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "6aaaea103795fc28ad59adf41a635a12159c29a65240b0c26404ec0ef7ddc33a",
+      "bytes": 62486,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/page-count-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "f98e12158306408299b6e6896c6ae90b25dc709c07ff24b795e83c55d5845a8e",
+      "bytes": 1627,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/permission-parity.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "a11ca88c03f2a77d43a847b96578f3a9373b1e4434ccca06a45775d9655737f6",
+      "bytes": 10524,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/requires-account-coverage.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "d4d5829a98036ef270f65e20ec2c0b0b78dad659f488a661b4e583ec28763f46",
+      "bytes": 10396,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/route-parity.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "9afa4f9860e8da52aad07e076c3e84e8107b779540c6ec32dadd1927bef36b60",
+      "bytes": 70992,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/screen-spec-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "fc0c0174c7006b339b3a84b56bc02d85255bb7c28b175f2368960dcd976e4f88",
+      "bytes": 36819,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/source-authority.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "fe7eb62580a428f650b3cddf3b9993986182eae317c320d0fae35fde4c4f0b50",
+      "bytes": 1940,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/status-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "13589f12e002520bec4a146aa53a06ec94d7863b3b3df2daa081ab8d4976011a",
+      "bytes": 7107,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/accessibility-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "a4d0857fae2dcce7f46d992b054c107ceef1f1d0cf4b804cbd79c7fd4fcb1ac7",
+      "bytes": 3069,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/browser-proof.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "4a9a8d20f0808d715ad71712b3b248b6627cf404602975ca1607d8af7e075a9e",
+      "bytes": 10046,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/contact-protection-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "c08d8cad4c7306e9b73c6358938742bf2babbd95b316e3e991e043a52a6a57a0",
+      "bytes": 3367,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/defect-closure.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "08b36a1b0aad0e900ee04ce404eb0a93e60ac668cf54b995beb966058e8944e1",
+      "bytes": 41769,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/earnings-model-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "2c26a5192f9e51746faef177cfad26a736d91e9fa608b2c0813ef6b1a5587892",
+      "bytes": 4000,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/gate-disposition.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "32fb4a062f59ccc279d282e7b312d2ff90d5cc300c6fac4d2c52266ed38266b0",
+      "bytes": 4251,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/historical-evidence-restoration.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "7fec9a46d79a41b3c64ceba08ef201da2282685b5a730f5593620a1b78fd2535",
+      "bytes": 34377,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/implementation-checklist.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "e16ac6017cd77f885f1a82a3891eb9dfab3a6d47be7d19e382c78d0ae0983879",
+      "bytes": 6016,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/own-scope-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "4071cabcdd7250bef2c2ffd77ac6266de9aef084a3c2d3125c71d60234a0e747",
+      "bytes": 7208,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/page-readiness-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "f8bea68d12cbc670d813ac12819db41ab26f96a7dfde9c1c0824ba3727020b5e",
+      "bytes": 13449,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/page-visual-acceptance.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "7336ca082d7e53c2dc100e57f00f14f30228559324b83b1873e7a7214bbf2583",
+      "bytes": 45185,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/production-host-proof.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "3b702b081ff05efb1c989e69ac2707c9c65d2debcc641427debe0be88fb6dbe8",
+      "bytes": 10527,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/responsive-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "8de1c363143591edf5a9be806f47ff8419bac149b220c5638e6b05392abbcd84",
+      "bytes": 3886,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/route-activation.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "0a0c2465ebca681c63f318ff2b56ded17860726375abf69fd70670ba7a7eca9a",
+      "bytes": 7761,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/sms-safety-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "eb0ae42a8f9f427a9c5f43da2564038663f2bf8c522d7b04ea58f7fe7f4153ec",
+      "bytes": 3632,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/theme-matrix.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "07ef534c6ecb0829d60da522cef0e28e46c4426c3c6437aba2604455923647ba",
+      "bytes": 1975,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/accessibility-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "658a82eb9a80904761690a9f57b2e2aae443e961c9e44424b9d826c46c404a55",
+      "bytes": 1790,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/audit-security-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3e17a0df77bffa6731c90fb94f69d1dde781e3559063c7ffbf223075177fe49a",
+      "bytes": 5375,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/browser-proof.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "2e6a909d447a471a49aea062f87f6ca63c3f335c831b1d9a0aa30db330d94e2e",
+      "bytes": 1441,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/claude-to-codex-handoff.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "handoff",
+      "sha256": null,
+      "bytes": null,
+      "note": "self — not hashed (no recursive hash)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/claude-to-codex-handoff.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "handoff",
+      "sha256": "bdb540ed106cd81a51d743e2de4c188838ef54e1bbe1fb1b2e87cb9e038eeeda",
+      "bytes": 2302,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/defect-closure.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "094d3a9fa2608e09339f128e4ea565c4507cc8e8f97f04162bdcd2d034fef98e",
+      "bytes": 12770,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/design-inspiration-notes.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "8e3c9adf3ec3e619bbc305b2be458476a07e5ffe561e69b3a22099e868084c75",
+      "bytes": 3917,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/export-security-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "a84dc4b3f968d7b5c7020aa3468d4bf3956a782272a1409eb61379d2a07cf688",
+      "bytes": 2304,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/flag-review-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "00642a45a5da381ee94c6aa5e9a6e8c219198f374c1e1efd790ad189f829b12c",
+      "bytes": 2402,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/gate-disposition.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "86ef1f7952cbeead03c62fa5b5a0f0a619b4eb8d867f3f57be67c03337d8ff6b",
+      "bytes": 2042,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/historical-evidence-baseline.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "73a3f11970772c15897bb36c23863399978d8ee4f985c2b8c062599371303330",
+      "bytes": 3212,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/historical-evidence-restoration.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "a37d2df0246c56cbf75566e3c5274b64803cf789467c4367dc32a4a33f3c0637",
+      "bytes": 1544,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/implementation-checklist.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "5fe44f4882d12e37c7764b06ddaf038b583a2119859e33a4928216b8ab84789b",
+      "bytes": 5962,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/integrity-truth-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "a027f30e1c426c6bd4d5eaa240f8f6f10a70dd7923adf32494ac0dd5982c22db",
+      "bytes": 3224,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/page-readiness-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "393f2189acceb29a18b2377661db54240fac53319bf72a635795b47169c0d675",
+      "bytes": 12283,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/page-visual-acceptance.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "8a56d635fe6480cf622342b3f0cdec2a7bcb7a16382492b333c9473b2325eee7",
+      "bytes": 16998,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/production-host-proof.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "c31dfee1126af99082f90ad89a046ddcf58dbbc29b3e2798927cc9c369859b61",
+      "bytes": 2884,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/responsive-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "9a6f4b2271af37085b5975997647896b56b8316038866c8123d54ee489e7a67f",
+      "bytes": 1811,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/route-activation.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "fe3e31aa9cd9c5a47e1b840d8447088ed472b5982f471946dc22ec4abba2dc5a",
+      "bytes": 5024,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshot-index.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "acd80f5c24fa999396af4b74250f73ff46a5f1a9fa40a39ccdd2d20ee6b5a591",
+      "bytes": 40116,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/access-repeated-attempts.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "32296be58f4460fbb022121933d652fa826d40c8c9e7291128e7b75d0d20cc6e",
+      "bytes": 271287,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-account.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "8015f90f2afa44e284bfa29b74e0e9c3a53e12998208d96186c988a5908b64ce",
+      "bytes": 198494,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-access.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "72681b9f1dc54d7aa63d6e85d3465a7dc1da17f6d5daa18e6f20de03a95dbadc",
+      "bytes": 309177,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-compensation.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "74af78ca92b36cf188f2a0e310cac8d21f49e7b6ad5d0e59f64f54f1eb6ab136",
+      "bytes": 302829,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-event-detail.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3596221fda26b56ceccd1f5a340719be318feba3fd4dda765d34c412c3225a1c",
+      "bytes": 200551,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-finance.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "32143d93578e78a5c4b3f3b385a9db763fcaa0d4b8133b63d5ec1d76429eaf52",
+      "bytes": 308194,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-flags.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "07fa9bf0861c539414037edcc67d7ce28b6a8a46af2cc77284421ea4f3019731",
+      "bytes": 293962,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-integrity.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "8c25f7c7f004c1346c875f11864268ca6a09ee0fe69f01203853fe111d948623",
+      "bytes": 367430,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-operations.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "2401cfdb95d2bd3d987e3b1f03a15d932679542b2117e8590c9372943a5a94cb",
+      "bytes": 290568,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit-privacy-preferred.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "1a96368731772193adc22beee151d100f6465c37318958d1787dc856d7f37cda",
+      "bytes": 303348,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-audit.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "4ceaccbe08ef5a6a0a6efe55a638a4ef23de32a7cd07baf85928a1b0f6dfb839",
+      "bytes": 244500,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-dashboard.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "345af30ff4ec0dfd4468ef8abb17eae710d9323482c28f276fb36a3d5f907471",
+      "bytes": 449925,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-export-record.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "26b1f9e00b5d1ce0e0eeac87ec452dea98d5ae07d722858a079b28c715dfb558",
+      "bytes": 181403,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-exports-history.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "6cc6a0d1eb70edfacfc9bc0ad1cc905f890fc2ecce2dcf109195df7034efa861",
+      "bytes": 255232,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-exports.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "4753073406065592ece983c6caae98fbb271bb430f74022c8c345ae8bb2883c4",
+      "bytes": 279073,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-flag-review.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "7ff54009acbd360c3a63728711f7381724fbac5ab7c921028f869e6e48a77651",
+      "bytes": 175582,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-dark-get-started.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "0a086a3ed6c760260569e9a5ed068ccf1ffdc89992f678a6a810b700be2aa52c",
+      "bytes": 348994,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-account.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "93a7ae65634f1944d403c74289adbf8b7927051dad04e157846865f95b4f8967",
+      "bytes": 194452,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-access.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "19e21f648c37e84fdd015e4e84cf81b7bee18aa0db31afd16bcc694b1c99d170",
+      "bytes": 293719,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-compensation.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "0d7f9f8dca89946ad0155b0b748083f0b2d8bacff87a7ddfb75706ffa439964b",
+      "bytes": 293133,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-event-detail.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "635bf8c9031495b065da8b1b95e5af1e609310ad2fea0d796b7368fef4d2e913",
+      "bytes": 176453,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-finance.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "a69b56e0b8f529a46aa4ba3b7107c3634e127f0d6a7c82c21778014a99289000",
+      "bytes": 294487,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-flags.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "b0d49a5f9f1d011ebefd006f888d7bcc8fb8c8e61fa0e4093cd40384fa61047b",
+      "bytes": 279679,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-integrity.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "1980f5e8d6d05211504217b9be653e697e183099a84bdcbda6fb7d7b2c004cc3",
+      "bytes": 355818,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-operations.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "7582c56adcb3f79a7daf1ae5925dd834619d27269217d93f164ed8b6480374ca",
+      "bytes": 274355,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit-privacy-preferred.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "253e89a3cd101986f48fd1853a77a47359d94016624f45a9697b3ad1deea6ab5",
+      "bytes": 289572,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-audit.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "d9f4e7c5cf6b726c84a4a9bebffa969dd8a3cce47e6a277a8981c26a3773f620",
+      "bytes": 229925,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-dashboard.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "9452b4d54db55c5f62fe0243f70d15cc9c471cf70dab463b153fff5393495413",
+      "bytes": 449047,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-export-record.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "ab30e54c863cdaa4ba6eea09dbe8c47a55e4e566a28d1432e2076f0f3e0cacf9",
+      "bytes": 173000,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-exports-history.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "918a7e72a22d34bb30938568114a9127f3dedb771fe39b281e14771a520ffee0",
+      "bytes": 239764,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-exports.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "133e58e4a8abd004ed25250fb7f8c4d4c7db51d8016eeed462c3d6add6979c61",
+      "bytes": 266487,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-flag-review.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3eaeaf48f68292299a3351b69269f10d3b16cfc332b6b0683822c564ac9e422e",
+      "bytes": 171379,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/desktop-light-get-started.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "a5d7d7a63e4efa440478809ef8885cf67b3ab9ed945479dcd45793526036b1b1",
+      "bytes": 348675,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/export-form-validation.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "d63bfdb7ce949afc686cbd04f259956e9625fd4b6eddc3ac4c115523c517b5c8",
+      "bytes": 285326,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/flag-dialog.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "bc2056b7223211a02bc5d750c377607caa63dc1f353fdc312359cde82c7e4547",
+      "bytes": 219059,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/gated-notifications.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "deaa3accd9ad46207c1e45e9c9ec1ef2f80a8568df6249655d1ab86c8fb4febc",
+      "bytes": 40914,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/integrity-broken-outside-branch.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "0b5d1ac8ac205e559fa40a21e1dfa4207f140ceeb65e0e036363aed2938512df",
+      "bytes": 368020,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-account.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "407742580739e5dca72f5d3a913acc3afe7d49efbdd48834814a717421cd916e",
+      "bytes": 190505,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-audit-event-detail.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "5c3bd3826330ed7aeff8fe8602f05cecd99694ba0fca8fd44caa913659b45223",
+      "bytes": 122309,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-audit-flags.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "6fcd730523ef1d8f3927dc40dc1351960423287c1960f924953bd456eb26ed50",
+      "bytes": 190001,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-audit-integrity.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "18051d4a7554bd1b0e3914491b84c413fc90cb2b5bef006a3eb2529371a026e5",
+      "bytes": 214254,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-audit.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "dcb2e5a704db59e5e1f6bcb94f9f80045011588994affa9d5c309dd93dd2eab7",
+      "bytes": 331339,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-dashboard.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "98b81b58079b27014570a879c2552e32d13933ea6978b2253a9cc4f0829ad7b0",
+      "bytes": 434469,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-exports-history.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "4f01d3ad30265dce5137c681e3437a546aa900b5f9482e88c30f4f4bb724107c",
+      "bytes": 136704,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-exports.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "85f5d348796f62be860cd4cc719e1dac52d67b76502cf58bff5362946a1229a2",
+      "bytes": 267931,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/mobile-navigation.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "cda8ca2439309c31bf581b4151687a2437bd11653262d37a7ada403fa5f3101a",
+      "bytes": 55414,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-1024.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "ba01a284f2bf09fb7c923e69841c2ea97f61b2724f4d7c2dfacef7aff98975c9",
+      "bytes": 356631,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-1025.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "f365df7c5d4b37d676164c8e54e25c325a5bc9c1295d0939acd9619acad394dd",
+      "bytes": 364969,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-1280.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "b46be4d2995b76d3f2daca14454d0ac15f322f59d4bc498b78258e78e76888d3",
+      "bytes": 413290,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-1440.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "9452b4d54db55c5f62fe0243f70d15cc9c471cf70dab463b153fff5393495413",
+      "bytes": 449047,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-360.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "2528df1d9d15173a8c7911ea344ea0745b1bb80bcfeebb74227415c9da8dd1cc",
+      "bytes": 188009,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-767.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "576f1b5da9899728e13cac2c323abd7a52d35511b7bbb452e05324baa5dfeaeb",
+      "bytes": 297124,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/responsive-dashboard-768.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3233fd1386dbdb830dfe719140e9db0fe54963b92984a446937b55a194801969",
+      "bytes": 289797,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/tablet-audit-event-detail.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3d87a0d1040562bd4172e2a8bb67b56561c22bf6137b5920e69e38b79d8f7b0d",
+      "bytes": 141869,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/tablet-audit-finance.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "80415e40cd9b9c9eaa5b93c52f31fe81efe35cf166b26f9a8c156588365bbbe2",
+      "bytes": 286430,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/tablet-dashboard.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "b28a479e5a99750ffc43f4c58cccb03fe3a05cc19bc29d51c7ad7801a173bcea",
+      "bytes": 562584,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/tablet-exports-history.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "c9c4cd78b015def63205d76cff5fb4bc05fbe088e1a41f075786d87d42167f98",
+      "bytes": 178420,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-account.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "8f73cf872f672e7f1c931176fc188d84df14c4ff0696788574c9fa4225d061b1",
+      "bytes": 198928,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-audit-event-detail.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "d73af8377b4c0efa569e0828664e67474289a4b49ad4703f4c45c48136cc62c4",
+      "bytes": 134580,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-audit-flags.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "3ddd42c3ff973128a967843673ceb61b89fa551e3e4afdadbc300a1566e982f8",
+      "bytes": 201376,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-audit-integrity.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "1c189ec5ab8f5b467d2ef5fc4d57b54450dc0854cf36fd401e93335e5fc8edec",
+      "bytes": 228560,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-audit.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "7232f8b68b06e068ad951a0b893397a8b8b51177a211e37a713c9b3e9e03957a",
+      "bytes": 323546,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-dashboard.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "538a9f7001c5952ded9772724618d2e1982a07d0421ea42910ec5e2fa98f9630",
+      "bytes": 518432,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/screenshots/zoom-200-exports.png",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "57fee380701fa3c8091c8ac97af4390c841db0b87af8054ecf27327c12418b2f",
+      "bytes": 299243,
+      "encoding": "binary",
+      "line_endings": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/theme-matrix.json",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "447a6a2ffb7459995ee601bfeb39a116a832ecd8f015a330de69a57a3b32359d",
+      "bytes": 777,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/visual-language-continuity.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_evidence",
+      "sha256": "e46674229d0ac70bd176abda0e116fa895f0a387102ef3abf4ce337d859d574d",
+      "bytes": 3079,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/navigation/role-navigation.yaml",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "2b3748fd7f61f7af17393840e6f4323d6a37dde8d4a02b86917b89e7e6bd883c",
+      "bytes": 25987,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "canonical_contract_source",
+      "sha256": "0c41d07895d820e90f68fff3c6523ef954605945438828659006ff8bfddece60",
+      "bytes": 206267,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-access.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "761c48e3b61cd8dc1aec68609e0148a211e96881759596798819f19939237cca",
+      "bytes": 2790,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-account.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "a0f814ad0ae483e417efe0268eb30b966d8f12bef39bcf92c8823c8fb62caea9",
+      "bytes": 2770,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-compensation.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "ee829de343e9f596e4f17a151297ccb97e4f3cf65ef118fa64a0284d8dba037e",
+      "bytes": 2754,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-event-detail.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "ea4b996f5653ab9fd53e2f023d8dddb48234cb47c620ee726638516b062bef33",
+      "bytes": 2889,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-event-list.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "26db2ea23b2e567685b4b2d1f6845abecc1c59c2dce0787dcefeddbb911884f8",
+      "bytes": 2816,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-export-detail.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "33b969811f0aa3b9e65ff316df4159a2e54316919903b1b16e0ff41305b31206",
+      "bytes": 2779,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-export-history.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "330bab162414edc1c6ee24e1797640c2073f38ba99316541a225089f9c68a4e8",
+      "bytes": 2779,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-export-list.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "6a0afa375f91cbca094781283493c6b9325d18843d99f978e2dfc3ca9ef106c7",
+      "bytes": 2805,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-finance.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "af7da54e4f4f0622a8ad41dff65d09e1b0cc267eec23aa443f76db380ea38809",
+      "bytes": 2788,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-flagged-detail.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "3ffcdb5e6e90ef6066b10c1be5daec9890124001da4696713fffe9c690022d9e",
+      "bytes": 2845,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-flagged-queue.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "65cbe33e5ca629bfed27d1c974392a49b35672feebbdf506a76eb838633fe176",
+      "bytes": 2814,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-integrity.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "afc4dd554c557047d76a7551601522777f139eb2de65469a28730237df538277",
+      "bytes": 2825,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-landing.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "fb2875bebd5e2b47f6c2072595227c393c4157c7a6377191e436db07125cbcc9",
+      "bytes": 2837,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-operations.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "cfcb8a3b6ba298edaeda0005e2c7cff58a0863b6f729d90a0d948f5a575a01a9",
+      "bytes": 2737,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/audit/audit-privacy-preferred.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "generated_current_projection",
+      "sha256": "7abba9b03815e4f6beaf7559af08610aed92512fd2c320f2677de9f6e47c10de",
+      "bytes": 2819,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/account.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "2efe8746e359d9a6f2bf7a871b0f25e4d875ae0d4aa9788066575967ada4e6cb",
+      "bytes": 5171,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-access.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "033956d4ce3272eaab172e08f2efc463d85d12261c06836f692bc98e702936a3",
+      "bytes": 5325,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-compensation.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "e51db4011b4d1dc2eec3e5b4d60f585a0a4fbc69e351c6e16108c2712a7bded9",
+      "bytes": 5245,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-event-detail.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "178a891bb5402f3bc247c5262dbf4826bb46c4c0084d11cbe48f5683d4977a94",
+      "bytes": 5643,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-finance.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "67bf883197f5997a0a40b7118afaef46711b048c8875075f5c19f1c45e3bf101",
+      "bytes": 5279,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-flags.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "02e6d4c87c8f9ebad4a7cee967403bd7b04c9337169420fac85d4228e0b2787e",
+      "bytes": 5201,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-integrity.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "474e5637db0f64bf314b5fd5697389240d2551561645a78a26e324aa874fd8bc",
+      "bytes": 5284,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-operations.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "158b0eb923223db7ca3a6c70c9126bc501c696c1bd26d348a397232888712a7a",
+      "bytes": 5290,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit-privacy-preferred.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "537418c784c1094f92581eae5571dc43274b08d73eb2eb3e919a159e7bfbef88",
+      "bytes": 5445,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/audit.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "65f97ac39ff03ff6f91bfe2453082f85a3d7e5c1657ef3687502105702986331",
+      "bytes": 5131,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/dashboard.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "798335a01292c753cfb53a2450e41ea46b1f425909a95c01e0b47a33c85bf251",
+      "bytes": 5232,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/exports-history.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "162cf971cda4d53208e7f68f617d5e46308cb83a4330665b8ecb5112516e8cf6",
+      "bytes": 5115,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/exports.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "5d3d9168b09eb7f02f99e5f2a6262654c7176bd05e8cc512ce73f0264a9abf54",
+      "bytes": 5139,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/get-started.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "64df33c664bf4fda51db38bc686c8888d4342f15dd3ac7b5cda9dd6e2a96d960",
+      "bytes": 5008,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_audit/notifications.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "affb15dcd3d73b429d52ab11a169c1898861175ccad1b771dba3d6b7d59b562e",
+      "bytes": 5754,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/inventory.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "canonical_contract_source",
+      "sha256": "26cb3aec9b8a12732c52c6bc5a791c470ee5a673f881ac727ca8a87e103f68a3",
+      "bytes": 124079,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/frontend/screens/inventory.yaml",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "82c2241e1677248664c57408302b97cec2a42d4efa74b3d951790112c99fef86",
+      "bytes": 30984,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "project_records",
+      "sha256": "4f670d12016ef3388b526dd8181259f73a7d1eadb3f38b1457a557f69d470eb9",
+      "bytes": 513407,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/proof/ui-14.md",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "32e4e3dddda5fae3b998ae60115ead0e7dc194126317b7a193db9ce2749a1635",
+      "bytes": 29017,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/proof/ui-15.md",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "project_records",
+      "sha256": "be7a1d6af527d719c3576a38d8bffa83edb961be2def4218468881dcf3a775c8",
+      "bytes": 11775,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "docs/traceability/servana-requirements.csv",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "project_records",
+      "sha256": "61d47f295578cf5f46858ff6b93f76120577b9e9f885f1a4ed6d97c6db9d7d18",
+      "bytes": 323915,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "package.json",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tooling",
+      "sha256": "636ef046d1d38f6e8a63023e3c8a0d0447950ce9cde6879a525fd6d3e8535aca",
+      "bytes": 3059,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditDiff.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "db4d8b441e9c2a56ce5456bc90b049acd11380adc3b5ec9f73004d827767e1d1",
+      "bytes": 4391,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditEventCard.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "c87ff141fcd456ae5d6c4cd25ccbbf62c03ed88956eb1441abc0b20be261812a",
+      "bytes": 6782,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditEventFeed.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "2f70cdf74f642698576d2ab7872ca27227fd54b516e5829f6556858a046e96f1",
+      "bytes": 8204,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditExportStatusCard.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "589460d9c709e6ad37c61a3aaed7a5815dca2e652a1db416fb36c2b5f9cc7d27",
+      "bytes": 4435,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditFilterPanel.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "655f5db76fe59429a8c672f5d59a9f82d880db629d7d9f1e40a55a5404e2a90c",
+      "bytes": 8217,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditFlagDialog.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "d59683ca0a5c549acc86ce9aa73fcad4fa2d516b5f6fb0eb1fa60562f781a7aa",
+      "bytes": 4597,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditReviewBadge.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "70fa5419d40bf7f3653c6ae4c3f24d0f70aa54a5623fb1a0ef72c5f14eb6faf3",
+      "bytes": 1337,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditSeverityBadge.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "186cbef2ff211100baa28b4f107d7f9fb989d6df6d2eec3c272070d5f291c8eb",
+      "bytes": 2510,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditViewPage.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "f87027f98072b8923d3ec330e182b38e00a73005ab7a0548f92c9e7d136ef0a7",
+      "bytes": 6274,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvBreadcrumbs.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "a33973e8e4bedb820c82e1a9fe0c98198cc7fe7dbbb2042689d1ba5eeeaeb3d4",
+      "bytes": 2695,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/composables/useAuditRouteFilters.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "ae9e895db82f20c6a3191e9a3851da8a191ed6e62cf19dc111bcf13f530b31e9",
+      "bytes": 3397,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/content/getStartedContent.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "dce331097faccf3ad78d05dcce26800d046a8bef6e017bee1b9be155020dc0ff",
+      "bytes": 10457,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/design-system/icons.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "f8fd108e317a8f68a9ba5e17f155af8101d764fb5609e2be4f778e42a0a1be4a",
+      "bytes": 4379,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/navigation/navigationFilter.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend_tests",
+      "sha256": "e2aa5e1bff840f542fe4f530ccb4a097856b5a072a05275cb7b441d092253eb5",
+      "bytes": 13962,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/navigation/navigationRegistry.generated.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "cc2229bbddcc9bd2c43df9d4e57f6c4b55396430fcbad9b33f71001a89c4c7bb",
+      "bytes": 185586,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/navigation/roleNavigation.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend_tests",
+      "sha256": "47c5787afcec85093818afa0ce396d57119199775a4ddae74c4802435c8f47a9",
+      "bytes": 4283,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AccessAudit.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "eefd66927c88df57c674fd6c1baf17f70bba9c2ce4a90768a895d5c5688ec749",
+      "bytes": 1894,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditAccount.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "29632060c0fcc0dee20b438e9245b73144deb739a24a2a4aee437d29d375ac0f",
+      "bytes": 6947,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditDashboard.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "3ccedb9250e32cf49985fafad5c7c3a4f3a4e66d2c2788350385a5af180f440d",
+      "bytes": 27358,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditEventDetail.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "cd578c0c458aca8a896379632a5ac93cbae59ff99851727c3c213df6dd36d76d",
+      "bytes": 15734,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditEventList.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "3c6efd7d0740f7009c5a94cd12478161f21885d96f7242ac5cef263922f9af3b",
+      "bytes": 4137,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditExportDetail.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "cdb399b16370c034122f118085bed5b2c0872434d78b148993889b06af3864d6",
+      "bytes": 14217,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditExportHistory.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "0e59bd168be8bdde5954d27cf2c01e64bf71dcafa499990dd8f826088d9f2733",
+      "bytes": 10592,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditExportList.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend_tests",
+      "sha256": "cbd057789134325d602faf8dbb546c01cb956ff05e6767fa7f4149e9568fabcb",
+      "bytes": 3489,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditExportList.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "13b19fc8be86176a4b657c3f04e19a8e5ea30efc2a270f62473642d5550ef3ee",
+      "bytes": 21314,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/AuditIntegrity.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "43d968e1e519313205d21e53e3432e501e622c39b3d0e511dff095c933de9467",
+      "bytes": 13725,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/CompensationAudit.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "7ac1577dab7fada19affa17e9b656320fc5cf56cdad154885404c0e6a5f77677",
+      "bytes": 1847,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/FinanceAudit.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "86079e10a5014ef7f1dabc20001443aac5915e35374df6e6daf93880ff923b04",
+      "bytes": 2084,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/FlaggedEventDetail.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend_tests",
+      "sha256": "8fd80b7ae8aab3a9a0fbc2e1caf4576708269fd4560202167c1fda904d13f618",
+      "bytes": 3347,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/FlaggedEventDetail.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "bf0fcada05f1daee70937880f4e13d0ddd491069e1e1e7b2132814fcd89b43d5",
+      "bytes": 13272,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/FlaggedEventQueue.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "21c62e11846f378887443702c0e421a760b793a7536492acc4d817a4840d72ef",
+      "bytes": 13431,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/OperationalAudit.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "d48bed5988792c00c726d63df0b13d3f9218ac673042bd97d666232967bf60ca",
+      "bytes": 1833,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/PrivacyPreferredAudit.vue",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "0c387cd9e0ac1988e3280635419bcf1c9152fb065e326cbc59b1bada5ed607d8",
+      "bytes": 2021,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/audit/Ui15AuditPages.spec.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend_tests",
+      "sha256": "f4001cf45510c8bc35b94bb21c97b2c68284ea98e0673dcb296f4b23e3a2c4be",
+      "bytes": 10036,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/get-started/RoleGetStarted.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "6872b0677702debdec27692ebee8ab7781c40774a0a4bf374e9f2f10cb384b28",
+      "bytes": 9970,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/pages/platform/AccountAndSecurity.vue",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "c3f3739bc9fb7c23e9916d245bf55fc485e35e232ee17e0657d7a32f95517904",
+      "bytes": 20883,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/router/auditRoutes.spec.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend_tests",
+      "sha256": "59e74ab4cf41691f0b7c256fd1b7bb866486516f3d917f9303921d5ace0c103e",
+      "bytes": 5044,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/router/routes/audit.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "c1177cfd2981f6296214aa7a3017afaccb7e49fd84e045c60178189e4474732d",
+      "bytes": 6416,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/stores/auditEventStore.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "00685f33053605b9b44a9811d6192217dfe607f6787513ca0d0718edeb93341f",
+      "bytes": 6058,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/stores/auditExportStore.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "38c860bf7a2f5b0d57d4926fb4586e7a6f93a4c1d56f288c03afcebe2a4d5239",
+      "bytes": 6116,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/stores/auditWorkspaceStore.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "b7ced606508df1059ca36197cac1ee6b3bdc90c98d6462b6fe347436b543e8cf",
+      "bytes": 6051,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/stores/flaggedEventStore.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend_tests",
+      "sha256": "1213f6ff87f8faf9f3c7ced8bbbb02c419ce36305266f4c0ea50c32e36e7f0e1",
+      "bytes": 2753,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/stores/flaggedEventStore.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "f916546cb9ff0c3940358c7356fe34dba7cc612a1f7de161def6a0e5ed549185",
+      "bytes": 5085,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/types/generated/api.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "generated_current_projection",
+      "sha256": "6209a1f149532d237ce193bd5f59f328377be276cfa591a4b6908d3ff7157e8a",
+      "bytes": 1036568,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/types/roles.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_frontend",
+      "sha256": "ea15839ae102e3ea262f4d29385ff3fff495306a1d1b054df28d85691cc5bde9",
+      "bytes": 6090,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/utils/auditPresentation.spec.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend_tests",
+      "sha256": "71ca5c6ef64826d4b85bc53fe75cb90f901682af47bd88135134236a278f3bce",
+      "bytes": 4148,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "resources/spa/src/utils/auditPresentation.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_frontend",
+      "sha256": "2fe4b6f743d6880da94ca3185b6b2b455863c7e226e5bf222c4fb8c862eda6a4",
+      "bytes": 12176,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "routes/api.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_backend",
+      "sha256": "904ee620f0257c699a53ec2a42a6b3d52d88c69d5c6768d61a5b641e8648d949",
+      "bytes": 152937,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "scripts/check-ui15-audit-artifacts.mjs",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_tooling",
+      "sha256": "453b0fa5cf94dbcad207f23ed58b65cbc92bee3e7af78cbd6cacaeecad0c9a13",
+      "bytes": 9325,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "scripts/ui03-auth-browser-proof.mjs",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tooling",
+      "sha256": "3830fe2a4a7556e377a2e123e35ef3ee15d1a8dad230b2e1fc57f9ad23d233b0",
+      "bytes": 59535,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "scripts/ui07-negative-controls.mjs",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tooling",
+      "sha256": "f072423846898ac583fb08ce6c0c67d5b0a66579f0ac2bafbee3d20b7f96f40a",
+      "bytes": 9996,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "scripts/ui15-production-host-proof.mjs",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_tooling",
+      "sha256": "30a750e50801468805ec5319835d2a419d73657703bae8659a93db21830130f8",
+      "bytes": 5927,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/e2e/audit.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "e70c0f9d171f22f4dbbc4f6eeb549bd25dee7451cbb799020052844d8ee19cb1",
+      "bytes": 19882,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/e2e/role-entry-surfaces.spec.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "c3427610ae7f751036fc21654c219230fb4bf5ac5422d39fd5d55dcec1fae284",
+      "bytes": 4917,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/e2e/support/releaseAudit.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "056610efd23cf3d0a3fa1937adf0f3e7bfb04c58ae61c16ea138f4ce728fd001",
+      "bytes": 83471,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/e2e/support/roleBootstrap.ts",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "9c880fa1575965c95eb8152b1f71d1edf8951ef42155538ba77631f288ab489d",
+      "bytes": 9315,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/e2e/ui-15-audit-experience.spec.ts",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_tests",
+      "sha256": "e2619d32946a0bd896fc23a918616bba06c27dbfc725fd9f3bccf0d5878b9870",
+      "bytes": 38579,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/Feature/Audit/Ui15AuditExperienceApiTest.php",
+      "status": "untracked_added",
+      "index_status": "?",
+      "scope": "ui15_tests",
+      "sha256": "ad9d82847a205f82490c54586e5fccb1d10126e57087e1d22a9f911eb4016868",
+      "bytes": 12560,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/Feature/Docs/Ui01AuditContractTest.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "9b76305c4a9bce4587fe0b508bfe9bab06a1c1ce964e3af13cddcffbce700bce",
+      "bytes": 29126,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/Feature/Docs/Ui07NavigationContractTest.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui15_tests",
+      "sha256": "925ffd4f5c68dc78fc772d224c5bcfbc7d73e7454e91e8d239b5d10938fb2182",
+      "bytes": 30326,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    },
+    {
+      "path": "tests/Feature/Traceability/Phase23TraceabilityTest.php",
+      "status": "modified",
+      "index_status": " ",
+      "scope": "ui14_lifecycle_reconciliation",
+      "sha256": "9aa7cbf95e4872ffcf3f9584b73ef55b88904e4c6810e07ceeae1113d09e18c4",
+      "bytes": 26500,
+      "encoding": "utf8",
+      "line_endings": "lf"
+    }
+  ],
+  "totals": {
+    "paths": 228,
+    "modified": 104,
+    "untracked_added": 124,
+    "deleted": 0
+  },
+  "gates": {
+    "all_mandatory_passed": true,
+    "predecessor": {
+      "pr": 65,
+      "merge": "20c27dcac7d0663d93a566d8a3ff42aa566171d7",
+      "final_head": "92603fa612ffc94e790de2575c7df203defa2f49",
+      "tree": "93ec8269e40da2ec2d5993ea5910fd8f6d82c19e",
+      "ci_run": 38089104875,
+      "jobs": "Backend, Frontend, Docker, Security, E2E success",
+      "governance_comment": 6102827769,
+      "reviews": 0,
+      "approvals": 0
+    },
+    "contract": {
+      "implemented": 14,
+      "disabled_by_gate": 1,
+      "removed_by_authority": 0,
+      "planned": 0,
+      "total": 15,
+      "global_planned": 0
+    },
+    "api": {
+      "openapi_before": "306/357",
+      "openapi_after": "307/358",
+      "permissions": "169/134/35 unchanged",
+      "migrations": 0
+    },
+    "backend": {
+      "ui15_api_test": "13 passed / 198 assertions",
+      "full_postgresql": "3,025 passed / 14 skipped / 0 failed (3,024 + traceability fix; Phase23TraceabilityTest 15/15)",
+      "junit_sha256": "349fbda889c4141d942171bb0fe7a58c1ff8241e6a9aa249a7b9340a89414008",
+      "skips": "4 Ui05 staleness + 1 DesignToken + 1 Ui06 (Node absent; host checks pass), 3 ClamAV (CI runs), 4 FutureResourceIsolation placeholders, 1 ApiLatencyBenchmark",
+      "post_doc_reruns": "Docs 96, Traceability 15, Security 108, Audit 127, DesignSystem 77+1 skip",
+      "pint": "pass 1,935 files",
+      "larastan_l8": "no errors",
+      "composer_validate_strict": "valid",
+      "composer_audit": "0 advisories"
+    },
+    "frontend": {
+      "vue_tsc": 0,
+      "eslint": "0 errors",
+      "vitest": "1,449/1,449 (152 files)",
+      "npm_audit": "0 vulnerabilities",
+      "build": "pass"
+    },
+    "generators": {
+      "nav_check": "current 160",
+      "nav_negative_controls": "24/24",
+      "api_contract_check": "307/358",
+      "content_check": "current",
+      "assets_check": "current",
+      "ui_source_inventory": "current",
+      "ui05_negative_controls": "17/17",
+      "tokens_check": "current",
+      "ui06_artifacts": "current (public-route-matrix regenerated)",
+      "ui14_check": "OK",
+      "ui15_check": "OK"
+    },
+    "browser": {
+      "focused_ui15": "50/50",
+      "reconciled_specs": "123/123",
+      "whole_product": "1,721/1,721 in 59.7 min, 0 flaky/skipped",
+      "evidence_restoration": "13/13 scopes MATCH",
+      "screenshots": 64,
+      "visual_rubric": "14/14 pass, min 28/30"
+    },
+    "production": {
+      "php_image": "sha256:81d42ff0f6d02473c947c5623a6b263a248972439175a9d18ef8f95aa92e3f4f",
+      "nginx_image": "sha256:b7930e970f10dd547060ffb9f88f02bb26b04218830bc55a745d505e8decfc78",
+      "postgres": "16.14 tmpfs",
+      "migrations": "132 exit 0",
+      "routes": 365,
+      "nginx_t": 0,
+      "host_proof": "48/48 audit.servana.ke",
+      "resources_removed": true
+    },
+    "integrity": {
+      "git_diff_check": 0,
+      "git_fsck_full": 0,
+      "gitleaks_changed_untracked": "0 leaks (226 paths)",
+      "gitleaks_head": "0 leaks"
+    },
+    "source_fingerprints_note": "Exact file bytes are in files[].sha256; a Codex release must re-hash them before staging."
+  },
+  "allowed_historical_restores": "none pending — whole-product rewrites already restored (historical-evidence-restoration.json); a Codex re-run of whole-product Playwright must restore the same 13 scopes against historical-evidence-baseline.json",
+  "release_authorized_for_codex_after_verification": true
+}

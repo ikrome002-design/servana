@@ -41,7 +41,7 @@ describe('AuditExportList.vue', () => {
   });
 
   it('lists exports with status/rows/downloads and never renders file_id or paths', async () => {
-    get.mockResolvedValueOnce({ data: { data: [exp] } });
+    get.mockImplementation((url: string) => Promise.resolve({ data: { data: url === '/audit-exports' ? [exp] : [] } }));
     const auth = useAuthStore();
     auth.permissions = ['audit.export'];
     auth.branchIds = ['b1'];
@@ -49,14 +49,17 @@ describe('AuditExportList.vue', () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    expect(wrapper.find('[data-testid="audit-export-status"]').text()).toBe('ready');
+    // Server status is carried verbatim in data-status; the badge renders its human label.
+    const status = wrapper.find('[data-testid="audit-export-status"]');
+    expect(status.attributes('data-status')).toBe('ready');
+    expect(status.text()).toContain('Ready');
     const html = wrapper.html();
     expect(html).not.toContain('file_id');
     expect(html).not.toContain('/storage/');
   });
 
   it('hides the request control for a user WITHOUT audit.export (permission-denied absent)', async () => {
-    get.mockResolvedValueOnce({ data: { data: [] } });
+    get.mockResolvedValue({ data: { data: [] } });
     const auth = useAuthStore();
     auth.permissions = []; // no audit.export
     auth.branchIds = ['b1'];
@@ -68,7 +71,7 @@ describe('AuditExportList.vue', () => {
   });
 
   it('shows a no-branch state and cannot request an export with no assigned branch', async () => {
-    get.mockResolvedValueOnce({ data: { data: [] } });
+    get.mockResolvedValue({ data: { data: [] } });
     const auth = useAuthStore();
     auth.permissions = ['audit.export'];
     auth.branchIds = []; // no assigned branch
@@ -83,7 +86,7 @@ describe('AuditExportList.vue', () => {
   });
 
   it('offers the request control to a permitted user with an assigned branch', async () => {
-    get.mockResolvedValueOnce({ data: { data: [] } });
+    get.mockResolvedValue({ data: { data: [] } });
     const auth = useAuthStore();
     auth.permissions = ['audit.export'];
     auth.branchIds = ['b1'];

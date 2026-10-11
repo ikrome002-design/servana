@@ -1,0 +1,24 @@
+{
+  "schema": "servana.ui15.accessibility-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "standard": "WCAG 2.1 AA (axe-core default rule set; serious and critical are release gates)",
+  "axe": {
+    "light_pages": ["dashboard", "get-started", "audit", "audit-event-detail", "audit-flags", "audit-operations", "audit-finance", "audit-compensation", "audit-access", "audit-privacy-preferred", "exports", "exports-history", "audit-integrity", "account", "flag-review", "export-record"],
+    "dark_pages": ["dashboard", "get-started", "audit", "audit-event-detail", "audit-flags", "audit-operations", "audit-finance", "audit-compensation", "audit-access", "audit-privacy-preferred", "exports", "exports-history", "audit-integrity", "account", "flag-review", "export-record"],
+    "serious": 0,
+    "critical": 0
+  },
+  "targets": { "floor_px": 44, "width_px": 360, "pages_checked": 16, "undersized_controls": 0, "defects": ["UI15-A11Y-001", "UI15-A11Y-002"] },
+  "structure": {
+    "single_h1_per_page": true,
+    "get_started_h1": "UI15-A11Y-003",
+    "status_never_colour_only": "severity tag (glyph + text + sr prefix), review pill (flag + 'Review:' prefix), export/integrity badges with text",
+    "masked_values": "lock glyph plus sr-only 'Masked:'",
+    "diff": "semantic table with caption and scope headers on every width",
+    "live_regions": "feed summary, export estimate, copy-reference, flag/review results"
+  },
+  "keyboard": ["mobile drawer focus trap, Escape, focus restore", "flag dialog focus trap, Escape, focus restore", "export form fields and submit focusable in order"],
+  "reduced_motion": "transitions removed on evidence cards (measured 0s)",
+  "proof": "tests/e2e/ui-15-audit-experience.spec.ts; tests/e2e/role-foundation-accessibility.spec.ts"
+}

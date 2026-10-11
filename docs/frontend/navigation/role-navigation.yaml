@@ -747,6 +747,11 @@ merchant_personnel:
     route: personnel.account
     phase: Phase UI-03
 merchant_audit:
+  - key: merchant_audit.dashboard
+    label: Dashboard
+    availability: live
+    route: audit.dashboard
+    phase: Phase 19 (UI-15 composition)
   - key: merchant_audit.get-started
     label: Get Started
     availability: live
@@ -755,35 +760,70 @@ merchant_audit:
   - key: merchant_audit.audit
     label: Branch Audit Log
     availability: live
-    route: audit.branch-events
+    route: audit.audit
     permission: audit.branch_events.view
     phase: Phase 19
   - key: merchant_audit.audit-flags
     label: Flagged Events
     availability: live
-    route: audit.flagged-events
+    route: audit.audit-flags
     permission: audit.branch_events.view
     phase: Phase 19
+  - key: merchant_audit.audit-operations
+    label: Operational Audit
+    availability: live
+    route: audit.audit-operations
+    permission: audit.branch_events.view
+    phase: Phase UI-15 (read lens over Phase 19)
   - key: merchant_audit.audit-finance
     label: Finance Audit
     availability: live
-    route: audit.finance
+    route: audit.audit-finance
     permission: audit.finance.view
     phase: Phase 19
   - key: merchant_audit.audit-compensation
     label: Compensation Audit
     availability: live
-    route: audit.compensation
+    route: audit.audit-compensation
     permission: audit.compensation.view
     phase: Phase 19
+  - key: merchant_audit.audit-access
+    label: Access and Security Audit
+    availability: live
+    route: audit.audit-access
+    permission: audit.branch_events.view
+    phase: Phase UI-15 (read lens over Phase 19)
+  - key: merchant_audit.audit-privacy-preferred
+    label: Preferred Personnel and Contact Protection Audit
+    availability: live
+    route: audit.audit-privacy-preferred
+    permission: audit.branch_events.view
+    phase: Phase UI-15 (read lens over Phase 19)
   - key: merchant_audit.exports
     label: Audit Exports
     availability: live
     route: audit.exports
     permission: audit.export
     phase: Phase 19
+  - key: merchant_audit.exports-history
+    label: Export History
+    availability: live
+    route: audit.exports-history
+    permission: audit.export
+    phase: Phase 19
+  - key: merchant_audit.audit-integrity
+    label: Integrity Status
+    availability: live
+    route: audit.audit-integrity
+    permission: audit.branch_events.view
+    phase: Phase UI-15 (read-only segment verification over Phase 19)
   - key: merchant_audit.notifications
     label: Notifications
     availability: gated
-    gate: external_gate_w
+    gate: phase_21n_blocked_by_external_gate_w
     phase: UI-15
+  - key: merchant_audit.account
+    label: Account and Preferences
+    availability: live
+    route: audit.account
+    phase: Phase UI-03

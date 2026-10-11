@@ -1,0 +1,29 @@
+{
+  "schema": "servana.ui15.responsive-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "pages_checked": "14 implemented pages + 2 supporting records (flag review, export record)",
+  "widths": [
+    { "px": 360, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 767, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 768, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 1024, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 1025, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 1280, "pages": 16, "horizontal_overflow": 0 },
+    { "px": 1440, "pages": 16, "horizontal_overflow": 0 }
+  ],
+  "breakpoint_note": "Only md (768) and lg (1025) exist in this Tailwind config; the 1024→1025 boundary switches the left rail to the persistent sidebar and the asymmetric grids to two columns.",
+  "transformations": {
+    "event_and_flag_lists": "time-led cards at every width; desktop rows widen, mobile stacks actor/subject/reference",
+    "structured_diff": "semantic table ≥768px; labelled stacked cards ≤767px",
+    "export_history": "table ≥1025px; cards below",
+    "filters": "severity segmented chips wrap; secondary filters behind a disclosure"
+  },
+  "zoom_200_percent_equivalent": true,
+  "zoom_pages": ["dashboard", "audit", "audit-event-detail", "audit-flags", "exports", "audit-integrity", "account"],
+  "fixed_footer_reserve_at_least_footer_height": true,
+  "footer_obstruction": false,
+  "capture_note": "Full-page mobile/tablet captures show the position:fixed footer mid-image; this is a full-page screenshot artifact, not an overlap (the reserve assertion proves the layout).",
+  "defects": ["UI15-RESP-001", "UI15-VIS-001", "UI15-VIS-002"],
+  "proof": "tests/e2e/ui-15-audit-experience.spec.ts — seven width cases, mobile/tablet captures, 200% case"
+}

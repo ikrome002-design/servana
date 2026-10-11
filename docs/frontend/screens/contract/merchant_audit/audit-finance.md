@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `audit.finance` at `/audit/finance` (routes/audit.ts), delivery **dedicated**.
+> A real runtime route renders this page today: `audit.audit-finance` at `/audit/finance` (routes/audit.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-15**
 - **Backend owner phase:** **Phase 19**
 - **Implementation status:** `implemented`
-- **Runtime route:** `audit.finance`
+- **Runtime route:** `audit.audit-finance`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.finance` (recorded in `docs/frontend/screens/audit/audit-finance.md`).
-- **Data fields:** Read-only, branch-scoped, masked finance-domain audit view (Audit via audit.finance.view; Finance via finance.audit.view with server MFA); not a Finance operational screen.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.audit-finance` (recorded in `docs/frontend/screens/audit/audit-finance.md`).
+- **Data fields:** Finance Audit (§12.4.7): finance read segment with presets, filters and the read-only boundary; references and M-Pesa numbers masked; no subscription payment attempts while Gate W is closed.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

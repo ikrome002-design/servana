@@ -9,6 +9,7 @@ use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Audit\Enums\AuditExportStatus;
 use App\Domain\Audit\Jobs\GenerateAuditExport;
 use App\Domain\Audit\Models\AuditExport;
+use App\Domain\Audit\Services\AuditExportAuthorization;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +29,8 @@ final class RequestAuditExport
      */
     public function handle(int $merchantId, int $branchId, array $scope, string $reason, User $requester): AuditExport
     {
+        abort_unless(app(AuditExportAuthorization::class)->allows($requester, $merchantId, $branchId, $scope), 403);
+
         return DB::transaction(function () use ($merchantId, $branchId, $scope, $reason, $requester): AuditExport {
             $export = AuditExport::query()->create([
                 'merchant_id' => $merchantId,

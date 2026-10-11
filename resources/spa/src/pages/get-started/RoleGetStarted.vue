@@ -111,7 +111,7 @@ function reopen(): void {
 </script>
 
 <template>
-  <div :class="identity === 'merchant_front_office' || identity === 'merchant_personnel' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
+  <div :class="identity === 'merchant_front_office' || identity === 'merchant_personnel' || identity === 'merchant_audit' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
     <template v-if="identity && userId">
       <SvOperationalHero
         v-if="identity === 'merchant_front_office'"
@@ -137,6 +137,27 @@ function reopen(): void {
           </div>
           <div class="rounded-control border border-white/10 bg-white/10 p-3">
             <strong class="block">Private follow-up</strong><span class="text-white/70">Masked contacts, consent checks and branch-billed SMS.</span>
+          </div>
+        </div>
+      </SvOperationalHero>
+      <!-- Phase UI-15: the Audit orientation. Teaching only — no item grants export or unmask access. -->
+      <SvOperationalHero
+        v-if="identity === 'merchant_audit'"
+        class="mb-5"
+        eyebrow="Your Audit orientation"
+        title="Review the evidence without changing it"
+        description="Learn your branch scope, how to search and read masked events, how a review flag works, what an export contains and how the audit chain is checked."
+        context="Read-only reviewer"
+      >
+        <div class="grid gap-3 text-sm md:grid-cols-3">
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Immutable record</strong><span class="text-white/70">Events are appended once and never edited or deleted.</span>
+          </div>
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Two different facts</strong><span class="text-white/70">Event severity never changes; review status is your team’s progress.</span>
+          </div>
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Masked and scoped</strong><span class="text-white/70">Only your branch, with protected values masked by the server.</span>
           </div>
         </div>
       </SvOperationalHero>

@@ -1,0 +1,21 @@
+{
+  "schema": "servana.ui15.historical-evidence-restoration.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "whole_product_run_complete": true,
+  "whole_product_run": "1,721 passed / 0 failed (59.7 min)",
+  "baseline": "historical-evidence-baseline.json (13 frozen scopes)",
+  "observed_after_run": {
+    "scopes_changed": 11,
+    "files_rewritten": 247,
+    "files_added": 85,
+    "added_location": "docs/proof/ui-01/screenshots/*--20c27dc.png (UI-01 as-built audit stamps captures with the HEAD short SHA)",
+    "unchanged_scopes": ["docs/frontend/audits/ui-01", "docs/frontend/audits/ui-14"]
+  },
+  "method": "Each rewritten file was restored individually from HEAD (every frozen predecessor scope equalled HEAD before the run; ui-14's reconciliation edits are JSON lifecycle fields the run does not write). Each run-added file was proven untracked before deletion. The excluded current projection docs/frontend/audits/ui-06/public-route-matrix.json was left as the regenerated UI-15 projection.",
+  "broad_clean_reset_restore_used": false,
+  "frozen_predecessor_aggregates_match": true,
+  "post_restore_compare": "all 13 scopes MATCH (modified=0, added=0)",
+  "retained_current_projections": ["docs/frontend/audits/ui-06/public-route-matrix.json", "docs/frontend/audits/ui-07/*", "docs/frontend/navigation/role-navigation.yaml", "docs/frontend/screens/inventory.yaml"],
+  "retained_ui15_evidence": "docs/frontend/audits/ui-15/screenshots (64) and screenshot-index.json, rewritten by the whole run from the same frozen source"
+}

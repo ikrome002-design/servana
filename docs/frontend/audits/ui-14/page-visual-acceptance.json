@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.page-visual-acceptance.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "method": "Scored by reviewing the final settled browser captures (1440x900 light and dark for every page; 360x780, 768x1024 and 640x450 200%-equivalent for the complex archetypes) against the six inspected references and the UI-13 baseline. Scores were not assigned from code review.",
   "rubric": {
     "scale": "0-2 per criterion, 15 criteria, maximum 30",

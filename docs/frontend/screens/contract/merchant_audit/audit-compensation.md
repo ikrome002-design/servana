@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `audit.compensation` at `/audit/compensation` (routes/audit.ts), delivery **dedicated**.
+> A real runtime route renders this page today: `audit.audit-compensation` at `/audit/compensation` (routes/audit.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-15**
 - **Backend owner phase:** **Phase 19**
 - **Implementation status:** `implemented`
-- **Runtime route:** `audit.compensation`
+- **Runtime route:** `audit.audit-compensation`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.compensation` (recorded in `docs/frontend/screens/audit/audit-compensation.md`).
-- **Data fields:** Read-only, branch-scoped, masked compensation-domain audit view; honest empty state until the owning phases (20F-20H) emit events; no compensation events/routes/data fabricated.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.audit-compensation` (recorded in `docs/frontend/screens/audit/audit-compensation.md`).
+- **Data fields:** Compensation Audit (§12.4.8): compensation read segment; salary values restricted by server policy; no cross-currency totals; read-only.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

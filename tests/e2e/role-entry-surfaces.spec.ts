@@ -3,9 +3,10 @@ import { ROLES, stubBootstrap } from './support/roleBootstrap';
 import { stubMerchantApi } from './support/ui09Merchant';
 
 /*
- | Phase 11 role-entry surfaces (Plan §27.2), reconciled with UI-13's exact Front Office and UI-14's
- | exact Personnel route registers. Six accounts retain their authenticated landing; Front Office
- | and Personnel enter their canonical dashboards. /me is stubbed; the frontend is UX only.
+ | Phase 11 role-entry surfaces (Plan §27.2), reconciled with UI-13's exact Front Office, UI-14's
+ | exact Personnel and UI-15's exact Audit route registers. Five accounts retain their authenticated
+ | landing; Front Office, Personnel and Audit enter their canonical dashboards. /me is stubbed; the
+ | frontend is UX only.
  */
 
 test.describe('role landing pages', () => {
@@ -28,6 +29,16 @@ test.describe('role landing pages', () => {
       if (role.identity === 'merchant_personnel') {
         await expect(page).toHaveURL(/\/dashboard$/);
         await expect(page.getByTestId('personnel-dashboard')).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible();
+        return;
+      }
+
+      // UI-15: `/audit` is now the canonical Branch Audit Log inside the Audit shell, and the
+      // account's home is the branch risk dashboard at `/dashboard` on the same host.
+      if (role.identity === 'merchant_audit') {
+        await expect(page.getByTestId('audit-log-page')).toBeVisible();
+        await page.goto('/dashboard');
+        await expect(page.getByTestId('audit-dashboard')).toBeVisible();
         await expect(page.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible();
         return;
       }

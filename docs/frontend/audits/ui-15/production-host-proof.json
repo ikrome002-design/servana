@@ -1,0 +1,35 @@
+{
+  "schema": "servana.ui15.production-host-proof.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "source_state": "Frozen UI-15 working tree after the definitive focused (50/50) and whole-product (1,721/1,721) runs; built sequentially with no test suite running.",
+  "images": [
+    { "tag": "servana-ui15-php:audit", "id": "sha256:81d42ff0f6d02473c947c5623a6b263a248972439175a9d18ef8f95aa92e3f4f", "size_bytes": 999258115, "created_utc": "2026-10-11T11:54:34.426926461Z", "dockerfile": "docker/php.Dockerfile", "target": "prod", "build_exit_code": 0, "build_minutes": 21.0 },
+    { "tag": "servana-ui15-nginx:audit", "id": "sha256:b7930e970f10dd547060ffb9f88f02bb26b04218830bc55a745d505e8decfc78", "size_bytes": 318012813, "created_utc": "2026-10-11T12:04:18.333339163Z", "dockerfile": "docker/nginx.Dockerfile", "target": "prod", "build_exit_code": 0, "build_minutes": 9.5 }
+  ],
+  "topology": {
+    "network": "ui15-proof-net",
+    "postgres": "ui15-proof-postgres (postgres:16-alpine, PostgreSQL 16.14) with network alias postgres; data on tmpfs; throwaway generated password never printed",
+    "app": "ui15-proof-app (servana-ui15-php:audit) with network alias app; APP_ENV=production, APP_DEBUG=false, generated APP_KEY, SESSION_DRIVER=array, CACHE_STORE=array, QUEUE_CONNECTION=sync",
+    "edge": "ui15-proof-edge (servana-ui15-nginx:audit) on 127.0.0.1:8115 -> 8080",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0,
+    "dev_stack_untouched": true,
+    "runner": "scratchpad ui15-host-proof.ps1 (preflight refuses pre-existing ui15-proof-* names; removes only those four resources)"
+  },
+  "migrations": { "command": "php artisan migrate --force", "exit_code": 0, "migration_files": 132, "database": "fresh tmpfs ui15_proof" },
+  "nginx_syntax": { "command": "docker exec ui15-proof-edge nginx -t", "exit_code": 0, "result": "syntax is ok; test is successful (app upstream resolvable in-network)" },
+  "canonical_host": {
+    "command": "node scripts/ui15-production-host-proof.mjs http://127.0.0.1:8115",
+    "host": "audit.servana.ke",
+    "host_from_registry": "config/account-hosts.json",
+    "checks": "14 implemented + 3 supporting routes 200 with merchant_audit context; fingerprinted assets with MIME; JS source map 404; gated /notifications ordinary shell only; 8 compatibility paths stay on the Audit host; 7 cross-host collisions keep their own context; 4 Audit APIs 401 unauthenticated; unknown host refused",
+    "collected": 48, "passed": 48, "failed": 0, "exit_code": 0
+  },
+  "production_route_count": 365,
+  "production_route_count_note": "php artisan route:list inside the production image (UI-14 recorded 364; +1 audit-integrity.show). OpenAPI documents 307 paths / 358 operations.",
+  "failed_runs": []
+}

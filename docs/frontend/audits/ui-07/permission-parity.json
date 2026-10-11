@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "4c176b456395fb4a61b3c98e0f002098c48b3d09fec75622486689a4ec3a1a86",
+  "canonical_authority_sha256": "0c41d07895d820e90f68fff3c6523ef954605945438828659006ff8bfddece60",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "65d2128d3572ed0296cc1e0c84cecba22514813b008dbb460cb91e1dcbd823cf",
+  "screen_inventory_sha256": "26cb3aec9b8a12732c52c6bc5a791c470ee5a673f881ac727ca8a87e103f68a3",
   "purpose": "Every permission referenced by the contract exists in the canonical matrix. UI-07 creates, activates, retires and re-grants NO permission key.",
   "permission_matrix_keys": 169,
   "contract_permission_references": [
@@ -319,32 +319,12 @@
     },
     {
       "key": "merchant_audit.dashboard",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-15"
     },
     {
       "key": "merchant_audit.get-started",
       "implementation_status": "implemented",
-      "owner_phase": "UI-15"
-    },
-    {
-      "key": "merchant_audit.audit-operations",
-      "implementation_status": "planned",
-      "owner_phase": "UI-15"
-    },
-    {
-      "key": "merchant_audit.audit-access",
-      "implementation_status": "planned",
-      "owner_phase": "UI-15"
-    },
-    {
-      "key": "merchant_audit.audit-privacy-preferred",
-      "implementation_status": "planned",
-      "owner_phase": "UI-15"
-    },
-    {
-      "key": "merchant_audit.audit-integrity",
-      "implementation_status": "planned",
       "owner_phase": "UI-15"
     },
     {
@@ -354,7 +334,7 @@
     },
     {
       "key": "merchant_audit.account",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-15"
     }
   ],

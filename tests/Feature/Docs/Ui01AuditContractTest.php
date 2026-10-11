@@ -299,7 +299,8 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // real branch-today workspace at `/dashboard`, so its temporary UI-07 removal expired.
         // `personnel-dashboard` is absent for the same reason: UI-14 delivered the private
         // own-scope workday dashboard at `/dashboard` on staff.servana.ke.
-        'audit-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-15; docs/frontend/audits/ui-07/defect-closure.json',
+        // `audit-dashboard` is absent for the same reason: UI-15 delivered the branch risk command
+        // centre at `/dashboard` on audit.servana.ke.
 
         // Phase UI-08, Increment 7B. Each of these two screens was a CONSOLIDATED surface that
         // delivered several contract pages behind tabs — `platform-registration-monitoring`
@@ -341,6 +342,11 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // `/personnel` landing was a non-contract implementation identity; its live capability is
         // preserved by personnel-dashboard and `/personnel` now redirects there on the same host.
         'personnel-landing' => 'UI-14 — retired non-contract landing identity in favour of personnel-dashboard; docs/frontend/audits/ui-14/route-activation.json',
+
+        // Phase UI-15 applies Appendix A's exact 15-page Audit contract. The predecessor `/audit`
+        // landing was a non-contract implementation identity; `/audit` is now the canonical Branch
+        // Audit Log and the Audit home is audit-dashboard at `/dashboard` on the same host.
+        'audit-landing' => 'UI-15 — retired non-contract landing identity in favour of audit-dashboard; docs/frontend/audits/ui-15/route-activation.json',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

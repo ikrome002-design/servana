@@ -14,7 +14,11 @@ beforeEach(function (): void {
 });
 
 it('is idempotent — re-running the generation job does not double-generate', function (): void {
-    $export = AuditExport::factory()->create(); // queued
+    $scenario = auditExportScenario();
+    $ulid = requestAuditExport($scenario['audit'], [
+        'branch' => $scenario['branch']->ulid, 'reason' => 'Idempotency review.',
+    ])->assertCreated()->json('data.id');
+    $export = AuditExport::query()->where('ulid', $ulid)->firstOrFail();
 
     runAuditExportJob($export);
     $fileId = $export->refresh()->file_id;

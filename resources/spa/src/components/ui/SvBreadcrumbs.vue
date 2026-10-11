@@ -65,7 +65,7 @@ const collapsedIndices = computed(() => {
         <RouterLink
           v-if="item.to !== undefined"
           :to="item.to"
-          class="sv-focus-ring rounded-control text-sv-link hover:text-sv-link-hover hover:underline"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-1 text-sv-link hover:text-sv-link-hover hover:underline"
         >
           {{ item.label }}
         </RouterLink>

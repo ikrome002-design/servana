@@ -1,0 +1,38 @@
+{
+  "schema": "servana.ui15.integrity-truth-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "decision": "UI15-INT-001",
+  "proven_gap": "audit:verify-chain (daily) persists no result; AuditChainVerificationFailed goes to logs/event only (transport is Phase 25 §71). The Audit account had no readable integrity fact.",
+  "seam": {
+    "route": "GET /api/v1/audit-integrity (audit-integrity.show)",
+    "permission": "audit.branch_events.view (existing)",
+    "service": "App\\Domain\\Audit\\Services\\AuditChainSegmentVerifier — same AuditChainHasher, link rule and failure categories as VerifyAuditChain",
+    "bound": "latest 1000 rows of the caller's merchant chain + one anchor row, read in one query",
+    "writes": "none; no repair, re-hash or full-run trigger; no parameters"
+  },
+  "status_vocabulary": {
+    "verified": "segment consistent AND reaches the chain's genesis row",
+    "partial": "segment consistent but earlier history not covered — never labelled verified",
+    "broken": "first failing row found (broken_link | hash_mismatch); rows after it are not counted",
+    "empty": "no rows",
+    "client_unknown": "request failed or forbidden — no status rendered"
+  },
+  "rows": [
+    { "case": "complete consistent chain → verified; counts only caller-branch rows", "test": "Ui15AuditExperienceApiTest › reports a fully covered consistent chain as verified…", "result": "pass" },
+    { "case": "consistent segment not reaching genesis → partial", "test": "Ui15AuditExperienceApiTest › …partial, never verified; Ui15AuditPages.spec.ts › never calls a partial chain check verified; ui-15 browser", "result": "pass" },
+    { "case": "tamper inside caller branch → broken, event named", "test": "Ui15AuditExperienceApiTest › detects tampering… names the event only when it is in the caller branch", "result": "pass" },
+    { "case": "tamper in another branch → broken, event/time withheld", "test": "Ui15AuditExperienceApiTest › withholds the identity of a break…; Ui15AuditPages.spec.ts; ui-15 browser", "result": "pass" },
+    { "case": "other merchant's broken chain does not affect status", "test": "Ui15AuditExperienceApiTest › isolates merchant chains", "result": "pass" },
+    { "case": "verification writes nothing", "test": "Ui15AuditExperienceApiTest › verifies without writing a single audit row", "result": "pass" },
+    { "case": "failed check renders no status", "test": "Ui15AuditPages.spec.ts › shows no integrity status at all when the check fails", "result": "pass" },
+    { "case": "daily full-run status described as not exposed", "test": "ui-15-audit-experience.spec.ts › a partial chain check is never presented as verified", "result": "pass" }
+  ],
+  "residual": {
+    "id": "UI15-INT-RES-001",
+    "summary": "Daily full-chain run results and a verifier incident timeline are not readable by the Audit account.",
+    "owner": "Phase 25 §71 (alert transport/dashboards) or a product-owner-authorized verifier-run persistence",
+    "entry_condition": "Verifier results persisted to an authoritative store with a branch-safe read contract",
+    "user_impact": "Audit sees on-demand segment results only; the page says so."
+  }
+}

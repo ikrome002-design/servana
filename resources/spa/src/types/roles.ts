@@ -135,7 +135,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Audit',
     layout: 'AuditLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'audit.landing',
+    landingRouteName: 'audit.dashboard',
     getStartedRouteName: 'audit.get-started',
   },
 };

@@ -3,7 +3,7 @@
   "phase": "UI-14",
   "account_type": "merchant_personnel",
   "host": "staff.servana.ke",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml (canonical, handwritten) projected by npm run nav:generate; runtime tree resources/spa/src/router/routes/personnel.ts",
   "guards": "Every route sits under requiresAuth + requiresActiveMerchant + requiresAccount('merchant_personnel'); every own-data route adds requiresPermission for its personnel.my_* key. Guards are UX only — the server re-authorizes every /api/v1/personnel/me/* request.",
   "implemented_routes": [

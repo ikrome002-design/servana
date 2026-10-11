@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `audit.exports` at `/audit/exports` (routes/audit.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/exports`; owner phase **UI-15** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `audit.exports` at `/exports` (routes/audit.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -35,7 +35,7 @@
 ## Data and behaviour
 
 - **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.exports` (recorded in `docs/frontend/screens/audit/audit-export-list.md`).
-- **Data fields:** Audit export list + branch-scoped reason-gated request form (fresh step-up server-enforced; no unassigned/merchant-level export); never exposes file_id/paths/signatures/internal ids/raw failure messages.
+- **Data fields:** Audit Exports (§12.4.11): inline reason-required, branch-scoped, masked export request with live masking/omission preview, server-count estimate and step-up guidance; recent requests; no file id, path or signed URL.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

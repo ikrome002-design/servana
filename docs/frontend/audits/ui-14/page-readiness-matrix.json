@@ -2,7 +2,7 @@
   "phase": "UI-14",
   "account_type": "merchant_personnel",
   "host": "staff.servana.ke",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "source_of_truth": {
     "ui_plan": "Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md §11",
     "canonical_navigation": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",

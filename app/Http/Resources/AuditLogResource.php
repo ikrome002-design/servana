@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Support\AuditValueMasker;
 use App\Http\Resources\Concerns\HasCapabilities;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -44,9 +46,35 @@ final class AuditLogResource extends JsonResource
             'context' => $masker->mask($this->context ?? []),
             'correlation_id' => $this->correlation_id,
             'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
+            // Phase UI-15 — the MUTABLE review status of the latest flag, kept apart from the
+            // immutable `severity` above. Present only where the merchant read eager-loads flags.
+            'review' => $this->whenLoaded('flags', fn (): ?array => $this->reviewSummary()),
             'can' => $this->capabilities($request, [
                 'view' => 'view',
             ]),
+        ];
+    }
+
+    /**
+     * Latest flag (by creation) plus how many review records this row has. Status only — notes,
+     * assignee and resolver stay on the flagged-event resource.
+     *
+     * @return array{flag: string, status: string, flag_count: int}|null
+     */
+    private function reviewSummary(): ?array
+    {
+        /** @var Collection<int, AuditFlaggedEvent> $flags */
+        $flags = $this->flags;
+        $latest = $flags->sortByDesc('id')->first();
+
+        if ($latest === null) {
+            return null;
+        }
+
+        return [
+            'flag' => $latest->ulid,
+            'status' => $latest->status->value,
+            'flag_count' => $flags->count(),
         ];
     }
 }

@@ -11,7 +11,7 @@
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Export detail with queued/processing/ready/failed/expired/revoked polling, private on-demand signed download (never stored; accounting changes after stream), and authorized revoke with confirmation.
+- **Fields and displayed data:** Audit export record (supporting §12.4.11–12): lifecycle stepper, polling, on-demand private download (link never rendered or stored), authorized revoke, download accounting.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

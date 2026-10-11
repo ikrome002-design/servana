@@ -16,7 +16,7 @@
       "root_cause": "Page composed from generic card stacks instead of a now/next/recent hierarchy.",
       "fix": "Connected 01–04 workday flow rail, dominant next-service surface, attention cards and statement-style earnings snapshot.",
       "evidence": "page-visual-acceptance.json dashboard 30/30; tests/e2e/ui-14 dashboard cases",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-VIS-002",
@@ -26,7 +26,7 @@
       "root_cause": "No shared record primitive led by the deciding fact; header pattern was the flat SvPageHeader.",
       "fix": "New shared SvTonalPageHeader, SvStatTile, SvLeadRecord and SvMaskedIdentity; queue your-turn surface; day-grouped agenda; live/recent session split; filter rail; segmented source filter.",
       "evidence": "page-visual-acceptance.json 27–28/30 for these five pages",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-VIS-003",
@@ -36,7 +36,7 @@
       "root_cause": "Pages inherited the Phase 21S consolidated layout.",
       "fix": "Relationship cards with deliberate masking, eligibility chips, recipient panel, preview tiles, prominent cost notice, structured confirmation and history rows with outcome disclosure.",
       "evidence": "page-visual-acceptance.json; sms-confirmation.png",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-VIS-004",
@@ -46,7 +46,7 @@
       "root_cause": "Pages split from the legacy screen without a statement-style composition.",
       "fix": "Statement composition, lead records, Nairobi-formatted dates, humanized statuses, plain-language terms summary, no raw ULIDs, query prefill from record links.",
       "evidence": "page-visual-acceptance.json; Ui14PersonnelPages.spec.ts prefill cases",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-VIS-005",
@@ -56,7 +56,7 @@
       "root_cause": "No schedule composition.",
       "fix": "Right-now state surface, seven-day grid with today highlighted, dated exceptions, services chips; still read-only.",
       "evidence": "page-visual-acceptance.json availability 28/30; Ui14PersonnelPages.spec.ts read-only case",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-VIS-006",
@@ -66,7 +66,7 @@
       "root_cause": "No Personnel profile treatment.",
       "fix": "Profile-style identity header with owner-labelled locked facts; the shared header is suppressed for experience=personnel only so the page keeps one h1.",
       "evidence": "desktop-light-account.png; axe account case",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-DS-001",
@@ -76,7 +76,7 @@
       "root_cause": "Token consumer omitted the pill radius.",
       "fix": "Map pill: var(--sv-radius-pill) in tailwind.config.ts (one line, token-backed).",
       "evidence": "rendered badges in UI-14 screenshots; cross-account effect is the intended pill shape, recorded for UI-16 convergence review",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-CSS-001",
@@ -86,7 +86,7 @@
       "root_cause": "Default Tailwind breakpoints assumed.",
       "fix": "Rewritten with md/lg only; new UI-14 code uses no sm:/xl:.",
       "evidence": "responsive-matrix.json",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-CSS-002",
@@ -96,7 +96,7 @@
       "root_cause": "Opacity modifiers do not apply to CSS-variable colours in this config.",
       "fix": "Solid token surface with a border.",
       "evidence": "final queue capture",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-FIN-001",
@@ -106,7 +106,7 @@
       "root_cause": "Component totals were derived client-side instead of shown as server figures.",
       "fix": "Component table shows the server outstanding and paid figures side by side; totals are the server's unpaid_minor, paid_minor and net_minor.",
       "evidence": "Ui14PersonnelPages.spec.ts asserts the browser sum 56,500.00 is absent",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-SMS-001",
@@ -116,7 +116,7 @@
       "root_cause": "The only status display lived in the history panel.",
       "fix": "Post-send confirmation in compose mode renders the server status_label of the confirmed campaign.",
       "evidence": "Ui14PersonnelPages.spec.ts status handoff case; whole-product Playwright phase-21s",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-COPY-001",
@@ -126,7 +126,7 @@
       "root_cause": "Sentence assembled from template fragments with whitespace and the raw salary_period enum.",
       "fix": "Sentence built in script from server terms with a period vocabulary.",
       "evidence": "final terms capture",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-A11Y-001",
@@ -136,7 +136,7 @@
       "root_cause": "Region accessible name contained the field label.",
       "fix": "Heading renamed 'Compose'.",
       "evidence": "focused UI-14 Playwright green",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-FIX-001",
@@ -146,7 +146,7 @@
       "root_cause": "UI-14 workspace/availability fixtures named the staff member differently from the shared /me bootstrap.",
       "fix": "Both UI-14 staff fixtures use the signed-in user's name.",
       "evidence": "tests/e2e/support/releaseAudit.ts",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-SEC-001",
@@ -156,7 +156,7 @@
       "root_cause": "Coverage stopped at same-branch ledgers and role denial.",
       "fix": "Added four tests (11 cases with datasets).",
       "evidence": "Ui14PersonnelExperienceApiTest 24 passed / 118 assertions",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-REG-002",
@@ -166,7 +166,7 @@
       "root_cause": "UI-14 split the Phase 20H consolidated earnings screen into the canonical My Earnings pages and put the SMS composer behind a permission-guarded canonical route; the predecessor specs still addressed the legacy layout.",
       "fix": "Retargeted the three cases to the canonical pages while keeping their intent: per-currency card, both model tabs, no staff selector, private statement generation (request + popup + status), own-scope query submission; the 21S case now asserts the guard keeps the composer unmounted and issues no served-client read. Added data-testid earnings-currency-card to the overview statement.",
       "evidence": "targeted rerun and final whole-product proof (browser-proof.json)",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-NAV-001",
@@ -176,7 +176,7 @@
       "root_cause": "The inherited shell hid model-specific items whenever tab_visibility was false, and the default/failed state is all-false, so an unknown state was treated as not-applicable.",
       "fix": "AppShell and PersonnelEarningsNav hide a model-specific page only when the server positively reports a current, non-conflicting plan that excludes it; Commission/Salary direct routes now distinguish no current plan from not-in-model.",
       "evidence": "ui-07 contract case and ui-14 model cases in the final whole-product proof",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-ROB-001",
@@ -186,7 +186,7 @@
       "root_cause": "personnelEarningsStore applied any payload as the overview, so the shell's model-visibility computation read tab_visibility of an array and threw; personnelExperienceStore applied an array as the workspace and the dashboard dereferenced workspace.staff.",
       "fix": "Both stores reject a payload lacking the contract's required fields as a failed read (retryable error state) instead of applying it.",
       "evidence": "personnelExperienceStore.spec.ts and Ui14PersonnelPages.spec.ts malformed-payload cases; UI-07 browser contract 42/42 with Personnel console_errors 0",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-ENV-001",
@@ -196,7 +196,7 @@
       "root_cause": "Chromium capture contention under four parallel workers on this host.",
       "fix": "No source change; serial rerun passed; final runs use the repository's worker settings.",
       "evidence": "browser-proof.json failed_runs",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-ENV-002",
@@ -206,7 +206,7 @@
       "root_cause": "A running vite preview held native binaries open on Windows.",
       "fix": "Stopped the preview process; npm ci then succeeded from the unchanged lockfile.",
       "evidence": "docs/proof/ui-14.md failed-run classifications",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-API-001",
@@ -216,7 +216,7 @@
       "root_cause": "The committed document had been generated before the final UI-14 resource/read-model shapes; Scramble now infers typed item schemas.",
       "fix": "composer api:openapi (306 paths / 357 operations unchanged) and npm run api:types; no hand edit.",
       "evidence": "invalidated consumer set 137 passed / 8,429 assertions; api:contract:check OK",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-REG-001",
@@ -226,7 +226,7 @@
       "root_cause": "Append-only registers that each UI phase extends were not updated for UI-14.",
       "fix": "Registered personnel-landing retirement; removed the expired personnel-dashboard entry (UI-08/UI-13 precedent); added merchant_personnel.notifications => phase_21n_blocked_by_external_gate_w (HR/Front Office precedent).",
       "evidence": "Ui01AuditContractTest + Ui07NavigationContractTest 54 passed / 6,783 assertions",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-ENV-003",
@@ -236,7 +236,7 @@
       "root_cause": "Not reproducible: the immediate rerun on unchanged source passed 1,424/1,424; same class as UI13-015 (cold dynamic-import waits while the Docker stack shares the host). The failing file name was not captured by the summary-only reporter.",
       "fix": "No source change.",
       "evidence": "rerun 1,424 / 1,424 across 149 files",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-ENV-004",
@@ -246,7 +246,7 @@
       "root_cause": "Load timing on the image-heavy public Super Administrator landing during an hour-long serial run; the page and its spec are untouched by UI-14 and the case passes in isolation.",
       "fix": "No source change. Isolation rerun --repeat-each=3: 3/3 passed (10.4-10.8 s each).",
       "evidence": "docs/proof/ui-14.md failed-run classifications; final whole-product proof",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-DEP-001",
@@ -258,7 +258,7 @@
       "evidence": "REM-DEP-003 PR #64, exact-head five-job CI 37863919256, normal squash 43b623c0e484c0ead76cca8c9d02ad41694c700e; docs/proof/rem-dep-003.md; supplemental codex-reconciliation.json. Reconciled UI14 npm and Composer audits exit 0, zero all-severity findings.",
       "owner": "Codex; merged REM-DEP-003 PR #64",
       "entry_condition": "Satisfied: explicit product-owner authorization, real advisory analysis, normal merged PR and reconciled source audits exit 0.",
-      "lifecycle": "local_complete",
+      "lifecycle": "verified_complete",
       "pre_remediation_blocker": {
         "id": "UI14-DEP-001",
         "classification": "external dependency failure",
@@ -282,7 +282,7 @@
       "evidence": "REM-DEP-003 PR #64, exact-head five-job CI 37863919256, normal squash 43b623c0e484c0ead76cca8c9d02ad41694c700e; docs/proof/rem-dep-003.md; supplemental codex-reconciliation.json. Reconciled UI14 npm and Composer audits exit 0, zero all-severity findings.",
       "owner": "Codex; merged REM-DEP-003 PR #64",
       "entry_condition": "Satisfied: explicit product-owner authorization, real advisory analysis, normal merged PR and reconciled source audits exit 0.",
-      "lifecycle": "local_complete",
+      "lifecycle": "verified_complete",
       "pre_remediation_blocker": {
         "id": "UI14-DEP-002",
         "classification": "external dependency failure",
@@ -334,12 +334,12 @@
         "passing_log": "ui14-mobile-layout-retry-related-vitest.log",
         "waiver_or_timeout_increase": false
       },
-      "lifecycle": "local_complete",
+      "lifecycle": "verified_complete",
       "classification": "inherited responsive visual defect"
     },
     {
       "id": "UI14-CODEX-GEN-001",
-      "lifecycle": "local_complete",
+      "lifecycle": "verified_complete",
       "classification": "current generated projection drift",
       "observed_problem": "UI06 public-route matrix still named legacy Personnel routes although the actual router implements UI14 canonical pages.",
       "evidence": "Retained failed generator --check capture; only current public-route-matrix.json changed, other eight outputs byte-identical.",
@@ -507,7 +507,7 @@
         }
       },
       "remaining_risk": "External evidence correction does not invalidate backend product source; final documentation consumers and production gates remain.",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-CODEX-CONFIG-001",
@@ -552,7 +552,7 @@
         "finished": "2026-10-10T20:54:19.701Z"
       },
       "remaining_risk": "UI-16 owns deferred cross-account convergence; no current runtime behavior change.",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     },
     {
       "id": "UI14-CODEX-BUILD-001",
@@ -641,19 +641,19 @@
         ]
       },
       "remaining_risk": "Historical physical slowdown remains unconfirmed. No global engine restart, development service change, Dockerfile change or context exclusion was made.",
-      "lifecycle": "local_complete"
+      "lifecycle": "verified_complete"
     }
   ],
   "counts": {
     "open": 0,
     "blocked": 0,
-    "local_complete": 31,
-    "verified_complete": 0,
+    "local_complete": 0,
+    "verified_complete": 31,
     "total": 31
   },
   "codex_release_acceptance": {
     "recorded_at": "2026-10-10T20:56:27.231Z",
     "production_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-outcome.json",
-    "lifecycle": "local_complete; exact-head UI14 PR CI and normal merge remain pending"
+    "lifecycle": "verified_complete; PR #65 exact-head CI 38089104875 five jobs success, normal squash 20c27dcac7d0663d93a566d8a3ff42aa566171d7, equal reviewed/merge tree 93ec8269e40da2ec2d5993ea5910fd8f6d82c19e (reconciled live on the UI-15 branch 2026-10-11)"
   }
 }

@@ -1,0 +1,74 @@
+{
+  "schema": "servana.ui15.export-security-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "backend_truth": "Phase 19 lifecycle unchanged: audit.export + RequireFreshMfa(audit_export_create) on request; async generation; masked CSV; private file; expiry; download counted on the authorized stream; revoke. No cancel or retry endpoint.",
+  "rows": [
+    {
+      "case": "reason required (browser) — no request sent without it",
+      "test": "audit.spec.ts; ui-15-audit-experience.spec.ts › the export request requires a reason…",
+      "result": "pass"
+    },
+    {
+      "case": "reason required (server)",
+      "test": "AuditExportWorkflowTest (Phase 19)",
+      "result": "pass (existing suite)"
+    },
+    {
+      "case": "no assigned branch → submit disabled",
+      "test": "audit.spec.ts › cannot request an export with no assigned branch; AuditExportList.spec.ts",
+      "result": "pass"
+    },
+    {
+      "case": "step_up_required / mfa_challenge_required → guidance, no internals",
+      "test": "audit.spec.ts › surfaces a step-up denial…",
+      "result": "pass"
+    },
+    {
+      "case": "masked/omitted preview shown before request",
+      "test": "ui-15-audit-experience.spec.ts (export-form-validation capture)",
+      "result": "pass"
+    },
+    {
+      "case": "domain options limited to readable domains (UX)",
+      "test": "AuditExportList.vue domainOptions; see UI15-SEC-OBS-001 for backend",
+      "result": "pass (UX)"
+    },
+    {
+      "case": "signed link requested on demand, never rendered or stored",
+      "test": "audit.spec.ts; ui-15-audit-experience.spec.ts › a ready export downloads…",
+      "result": "pass"
+    },
+    {
+      "case": "expired/revoked: no download control",
+      "test": "audit.spec.ts › a revoked export cannot be downloaded; Ui15AuditPages.spec.ts › shows expired exports as unavailable",
+      "result": "pass"
+    },
+    {
+      "case": "failed export shows redacted message only",
+      "test": "audit.spec.ts › a failed export shows only redacted information",
+      "result": "pass"
+    },
+    {
+      "case": "branch isolation, expiry, download count, step-up, masking (server)",
+      "test": "AuditExportIsolationTest, AuditExportExpiryDownloadCountTest, AuditExportStepUpTest, AuditExportMaskingTest (Phase 19)",
+      "result": "pass (existing suite)"
+    },
+    {
+      "case": "Audit exports not mistaken for 21N scheduled reports",
+      "test": "gate-disposition.json not_gated_by_21n",
+      "result": "recorded"
+    }
+  ],
+  "codex_closeout": {
+    "status": "ci_validation_pending",
+    "policy": "audit.export AND all selected domain read keys; omitted/empty means general; unknown scopes denied",
+    "boundaries": [
+      "request action",
+      "CSV builder under original requester live membership",
+      "Audit policy at link/stream",
+      "FileAccessService at generic link/stream"
+    ],
+    "evidence": "codex-security-closeout.json; named PostgreSQL CI/JUnit required before closure"
+  }
+}

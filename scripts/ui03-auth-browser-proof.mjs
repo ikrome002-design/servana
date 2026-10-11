@@ -700,7 +700,8 @@ try {
   // Issue the handoff, deliberately including fields the browser must never be able to influence.
   const issued = await api(page, 'POST', '/api/v1/auth/account-contexts/switch', {
     context_id: targetContext.context_id,
-    redirect: '/audit/events',
+    // Phase UI-15: the canonical Branch Audit Log path (the old /audit/events now redirects there).
+    redirect: '/audit',
     // None of the following may be honoured — the server derives all of them.
     account_key: 'super_administrator',
     role: 'super_admin',
@@ -761,7 +762,7 @@ try {
     ['CS-007', 'CS-009', 'CS-019'],
     'handoff consumed on the exact target host; the safe deep link is preserved and the final URL carries no token',
     settled.hostname === hostFor(TARGET)
-      && settled.pathname === '/audit/events'
+      && settled.pathname === '/audit'
       && !settled.searchParams.has('token'),
     `settled=${settled.hostname}${settled.pathname} token_in_url=${settled.searchParams.has('token')}`,
   );

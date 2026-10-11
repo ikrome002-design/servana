@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.gate-disposition.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "checked_on": "2026-10-08",
   "external_gate_w_closed": true,
   "phase_20d_w_closed": true,

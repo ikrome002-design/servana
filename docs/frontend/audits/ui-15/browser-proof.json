@@ -1,0 +1,21 @@
+{
+  "schema": "servana.ui15.browser-proof.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "build": "npm run build (vue-tsc + Vite production) then vite preview on http://localhost:4173; source frozen before both runs",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-15-audit-experience.spec.ts --reporter=line",
+    "collected": 50, "passed": 50, "failed": 0, "flaky": 0, "skipped": 0, "exit_code": 0, "minutes": 3.7
+  },
+  "reconciled_phase19_and_role_specs": {
+    "command": "npx playwright test tests/e2e/audit.spec.ts tests/e2e/role-entry-surfaces.spec.ts tests/e2e/role-foundation-accessibility.spec.ts tests/e2e/role-foundation-responsive.spec.ts",
+    "collected": 123, "passed": 123, "failed": 0, "exit_code": 0,
+    "first_run_note": "An earlier run of audit.spec + role-entry-surfaces had 1 cold-start failure (34/35); the same case passed 3/3 in isolation and the full set 123/123 — UI15-ENV-001."
+  },
+  "whole_product_playwright": {
+    "command": "npx playwright test --reporter=line",
+    "collected": 1721, "passed": 1721, "failed": 0, "flaky": 0, "skipped": 0, "exit_code": 0, "minutes": 59.7,
+    "predecessor_evidence": "rewritten by the run and restored exactly — see historical-evidence-restoration.json"
+  },
+  "unit": { "vitest": { "files": 152, "tests": 1449, "failed": 0 }, "ui15_specs": ["auditRoutes.spec.ts", "auditPresentation.spec.ts", "Ui15AuditPages.spec.ts"] }
+}

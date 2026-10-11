@@ -107,11 +107,16 @@ const personnel: GetStartedItem[] = [
   { id: 'learn-earnings-query', label: 'Learn to raise an earnings query.', routeName: 'personnel.earnings-queries', kind: 'action' },
 ];
 
+// Phase UI-15 — Appendix A §12.3 verbatim, each deep-linked to its live Audit page. Completing an
+// item records only that the user visited the lesson; it never grants export or unmask access.
 const audit: GetStartedItem[] = [
-  { id: 'review-flagged-events', label: 'Review flagged events', phase: 'Phase 19', kind: 'action' },
-  { id: 'learn-branch-scoped-filtering', label: 'Learn branch-scoped filtering', phase: 'Phase 19', kind: 'action' },
-  { id: 'review-masked-client-context', label: 'Review masked client context', phase: 'Phase 19', kind: 'action' },
-  { id: 'review-export-permissions', label: 'Review export permissions', phase: 'Phase 19', kind: 'action' },
+  { id: 'confirm-branch-scope', label: 'Confirm assigned branch scope.', routeName: 'audit.account', kind: 'action' },
+  { id: 'learn-search-filtering', label: 'Learn search and filtering.', routeName: 'audit.audit', kind: 'action' },
+  { id: 'review-masked-event-context', label: 'Review masked event context.', routeName: 'audit.audit-privacy-preferred', kind: 'action' },
+  { id: 'create-process-flagged-event', label: 'Create and process a flagged event.', routeName: 'audit.audit-flags', kind: 'action' },
+  { id: 'review-finance-compensation-views', label: 'Review finance and compensation audit views.', routeName: 'audit.audit-finance', kind: 'action' },
+  { id: 'review-export-permission-masking', label: 'Review export permission and masking.', routeName: 'audit.exports', kind: 'action' },
+  { id: 'review-integrity-status', label: 'Review integrity status.', routeName: 'audit.audit-integrity', kind: 'action' },
   ACKNOWLEDGE,
 ];
 

@@ -618,19 +618,21 @@
       "summary": "Guided get-started checklist for Personnel."
     },
     {
-      "key": "audit-landing",
+      "key": "audit-dashboard",
       "domain": "audit",
-      "route": "audit.landing",
       "layout": "AuditLayout",
       "status": "implemented",
-      "phase": "Phase 11",
-      "spec": "audit/audit-landing.md",
-      "title": "Audit landing",
       "roles": [
         "merchant_audit"
       ],
-      "permissions": [],
-      "summary": "Live Audit role home (read-only)."
+      "route": "audit.dashboard",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-landing.md",
+      "title": "Audit dashboard",
+      "permissions": [
+        "audit.branch_events.view"
+      ],
+      "summary": "Branch risk command centre (§12.4.1): critical/high events, review queue with age, finance/compensation/access/contact-protection slices, integrity and export attention — server totals only; unreadable slices say so, never zero."
     },
     {
       "key": "audit-get-started",
@@ -650,7 +652,7 @@
     {
       "key": "audit-event-list",
       "domain": "audit",
-      "route": "audit.branch-events",
+      "route": "audit.audit",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -662,12 +664,12 @@
       "permissions": [
         "audit.branch_events.view"
       ],
-      "summary": "Read-only, branch-scoped, field-masked audit event list with allowlisted severity/action/date filters, sort, and pagination; merchant-level (branch_id null) rows are never shown; no raw before/after/context."
+      "summary": "Branch Audit Log (§12.4.3): server-filtered, paginated, append-only branch events with severity, review status, date, correlation and flagged filters held in the URL; masked values; no edit/delete/raw-JSON control."
     },
     {
       "key": "audit-event-detail",
       "domain": "audit",
-      "route": "audit.event-detail",
+      "route": "audit.audit-event-detail",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -679,12 +681,12 @@
       "permissions": [
         "audit.branch_events.view"
       ],
-      "summary": "Immutable, read-only audit record with safe actor/subject summaries and masked context; no source-mutation controls, no ids/hashes/paths/signed URLs/tokens/unmasked PII."
+      "summary": "Audit Event Detail (§12.4.4): direct deep link to one immutable event — structured before/after diff, masked context, identity, review state, copy-safe reference, correlation search; hashes never in the payload; foreign/unknown ids are unavailable without enumeration."
     },
     {
       "key": "audit-flagged-queue",
       "domain": "audit",
-      "route": "audit.flagged-events",
+      "route": "audit.audit-flags",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -696,12 +698,12 @@
       "permissions": [
         "audit.branch_events.view"
       ],
-      "summary": "Branch-scoped flagged-event queue across open/under_review/resolved/dismissed/reopened with status filter, assignee and review-status summaries, and timestamps."
+      "summary": "Flagged Events (§12.4.5): review queue with server counts per status, review age, source severity kept apart from review status, page-local pinning of critical active flags; only backend transitions exist."
     },
     {
       "key": "audit-flagged-detail",
       "domain": "audit",
-      "route": "audit.flagged-detail",
+      "route": "audit.flag-detail",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -715,12 +717,63 @@
         "audit.flagged_event.update_status",
         "audit.flagged_event.resolve_metadata"
       ],
-      "summary": "Flagged-event review: start-review/resolve/dismiss/reopen gated by the server capability map and current state, with required review notes, terminal-transition confirmation, and invalid-transition errors; the source event stays read-only."
+      "summary": "Flag review (supporting §12.4.5): start review / resolve / dismiss / reopen on review metadata only; source event read-only; stale transitions reported."
+    },
+    {
+      "key": "audit-operations",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.audit-operations",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-operations.md",
+      "title": "Operational audit",
+      "permissions": [
+        "audit.branch_events.view"
+      ],
+      "summary": "Operational Audit (§12.4.6): server-side `operational` lens over the general segment; read-only; client contacts masked."
+    },
+    {
+      "key": "audit-access",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.audit-access",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-access.md",
+      "title": "Access and security audit",
+      "permissions": [
+        "audit.branch_events.view"
+      ],
+      "summary": "Access and Security Audit (§12.4.9): server-side `access` lens; repeated identical events clustered on the page with every event still listed; platform-only detail excluded."
+    },
+    {
+      "key": "audit-privacy-preferred",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.audit-privacy-preferred",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-privacy-preferred.md",
+      "title": "Preferred personnel and contact protection audit",
+      "permissions": [
+        "audit.branch_events.view"
+      ],
+      "summary": "Preferred Personnel and Contact Protection Audit (§12.4.10): server-side `privacy_preferred` lens; no contact list, phone number or message body is returned."
     },
     {
       "key": "audit-finance",
       "domain": "audit",
-      "route": "audit.finance",
+      "route": "audit.audit-finance",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -732,12 +785,12 @@
       "permissions": [
         "audit.finance.view"
       ],
-      "summary": "Read-only, branch-scoped, masked finance-domain audit view (Audit via audit.finance.view; Finance via finance.audit.view with server MFA); not a Finance operational screen."
+      "summary": "Finance Audit (§12.4.7): finance read segment with presets, filters and the read-only boundary; references and M-Pesa numbers masked; no subscription payment attempts while Gate W is closed."
     },
     {
       "key": "audit-compensation",
       "domain": "audit",
-      "route": "audit.compensation",
+      "route": "audit.audit-compensation",
       "layout": "AuditLayout",
       "status": "implemented",
       "phase": "Phase 19",
@@ -749,7 +802,7 @@
       "permissions": [
         "audit.compensation.view"
       ],
-      "summary": "Read-only, branch-scoped, masked compensation-domain audit view; honest empty state until the owning phases (20F-20H) emit events; no compensation events/routes/data fabricated."
+      "summary": "Compensation Audit (§12.4.8): compensation read segment; salary values restricted by server policy; no cross-currency totals; read-only."
     },
     {
       "key": "audit-export-list",
@@ -766,7 +819,24 @@
       "permissions": [
         "audit.export"
       ],
-      "summary": "Audit export list + branch-scoped reason-gated request form (fresh step-up server-enforced; no unassigned/merchant-level export); never exposes file_id/paths/signatures/internal ids/raw failure messages."
+      "summary": "Audit Exports (§12.4.11): inline reason-required, branch-scoped, masked export request with live masking/omission preview, server-count estimate and step-up guidance; recent requests; no file id, path or signed URL."
+    },
+    {
+      "key": "audit-export-history",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.exports-history",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-export-history.md",
+      "title": "Audit export history",
+      "permissions": [
+        "audit.export"
+      ],
+      "summary": "Export History (§12.4.12): server-filtered, paginated export requests with reason, scope, status, rows, downloads and expiry; expired/revoked exports offer no download."
     },
     {
       "key": "audit-export-detail",
@@ -783,7 +853,39 @@
       "permissions": [
         "audit.export"
       ],
-      "summary": "Export detail with queued/processing/ready/failed/expired/revoked polling, private on-demand signed download (never stored; accounting changes after stream), and authorized revoke with confirmation."
+      "summary": "Audit export record (supporting §12.4.11–12): lifecycle stepper, polling, on-demand private download (link never rendered or stored), authorized revoke, download accounting."
+    },
+    {
+      "key": "audit-integrity",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.audit-integrity",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-integrity.md",
+      "title": "Audit integrity status",
+      "permissions": [
+        "audit.branch_events.view"
+      ],
+      "summary": "Integrity Status (§12.4.13): bounded read-only server segment verification of the merchant chain — verified only from genesis, partial otherwise, breaks named only inside branch scope; no repair control."
+    },
+    {
+      "key": "audit-account",
+      "domain": "audit",
+      "layout": "AuditLayout",
+      "status": "implemented",
+      "roles": [
+        "merchant_audit"
+      ],
+      "route": "audit.account",
+      "phase": "Phase UI-15",
+      "spec": "audit/audit-account.md",
+      "title": "Audit account and preferences",
+      "permissions": [],
+      "summary": "Account and Preferences (§12.4.15): own identity, active branch, export and masking level, Audit permission set, sessions, MFA and theme; no role/branch/permission self-change."
     },
     {
       "key": "unsupported-role",

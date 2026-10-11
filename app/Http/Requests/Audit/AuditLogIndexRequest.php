@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Audit;
 
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Audit\Enums\AuditReviewView;
 use App\Domain\Audit\Enums\AuditSeverity;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -20,6 +21,9 @@ final class AuditLogIndexRequest extends FormRequest
 {
     /** Allowlisted sortable expressions (column with optional `-` desc prefix). */
     public const SORTS = ['created_at', '-created_at', 'severity', '-severity', 'action', '-action'];
+
+    /** Allowlisted flagged-review filter values (Phase UI-15). */
+    public const FLAGGED = ['flagged', 'unflagged'];
 
     /** Allowlisted subject types (model basenames). */
     public const SUBJECT_TYPES = [
@@ -45,6 +49,11 @@ final class AuditLogIndexRequest extends FormRequest
             'date_to' => ['sometimes', 'date', 'after_or_equal:date_from'],
             'sort' => ['sometimes', 'string', Rule::in(self::SORTS)],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            // Phase UI-15 — server-side review lenses and investigation filters. A view only narrows
+            // the rows the route's permission already returns; it never widens a segment.
+            'view' => ['sometimes', 'string', Rule::in(array_column(AuditReviewView::cases(), 'value'))],
+            'flagged' => ['sometimes', 'string', Rule::in(self::FLAGGED)],
+            'correlation_id' => ['sometimes', 'string', 'max:64'],
         ];
     }
 }

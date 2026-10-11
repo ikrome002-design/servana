@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 19**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `audit-event-detail`
-- **Route name and URL:** `audit.event-detail`
+- **Route name and URL:** `audit.audit-event-detail`
 - **Layout:** `AuditLayout`
 - **Allowed roles:** `merchant_audit`
 - **Required permissions:** `audit.branch_events.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
@@ -11,7 +11,7 @@
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Immutable, read-only audit record with safe actor/subject summaries and masked context; no source-mutation controls, no ids/hashes/paths/signed URLs/tokens/unmasked PII.
+- **Fields and displayed data:** Audit Event Detail (§12.4.4): direct deep link to one immutable event — structured before/after diff, masked context, identity, review state, copy-safe reference, correlation search; hashes never in the payload; foreign/unknown ids are unavailable without enumeration.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

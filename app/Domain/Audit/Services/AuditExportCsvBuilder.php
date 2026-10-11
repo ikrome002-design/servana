@@ -31,6 +31,10 @@ class AuditExportCsvBuilder
      */
     public function build(AuditExport $export): array
     {
+        $requester = $export->requester;
+        abort_unless($requester !== null && app(AuditExportAuthorization::class)->allows(
+            $requester, $export->merchant_id, $export->branch_id, $export->scope_json,
+        ), 403);
         $masker = app(AuditValueMasker::class);
         $scope = $export->scope_json;
 

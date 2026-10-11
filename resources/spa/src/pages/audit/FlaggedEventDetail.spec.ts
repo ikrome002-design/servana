@@ -9,7 +9,7 @@ vi.mock('@/services/apiClient', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ params: { id: 'f1' } }),
+  useRoute: () => ({ params: { flagUlid: 'f1' } }),
   RouterLink: { template: '<a><slot /></a>' },
 }));
 

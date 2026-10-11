@@ -1,0 +1,17 @@
+{
+  "schema": "servana.ui15.theme-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "fresh_browser_default": "light",
+  "explicit_dark_persists_after_reload": true,
+  "prefers_color_scheme_selects_theme": false,
+  "light_pages_reviewed": 16,
+  "dark_pages_reviewed": 16,
+  "dark_axe_serious": 0,
+  "dark_axe_critical": 0,
+  "treatment": {
+    "mechanically_inverted": false,
+    "notes": "All surfaces use generated semantic tokens; tonal washes use color-mix against the raised surface so headers, severity tags, review pills, diff before/after cells and integrity states keep their meaning and AA contrast in dark."
+  },
+  "proof": "tests/e2e/ui-15-audit-experience.spec.ts — 'all pages intentionally render dark…' and 'fresh light is the default…'"
+}

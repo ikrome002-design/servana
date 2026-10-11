@@ -46,10 +46,11 @@ describe('role navigation registry', () => {
   });
 
   it('never renders a planned page (UI/UX plan §7.2 — no dead or fake links)', () => {
+    // Phase UI-15 delivered the last planned page, so this set may be empty. The non-vacuous proof
+    // that the filter drops a planned entry is the fixture case in navigationFilter.spec.ts.
     const planned = new Set(
       NAVIGATION_CONTRACT.filter((e) => e.implementationStatus === 'planned').map((e) => e.key),
     );
-    expect(planned.size).toBeGreaterThan(0);
     for (const identity of ROLE_IDENTITIES) {
       for (const item of navigationFor(identity)) {
         expect(planned.has(item.key), `${item.key} is planned and must not be rendered`).toBe(false);

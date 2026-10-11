@@ -160,7 +160,9 @@ export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> 
             : { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
           membership: cfg.role ? { id: 'mm1', role: cfg.role, status: 'active' } : null,
           memberships: cfg.role ? [{ id: 'mm1', role: cfg.role, status: 'active' }] : [],
-          permissions: cfg.identity === 'merchant_front_office' ? ['front_office.search'] : [],
+          // UI-15: `/audit` is now the canonical Branch Audit Log behind the Audit role's real read key.
+          permissions: cfg.identity === 'merchant_front_office' ? ['front_office.search']
+            : cfg.identity === 'merchant_audit' ? ['audit.branch_events.view'] : [],
           // UI-03 added `account_keys` to /me, derived server-side by AccountContextResolver, and
           // `requiresAccount` asks `holdsAccount()` for it. Without it the guard denies every
           // account surface it is attached to.
