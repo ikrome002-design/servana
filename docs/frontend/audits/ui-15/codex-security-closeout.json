@@ -183,12 +183,12 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "before_sha256": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
+      "before_sha256": "b8b6da8962fc360c75e4bde096a7fe9bfaff0b1e03045f6ccfe445e80ce04009",
       "after_sha256": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
       "classification": "codex_amended_ci_evidence",
-      "note": "Existing workflow preserved; added named real PostgreSQL tests and JUnit artifact. Baseline before hash is captured from Git HEAD below.",
+      "note": "Original workflow preserved; only named real PostgreSQL tests/JUnit evidence added and ordered before the full suite.",
       "bytes": 21838,
-      "before_hash_basis": "Git HEAD blob (LF)"
+      "before_hash_basis": "Canonical LF Git blob at original base 20c27dcac7d0663d93a566d8a3ff42aa566171d7; pre-Codex workflow, not moving HEAD"
     },
     {
       "path": "docs/frontend/audits/ui-15/historical-evidence-baseline.json",
@@ -481,7 +481,8 @@
     "safety": "No volumes/data deleted; no WSL unregister/reset/reboot; no global shutdown because normal graceful Desktop stop did not complete and current startup workload state is uncertain.",
     "host_resources": "8 GB host RAM, approximately 1.1 GB free; approximately 44 GB free disk; VM 2.68 GB available. No OOM root cause asserted.",
     "fallback": "Owner-authorized CI validation on PHP 8.3/PostgreSQL 16; local PHP 8.5 lacks pdo_pgsql and is not an integration substitute.",
-    "final_stop": "A subsequent normal graceful Desktop stop was bounded to 60 seconds and timed out; host free memory fell to approximately 268 MB. No global shutdown or forced backend termination used."
+    "final_stop": "A subsequent normal graceful Desktop stop was bounded to 60 seconds and timed out; host free memory fell to approximately 268 MB. No global shutdown or forced backend termination used.",
+    "end_state": "Latest bounded server probe exited1: Docker Desktop Linux engine named pipe not found; engine remains unavailable. No further runtime reset or volume deletion attempted; hosted CI is the integration proof."
   },
   "ci_contract": {
     "workflow": ".github/workflows/ci.yml",
@@ -675,6 +676,26 @@
       "docker": "success",
       "security": "success",
       "e2e": "in progress at proof checkpoint; superseded by final proof commit; no completed browser result claimed here."
+    },
+    {
+      "run": 38160085435,
+      "head": "d5f9300a53d42b34b9f3e5cfe2e76acea3565f5a",
+      "backend": "success",
+      "frontend": "success",
+      "docker": "success",
+      "security": "success",
+      "e2e": "in progress before provenance-only correction; superseded, not claimed passed",
+      "named_security": {
+        "artifact": 11710235813,
+        "tests": 233,
+        "assertions": 6562,
+        "new_cases": 30,
+        "new_assertions": 125,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "junit_sha256": "dbe84dae1eae0e8396d704a23c21e2188867f5e71d59381a455b5722432b97db"
+      }
     }
   ],
   "verified_security_junit": {
@@ -2089,5 +2110,21 @@
         "result": "passed"
       }
     ]
+  },
+  "fingerprint_correction": {
+    "observed_problem": "Inventory helper refreshed the workflow pre-amendment fingerprint using moving HEAD after later feature commits.",
+    "evidence": {
+      "incorrect_later_checkpoint": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
+      "original_base_blob": "b8b6da8962fc360c75e4bde096a7fe9bfaff0b1e03045f6ccfe445e80ce04009"
+    },
+    "affected_files": [
+      "docs/frontend/audits/ui-15/codex-security-closeout.json"
+    ],
+    "root_cause": "A scratch inventory helper assigned before_sha256 from HEAD rather than immutable baseline.base_commit.",
+    "why_root_cause": "Direct Git blob comparison proved the mismatch; original handoff JSON and all source/test bytes are unchanged.",
+    "correct_fix": "Anchor the workflow before fingerprint to original base20c27; disable mutation in the scratch inventory validator; preserve this correction history.",
+    "test_command": "Compare pre-Codex workflow Git blob SHA256; verify exact current amendment hashes,237-path inventory and13 frozen historical scopes; staged/history gitleaks; fresh final-head five-job CI.",
+    "test_result": "Original base fingerprint b8b6da8962fc360c75e4bde096a7fe9bfaff0b1e03045f6ccfe445e80ce04009 verified; next exact-head CI remains required.",
+    "remaining_risk": "No source/security defect; release still awaits all five final-head jobs and ordinary merge."
   }
 }
