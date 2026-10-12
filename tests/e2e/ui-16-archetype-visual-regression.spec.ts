@@ -10,9 +10,11 @@ const screenshot = { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0
 // With update-snapshots=none, Playwright rejects a missing baseline before writing an actual PNG.
 // Preserve a review capture without turning it into an expectation or changing the failed assertion.
 async function attachMissingFrame(target: Page | Locator, filename: string, testInfo: TestInfo): Promise<void> {
-  if (!existsSync(testInfo.snapshotPath(filename))) {
+  if (!existsSync(testInfo.snapshotPath(filename, { kind: 'screenshot' }))) {
+    const path = testInfo.outputPath(`review-${filename}`);
+    await target.screenshot({ path, animations: 'disabled', caret: 'hide' });
     await testInfo.attach(filename, {
-      body: await target.screenshot({ animations: 'disabled', caret: 'hide' }),
+      path,
       contentType: 'image/png',
     });
   }

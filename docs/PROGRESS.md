@@ -219,6 +219,12 @@ comparison saved no actual PNG, so the focused spec now attaches missing frames 
 accepting them. Three Windows form/state/card comparisons and ESLint passed after that correction.
 The next hosted capture/review and final five-job run remain pending.
 
+Second capture run `38278036287` likewise passed four jobs and the 16 auth cases; eight missing
+Linux expectations still failed. Buffer attachments stayed in memory with list/JUnit reporters.
+The spec now writes explicit review files and attaches by path. A one-case local missing-baseline
+negative control preserved PNGs while still failing and created zero expected files; ESLint passed.
+All failures and artifact digests remain in proof; Linux acceptance and final E2E are pending.
+
 ### Phase UI-15 — Audit experience — verified complete
 
 Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at

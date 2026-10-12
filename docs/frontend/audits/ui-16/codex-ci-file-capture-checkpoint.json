@@ -1,0 +1,38 @@
+{
+  "schema": "servana.ui16.codex-ci-file-capture-checkpoint.v1",
+  "phase": "UI-16",
+  "prior_head": "0ec7a80f1a867c0484d2fe956774e8c3f5816a0e",
+  "run": 38278036287,
+  "results": "Backend/Frontend/Docker/Security success; E2E eight missing-baseline errors, 16 passing auth checks, full E2E not run",
+  "artifact": {
+    "id": 11760490612,
+    "digest": "sha256:dea31d24af9b3bb31b6a4a06ea033858b3c2a5cf5b014a8681d675f947508c4a"
+  },
+  "root_cause": "Buffer attachment returns memory bytes; list/JUnit artifact export has no saved PNG",
+  "fix": "Explicit outputPath PNG and path attachment; screenshot-kind snapshot path; unchanged strict comparison",
+  "local_control": "One deliberately absent expectation fails, saves two identical PNG copies and creates zero expected files",
+  "local_comparisons": "three standard Windows comparisons passed; ESLint exit 0",
+  "files": [
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts",
+      "before_sha256": "7b1b54cd2a0aa2768da1d6353907504761a281750a67c091c35394a504d87a8a",
+      "after_sha256": "78ce6b3338be7a75ef7dc57d1dcbc88aa47f66f84b8232ce5aa05334c43e5a0e"
+    },
+    {
+      "path": "docs/proof/ui-16.md",
+      "before_sha256": "19df0a6219ee6301d1f97e1220bc326cfdfeeeda6dc3576448d1159e2e851763",
+      "after_sha256": "0c53198069cd03c0ff2de9328aabb2e4c37f404add320ff603e2ddda48d55b79"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "before_sha256": "a7045038e8303ba3dfc804949c79643381e08dd29ea6d452f5f4f0320b02d0a7",
+      "after_sha256": "84565f423343b677f6ba1b707fb03c8b4add136eb53d28ac0df4bc65319062eb"
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/codex-ci-file-capture-checkpoint.json",
+      "before_sha256": null,
+      "after_sha256": null
+    }
+  ],
+  "pending": "Hosted Linux review followed by all-five exact-final-head success and normal closeout"
+}
