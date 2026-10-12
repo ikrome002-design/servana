@@ -65,6 +65,11 @@ it. Additional light/dark legal/form/state-family/mobile-record comparisons clos
 gap. CI preserves successful browser/JUnit evidence and has a bounded 120-minute E2E allowance.
 Hosted Linux review and all final-head jobs remain pending; see the Codex proof/addendum.
 
+Linux review subsequently accepted eight deterministic hosted frames (initial/retry hashes equal),
+bringing active baselines to 122 while retaining the original 106 unchanged. Three strictly failing
+missing-expectation runs and two artifact-capture fixes are preserved in proof. Final full-suite CI,
+governance and normal merge remain pending at this source checkpoint.
+
 ### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — verified_complete; PR #66 merged
 
 Reconciled once on the UI-16 branch (2026-10-12): normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`

@@ -74,3 +74,10 @@ the added Linux frames must be captured on hosted runners, inspected individuall
 compared on a new exact final head. Five-job success, production-origin proof, real governance and
 normal merge remain mandatory. Product-owner visual approval and independent human review are not
 claimed. UI-17, Phase 25 and Gate W remain unstarted.
+
+Linux acceptance continuation: eight explicit hosted PNGs from `38279401984` / `433b8eb…` were
+individually viewed; all initial/retry pairs match. Their exact bytes are now the added Linux
+expectations (index plus `codex-linux-baseline-acceptance.json`). Total active frames 122; the
+original 106 remain unchanged. All three capture-run failures and both attachment-infrastructure
+corrections are retained in proof. Complete final-head E2E/five-job CI and normal merge remain
+pending at this committed checkpoint; actual results belong to the PR governance/final report.

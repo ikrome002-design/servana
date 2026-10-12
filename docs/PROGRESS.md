@@ -225,6 +225,15 @@ The spec now writes explicit review files and attaches by path. A one-case local
 negative control preserved PNGs while still failing and created zero expected files; ESLint passed.
 All failures and artifact digests remain in proof; Linux acceptance and final E2E are pending.
 
+Linux image review completed from run `38279401984` (head `433b8eb…`): all eight initial/retry
+PNG pairs are identical and individually accepted by Codex; exact bytes become the eight Linux
+expectations. Original 106 frames unchanged; 122 active frames total, two separate superseded
+diagnostics. Source/config fingerprint and decisions: `codex-linux-baseline-acceptance.json`.
+The three capture runs each passed Backend/Frontend/Docker/Security and failed only eight missing
+expectations (16 auth cases passed; full E2E not run). These failures are preserved, not waived.
+**Next gate:** new exact-final-head five-job CI, strict visual comparisons and complete E2E, then
+truthful zero-review governance if still permitted, ordinary merge with equal tree and clean main.
+
 ### Phase UI-15 — Audit experience — verified complete
 
 Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at
