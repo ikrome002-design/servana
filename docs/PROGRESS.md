@@ -212,6 +212,13 @@ staged blob parity, clean worktree afterward). A narrow follow-up binds the veri
 token-source digest to that commit via the existing `.gitleaksignore` fingerprint policy.
 Publication remains provisional; Linux baseline acceptance, final CI and merge are pending.
 
+First hosted run `38276951442`, PR #67 head `229013724fdcc85da3096a9347e6bff5afbbfd2a`: Backend,
+Frontend, Docker and Security succeeded. E2E passed 16 authentication cases and failed exactly
+eight missing Linux expectations; full E2E was not run. Reports/traces were preserved, but strict
+comparison saved no actual PNG, so the focused spec now attaches missing frames explicitly without
+accepting them. Three Windows form/state/card comparisons and ESLint passed after that correction.
+The next hosted capture/review and final five-job run remain pending.
+
 ### Phase UI-15 — Audit experience — verified complete
 
 Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at

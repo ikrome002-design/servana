@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { existsSync } from 'node:fs';
+import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { contractRows, liveContractPages, prepareVisual } from './support/ui16Visual';
 import { assertAxeClean, assertNoHorizontalOverflow, readyLocator, type AuditScreen } from './support/releaseAudit';
 
@@ -6,9 +7,20 @@ import { assertAxeClean, assertNoHorizontalOverflow, readyLocator, type AuditScr
 // or responsive record-card surfaces. These are additional frames, never replacements.
 const screenshot = { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0.015 } as const;
 
+// With update-snapshots=none, Playwright rejects a missing baseline before writing an actual PNG.
+// Preserve a review capture without turning it into an expectation or changing the failed assertion.
+async function attachMissingFrame(target: Page | Locator, filename: string, testInfo: TestInfo): Promise<void> {
+  if (!existsSync(testInfo.snapshotPath(filename))) {
+    await testInfo.attach(filename, {
+      body: await target.screenshot({ animations: 'disabled', caret: 'hide' }),
+      contentType: 'image/png',
+    });
+  }
+}
+
 for (const theme of ['light', 'dark'] as const) {
   for (const surface of ['legal', 'form', 'states'] as const) {
-    test(`${surface} ${theme}`, async ({ page }) => {
+    test(`${surface} ${theme}`, async ({ page }, testInfo) => {
       const screen: AuditScreen = {
         key: 'home', route: 'home', path: '/', role: 'public', state: 'static',
         bootstrap: { hostAccountKey: 'merchant_finance' },
@@ -28,17 +40,21 @@ for (const theme of ['light', 'dark'] as const) {
         await expect(states.getByRole('status', { name: 'Loading…' })).toBeVisible();
         await expect(states.getByRole('alert')).toBeVisible();
         await expect(states.getByText('No records found.')).toBeVisible();
-        await expect(states).toHaveScreenshot(`states--${theme}.png`, screenshot);
+        const filename = `states--${theme}.png`;
+        await attachMissingFrame(states, filename, testInfo);
+        await expect(states).toHaveScreenshot(filename, screenshot);
       } else {
         await expect(page.getByRole('heading', { name: surface === 'legal' ? 'Privacy Policy' : 'Sign in to Servana', exact: true })).toBeVisible();
         if (surface === 'form') await expect(page.getByRole('textbox')).toBeVisible();
         await expect(page.getByTestId('sv-fixed-footer')).toBeVisible();
-        await expect(page).toHaveScreenshot(`${surface}--${theme}.png`, screenshot);
+        const filename = `${surface}--${theme}.png`;
+        await attachMissingFrame(page, filename, testInfo);
+        await expect(page).toHaveScreenshot(filename, screenshot);
       }
     });
   }
 
-  test(`responsive record cards ${theme}`, async ({ page }) => {
+  test(`responsive record cards ${theme}`, async ({ page }, testInfo) => {
     const entry = liveContractPages().find((p) => p.contractKey === 'merchant_administrator.branches')!;
     await page.setViewportSize({ width: 360, height: 780 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -52,7 +68,9 @@ for (const theme of ['light', 'dark'] as const) {
     const cardBottom = await card.evaluate((element) => element.getBoundingClientRect().bottom);
     const footerTop = await page.getByTestId('sv-fixed-footer').evaluate((element) => element.getBoundingClientRect().top);
     expect(cardBottom).toBeLessThanOrEqual(footerTop);
-    await expect(card).toHaveScreenshot(`record-card-detail--${theme}.png`, screenshot);
+    const filename = `record-card-detail--${theme}.png`;
+    await attachMissingFrame(card, filename, testInfo);
+    await expect(card).toHaveScreenshot(filename, screenshot);
   });
 }
 
