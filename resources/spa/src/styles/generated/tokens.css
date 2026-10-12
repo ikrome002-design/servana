@@ -3,7 +3,7 @@
  * Source:     resources/spa/src/design-system/tokens.json
  * Generator:  node scripts/generate-design-tokens.mjs
  * Verify:     node scripts/generate-design-tokens.mjs --check
- * Source SHA-256: 2e3bcf29894c6eff5dec3ec5b74438698d0f7027852cef81e1882d0a6b2dbe0a
+ * Source SHA-256: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
  *
  * Servana design tokens (ADR-021). Light is the DEFAULT: the dark block applies only when the
  * root element carries the `dark` class, which is set exclusively from an explicit Servana
@@ -85,8 +85,8 @@
   --sv-radius-pill: 9999px;
   --sv-border-width-hairline: 1px;
   --sv-border-width-strong: 2px;
-  --sv-shadow-card: 0 1px 3px rgb(0 0 0 / 0.08);
-  --sv-shadow-raised: 0 4px 12px rgb(0 0 0 / 0.10);
+  --sv-shadow-card: 0 1px 2px rgb(31 41 51 / 0.05), 0 8px 24px -12px rgb(31 41 51 / 0.14);
+  --sv-shadow-raised: 0 2px 4px rgb(31 41 51 / 0.05), 0 16px 32px -14px rgb(31 41 51 / 0.22);
   --sv-shadow-overlay: 0 16px 40px rgb(0 0 0 / 0.18);
   --sv-focus-ring-width: 2px;
   --sv-focus-ring-offset: 2px;
@@ -113,9 +113,9 @@
   --sv-dialog-width-sm: 24rem;
   --sv-dialog-width-md: 32rem;
   --sv-dialog-width-lg: 44rem;
-  --sv-footer-height-mobile: 5.5rem;
+  --sv-footer-height-mobile: 7.25rem;
   --sv-footer-height-tablet: 4.5rem;
-  --sv-footer-height-desktop: 3.5rem;
+  --sv-footer-height-desktop: 4rem;
   --sv-footer-height-zoom-fallback: 9rem;
   --sv-control-height-sm: 2.25rem;
   --sv-control-height-md: 2.75rem;

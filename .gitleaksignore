@@ -69,3 +69,8 @@ d7c64c3008943e44357f5b7b3b49ea2d84a7616c:resources/spa/src/design-system/tokens.
 # emitting the digest in a form the generic rule does not match) needs its own
 # authorization; it is not UI-05's to decide.
 e6afe832fa9b45c4f452bcd43e19338ac87bfd9a:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
+
+# UI-16: independently recomputed SHA-256(tokens.json), not a credential.
+# Exact implementation-commit fingerprint; no scanner rule/path/entropy change.
+# Digest: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
+45d518f5ccf82649f94b58184835bc1d7bff6c40:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13

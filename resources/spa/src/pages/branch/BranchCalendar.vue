@@ -9,6 +9,7 @@ import { useBranchCalendarStore } from '@/stores/branchCalendarStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import type { BranchCalendarException, CalendarExceptionType } from '@/types/models';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Branch calendar — date-specific closures and modified hours (REM-SCR-002B; Plan §7.2, §27.3
@@ -146,19 +147,17 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-3xl p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Branch calendar
-    </h1>
-    <p class="mt-1 text-sm text-muted">
-      Close the branch for a date, or open it on different hours. These dates override the weekly
-      operating hours and block appointments accordingly.
-    </p>
+  <section class="mx-auto w-full max-w-4xl">
+    <SvPageHeader
+      title="Branch calendar"
+      eyebrow="Branch setup"
+      description="Close the branch for a date, or open it on different hours. These dates override the weekly operating hours and block appointments accordingly."
+    />
 
     <p
       v-if="conflictMessage"
       role="alert"
-      class="mt-4 rounded-control border border-danger bg-red-50 p-3 text-sm text-danger dark:bg-red-900/20"
+      class="mt-4 rounded-control border border-sv-error-border bg-red-50 p-3 text-sm text-sv-error-fg dark:bg-red-900/20"
     >
       {{ conflictMessage }}
     </p>
@@ -194,7 +193,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
           <p
             v-if="errorsFor('date').length"
             id="bc-date-error"
-            class="text-sm text-danger"
+            class="text-sm text-sv-error-fg"
           >
             {{ errorsFor('date')[0] }}
           </p>
@@ -223,7 +222,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
           <p
             v-if="errorsFor('type').length"
             id="bc-type-error"
-            class="text-sm text-danger"
+            class="text-sm text-sv-error-fg"
           >
             {{ errorsFor('type')[0] }}
           </p>
@@ -249,7 +248,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
             <p
               v-if="errorsFor('opens_at').length"
               id="bc-opens-at-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('opens_at')[0] }}
             </p>
@@ -270,7 +269,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
             <p
               v-if="errorsFor('closes_at').length"
               id="bc-closes-at-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('closes_at')[0] }}
             </p>
@@ -291,7 +290,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
           >
           <p
             v-if="errorsFor('reason').length"
-            class="text-sm text-danger"
+            class="text-sm text-sv-error-fg"
           >
             {{ errorsFor('reason')[0] }}
           </p>
@@ -312,7 +311,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
       Scheduled exceptions
       <span
         v-if="store.range"
-        class="font-normal text-muted"
+        class="font-normal text-sv-text-muted"
       >({{ store.range.from }} to {{ store.range.to }})</span>
     </h2>
 
@@ -329,7 +328,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
             Branch calendar exceptions with their type, hours and reason
           </caption>
           <thead>
-            <tr class="border-b border-border text-muted">
+            <tr class="border-b border-border text-sv-text-muted">
               <th
                 scope="col"
                 class="py-2 pr-3 font-medium"
@@ -378,7 +377,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
               <td class="py-2 pr-3 text-text">
                 {{ exception.closes_branch ? 'Closed all day' : `${exception.opens_at} – ${exception.closes_at}` }}
               </td>
-              <td class="py-2 pr-3 text-muted">
+              <td class="py-2 pr-3 text-sv-text-muted">
                 {{ exception.reason ?? '—' }}
               </td>
               <td
@@ -456,7 +455,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
           <p
             v-if="errorsFor('closes_at').length || errorsFor('opens_at').length"
             role="alert"
-            class="w-full text-sm text-danger"
+            class="w-full text-sm text-sv-error-fg"
           >
             {{ errorsFor('closes_at')[0] ?? errorsFor('opens_at')[0] }}
           </p>
@@ -484,11 +483,11 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
               {{ exception.date }} — {{ TYPE_LABELS[exception.type] }}
             </p>
             <p class="mt-1 text-sm text-text">
-              <span class="text-muted">Hours: </span>
+              <span class="text-sv-text-muted">Hours: </span>
               {{ exception.closes_branch ? 'Closed all day' : `${exception.opens_at} – ${exception.closes_at}` }}
             </p>
             <p class="mt-1 text-sm text-text">
-              <span class="text-muted">Reason: </span>{{ exception.reason ?? '—' }}
+              <span class="text-sv-text-muted">Reason: </span>{{ exception.reason ?? '—' }}
             </p>
             <div
               v-if="canManage"
@@ -516,7 +515,7 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
 
     <p
       v-if="!canManage"
-      class="mt-4 text-sm text-muted"
+      class="mt-4 text-sm text-sv-text-muted"
     >
       You have view-only access to the branch calendar.
     </p>

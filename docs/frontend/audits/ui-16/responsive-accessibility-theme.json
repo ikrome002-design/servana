@@ -1,0 +1,5061 @@
+{
+  "schema": "ui-16.responsive-accessibility-theme.v1",
+  "phase": "UI-16",
+  "derived_from": "docs/frontend/audits/ui-07/account-page-matrix.json (generated from the canonical YAML) at run time by tests/e2e/support/ui16Visual.ts",
+  "totals": {
+    "contract_rows": 160,
+    "implemented": 132,
+    "disabled_by_gate": 28,
+    "planned": 0,
+    "removed_by_authority": 0
+  },
+  "run": {
+    "command": "npx playwright test tests/e2e/ui-16-responsive-accessibility-theme.spec.ts --workers 3",
+    "result": "307 passed / 0 failed / 0 flaky / 0 skipped (11.5m)",
+    "environment": "Windows 10, Chromium (Playwright 1.62.0), vite preview of the UI-16 tree"
+  },
+  "theme_checks": [
+    "first paint is light under an OS dark preference on one dashboard per account (8/8)",
+    "an explicit dark choice persists across reload and in-app navigation",
+    "prefers-reduced-motion leaves no transition/animation above 50ms on the recomposed shell"
+  ],
+  "manual_checks": [
+    "keyboard: skip link first, Tab through header disclosures and sidebar, gated entry reachable and announces its gate (agent-driven browser checks via the existing role-navigation-keyboard and phase-23 specs; no screen-reader software was available — not claimed)",
+    "200% zoom: exercised as a 640x400 CSS viewport, not by OS-level browser zoom"
+  ],
+  "compiled_utilities": "every static template utility compiles to a rule in the built stylesheet (negative control proves an unconfigured colour and the sm: screen are reported)",
+  "rows": [
+    {
+      "contract_key": "super_administrator.dashboard",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.dashboard / axe: super_administrator.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.get-started",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.get-started / axe: super_administrator.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-settings",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-settings / axe: super_administrator.billing-settings",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-plans",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-plans / axe: super_administrator.billing-plans",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-prices",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-prices / axe: super_administrator.billing-prices",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-promotions",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-promotions / axe: super_administrator.billing-promotions",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-free-periods",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-free-periods / axe: super_administrator.billing-free-periods",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-preferred-personnel-fees",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-preferred-personnel-fees / axe: super_administrator.billing-preferred-personnel-fees",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-sms",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-sms / axe: super_administrator.billing-sms",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.merchant-registrations",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.merchant-registrations / axe: super_administrator.merchant-registrations",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.merchants",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.merchants / axe: super_administrator.merchants",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.merchant-detail",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.merchant-detail / axe: super_administrator.merchant-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-subscriptions",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.billing-subscriptions / axe: super_administrator.billing-subscriptions",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.billing-reconciliation-exceptions",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: super_administrator.billing-reconciliation-exceptions",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.integrations",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: super_administrator.integrations",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.integrations-refer-and-earn-qualifications",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: super_administrator.integrations-refer-and-earn-qualifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.reports",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: super_administrator.reports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.audit",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.audit / axe: super_administrator.audit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.platform-access",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.platform-access / axe: super_administrator.platform-access",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.feature-flags",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.feature-flags / axe: super_administrator.feature-flags",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.notifications",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: super_administrator.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "super_administrator.account",
+      "account": "super_administrator",
+      "host": "citrus.servana.ke",
+      "navigation_placement": "header",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: super_administrator.account / axe: super_administrator.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.setup",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.setup / axe: merchant_administrator.setup",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.dashboard",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.dashboard / axe: merchant_administrator.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.get-started",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.get-started / axe: merchant_administrator.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.merchant-profile",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.merchant-profile / axe: merchant_administrator.merchant-profile",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.branches",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.branches / axe: merchant_administrator.branches",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.branch-detail",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.branch-detail / axe: merchant_administrator.branch-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.staff",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.staff / axe: merchant_administrator.staff",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.subscription / axe: merchant_administrator.subscription",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-plan",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.subscription-plan / axe: merchant_administrator.subscription-plan",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-invoices",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.subscription-invoices / axe: merchant_administrator.subscription-invoices",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-invoice-detail",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.subscription-invoice-detail / axe: merchant_administrator.subscription-invoice-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-payment-attempts",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.subscription-payment-attempts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-recovery",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.subscription-recovery",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.reports",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.reports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.reports-branches",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.reports-branches",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.reports-services",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.reports-services",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.reports-staff",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.reports-staff",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.compensation",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.compensation / axe: merchant_administrator.compensation",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.compensation-payout-approvals",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.compensation-payout-approvals / axe: merchant_administrator.compensation-payout-approvals",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.finance-period-reopen-approvals",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.finance-period-reopen-approvals / axe: merchant_administrator.finance-period-reopen-approvals",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.reports-daily",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.reports-daily",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.notifications",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_administrator.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_administrator.account",
+      "account": "merchant_administrator",
+      "host": "servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_administrator.account / axe: merchant_administrator.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.dashboard",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.dashboard / axe: merchant_branch.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.get-started",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.get-started / axe: merchant_branch.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.branch-profile",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.branch-profile / axe: merchant_branch.branch-profile",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.branch-calendar",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.branch-calendar / axe: merchant_branch.branch-calendar",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.branch-day",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.branch-day / axe: merchant_branch.branch-day",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.services",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.services / axe: merchant_branch.services",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.staff",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.staff / axe: merchant_branch.staff",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.operations-queue",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.operations-queue / axe: merchant_branch.operations-queue",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.operations-appointments",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.operations-appointments / axe: merchant_branch.operations-appointments",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.finance-invoices",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.finance-invoices / axe: merchant_branch.finance-invoices",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.finance-payments",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.finance-payments / axe: merchant_branch.finance-payments",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.finance-receipts",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.finance-receipts / axe: merchant_branch.finance-receipts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.cash-up",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.cash-up / axe: merchant_branch.cash-up",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.reports",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_branch.reports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.audit",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.audit / axe: merchant_branch.audit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.subscription-payment",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_branch.subscription-payment",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.notifications",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_branch.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_branch.account",
+      "account": "merchant_branch",
+      "host": "branch.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_branch.account / axe: merchant_branch.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.dashboard",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.dashboard / axe: merchant_human_resource.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.get-started",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.get-started / axe: merchant_human_resource.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.staff / axe: merchant_human_resource.staff",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-invite",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.staff-invite / axe: merchant_human_resource.staff-invite",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.staff-detail / axe: merchant_human_resource.staff-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail-edit",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "staff_profile_mutation_contract",
+      "negative_proof": "contextual child: canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_human_resource.staff-detail-edit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail-lifecycle",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.staff-detail-lifecycle / axe: merchant_human_resource.staff-detail-lifecycle",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail-access",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "staff_access_assignment_contract",
+      "negative_proof": "contextual child: canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_human_resource.staff-detail-access",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.eligibility",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.eligibility / axe: merchant_human_resource.eligibility",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.availability",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.availability / axe: merchant_human_resource.availability",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.compensation / axe: merchant_human_resource.compensation",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-detail",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.compensation-detail / axe: merchant_human_resource.compensation-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-setup",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.compensation-setup / axe: merchant_human_resource.compensation-setup",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-history",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.compensation-history / axe: merchant_human_resource.compensation-history",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.payouts",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.payouts / axe: merchant_human_resource.payouts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.reports",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_human_resource.reports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.audit",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.audit / axe: merchant_human_resource.audit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.notifications",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_human_resource.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_human_resource.account",
+      "account": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_human_resource.account / axe: merchant_human_resource.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.dashboard",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.dashboard / axe: merchant_finance.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.get-started",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.get-started / axe: merchant_finance.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.tasks",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.tasks / axe: merchant_finance.tasks",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payments-validations",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payments-validations / axe: merchant_finance.payments-validations",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payments-validation-detail",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payments-validation-detail / axe: merchant_finance.payments-validation-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payments-duplicates",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payments-duplicates / axe: merchant_finance.payments-duplicates",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.invoices",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.invoices / axe: merchant_finance.invoices",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payments",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payments / axe: merchant_finance.payments",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payments-partial-split",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payments-partial-split / axe: merchant_finance.payments-partial-split",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.receipts",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.receipts / axe: merchant_finance.receipts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.disputes",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.disputes / axe: merchant_finance.disputes",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.refunds",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.refunds / axe: merchant_finance.refunds",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.cash-up",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.cash-up / axe: merchant_finance.cash-up",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.periods",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.periods / axe: merchant_finance.periods",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.payouts",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.payouts / axe: merchant_finance.payouts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.compensation-liabilities",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.compensation-liabilities / axe: merchant_finance.compensation-liabilities",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.compensation-queries",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.compensation-queries / axe: merchant_finance.compensation-queries",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.subscription",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_finance.subscription",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.subscription-payment-attempts",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_finance.subscription-payment-attempts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.reports",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_finance.reports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.exports",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.exports / axe: merchant_finance.exports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.audit",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.audit / axe: merchant_finance.audit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.notifications",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_finance.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_finance.settings",
+      "account": "merchant_finance",
+      "host": "finance.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_finance.settings / axe: merchant_finance.settings",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.dashboard",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.dashboard / axe: merchant_front_office.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.get-started",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.get-started / axe: merchant_front_office.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.search",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.search / axe: merchant_front_office.search",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.clients",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.clients / axe: merchant_front_office.clients",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.clients-create",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.clients-create / axe: merchant_front_office.clients-create",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.client-detail",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.client-detail / axe: merchant_front_office.client-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.appointments",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.appointments / axe: merchant_front_office.appointments",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.walk-ins",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.walk-ins / axe: merchant_front_office.walk-ins",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.queue",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.queue / axe: merchant_front_office.queue",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.queue-transfer",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.queue-transfer / axe: merchant_front_office.queue-transfer",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.sessions",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.sessions / axe: merchant_front_office.sessions",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.invoices",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.invoices / axe: merchant_front_office.invoices",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.invoices-create",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.invoices-create / axe: merchant_front_office.invoices-create",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.invoice-payment-create",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.invoice-payment-create / axe: merchant_front_office.invoice-payment-create",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.payments-status",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.payments-status / axe: merchant_front_office.payments-status",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.activity",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.activity / axe: merchant_front_office.activity",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.subscription-payment",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_front_office.subscription-payment",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.notifications",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_front_office.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_front_office.account",
+      "account": "merchant_front_office",
+      "host": "office.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_front_office.account / axe: merchant_front_office.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.dashboard",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.dashboard / axe: merchant_personnel.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.get-started",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.get-started / axe: merchant_personnel.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.work-queue",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.work-queue / axe: merchant_personnel.work-queue",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.work-appointments",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.work-appointments / axe: merchant_personnel.work-appointments",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.work-sessions",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.work-sessions / axe: merchant_personnel.work-sessions",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.work-history",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.work-history / axe: merchant_personnel.work-history",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.work-preferred-requests",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.work-preferred-requests / axe: merchant_personnel.work-preferred-requests",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.clients",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.clients / axe: merchant_personnel.clients",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.messages-compose",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.messages-compose / axe: merchant_personnel.messages-compose",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.messages",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.messages / axe: merchant_personnel.messages",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings / axe: merchant_personnel.earnings",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-commission",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-commission / axe: merchant_personnel.earnings-commission",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-salary",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-salary / axe: merchant_personnel.earnings-salary",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-payouts",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-payouts / axe: merchant_personnel.earnings-payouts",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-terms",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-terms / axe: merchant_personnel.earnings-terms",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-statements",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-statements / axe: merchant_personnel.earnings-statements",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.earnings-queries",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.earnings-queries / axe: merchant_personnel.earnings-queries",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.availability",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.availability / axe: merchant_personnel.availability",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.notifications",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_personnel.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_personnel.account",
+      "account": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_personnel.account / axe: merchant_personnel.account",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.dashboard",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.dashboard / axe: merchant_audit.dashboard",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.get-started",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.get-started / axe: merchant_audit.get-started",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit / axe: merchant_audit.audit",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-event-detail",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-event-detail / axe: merchant_audit.audit-event-detail",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-flags",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-flags / axe: merchant_audit.audit-flags",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-operations",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-operations / axe: merchant_audit.audit-operations",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-finance",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-finance / axe: merchant_audit.audit-finance",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-compensation",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-compensation / axe: merchant_audit.audit-compensation",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-access",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-access / axe: merchant_audit.audit-access",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-privacy-preferred",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-privacy-preferred / axe: merchant_audit.audit-privacy-preferred",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.exports",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.exports / axe: merchant_audit.exports",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.exports-history",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.exports-history / axe: merchant_audit.exports-history",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.audit-integrity",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.audit-integrity / axe: merchant_audit.audit-integrity",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.notifications",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "status": "disabled_by_gate",
+      "gate": "phase_21n_blocked_by_external_gate_w",
+      "negative_proof": "inert navigation entry (aria-disabled, no href, gate statement as aria-describedby) + canonical path renders public-not-found + no runtime request",
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › gated: merchant_audit.notifications",
+      "result": "passed"
+    },
+    {
+      "contract_key": "merchant_audit.account",
+      "account": "merchant_audit",
+      "host": "audit.servana.ke",
+      "navigation_placement": "sidebar",
+      "status": "implemented",
+      "responsive": {
+        "widths_px": [
+          360,
+          767,
+          768,
+          1024,
+          1025,
+          1280,
+          1440
+        ],
+        "zoom_200_equivalent": "640x400 CSS viewport",
+        "page_overflow": "none",
+        "element_overflow": "none",
+        "navigation_surface": "asserted per width (drawer / rail / sidebar or header)",
+        "footer_reserve": "reserve >= footer and content ends above it at every width"
+      },
+      "accessibility": {
+        "axe": [
+          "light 1440x900",
+          "dark 360x780"
+        ],
+        "serious_or_critical": 0,
+        "h1_count": 1
+      },
+      "theme": {
+        "dark_surface": "rgb(17, 24, 39) token, no filter inversion"
+      },
+      "test": "ui-16-responsive-accessibility-theme.spec.ts › responsive: merchant_audit.account / axe: merchant_audit.account",
+      "result": "passed"
+    }
+  ]
+}

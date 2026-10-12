@@ -180,7 +180,7 @@ async function confirmRetire(): Promise<void> {
                   <span class="ml-2 rounded-control bg-surface-alt px-2 py-0.5 text-xs text-text-muted">{{ plan.key }}</span>
                   <span
                     v-if="plan.status === 'retired'"
-                    class="ml-2 rounded-control bg-cream px-2 py-0.5 text-xs text-brand-deep"
+                    class="ml-2 rounded-control bg-cream px-2 py-0.5 text-xs text-sv-text-heading"
                   >Retired</span>
                 </p>
                 <p
@@ -254,7 +254,7 @@ async function confirmRetire(): Promise<void> {
           :errors="form.errors.description"
           @update:model-value="form.values.description = $event"
         />
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="plan-tier"
             label="Tier"

@@ -8,6 +8,7 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { usePeriodLockStore, type PeriodLockView } from '@/stores/periodLockStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance financial periods (Plan §46; ADR-0007; Phase 18B). Finance creates locks
@@ -94,19 +95,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Financial periods
-      </h1>
-      <SvButton
-        v-if="canCreate"
-        data-testid="period-lock-create-open"
-        @click="creating = true"
-      >
-        Lock a period
-      </SvButton>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Financial periods"
+      eyebrow="Controls & Close"
+      description="Lock a closed period so its records cannot change. A reopen needs a recorded reason, and an exceptional reopen needs owner approval."
+    >
+      <template #actions>
+        <SvButton
+          v-if="canCreate"
+          data-testid="period-lock-create-open"
+          @click="creating = true"
+        >
+          Lock a period
+        </SvButton>
+      </template>
+    </SvPageHeader>
 
     <p
       v-if="actionError"

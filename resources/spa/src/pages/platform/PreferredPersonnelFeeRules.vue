@@ -16,13 +16,14 @@ import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import PreferredFeeRulesSection from '@/pages/platform/billing/PreferredFeeRulesSection.vue';
 import { useCan } from '@/composables/useCan';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 </script>
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-preferred-fees-screen"
   >
     <SvPageHeader
@@ -34,16 +35,15 @@ const { can } = useCan();
     <SvPermissionState v-if="!can('platform.preferred_personnel_fee.manage')" />
 
     <template v-else>
-      <PreferredFeeRulesSection />
-
-      <p
-        class="mt-8 text-xs text-sv-text-muted"
-        data-testid="preferred-fees-immutability-note"
-      >
-        Existing invoices never recalculate when a rule changes — each invoice keeps the fee terms
-        that were in force when it was issued. Branch users can see the effective rule but cannot
-        edit it.
-      </p>
+      <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
+      <PlatformRuleWorkspace>
+        <PreferredFeeRulesSection />
+        <template #rule>
+          <p data-testid="preferred-fees-immutability-note">
+            Existing invoices never recalculate when a rule changes — each invoice keeps the fee terms that were in force when it was issued. Branch users can see the effective rule but cannot edit it.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

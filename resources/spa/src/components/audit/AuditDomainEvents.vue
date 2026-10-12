@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
-import SvCard from '@/components/ui/SvCard.vue';
+import AuditEventCard from '@/components/audit/AuditEventCard.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuditEventStore, type AuditDomain } from '@/stores/auditEventStore';
@@ -14,6 +14,11 @@ import { useAuditEventStore, type AuditDomain } from '@/stores/auditEventStore';
  * (branch_id = null) rows are never returned. When a domain has no events yet
  * (e.g. compensation until its owning phases), it shows an honest empty state —
  * no events are ever fabricated.
+ *
+ * UI-16 (UI16-VIS-015): rendered with the tonal page header and the UI-15 AuditEventCard — time-led,
+ * the readable action above its exact token, the real severity badge — instead of a raw action
+ * token, a bare severity word and an ISO timestamp. The card is the same masked, read-only record;
+ * it only links to evidence when this shell has a detail route, and never offers a flag control.
  */
 const props = defineProps<{
   domain: AuditDomain;
@@ -55,71 +60,47 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="font-display text-2xl font-bold text-heading">
-          {{ title }}
-        </h1>
-        <p class="mt-1 text-sm text-text-muted">
-          {{ subtitle }}
-        </p>
-        <p
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      :title="title"
+      eyebrow="Reporting & Audit"
+    >
+      <template #description>
+        {{ subtitle }}
+        <span
           v-if="mfaNote"
-          class="mt-1 text-xs font-medium text-text-muted"
+          class="mt-1 block text-xs font-medium text-sv-text-muted"
           data-testid="audit-domain-mfa-note"
-        >
-          Multi-factor authentication is required to view this audit trail.
-        </p>
-      </div>
-      <SvSelect
-        :id="`${domain}-severity-filter`"
-        v-model="store.filters.severity"
-        label="Severity"
-        :options="severityOptions"
-        class="w-full sm:w-56"
-        @update:model-value="reload"
-      />
-    </div>
+        >Multi-factor authentication is required to view this audit trail.</span>
+      </template>
+      <template #actions>
+        <SvSelect
+          :id="`${domain}-severity-filter`"
+          v-model="store.filters.severity"
+          label="Severity"
+          :options="severityOptions"
+          class="w-full md:w-56"
+          @update:model-value="reload"
+        />
+      </template>
+    </SvPageHeader>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load these audit events."
       :empty-message="emptyMessage"
       @retry="reload"
     >
-      <ul class="flex flex-col gap-2">
+      <ul class="flex flex-col gap-3">
         <li
           v-for="event in store.events"
           :key="event.id"
+          data-testid="audit-domain-row"
         >
-          <SvCard
-            as="article"
-            padding="md"
-            data-testid="audit-domain-row"
-          >
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <div class="min-w-0">
-                <p class="font-display font-semibold text-heading">
-                  {{ event.action }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  {{ event.severity }}<span v-if="event.actor"> · {{ event.actor }}</span>
-                </p>
-                <p class="text-xs text-text-muted">
-                  {{ event.created_at }}
-                </p>
-              </div>
-              <RouterLink
-                v-if="detailRouteName"
-                :to="{ name: detailRouteName, params: { id: event.id } }"
-                class="inline-flex min-h-[44px] items-center rounded-control px-3 text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                View
-              </RouterLink>
-            </div>
-          </SvCard>
+          <AuditEventCard
+            :event="event"
+            :to="detailRouteName ? { name: detailRouteName, params: { id: event.id } } : null"
+          />
         </li>
       </ul>
     </SvStateBoundary>

@@ -5,6 +5,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { usePeriodLockStore, type PeriodLockView } from '@/stores/periodLockStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Merchant Administrator exceptional period-reopen approvals (Plan §46; ADR-0007;
@@ -55,14 +56,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Exceptional period-reopen approvals
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      You can approve an exceptional reopen requested by Finance. You cannot create locks
-      or execute reopens — those are Finance actions.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Exceptional period-reopen approvals"
+      eyebrow="Compensation & Approvals"
+      description="You can approve an exceptional reopen requested by Finance. You cannot create locks or execute reopens — those are Finance actions."
+    />
 
     <p
       v-if="actionError"

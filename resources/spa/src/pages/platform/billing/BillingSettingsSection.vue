@@ -127,7 +127,7 @@ async function submit(): Promise<void> {
             @update:model-value="form.billing_mode = $event"
           />
 
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-4 md:grid-cols-2">
             <SvTextInput
               id="default-trial-days"
               label="Default trial days"

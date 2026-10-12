@@ -252,7 +252,7 @@ function closeQuery(): void {
           empty-message="No earnings recorded yet."
           @retry="earnings.fetchOverview()"
         >
-          <div class="grid gap-3 sm:grid-cols-2">
+          <div class="grid gap-3 md:grid-cols-2">
             <SvCard
               v-for="row in earnings.overview.currencies"
               :key="row.currency"

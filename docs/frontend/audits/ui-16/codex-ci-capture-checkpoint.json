@@ -1,0 +1,46 @@
+{
+  "schema": "servana.ui16.codex-ci-capture-checkpoint.v1",
+  "phase": "UI-16",
+  "prior_head": "229013724fdcc85da3096a9347e6bff5afbbfd2a",
+  "first_run": {
+    "id": 38276951442,
+    "Backend": "success",
+    "Frontend": "success",
+    "Docker": "success",
+    "Security": "success",
+    "E2E": "failure: eight missing Linux baseline files; 16 authentication cases passed",
+    "full_e2e": "not_run",
+    "report_artifact": 11759941120,
+    "digest": "sha256:b8a64dd974217b99cc3af69387ba9551932d7aa34e468b2007c09ef4ad2e54dd"
+  },
+  "fix": "Attach explicit PNG only when a baseline is missing; keep strict assertion failing; no expected baseline created",
+  "local_tests": "3/3 existing Windows comparisons; ESLint and source secret scan exit 0",
+  "files": [
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts",
+      "before_sha256": "f61e3ee298c02e16510aa5fc219409d95f13069701b1a24bff43cde399bf0e86",
+      "after_sha256": "7b1b54cd2a0aa2768da1d6353907504761a281750a67c091c35394a504d87a8a"
+    },
+    {
+      "path": "docs/proof/ui-16.md",
+      "before_sha256": "163db2f378cf1d4d8406f18cc41eaec22f82ace4c67da3682175f33bee99e6b8",
+      "after_sha256": "19df0a6219ee6301d1f97e1220bc326cfdfeeeda6dc3576448d1159e2e851763"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "before_sha256": "5e5ca50594f3fc1ae6db9853acb15b8017d88adaa5d8eab4cbe29cc4659fd908",
+      "after_sha256": "a7045038e8303ba3dfc804949c79643381e08dd29ea6d452f5f4f0320b02d0a7"
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/codex-ci-capture-checkpoint.json",
+      "before_sha256": null,
+      "after_sha256": null
+    }
+  ],
+  "pending": [
+    "Hosted missing PNG capture",
+    "Individual Linux review",
+    "Final exact-head five-job success",
+    "Normal governance/merge/clean main"
+  ]
+}

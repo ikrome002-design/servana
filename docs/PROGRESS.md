@@ -151,11 +151,111 @@ while the repository records said the work was complete.
 | UI-12 | Finance experience (24 pages) | ✅ `verified_complete` | PR [#62](https://github.com/ikrome002-design/servana/pull/62) merged — normal squash `6796d82b…`, final reviewed head `df541979…`, equal reviewed/merge tree `7609bfa1…`, merged `2026-08-14T03:17:40Z`. Exact-head CI `31764745586` passed Backend/Frontend/Docker/Security/E2E; governance comment `5288994536`; blank decision and 0 reviews/approvals (**not** independent approval); source branches absent. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; all seventeen closures promoted. | [ui-12.md](proof/ui-12.md) | Reconciled live exactly once on the UI-13 branch |
 | UI-13 | Front Office experience (19 pages) | ✅ `verified_complete` | PR [#63](https://github.com/ikrome002-design/servana/pull/63) merged — normal squash `14cfadcb…`, final reviewed head `126756b3…`, equal reviewed/merge tree `9d91b415…`, merged `2026-08-20T13:36:11Z`. Exact-head CI `32371896795` passed Backend/Frontend/Docker/Security/E2E; governance comment `5356633232`; blank/NONE decision and 0 reviews/approvals (**not** independent approval); source branches absent. **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**; all 24 closures promoted. | [ui-13.md](proof/ui-13.md) | Reconciled live exactly once on the UI-14 branch |
 | UI-14 | Personnel experience (20 pages) | ✅ `verified_complete` | PR [#65](https://github.com/ikrome002-design/servana/pull/65) merged — normal squash `20c27dca…` (single parent `43b623c0…`, REM-DEP-003), implementation commit `04b68169…`, final reviewed head `92603fa6…`, equal reviewed/merge tree `93ec8269…`, merged `2026-10-10T22:25:00Z`. Exact-head CI `38089104875` (attempt 1, the only run on the branch) passed Backend/Frontend/Docker/Security/E2E; governance comment `6102827769`; blank/NONE decision, 0 submitted reviews, 0 approvals (**not** independent approval); source branch absent local + remote. **19 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 20**. | [ui-14.md](proof/ui-14.md) | Reconciled live exactly once on the UI-15 branch (2026-10-11) |
-| UI-15 | Audit experience (15 pages) | 🟡 `local_complete` — security closeout verified; PR #66 final CI/merge pending | `phase-ui-15-audit-experience` from `20c27dca…`; **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15** | [ui-15.md](proof/ui-15.md) | Codex Prompt 2 release |
-| UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
+| UI-15 | Audit experience (15 pages) | ✅ `verified_complete` | PR [#66](https://github.com/ikrome002-design/servana/pull/66) merged `2026-10-11` — normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`, final reviewed head `0ae694b8b8fc37e36ad7296eff9fdfec09cbb002`, equal reviewed/merge tree `73bd2171145a82059b5580a605527000db077d3c`. Exact-head CI run `38160619788` passed Backend/Frontend/Docker/Security/E2E; governance comment `6112205584` (actor `ikrome002-design`); blank decision, **0** submitted reviews, **0** approvals (**not** independent approval); source branch `phase-ui-15-audit-experience` absent local + remote. `UI15-SEC-OBS-001` export-domain authorization closed in the merged code (`AuditExportDomainAuthorizationTest`, 30 cases / 125 assertions). **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15**. | [ui-15.md](proof/ui-15.md) | Reconciled live exactly once on the UI-16 branch (2026-10-12) |
+| UI-16 | Responsive, accessibility, theme, visual regression (incl. UI-08…UI-12 visual remediation) | 🟡 `local_complete` — uncommitted handoff to Codex; PR/CI/merge pending | `phase-ui-16-responsive-accessibility-theme-visual-regression` from `088a6cd7…`; **132 implemented / 28 disabled_by_gate / 0 planned / 0 removed = 160** | [ui-16.md](proof/ui-16.md) | Codex Prompt 2 release |
 | UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
 
-### Phase UI-15 — Audit experience — local_complete — security closeout verified; PR #66 final CI/merge pending
+### Phase UI-16 — Responsive, accessibility, theme and visual regression — local_complete (uncommitted handoff)
+
+Branch `phase-ui-16-responsive-accessibility-theme-visual-regression` from verified base
+`088a6cd764534ac5a4e44d1ce8c1e72cebfd480b` (UI-15 PR #66, reconciled once below). **Claude Code made no
+commit, staged nothing, pushed nothing, opened no PR and dispatched no CI.** Codex Prompt 2 owns the GitHub
+lifecycle. Proof: [ui-16.md](proof/ui-16.md); evidence: `docs/frontend/audits/ui-16/`; handoff:
+`docs/frontend/audits/ui-16/claude-to-codex-handoff.{md,json}`.
+
+**Contract:** 160 = 132 implemented + 28 disabled_by_gate + 0 planned + 0 removed (unchanged; no route,
+API, permission, policy, migration or business rule changed; OpenAPI 307 / 358; permissions 169/134/35).
+
+**Done:**
+- UI-08…UI-12 visual remediation — 82 older pages: 24 redesigned + 58 converged, before mean 18.9 →
+  after 28.4 / 30, every page ≥ 27; 50 UI-13/14/15 pages preserved (`page-visual-acceptance.json`,
+  `visual-debt-closure.json`, before/after captures).
+- 20 shared defects + 14 visual-debt records + inherited `UI01-PROV-003` and `UI01-A11Y-001`, all
+  `local_complete` (`defect-closure.json`) — dead `sm:`/`xl:` utilities, footer reserve, state-boundary
+  layout, navigation strip/sidebar/title, dead colour utilities, raw status tokens, Nairobi dates,
+  a missing `SvDialog` import, fixture drift, five primitives registered (59 in the registry).
+- Responsive (7 widths + 200% zoom), axe light + dark (0 serious/critical), theme first paint,
+  persistence and reduced motion on all 132 live pages; 28 gate negatives — 307/307.
+- 106 candidate visual baselines (53 frames × win32 + linux) with a negative control — 54/54 per platform.
+- Production-origin browser gate (`tests/e2e-origin`, 16/16 on the built images, negative control
+  fails as required) wired into the CI Docker job.
+- Full local acceptance: backend 3,055 passed / 14 skipped / 0 failed; Vitest 1,467; whole-product
+  Playwright 2,078 / 4 failed → the 4 stale expectations corrected and re-run green; lint, Pint,
+  Larastan, generators, audits clean. Predecessor evidence restored exactly (17 scopes match).
+
+**Skipped / pending (owner · entry condition):**
+- Product-owner acceptance of the 106 candidate baselines and 24 redesigns · product owner · review of
+  `screenshots/after/` and the baseline frames.
+- A single uninterrupted whole-product Playwright run after the 4 expectation corrections · Codex CI.
+- First CI execution of the production-origin gate · Codex Prompt 2.
+- Screen-reader pass; deployed DNS/TLS origin; performance budgets · UI-17.
+- Gate-W pages (21N, 20D-W, 21R-B) · External Gate W.
+
+**Next exact action:** Codex Prompt 2 — verify the handoff manifest byte-for-byte, stage exactly the
+inventoried paths, commit, open the UI-16 PR, run the five exact-head CI jobs, govern and merge; then
+reconcile UI-16 once on the UI-17 branch. Do not start UI-17 or Phase 25 before that.
+
+**Codex verification checkpoint (2026-10-12): CI_VERIFICATION_PENDING.** Original 467-path handoff
+matched byte-for-byte; PR #66/base/equal trees/five jobs and all 17 historical evidence scopes verified.
+Independent contracts and 14 compiled-utility/theme/visual-control cases passed; focused Vitest
+20/20 passed with one thread after a zero-test fork startup timeout. Codex found and fixed the absent
+authentication footer and wrong-account self-registration CTA, added legal/form/state/record-card
+comparisons, and strengthened successful CI evidence retention. Details, failure history and exact
+scope: `docs/proof/ui-16.md`, `codex-closeout-addendum.json`, `codex-visual-baseline-index.json`.
+Local Docker's Linux-engine pipe is absent; added Linux baselines and all current production/integration
+gates await hosted execution and review under prompt §6.1. Merge remains prohibited until the final
+head has all five successful jobs and accepted images. The original Claude manifest is not rewritten.
+No actual PR/merge, independent reviewer or product-owner visual approval is implied by this checkpoint.
+
+Implementation committed as `45d518f5ccf82649f94b58184835bc1d7bff6c40` (485 exact approved paths,
+staged blob parity, clean worktree afterward). A narrow follow-up binds the verified non-secret
+token-source digest to that commit via the existing `.gitleaksignore` fingerprint policy.
+Publication remains provisional; Linux baseline acceptance, final CI and merge are pending.
+
+First hosted run `38276951442`, PR #67 head `229013724fdcc85da3096a9347e6bff5afbbfd2a`: Backend,
+Frontend, Docker and Security succeeded. E2E passed 16 authentication cases and failed exactly
+eight missing Linux expectations; full E2E was not run. Reports/traces were preserved, but strict
+comparison saved no actual PNG, so the focused spec now attaches missing frames explicitly without
+accepting them. Three Windows form/state/card comparisons and ESLint passed after that correction.
+The next hosted capture/review and final five-job run remain pending.
+
+Second capture run `38278036287` likewise passed four jobs and the 16 auth cases; eight missing
+Linux expectations still failed. Buffer attachments stayed in memory with list/JUnit reporters.
+The spec now writes explicit review files and attaches by path. A one-case local missing-baseline
+negative control preserved PNGs while still failing and created zero expected files; ESLint passed.
+All failures and artifact digests remain in proof; Linux acceptance and final E2E are pending.
+
+Linux image review completed from run `38279401984` (head `433b8eb…`): all eight initial/retry
+PNG pairs are identical and individually accepted by Codex; exact bytes become the eight Linux
+expectations. Original 106 frames unchanged; 122 active frames total, two separate superseded
+diagnostics. Source/config fingerprint and decisions: `codex-linux-baseline-acceptance.json`.
+The three capture runs each passed Backend/Frontend/Docker/Security and failed only eight missing
+expectations (16 auth cases passed; full E2E not run). These failures are preserved, not waived.
+**Next gate:** new exact-final-head five-job CI, strict visual comparisons and complete E2E, then
+truthful zero-review governance if still permitted, ordinary merge with equal tree and clean main.
+
+Run `38281066223` passed all five jobs on `32c4c73…`, but full E2E had 2,104 clean passes and two
+retry-only successes. Codex withheld merge: the active nav interpolated valid theme endpoints
+through a serious 2.79 contrast midpoint, and UI08 measured geometry before fonts/layout settled.
+Only nav colour transitions and the readiness assertion changed; a 40-frame two-direction contrast
+regression with a failing perturbation control was added. Both reported cases plus that check
+passed three local repetitions (9/9, no retries); all 122 baseline bytes remain unchanged.
+Detailed before/after records: proof and `codex-nav-contrast-checkpoint.json`. A new exact-final-head
+five-job/full-E2E result is required; the green-but-retried run is retained, not reused for merge.
+
+### Phase UI-15 — Audit experience — verified complete
+
+Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at
+`2026-10-11T18:23:30Z` by a normal squash, `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`, final reviewed head
+`0ae694b8b8fc37e36ad7296eff9fdfec09cbb002`, head tree = merge tree `73bd2171145a82059b5580a605527000db077d3c`.
+Exact-head CI run `38160619788` passed all five jobs (Backend — Pint, Larastan, Pest · Frontend — ESLint,
+vue-tsc, Vitest, build · Docker — build images · Security — gitleaks · E2E — Playwright). Governance comment
+`6112205584` (actor `ikrome002-design`); review decision blank, 0 submitted reviews, 0 approvals — the
+solo-maintainer exception, **not** independent approval. Source branch `phase-ui-15-audit-experience` absent
+locally and on origin. `UI15-SEC-OBS-001` (export-domain authorization) is resolved in the merged code. The
+pre-merge record below is preserved unchanged; lifecycle promotion is carried by this section, the roadmap row,
+the SRV-UI15-* traceability rows, `Phase23TraceabilityTest` and the appended sections of `ui-15.md`,
+`ui-15/implementation-checklist.md` and `ui-15/defect-closure.json`.
 
 Branch `phase-ui-15-audit-experience` from verified base `20c27dcac7d0663d93a566d8a3ff42aa566171d7`
 (UI-14 PR #65, reconciled once above). **Claude Code made no commit, staged nothing, pushed nothing and

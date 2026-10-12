@@ -32,8 +32,10 @@
  */
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import GatedNavigationEntry from '@/components/navigation/GatedNavigationEntry.vue';
 import { SvIconChevronDown } from '@/design-system/icons';
 import type { NavigationNode } from '@/navigation/navigationFilter';
+import { navigationIcon } from '@/navigation/navigationIcons';
 
 const props = withDefaults(
   defineProps<{
@@ -342,36 +344,37 @@ onBeforeUnmount(() => {
             <RouterLink
               v-if="!item.disabled && item.routeName"
               :to="{ name: item.routeName }"
-              class="sv-focus-ring flex min-h-sv-touch items-center px-3 py-2 text-sm text-sv-text hover:bg-sv-surface-subtle"
-              :class="isActive(item) ? 'font-semibold text-sv-text-heading' : ''"
+              class="sv-nav-entry sv-focus-ring flex min-h-sv-touch items-center gap-3 px-3 py-2 text-sm text-sv-text hover:bg-sv-surface-subtle"
+              :class="isActive(item) ? 'sv-nav-entry--active font-semibold text-sv-text-heading' : ''"
               :aria-current="isActive(item) ? 'page' : undefined"
               :data-testid="`nav-link-${item.key}`"
               @click="onNavigate"
             >
+              <span
+                aria-hidden="true"
+                class="sv-nav-entry__icon inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-control"
+              >
+                <component
+                  :is="navigationIcon(item.icon)"
+                  class="h-[18px] w-[18px]"
+                />
+              </span>
               {{ item.label }}
             </RouterLink>
 
             <!--
               A gate-blocked entry. Visible because the authoritative map lists it, inert because it
               has no destination, and it names the exact gate rather than a vague "coming soon".
-              `tabindex="0"` keeps it keyboard-discoverable: a user must be able to find out WHY it
-              is unavailable, which is impossible if it cannot be reached.
             -->
-            <span
+            <GatedNavigationEntry
               v-else
-              role="link"
-              aria-disabled="true"
-              tabindex="0"
-              class="sv-focus-ring flex min-h-sv-touch flex-col justify-center px-3 py-2 text-sm text-sv-disabled-fg"
-              :data-testid="`nav-gated-${item.key}`"
-            >
-              <span>{{ item.label }}</span>
-              <span
-                v-if="item.disabledReason"
-                class="text-xs"
-                :data-testid="`nav-gate-reason-${item.key}`"
-              >Unavailable — {{ item.disabledReason }}</span>
-            </span>
+              :label="item.label"
+              :reason="item.disabledReason"
+              :icon="navigationIcon(item.icon)"
+              surface="panel"
+              :testid="`nav-gated-${item.key}`"
+              :reason-testid="`nav-gate-reason-${item.key}`"
+            />
           </li>
         </ul>
       </li>
@@ -429,28 +432,31 @@ onBeforeUnmount(() => {
                 <RouterLink
                   v-if="!item.disabled && item.routeName"
                   :to="{ name: item.routeName }"
-                  class="sv-focus-ring flex min-h-sv-touch items-center px-3 py-2 text-sm text-sv-text hover:bg-sv-surface-subtle"
-                  :class="isActive(item) ? 'font-semibold text-sv-text-heading' : ''"
+                  class="sv-nav-entry sv-focus-ring flex min-h-sv-touch items-center gap-3 px-3 py-2 text-sm text-sv-text hover:bg-sv-surface-subtle"
+                  :class="isActive(item) ? 'sv-nav-entry--active font-semibold text-sv-text-heading' : ''"
                   :aria-current="isActive(item) ? 'page' : undefined"
                   :data-testid="`nav-overflow-link-${item.key}`"
                   @click="onNavigate"
                 >
+                  <span
+                    aria-hidden="true"
+                    class="sv-nav-entry__icon inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-control"
+                  >
+                    <component
+                      :is="navigationIcon(item.icon)"
+                      class="h-[18px] w-[18px]"
+                    />
+                  </span>
                   {{ item.label }}
                 </RouterLink>
-                <span
+                <GatedNavigationEntry
                   v-else
-                  role="link"
-                  aria-disabled="true"
-                  tabindex="0"
-                  class="sv-focus-ring flex min-h-sv-touch flex-col justify-center px-3 py-2 text-sm text-sv-disabled-fg"
-                  :data-testid="`nav-overflow-gated-${item.key}`"
-                >
-                  <span>{{ item.label }}</span>
-                  <span
-                    v-if="item.disabledReason"
-                    class="text-xs"
-                  >Unavailable — {{ item.disabledReason }}</span>
-                </span>
+                  :label="item.label"
+                  :reason="item.disabledReason"
+                  :icon="navigationIcon(item.icon)"
+                  surface="panel"
+                  :testid="`nav-overflow-gated-${item.key}`"
+                />
               </li>
             </ul>
           </template>
@@ -470,11 +476,11 @@ onBeforeUnmount(() => {
       >
         <p
           :id="`${group.id}-label`"
-          class="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-sv-text-muted"
+          class="px-3 pb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-sv-text-muted"
         >
           {{ group.name }}
         </p>
-        <ul class="flex flex-col gap-1">
+        <ul class="flex flex-col gap-0.5">
           <li
             v-for="item in group.items"
             :key="`stacked-${item.key}`"
@@ -482,31 +488,60 @@ onBeforeUnmount(() => {
             <RouterLink
               v-if="!item.disabled && item.routeName"
               :to="{ name: item.routeName }"
-              class="sv-focus-ring flex min-h-sv-touch items-center rounded-control px-3 py-2 text-sm text-sv-text hover:bg-sv-surface-subtle"
-              :class="isActive(item) ? 'bg-sv-surface-subtle font-semibold text-sv-text-heading' : ''"
+              class="sv-nav-entry sv-focus-ring flex min-h-sv-touch items-center gap-3 rounded-control px-2 py-1.5 text-sm leading-5 text-sv-text-secondary hover:bg-sv-surface-subtle hover:text-sv-text"
+              :class="isActive(item) ? 'sv-nav-entry--active font-semibold text-sv-text-heading' : ''"
               :aria-current="isActive(item) ? 'page' : undefined"
               :data-testid="`nav-stacked-link-${item.key}`"
               @click="onNavigate"
             >
-              {{ item.label }}
-            </RouterLink>
-            <span
-              v-else
-              role="link"
-              aria-disabled="true"
-              tabindex="0"
-              class="sv-focus-ring flex min-h-sv-touch flex-col justify-center rounded-control px-3 py-2 text-sm text-sv-disabled-fg"
-              :data-testid="`nav-stacked-gated-${item.key}`"
-            >
-              <span>{{ item.label }}</span>
               <span
-                v-if="item.disabledReason"
-                class="text-xs"
-              >Unavailable — {{ item.disabledReason }}</span>
-            </span>
+                aria-hidden="true"
+                class="sv-nav-entry__icon inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-control"
+              >
+                <component
+                  :is="navigationIcon(item.icon)"
+                  class="h-[18px] w-[18px]"
+                />
+              </span>
+              <span class="min-w-0">{{ item.label }}</span>
+            </RouterLink>
+            <GatedNavigationEntry
+              v-else
+              :label="item.label"
+              :reason="item.disabledReason"
+              :icon="navigationIcon(item.icon)"
+              :testid="`nav-stacked-gated-${item.key}`"
+            />
           </li>
         </ul>
       </section>
     </div>
   </nav>
 </template>
+
+<style scoped>
+/*
+ * UI-16 navigation entry: an icon chip beside every label (the icon key is canonical contract data,
+ * resolved by the closed `NAVIGATION_ICONS` map). The active entry is marked by a filled chip AND a
+ * tinted row AND `aria-current` plus weight — never by colour alone.
+ */
+.sv-nav-entry__icon {
+  color: var(--sv-color-text-muted);
+  background: transparent;
+}
+/* Theme pairs must switch atomically: interpolating opposite foreground/background colours
+   creates a low-contrast midpoint even when both endpoint token pairs pass AA. */
+.sv-nav-entry:hover .sv-nav-entry__icon {
+  background: var(--sv-color-surface-raised);
+  color: var(--sv-color-text-heading);
+}
+.sv-nav-entry--active {
+  background: var(--sv-color-nav-active-bg);
+  color: var(--sv-color-nav-active-fg);
+}
+.sv-nav-entry--active .sv-nav-entry__icon,
+.sv-nav-entry--active:hover .sv-nav-entry__icon {
+  background: var(--sv-color-brand-primary);
+  color: var(--sv-color-text-on-brand);
+}
+</style>

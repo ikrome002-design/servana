@@ -1,0 +1,770 @@
+{
+  "schema": "ui-16.defects.v1",
+  "phase": "UI-16",
+  "manifesto": "Every record carries the five-stage manifesto: proven problem (evidence), root cause, precise fix, tests, and demonstrated resolution.",
+  "status_vocabulary": [
+    "local_complete",
+    "open",
+    "routed"
+  ],
+  "defects": [
+    {
+      "id": "UI16-RESP-001",
+      "area": "responsive",
+      "problem": "76 sm:/xl: utilities across 45 .vue files (UI-08…UI-12, shared shell, landing scaffold) compiled to NOTHING: every sm:grid-cols-2 stayed one column at every width, so the Platform dashboard and many forms rendered as full-width stacked boxes.",
+      "evidence": "Compiled index CSS contains no `sm\\:grid-cols-2`, `xl\\:grid-cols-4` or `sm\\:inline` rule while `md\\:grid-cols-2` exists; before capture super_administrator.dashboard shows single-column KPI stacks.",
+      "root_cause": "style.css sets --breakpoint-sm/xl/2xl: initial (only the token-owned md=768 and lg=1025 screens exist, ADR-021); older pages were authored with Tailwind's default screens.",
+      "fix": "Class-attribute-scoped remap sm: -> md: (tablet floor) and xl: -> lg: (desktop floor) after proving no line already carried the target prefix; AppShell context label fixed by hand.",
+      "tests": [
+        "resources/spa/src/design-system/ui16SourceGuards.spec.ts (dead breakpoint guard + negative control)",
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (compiled-utility check + negative control)"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-DATA-001",
+      "area": "content",
+      "problem": "Platform Billing Settings printed the literal text 'entry.hint' under all three general-settings fields.",
+      "evidence": "before capture super_administrator.billing-settings; GeneralSettingsSection.vue:121 `help=\"entry.hint\"`.",
+      "root_cause": "Static attribute instead of a binding (missing ':').",
+      "fix": ":help=\"entry.hint\"; repository-wide scan found no other instance.",
+      "tests": [
+        "ui16SourceGuards.spec.ts staticExpressionAttributes guard + negative control"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-DATA-002",
+      "area": "content",
+      "problem": "Platform Get Started evidence read 'defines a undefined-day trial' when the server omitted a figure.",
+      "evidence": "cap-mid super_administrator.get-started; platformGetStartedStore.ts:236 String(undefined).",
+      "root_cause": "String() of an optional numeric field.",
+      "fix": "An absent figure is stated as absent ('no default trial length recorded'), never rendered as a value.",
+      "tests": [
+        "vitest platform suite 191/191"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-FUNC-001",
+      "area": "function",
+      "problem": "The Front Office payment 'confirmation modal' never opened or closed: its content and the 'Record payment' button were always rendered inline at the bottom of the page.",
+      "evidence": "RecordPayment.vue renders <SvDialog> with no import; Vue resolves it as an unknown element whose children always render.",
+      "root_cause": "Missing component import — not an error to vue-tsc or the production build.",
+      "fix": "Import SvDialog; the existing review -> confirm tests already follow the intended modal flow.",
+      "tests": [
+        "RecordPayment.spec.ts 9/9",
+        "ui16SourceGuards.spec.ts unimported-component guard + negative control"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-A11Y-001",
+      "area": "accessibility",
+      "problem": "Merchant Administrator, Branch, HR and Finance Get Started pages rendered no <h1>.",
+      "evidence": "before captures: h1 count 0 on 4 pages (cap-before metrics).",
+      "root_cause": "RoleGetStarted rendered the orientation hero (which owns the h1) only for Front Office, Personnel and Audit; the checklist heading is a section <h2>.",
+      "fix": "One orientation map for all seven merchant accounts; each renders SvOperationalHero with a distinct title.",
+      "tests": [
+        "ui-16 axe sweep asserts exactly one h1 on all 132 live pages",
+        "get-started vitest"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-A11Y-002",
+      "area": "accessibility",
+      "problem": "The notifications control on the Super Administrator header was Charcoal on Deep Earth Brown (~1.3:1), effectively invisible on all 17 platform pages (WCAG 1.4.11 needs 3:1). axe does not test icon contrast.",
+      "evidence": "before capture super_administrator.dashboard header; SvIconButton ghost = text-sv-text.",
+      "root_cause": "A light-surface control placed on the theme-invariant brown header without the header owning its glyph colour.",
+      "fix": "AppShell scoped rule sets the trigger glyph to white on the platform header in both themes.",
+      "tests": [
+        "visual baseline shell--super-administrator-header-open"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-A11Y-003",
+      "area": "accessibility",
+      "problem": "Status chips on Plan Management, Plan Prices, Preferred Fee Rules, Subscription Plans and HR Compensation failed AA contrast in dark mode (axe serious color-contrast).",
+      "evidence": "ui-16 axe dark 360: subscription-plan `.bg-cream`, billing-preferred-personnel-fees `.bg-primary/15`.",
+      "root_cause": "Legacy `text-brand-deep` is #4A2208 in BOTH themes; `--color-cream` aliases surface-warm, which is #273340 in dark. A stale comment in Compensation.vue claimed the pair stayed cream.",
+      "fix": "Adaptive `text-sv-text-heading` on the tinted chips; comment corrected.",
+      "tests": [
+        "ui-16 axe sweep (dark, 360)"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-TOKEN-001",
+      "area": "token",
+      "problem": "The Branch dashboard pulse panel faded from brown to white at its corner.",
+      "evidence": "before capture merchant_branch.dashboard; class `to-brand-citrus/80`.",
+      "root_cause": "`brand-citrus` is not a configured colour, so the gradient end compiled to nothing (transparent).",
+      "fix": "Branch dashboard recomposed onto SvOperationalHero (token gradient).",
+      "tests": [
+        "compiled-utility check"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-TOKEN-002",
+      "area": "token",
+      "problem": "11 more template utilities compiled to nothing: error text (`text-danger`, `text-danger-strong`) rendered in the default colour, the file-upload button had no background (`bg-savannah-orange`), timeline dots lost their ring (`border-sv-surface`), search focus/hover states were inert.",
+      "evidence": "compiled-utility audit against the built stylesheet: 11 missing (SvFileUpload, BranchCalendar, BranchAudit, CompensationHistory, HrAuditActivity, GlobalSearch, ServiceSessionList, InvoiceCreate, InvoiceDetail, MerchantProfile).",
+      "root_cause": "Names from an earlier palette that the token-driven Tailwind config never defined.",
+      "fix": "Each mapped to its token-backed equivalent (sv-error-fg, sv-brand, sv-focus, sv-surface-raised, sv-text, sv-text-muted, sv-warning-fg); audit now reports 0.",
+      "tests": [
+        "ui-16 compiled-utility check + negative control"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-FOOTER-001",
+      "area": "layout",
+      "problem": "On a 360px phone the fixed footer was 125px tall while every page reserved 88px, so the bottom ~37px of EVERY mobile page sat under the footer; on desktop the footer was 61px against a 56px reserve.",
+      "evidence": "ui-16 responsive sweep: 131/132 pages failed at 360px with 'reserved 88px, footer 125px'; footer measurement 1025px: 61 vs 56.",
+      "root_cause": "The footer's legal row wrapped freely into three lines on mobile and the 44px social targets plus padding exceeded the desktop token — content height, not the token, decided the footer's size.",
+      "fix": "Deterministic mobile composition (copyright line, links on at most two lines at 11px, 44px social row) and tokens sized to the measured worst case: mobile 7.25rem, desktop 4rem; tablet unchanged (72 = 72). One token still drives both the footer and the reserve (ADR-024).",
+      "tests": [
+        "ui-16 responsive sweep footer-reserve assertion at seven widths and 200%",
+        "predecessor reserve >= footer assertions (UI-10…UI-15)"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-LAYOUT-001",
+      "area": "layout",
+      "problem": "Content butted directly against the preceding header on pages whose SvStateBoundary carried a top margin.",
+      "evidence": "after-1 captures of the four rebuilt dashboards; 56 SvStateBoundary call sites pass a class.",
+      "root_cause": "The success state rendered the slot bare; a multi-root slot cannot inherit attributes, so the caller's class applied only in loading/empty/error.",
+      "fix": "One wrapper <div data-testid=\"sv-state-success\"> in the success state.",
+      "tests": [
+        "SvUi16Primitives.spec.ts",
+        "SvStateBoundary.spec.ts"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-NAV-001",
+      "area": "navigation",
+      "problem": "Every gated sidebar entry printed its full gate sentence as a permanent 3–5 line block; the Merchant Administrator sidebar ran to ~1,600px and its eight gated rows out-weighed the fifteen live ones.",
+      "evidence": "before captures of all seven left-nav accounts.",
+      "root_cause": "The stacked navigation rendered the gate statement inline at full length.",
+      "fix": "GatedNavigationEntry: label, a compact 'Unavailable' marker and the statement clamped to one line, expanding on hover/focus; the statement stays in the DOM as the entry's aria-describedby.",
+      "tests": [
+        "SvUi16Primitives.spec.ts",
+        "GatedNavigationTreatment.spec.ts",
+        "ui-16 gate sweep (28 rows)"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-NAV-002",
+      "area": "navigation",
+      "problem": "The Super Administrator's eight header groups wrapped onto a second ragged row under the brand at 1440px.",
+      "evidence": "before captures of all 17 platform pages.",
+      "root_cause": "The groups shared one flex row with the logo, page title and profile control.",
+      "fix": "A full-width navigation strip inside the same header (still header-primary, ADR-018).",
+      "tests": [
+        "HeaderGroupNavigation.spec.ts",
+        "ui-16 responsive sweep (assertShellUsable)",
+        "visual baseline"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-NAV-003",
+      "area": "navigation",
+      "problem": "The desktop sidebar grew with the page: it scrolled away on long pages and ran under the fixed footer on short ones.",
+      "evidence": "before captures (sidebar continues beneath the footer band).",
+      "root_cause": "No sticky/internal-scroll treatment.",
+      "fix": "Sticky sidebar at >=1025px with internal scroll bounded by the footer token.",
+      "tests": [
+        "ui-16 responsive sweep"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-NAV-004",
+      "area": "navigation",
+      "problem": "On detail routes (merchant, invoice, staff record) the shell title fell back to the account name ('Super Administrator').",
+      "evidence": "cap-mid super_administrator.merchant-detail header.",
+      "root_cause": "The title came only from visible navigation links; detail routes are contract pages without a link.",
+      "fix": "Fallback to the canonical contract label for the route.",
+      "tests": [
+        "ui-16 responsive sweep",
+        "visual review"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-CONTENT-001",
+      "area": "content",
+      "problem": "Raw machine tokens were shown as labels: in_force, pending_setup, suspended_billing, 'scope all_new_merchants', 'status active', lowercase action buttons ('pause').",
+      "evidence": "cap-mid SMS billing, subscription operations, internal access, promotions.",
+      "root_cause": "SvStatusBadge requires human text but callers passed the token.",
+      "fix": "utils/statusLabel (shared, personnelStatus delegates to it); promotions/offers as labelled fact strips with sentence-case actions.",
+      "tests": [
+        "SmsBillingSettings.spec.ts updated to the intended label",
+        "platform suite 191/191",
+        "tests/e2e/phase-20c.spec.ts promotion status cases now assert the label and the absence of the raw token"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-CONTENT-002",
+      "area": "content",
+      "problem": "Gate statements read 'readiness is closed.. No payment…'.",
+      "evidence": "before capture merchant_administrator.dashboard billing alert.",
+      "root_cause": "The server sentence ends with a full stop and the template appended another.",
+      "fix": "The trailing stop is trimmed before the follow-on sentence (Merchant and Branch dashboards).",
+      "tests": [
+        "ui-09 'never fabricates zero reporting' spec still passes"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-CONTENT-003",
+      "area": "content",
+      "problem": "Eight places formatted business timestamps in the viewer's zone/locale ('8/12/2026, 8:00:00 AM'); the session table and platform audit showed raw ISO strings.",
+      "evidence": "cap-r2 merchant_branch.branch-day; grep of toLocaleString without timeZone.",
+      "root_cause": "new Date().toLocale*String() without Africa/Nairobi.",
+      "fix": "utils/dates formatDate/formatDateTime/new formatTime (Africa/Nairobi) at every site.",
+      "tests": [
+        "ui16SourceGuards.spec.ts zoneless-date guard + negative control"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-FIX-001",
+      "area": "test-fixture",
+      "problem": "UI-08 browser fixtures predated the published API (unit_price_minor vs unit_cost_minor, state vs status, trial_days vs default_trial_days, …), so screenshots showed 'undefined', 'NaN' and blank badges that the real API cannot produce.",
+      "evidence": "cap-mid SMS billing, subscriptions, internal access, promotions, billing settings; generated api.ts schemas.",
+      "root_cause": "Stub drift — fixtures were never checked against the OpenAPI types.",
+      "fix": "Stubs aligned to SmsBillingRuleResource, the usage row, PlatformSubscription(Invoice)Resource, PlatformAccessMembership/InvitationResource, PreferredPersonnelFeeRuleResource, PromotionalDiscount/FreePeriodOfferResource and PlatformBillingSettingsResource; the 'warn' severity stub became the enum's 'warning'.",
+      "tests": [
+        "ui-08 spec unaffected (asserts none of the stale values)"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-DS-001",
+      "area": "design-system",
+      "problem": "Five tested shared primitives (SvTonalPageHeader, SvOperationalHero, SvStatTile, SvLeadRecord, SvMaskedIdentity) were invisible to the component contract; SvOperationalHero had no test.",
+      "evidence": "componentRegistry.ts listed 54 components, none of the five.",
+      "root_cause": "UI-13/UI-14 built them in-phase and deferred registration.",
+      "fix": "Registered with honest contracts; ComponentContractTest requires them; SvUi16Primitives.spec covers SvOperationalHero.",
+      "tests": [
+        "ComponentContractTest",
+        "SvUi16Primitives.spec.ts",
+        "SvUi14Primitives.spec.ts"
+      ],
+      "status": "local_complete"
+    }
+  ],
+  "inherited_closures": [
+    {
+      "id": "UI01-PROV-003",
+      "owner": "UI-16",
+      "problem": "No browser evidence had ever exercised the origin the product deploys to; every Playwright spec runs against a Vite preview with a stubbed API and a harness-installed account context.",
+      "evidence": "docs/frontend/audits/ui-01/defect-register.csv (UI01-PROV-003, open, owner UI-16); playwright.config.ts baseURL http://localhost:4173.",
+      "root_cause": "The only checks against the built production images were HTTP smokes (ui02/ui05/ui06); no real browser loaded the served shell and bundle with genuine account Host headers.",
+      "fix": "tests/e2e-origin/production-origin.spec.ts + playwright.origin.config.ts: Chromium maps servana.ke and *.servana.ke to the built edge; per host it proves the shell, fingerprinted JS/CSS with correct MIME, the server-resolved account context, light first paint, the sign-in page and the anonymous deep-link redirect, with no page error or failed request. Wired into the CI Docker job after the UI-06 smoke.",
+      "tests": [
+        "tests/e2e-origin/production-origin.spec.ts (16) against the built images",
+        "negative control: the same gate against the Vite preview origin fails 16/16"
+      ],
+      "proof": "production-host-proof.json browser_gate",
+      "remaining_risk": "Not yet executed in CI (Codex Prompt 2). The deployed DNS/TLS origin is UI-17.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI01-A11Y-001",
+      "owner": "UI-16",
+      "problem": "UI-01 captured a visual baseline only and made no accessibility assessment; no release-wide accessibility or reviewed visual baseline existed.",
+      "evidence": "docs/frontend/audits/ui-01/defect-register.csv (UI01-A11Y-001, observation, owner UI-16).",
+      "root_cause": "Scope record — accessibility was owned by the later release-wide audit.",
+      "fix": "Axe on all 132 live pages in light (1440) and dark (360) with 0 serious/critical; keyboard, zoom, reduced-motion and theme checks; 106 reviewed candidate visual baselines with a negative control. UI-01 images remain the as-built comparison point, never approved baselines.",
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (307)",
+        "tests/e2e/ui-16-visual-regression.spec.ts (54 per platform)"
+      ],
+      "proof": "responsive-accessibility-theme.json; visual-baseline-index.json",
+      "remaining_risk": "No screen-reader software pass (UI-17 / product owner).",
+      "status": "local_complete"
+    }
+  ],
+  "test_expectation_corrections": [
+    {
+      "file": "tests/e2e/phase-20c.spec.ts",
+      "reason": "UI16-CONTENT-001 — status shows the human label, not the raw enum token"
+    },
+    {
+      "file": "tests/e2e/phase-23-release-audit.spec.ts",
+      "reason": "MerchantProfile now uses SvPageHeader (a <header> inside <main>, not a banner landmark); uniqueness is asserted on the banner landmark"
+    },
+    {
+      "file": "resources/spa/src/pages/platform/SmsBillingSettings.spec.ts",
+      "reason": "UI16-CONTENT-001 labels"
+    },
+    {
+      "file": "resources/spa/src/pages/merchant/MerchantAdministratorPages.spec.ts",
+      "reason": "two existing routes added to the router stub used by the converted pages"
+    }
+  ],
+  "counts": {
+    "defects": 20,
+    "visual_debt": 14,
+    "inherited_closures": 2,
+    "open": 0,
+    "local_complete": 36
+  },
+  "visual_debt": [
+    {
+      "id": "UI16-VIS-001",
+      "area": "visual",
+      "problem": "The 82 older pages opened on a bare h1 + paragraph while UI-13/14/15 pages use the shaped tonal title band; the accounts looked like different products.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "SvPageHeader predated SvTonalPageHeader and each older page hand-rolled its title; no account tone reached shared headers.",
+      "fix": "SvPageHeader h1 renders SvTonalPageHeader; AppShell provides the account tone (PAGE_TONE_KEY); hand-rolled titles converted.",
+      "files": [
+        "resources/spa/src/components/ui/SvPageHeader.vue",
+        "resources/spa/src/components/ui/SvTonalPageHeader.vue",
+        "resources/spa/src/design-system/pageTone.ts"
+      ],
+      "tests": [
+        "resources/spa/src/components/ui/SvUi16Primitives.spec.ts",
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts"
+      ],
+      "pages": [
+        "super_administrator.dashboard",
+        "super_administrator.get-started",
+        "super_administrator.billing-settings",
+        "super_administrator.billing-plans",
+        "super_administrator.billing-prices",
+        "super_administrator.billing-promotions",
+        "super_administrator.billing-free-periods",
+        "super_administrator.billing-preferred-personnel-fees",
+        "super_administrator.billing-sms",
+        "super_administrator.merchant-registrations",
+        "super_administrator.merchants",
+        "super_administrator.merchant-detail",
+        "super_administrator.billing-subscriptions",
+        "super_administrator.audit",
+        "super_administrator.platform-access",
+        "super_administrator.feature-flags",
+        "super_administrator.account",
+        "merchant_administrator.setup",
+        "merchant_administrator.dashboard",
+        "merchant_administrator.get-started",
+        "merchant_administrator.merchant-profile",
+        "merchant_administrator.branches",
+        "merchant_administrator.branch-detail",
+        "merchant_administrator.staff",
+        "merchant_administrator.subscription",
+        "merchant_administrator.subscription-plan",
+        "merchant_administrator.subscription-invoices",
+        "merchant_administrator.subscription-invoice-detail",
+        "merchant_administrator.compensation",
+        "merchant_administrator.compensation-payout-approvals",
+        "merchant_administrator.finance-period-reopen-approvals",
+        "merchant_administrator.account",
+        "merchant_branch.dashboard",
+        "merchant_branch.get-started",
+        "merchant_branch.branch-profile",
+        "merchant_branch.branch-calendar",
+        "merchant_branch.branch-day",
+        "merchant_branch.services",
+        "merchant_branch.staff",
+        "merchant_branch.operations-queue",
+        "merchant_branch.operations-appointments",
+        "merchant_branch.finance-invoices",
+        "merchant_branch.finance-payments",
+        "merchant_branch.finance-receipts",
+        "merchant_branch.cash-up",
+        "merchant_branch.audit",
+        "merchant_branch.account",
+        "merchant_human_resource.dashboard",
+        "merchant_human_resource.get-started",
+        "merchant_human_resource.staff",
+        "merchant_human_resource.staff-invite",
+        "merchant_human_resource.staff-detail",
+        "merchant_human_resource.staff-detail-lifecycle",
+        "merchant_human_resource.eligibility",
+        "merchant_human_resource.availability",
+        "merchant_human_resource.compensation",
+        "merchant_human_resource.compensation-detail",
+        "merchant_human_resource.compensation-setup",
+        "merchant_human_resource.compensation-history",
+        "merchant_human_resource.payouts",
+        "merchant_human_resource.audit",
+        "merchant_human_resource.account",
+        "merchant_finance.dashboard",
+        "merchant_finance.get-started",
+        "merchant_finance.tasks",
+        "merchant_finance.payments-validations",
+        "merchant_finance.payments-validation-detail",
+        "merchant_finance.payments-duplicates",
+        "merchant_finance.invoices",
+        "merchant_finance.payments",
+        "merchant_finance.payments-partial-split",
+        "merchant_finance.receipts",
+        "merchant_finance.disputes",
+        "merchant_finance.refunds",
+        "merchant_finance.cash-up",
+        "merchant_finance.periods",
+        "merchant_finance.payouts",
+        "merchant_finance.compensation-liabilities",
+        "merchant_finance.compensation-queries",
+        "merchant_finance.exports",
+        "merchant_finance.audit",
+        "merchant_finance.settings"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-002",
+      "area": "visual",
+      "problem": "Get Started was a stack of identical bordered checkbox rows with no progress, next step or orientation.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "GetStartedChecklist rendered a flat list; four older accounts had no orientation hero.",
+      "fix": "Progress ring panel with \"Up next\" beside numbered state-marked step cards; orientation heroes provide the h1; every checklist-* hook preserved.",
+      "files": [
+        "resources/spa/src/components/onboarding/GetStartedChecklist.vue",
+        "resources/spa/src/pages/get-started/RoleGetStarted.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_administrator.get-started",
+        "merchant_branch.get-started",
+        "merchant_human_resource.get-started",
+        "merchant_finance.get-started"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-003",
+      "area": "visual",
+      "problem": "Tables and filters sat directly on the page background with heavy borders, unlike the reference history table.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "SvDataTable/SvFilterBar had no surface of their own.",
+      "fix": "Raised card surface, separated borders, muted uppercase headers; filter panel on a raised surface.",
+      "files": [
+        "resources/spa/src/components/ui/SvDataTable.vue",
+        "resources/spa/src/components/ui/SvFilterBar.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.dashboard",
+        "super_administrator.get-started",
+        "super_administrator.billing-settings",
+        "super_administrator.billing-plans",
+        "super_administrator.billing-prices",
+        "super_administrator.billing-promotions",
+        "super_administrator.billing-free-periods",
+        "super_administrator.billing-preferred-personnel-fees",
+        "super_administrator.billing-sms",
+        "super_administrator.merchant-registrations",
+        "super_administrator.merchants",
+        "super_administrator.merchant-detail",
+        "super_administrator.billing-subscriptions",
+        "super_administrator.audit",
+        "super_administrator.platform-access",
+        "super_administrator.feature-flags",
+        "super_administrator.account",
+        "merchant_administrator.setup",
+        "merchant_administrator.dashboard",
+        "merchant_administrator.get-started",
+        "merchant_administrator.merchant-profile",
+        "merchant_administrator.branches",
+        "merchant_administrator.branch-detail",
+        "merchant_administrator.staff",
+        "merchant_administrator.subscription",
+        "merchant_administrator.subscription-plan",
+        "merchant_administrator.subscription-invoices",
+        "merchant_administrator.subscription-invoice-detail",
+        "merchant_administrator.compensation",
+        "merchant_administrator.compensation-payout-approvals",
+        "merchant_administrator.finance-period-reopen-approvals",
+        "merchant_administrator.account",
+        "merchant_branch.dashboard",
+        "merchant_branch.get-started",
+        "merchant_branch.branch-profile",
+        "merchant_branch.branch-calendar",
+        "merchant_branch.branch-day",
+        "merchant_branch.services",
+        "merchant_branch.staff",
+        "merchant_branch.operations-queue",
+        "merchant_branch.operations-appointments",
+        "merchant_branch.finance-invoices",
+        "merchant_branch.finance-payments",
+        "merchant_branch.finance-receipts",
+        "merchant_branch.cash-up",
+        "merchant_branch.audit",
+        "merchant_branch.account",
+        "merchant_human_resource.dashboard",
+        "merchant_human_resource.get-started",
+        "merchant_human_resource.staff",
+        "merchant_human_resource.staff-invite",
+        "merchant_human_resource.staff-detail",
+        "merchant_human_resource.staff-detail-lifecycle",
+        "merchant_human_resource.eligibility",
+        "merchant_human_resource.availability",
+        "merchant_human_resource.compensation",
+        "merchant_human_resource.compensation-detail",
+        "merchant_human_resource.compensation-setup",
+        "merchant_human_resource.compensation-history",
+        "merchant_human_resource.payouts",
+        "merchant_human_resource.audit",
+        "merchant_human_resource.account",
+        "merchant_finance.dashboard",
+        "merchant_finance.get-started",
+        "merchant_finance.tasks",
+        "merchant_finance.payments-validations",
+        "merchant_finance.payments-validation-detail",
+        "merchant_finance.payments-duplicates",
+        "merchant_finance.invoices",
+        "merchant_finance.payments",
+        "merchant_finance.payments-partial-split",
+        "merchant_finance.receipts",
+        "merchant_finance.disputes",
+        "merchant_finance.refunds",
+        "merchant_finance.cash-up",
+        "merchant_finance.periods",
+        "merchant_finance.payouts",
+        "merchant_finance.compensation-liabilities",
+        "merchant_finance.compensation-queries",
+        "merchant_finance.exports",
+        "merchant_finance.audit",
+        "merchant_finance.settings"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-004",
+      "area": "visual",
+      "problem": "Account and security opened on the bare title band in the five older accounts.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "The page had no identity block.",
+      "fix": "Profile-reference identity hero (initials, role, server facts: context, sign-in method, two-factor, sessions).",
+      "files": [
+        "resources/spa/src/pages/platform/AccountAndSecurity.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.account",
+        "merchant_administrator.account",
+        "merchant_branch.account",
+        "merchant_human_resource.account",
+        "merchant_finance.settings"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-010",
+      "area": "visual",
+      "problem": "Platform dashboard: six stacked sections of identical boxes with no dominant surface.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Built before SvOperationalHero existed; dead sm: grid utilities kept it single-column.",
+      "fix": "SvOperationalHero command surface with lifecycle facts; governance queue beside the commercial position; registrations/audit/gated integrations band.",
+      "files": [
+        "resources/spa/src/pages/platform/PlatformDashboard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.dashboard"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-011",
+      "area": "visual",
+      "problem": "Merchant owner dashboard: four identical top-bordered cards over two equal panels.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "No hierarchy primitive in the older page.",
+      "fix": "Owner hero with four server facts; billing attention beside owner routes; gated reporting.",
+      "files": [
+        "resources/spa/src/pages/merchant/Dashboard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_administrator.dashboard"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-012",
+      "area": "visual",
+      "problem": "Branch dashboard split the greeting from a separate flat panel and used a dead gradient utility.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Hand-rolled header; to-brand-citrus does not exist in the token config.",
+      "fix": "Branch-day command hero; today's flow dominant; revenue + subscription rail.",
+      "files": [
+        "resources/spa/src/pages/branch/BranchDashboard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_branch.dashboard"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-013",
+      "area": "visual",
+      "problem": "HR dashboard split the greeting from a flat pulse panel, then a uniform grid.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Hand-rolled header and grid.",
+      "fix": "Workforce hero; act-next tasks beside payout handoff; toned readiness-gap tiles.",
+      "files": [
+        "resources/spa/src/pages/hr/HrDashboard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_human_resource.dashboard"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-014",
+      "area": "visual",
+      "problem": "Finance dashboard split the greeting from a flat control panel, then a uniform grid.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Hand-rolled header and grid.",
+      "fix": "Checker hero; priority queue dominant beside close controls; money-position ledger band; Wallet gate stated.",
+      "files": [
+        "resources/spa/src/pages/finance/FinanceDashboard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_finance.dashboard"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-015",
+      "area": "visual",
+      "problem": "Domain audit pages (finance/compensation lenses) rendered raw rows unlike the UI-15 evidence records.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "AuditDomainEvents predated AuditEventCard.",
+      "fix": "Tonal header + time-led AuditEventCard records (readable action above its exact token, real severity badge).",
+      "files": [
+        "resources/spa/src/components/audit/AuditDomainEvents.vue",
+        "resources/spa/src/components/audit/AuditEventCard.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_finance.audit"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-016",
+      "area": "visual",
+      "problem": "Effective-dated rule pages repeated a long rule paragraph above the forms; forms and guidance competed.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "No workspace primitive for rule pages.",
+      "fix": "PlatformRuleWorkspace: forms dominant, rule statement in a sticky guidance rail.",
+      "files": [
+        "resources/spa/src/components/platform/PlatformRuleWorkspace.vue",
+        "resources/spa/src/pages/platform/{PlatformBillingSettings,PlansAndEntitlements,PlanPrices,PromotionalDiscounts,PreferredPersonnelFeeRules}.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.billing-settings",
+        "super_administrator.billing-plans",
+        "super_administrator.billing-prices",
+        "super_administrator.billing-promotions",
+        "super_administrator.billing-preferred-personnel-fees"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-017",
+      "area": "visual",
+      "problem": "Merchant compensation summary showed owed and paid as two equal plain lists.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "No figure hierarchy.",
+      "fix": "Two toned panels with large figures and labelled facts.",
+      "files": [
+        "resources/spa/src/pages/merchant/CompensationSummary.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "merchant_administrator.compensation"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-018",
+      "area": "visual",
+      "problem": "Platform Get Started was a single column of identical bordered boxes.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Flat list.",
+      "fix": "Progress panel beside numbered state-marked step cards.",
+      "files": [
+        "resources/spa/src/pages/platform/PlatformGetStarted.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.get-started"
+      ],
+      "status": "local_complete"
+    },
+    {
+      "id": "UI16-VIS-019",
+      "area": "visual",
+      "problem": "Feature flags led with prose; the key and its facts were hard to scan.",
+      "evidence": "before/after captures for every listed page (page-visual-acceptance.json before_evidence/after_evidence) scored on the 30-point rubric",
+      "root_cause": "Flat card text.",
+      "fix": "Flag key as a monospace heading with labelled fact chips and an icon.",
+      "files": [
+        "resources/spa/src/pages/platform/FeatureFlags.vue"
+      ],
+      "tests": [
+        "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts (responsive + axe on each page)",
+        "tests/e2e/ui-16-visual-regression.spec.ts where the page is a baseline subject"
+      ],
+      "pages": [
+        "super_administrator.feature-flags"
+      ],
+      "status": "local_complete"
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useBranchStore } from '@/stores/branchStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useStaffStore } from '@/stores/staffStore';
+import { formatDateTime } from '@/utils/dates';
 
 // Staff invitations (Scope §3.2/§3.4). The role options shown depend on the
 // signed-in member's authority (admin → branch_manager/hr; HR → operational
@@ -176,7 +177,7 @@ async function revoke(id: string): Promise<void> {
           </div>
           <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
             <p class="text-xs text-text-muted">
-              Expires {{ new Date(invitation.expires_at).toLocaleString('en-KE') }}
+              Expires {{ formatDateTime(invitation.expires_at) }}
             </p>
             <div
               v-if="invitation.status === 'pending'"

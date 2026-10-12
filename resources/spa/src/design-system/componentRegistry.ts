@@ -56,6 +56,8 @@ const FORMS = `${UI}SvForms.spec.ts`;
 const DATA = `${UI}SvData.spec.ts`;
 const SHELL = `${UI}SvShellControls.spec.ts`;
 const CONTENT = `${UI}SvContent.spec.ts`;
+const UI14 = `${UI}SvUi14Primitives.spec.ts`;
+const UI16 = `${UI}SvUi16Primitives.spec.ts`;
 
 export const COMPONENT_REGISTRY: readonly SvComponentContract[] = Object.freeze([
   // ------------------------------------------------------------------ primitives
@@ -664,6 +666,70 @@ export const COMPONENT_REGISTRY: readonly SvComponentContract[] = Object.freeze(
     keyboard: 'Native details/summary — keyboard and state support from the platform.',
     responsive: 'Full width at every breakpoint.',
     theme: 'Raised surface and border tokens.',
+  },
+
+  // ------------------------------------------------------------------ UI-13/UI-14 compositions promoted in UI-16
+  //
+  // These were built inside UI-13 (Front Office) and UI-14 (Personnel), reused by UI-15 (Audit) and,
+  // in UI-16, by the five older accounts. They were real shared components with tests but were never
+  // registered, so the contract above could not see them (UI16-DS-001). Domain-specific compositions —
+  // the Audit event card, severity/review badges, diff and filter rail — stay in `components/audit/`
+  // under their domain names: they encode Audit masking and severity vocabulary that no other account
+  // shares, and promoting them would invite a non-Audit page to render Audit semantics.
+  {
+    name: 'SvTonalPageHeader',
+    category: 'primitive',
+    source: `${UI}SvTonalPageHeader.vue`,
+    test: UI14,
+    purpose: 'The shaped tonal page-title surface. Owns the page h1; SvPageHeader renders it for every page header.',
+    states: [],
+    keyboard: 'not_applicable — a layout region; its slotted controls carry their own contracts.',
+    responsive: 'Title and actions stack on mobile and tablet and sit side by side from desktop; decorative ring hidden on mobile.',
+    theme: 'Accent wash from the shell-provided account tone (or an explicit tone) over raised-surface tokens in both themes.',
+  },
+  {
+    name: 'SvOperationalHero',
+    category: 'primitive',
+    source: `${UI}SvOperationalHero.vue`,
+    test: UI16,
+    purpose: 'A role command-centre hero: eyebrow, h1, context, one dominant action and a slot for server facts.',
+    states: [],
+    keyboard: 'not_applicable — a layout region; its slotted actions carry their own contracts.',
+    responsive: 'Copy and actions stack until desktop, where actions align to the end of the title row.',
+    theme: 'Deep Earth Brown to Service Teal gradient with inverse text in both themes (the surface is theme-independent).',
+  },
+  {
+    name: 'SvStatTile',
+    category: 'data',
+    source: `${UI}SvStatTile.vue`,
+    test: UI14,
+    purpose: 'A compact toned fact tile. Presentation only: the value arrives already formatted.',
+    states: [],
+    keyboard: 'not_applicable — a non-interactive figure.',
+    responsive: 'Fills its grid cell at every breakpoint; long values wrap rather than overflow.',
+    theme: 'Six token-backed tones mixed into the raised surface; the label is always text.',
+  },
+  {
+    name: 'SvLeadRecord',
+    category: 'data',
+    source: `${UI}SvLeadRecord.vue`,
+    test: UI14,
+    purpose: 'A record card that leads with its deciding fact, with status kept as a separate text slot.',
+    states: [],
+    keyboard: 'not_applicable — a container; its slotted actions carry their own contracts.',
+    responsive: 'The lead fact sits beside the body at every width; the status slot moves beside the content from tablet up.',
+    theme: 'Toned lead block over raised-surface tokens in both themes.',
+  },
+  {
+    name: 'SvMaskedIdentity',
+    category: 'data',
+    source: `${UI}SvMaskedIdentity.vue`,
+    test: UI14,
+    purpose: 'A server-masked person identity: initials and a masked contact, with no link or copy control.',
+    states: [],
+    keyboard: 'not_applicable — never interactive, by design.',
+    responsive: 'Inline at every breakpoint; long names truncate without revealing masked data.',
+    theme: 'Initials chip and muted text from semantic tokens.',
   },
 ]);
 

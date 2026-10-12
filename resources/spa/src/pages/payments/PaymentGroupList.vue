@@ -48,8 +48,15 @@ onMounted(() => load());
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl" :data-testid="validationView ? 'finance-pending-validations' : 'finance-payment-records'">
-    <SvPageHeader :title="pageTitle" eyebrow="Merchant-client finance" :description="pageDescription" />
+  <section
+    class="mx-auto max-w-6xl"
+    :data-testid="validationView ? 'finance-pending-validations' : 'finance-payment-records'"
+  >
+    <SvPageHeader
+      :title="pageTitle"
+      eyebrow="Merchant-client finance"
+      :description="pageDescription"
+    />
 
     <SvStateBoundary
       class="mt-6"

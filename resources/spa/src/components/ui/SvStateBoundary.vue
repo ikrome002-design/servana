@@ -75,6 +75,19 @@ const emit = defineEmits<{
     </button>
   </div>
 
-  <!-- Success state: render slot content. -->
-  <slot v-else />
+  <!--
+    Success state: render slot content.
+
+    UI16-LAYOUT-001: the slot used to render bare. A caller's `class` (56 call sites pass one, most
+    a top margin) therefore applied in the loading, empty and error states — which render a single
+    root — and silently vanished once the data arrived, because a multi-root slot cannot inherit
+    attributes. Content then butted against whatever preceded it. One wrapper makes the success
+    state honour the same spacing as the other three.
+  -->
+  <div
+    v-else
+    data-testid="sv-state-success"
+  >
+    <slot />
+  </div>
 </template>

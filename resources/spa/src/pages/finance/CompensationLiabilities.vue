@@ -27,6 +27,7 @@ import {
   ledgerStatusLabel,
   liabilityTypeLabel,
 } from '@/content/compensationLiability';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance Compensation Liabilities (Plan §61/§80, §19.3; Phase 20G). ONE Finance surface, merchant-scoped
@@ -311,15 +312,12 @@ async function verifyStepUp(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-5xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Compensation liabilities
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      Salary accrued and commission earned that your business owes staff, plus any manual adjustments.
-      Amounts are shown exactly as Servana calculated them, grouped by currency. This is what is owed — it is
-      not a payout, a settlement, or a record that anyone has been paid.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Compensation liabilities"
+      eyebrow="Compensation Finance"
+      description="Salary accrued and commission earned that your business owes staff, plus any manual adjustments. Amounts are shown exactly as Servana calculated them, grouped by currency. This is what is owed — it is not a payout, a settlement, or a record that anyone has been paid."
+    />
 
     <!-- Async result announcement; focus lands here after a successful adjustment. -->
     <p
@@ -386,7 +384,7 @@ async function verifyStepUp(): Promise<void> {
           empty-message="No compensation liabilities recorded yet."
           @retry="store.fetchSummary()"
         >
-          <div class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-2 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             <SvCard
               v-for="row in store.summary"
               :key="row.currency"
@@ -458,7 +456,7 @@ async function verifyStepUp(): Promise<void> {
           >{{ activeFilterCount }} active</span>
         </h2>
         <form
-          class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          class="mt-2 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
           novalidate
           @submit.prevent="applyFilters"
         >
@@ -518,7 +516,7 @@ async function verifyStepUp(): Promise<void> {
             :model-value="store.filters.date_to"
             @update:model-value="store.filters.date_to = $event"
           />
-          <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-4">
+          <div class="flex items-end gap-2 md:col-span-2 lg:col-span-4">
             <SvButton
               type="submit"
               data-testid="apply-filters"
@@ -905,7 +903,7 @@ async function verifyStepUp(): Promise<void> {
           @update:model-value="form.staff_profile_ulid = $event"
         />
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvSelect
             id="adjustment-direction"
             label="Direction"

@@ -8,6 +8,7 @@ import SvDialog from '@/components/ui/SvDialog.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceDisputeStore } from '@/stores/financeDisputeStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance dispute detail (Plan §44; Phase 18B). Move the dispute open → under_review →
@@ -71,10 +72,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Dispute
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Dispute"
+      eyebrow="Merchant-Client Finance"
+    />
 
     <SvStateBoundary
       class="mt-6"

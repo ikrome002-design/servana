@@ -83,7 +83,7 @@ onMounted(() => {
                 sr-prefix="Access status:"
               />
             </div>
-            <dl class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <dl class="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-1">
               <div>
                 <dt class="text-xs text-text-muted">
                   Operational role
@@ -115,7 +115,7 @@ onMounted(() => {
             </dl>
           </SvCard>
 
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-4 md:grid-cols-2">
             <SvCard as="article">
               <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 Workforce readiness
@@ -160,7 +160,7 @@ onMounted(() => {
             </SvCard>
             <SvCard
               as="article"
-              class="sm:col-span-2"
+              class="md:col-span-2"
             >
               <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 Access authority

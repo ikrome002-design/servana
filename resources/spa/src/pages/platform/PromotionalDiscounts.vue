@@ -20,13 +20,14 @@ import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import PromotionsSection from '@/pages/platform/Promotions.vue';
 import { useCan } from '@/composables/useCan';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 </script>
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-promotions-screen"
   >
     <SvPageHeader
@@ -38,16 +39,15 @@ const { can } = useCan();
     <SvPermissionState v-if="!can('platform.promotion.manage')" />
 
     <template v-else>
-      <PromotionsSection only="promotions" />
-
-      <p
-        class="mt-8 text-xs text-sv-text-muted"
-        data-testid="promotions-precedence-note"
-      >
-        At most one discount applies to any subscription issuance. A merchant-targeted promotion
-        wins over a plan-targeted one, a plan over a billing mode, and a billing mode over a global
-        offer. Changing a promotion never rewrites an invoice that has already been issued.
-      </p>
+      <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
+      <PlatformRuleWorkspace>
+        <PromotionsSection only="promotions" />
+        <template #rule>
+          <p data-testid="promotions-precedence-note">
+            At most one discount applies to any subscription issuance. A merchant-targeted promotion wins over a plan-targeted one, a plan over a billing mode, and a billing mode over a global offer. Changing a promotion never rewrites an invoice that has already been issued.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

@@ -6,6 +6,8 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { appointmentStatusLabel } from '@/utils/appointment';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { formatTime } from '@/utils/dates';
 
 // Branch Manager READ-ONLY appointment visibility (Plan §36; Phase 16A). Authorised
 // by branch.dashboard.view — there are NO create/assign/transfer/reschedule/cancel/
@@ -21,7 +23,7 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 function time(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return formatTime(iso);
 }
 
 onMounted(() => {
@@ -30,13 +32,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Appointments
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Read-only view for your branch. Appointment operations are handled by Front Office.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Appointments"
+      eyebrow="Operational visibility"
+      description="Read-only view for your branch. Appointment operations are handled by Front Office."
+    />
 
     <form
       class="mt-4 flex items-end gap-3"

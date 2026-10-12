@@ -1,0 +1,44 @@
+{
+  "schema": "servana.ui16.production-host-proof.v1",
+  "phase": "UI-16",
+  "lifecycle": "local_complete",
+  "source_state": "Frozen UI-16 working tree after the whole-product run; images built sequentially with no test suite running.",
+  "images": [
+    { "tag": "servana-ui16-php:origin", "id": "sha256:13d84f8e2ab7d15197275a37e3cf01c5333d168377fd2e9ae2a22621b2e5bfaf", "size_bytes": 1037585333, "created_utc": "2026-10-12T14:14:29.900479141Z", "dockerfile": "docker/php.Dockerfile", "target": "prod", "build_exit_code": 0, "build_minutes": 11 },
+    { "tag": "servana-ui16-nginx:origin", "id": "sha256:744e27791168b5af092b698c6092ece4b348fea8ef6f58218eaecedc042aa04f", "size_bytes": 318079347, "created_utc": "2026-10-12T14:15:33.947894Z", "dockerfile": "docker/nginx.Dockerfile", "target": "prod", "build_exit_code": 0, "build_minutes": 1 }
+  ],
+  "topology": {
+    "mirrors": ".github/workflows/ci.yml Docker job (prod php + prod nginx, array session/cache, sync queue, no database)",
+    "network": "ui16-proof-net",
+    "app": "ui16-proof-app (servana-ui16-php:origin) with network alias app",
+    "edge": "ui16-proof-edge (servana-ui16-nginx:origin) on 127.0.0.1:8116 -> 8080",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0,
+    "dev_stack_untouched": true,
+    "runner": "scratchpad ui16-origin-proof.ps1 (preflight refuses pre-existing ui16-proof-* names; removes only those resources)"
+  },
+  "bundle_parity": { "check": "SHA-256 of public/spa/.vite/manifest.json inside the nginx image vs the local build served by vite preview", "image": "943e2c6de41a97a075c4f4db794f07008dc36869dc45ef48c9d901fb94653023", "local": "943e2c6de41a97a075c4f4db794f07008dc36869dc45ef48c9d901fb94653023", "equal": true },
+  "nginx_syntax": { "command": "docker exec ui16-proof-edge nginx -t", "exit_code": 0 },
+  "host_smokes": [
+    { "command": "node scripts/ui02-host-smoke.mjs --origin http://127.0.0.1:8116", "accounts": 8, "unknown_host_denials": 4, "failures": 0, "exit_code": 0, "checks": "root/js/css/favicon 200 per host, edge/application account agreement, unknown hosts refused" },
+    { "command": "node scripts/ui06-public-host-smoke.mjs --origin http://127.0.0.1:8116", "accounts": 8, "unknown_host_denials": 2, "service_worker_probes": 2, "failures": 0, "exit_code": 0, "checks": "landing, FAQ, legal 200 per host; curated images served; deleted Logo.svg 404" }
+  ],
+  "browser_gate": {
+    "closes": "UI01-PROV-003",
+    "spec": "tests/e2e-origin/production-origin.spec.ts",
+    "config": "playwright.origin.config.ts (Chromium --host-resolver-rules maps servana.ke and *.servana.ke to SERVANA_ORIGIN; HttpsUpgrades disabled — TLS belongs to UI-17)",
+    "command": "SERVANA_ORIGIN=127.0.0.1:8116 npx playwright test -c playwright.origin.config.ts",
+    "collected": 16, "passed": 16, "failed": 0, "exit_code": 0, "minutes": 1.8,
+    "checks_per_host": "landing 200 text/html; server-embedded account context equals the host's account; h1 and fixed footer visible; light first paint; a fingerprinted script (javascript MIME) and stylesheet (text/css) loaded 200; /login renders the email field; anonymous /dashboard never 5xx and shows sign-in; no page error, failed request or non-API >= 400",
+    "negative_control": { "command": "SERVANA_ORIGIN=[::1]:4173 (the Vite preview origin) npx playwright test -c playwright.origin.config.ts", "expected": "fail", "collected": 16, "failed": 16, "reason": "the preview origin refuses the production Host (403) — it cannot satisfy the production-origin gate" },
+    "first_attempt": "16 collected / 0 passed: Chromium's console echo of the expected anonymous 401 session probe was counted as an error; the console filter now ignores 'Failed to load resource' echoes because statuses are judged per URL (the API 401 allowance is unchanged). The first negative control mapped 127.0.0.1:4173, where the preview does not listen (connection refused); corrected to [::1]:4173.",
+    "ci": ".github/workflows/ci.yml Docker job runs the same gate against the CI-built edge after the UI-06 smoke (not yet executed in CI — Codex Prompt 2)"
+  },
+  "not_performed": [
+    "Deployed origin over DNS/TLS (UI-17)",
+    "Authenticated browser journeys on the production origin (no seeded identity in the database-free topology; authenticated pages are covered against the preview origin)"
+  ]
+}

@@ -144,7 +144,7 @@ onMounted(() => {
       @retry="load(filters.page)"
     >
       <ul
-        class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         aria-label="Staff members"
       >
         <li

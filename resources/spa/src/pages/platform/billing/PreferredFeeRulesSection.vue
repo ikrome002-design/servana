@@ -228,7 +228,7 @@ async function confirmCancel(): Promise<void> {
       </SvButton>
     </div>
 
-    <div class="mt-4 grid max-w-md gap-4 sm:grid-cols-2">
+    <div class="mt-4 grid max-w-md gap-4 md:grid-cols-2">
       <SvSelect
         id="fee-scope-filter"
         label="Scope"
@@ -269,8 +269,8 @@ async function confirmCancel(): Promise<void> {
                   <span
                     class="ml-2 rounded-control px-2 py-0.5 text-xs"
                     :class="{
-                      'bg-primary/15 text-brand-deep': rule.status === 'active',
-                      'bg-cream text-brand-deep': rule.status === 'scheduled' || rule.status === 'draft',
+                      'bg-primary/15 text-sv-text-heading': rule.status === 'active',
+                      'bg-cream text-sv-text-heading': rule.status === 'scheduled' || rule.status === 'draft',
                       'bg-surface-alt text-text-muted': isTerminalFeeStatus(rule.status),
                     }"
                   >{{ rule.status }}</span>
@@ -338,7 +338,7 @@ async function confirmCancel(): Promise<void> {
 
         <div
           v-if="isFixed"
-          class="grid gap-4 sm:grid-cols-2"
+          class="grid gap-4 md:grid-cols-2"
         >
           <SvTextInput
             id="fee-fixed-amount"
@@ -402,7 +402,7 @@ async function confirmCancel(): Promise<void> {
           />
         </template>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="fee-from"
             label="Effective from"

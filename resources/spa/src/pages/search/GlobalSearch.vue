@@ -134,48 +134,48 @@ onBeforeUnmount(() => {
       >
         <p
           v-if="state === 'loading'"
-          class="text-sm text-body"
+          class="text-sm text-sv-text"
         >
           Searching…
         </p>
         <p
           v-else-if="state === 'rate_limited'"
-          class="text-sm text-warning-strong"
+          class="text-sm text-sv-warning-fg"
           data-testid="search-rate-limited"
         >
           Too many searches in a short time. Wait a moment and try again.
         </p>
         <p
           v-else-if="state === 'forbidden'"
-          class="text-sm text-warning-strong"
+          class="text-sm text-sv-warning-fg"
           data-testid="search-forbidden"
         >
           Your access changed while you were searching. Reload the page and try again.
         </p>
         <p
           v-else-if="state === 'error'"
-          class="text-sm text-danger-strong"
+          class="text-sm text-sv-error-fg"
           data-testid="search-error"
         >
           Search is unavailable right now. Try again shortly.
         </p>
         <p
           v-else-if="state === 'empty'"
-          class="text-sm text-body"
+          class="text-sm text-sv-text"
           data-testid="search-empty"
         >
           Nothing matched, or you do not have access to records matching that search.
         </p>
         <p
           v-else-if="state === 'idle'"
-          class="text-sm text-body"
+          class="text-sm text-sv-text"
           data-testid="search-idle"
         >
           Type at least two characters to search.
         </p>
         <p
           v-else
-          class="text-sm text-body"
+          class="text-sm text-sv-text"
         >
           {{ search.results.length }} result{{ search.results.length === 1 ? '' : 's' }}.
         </p>
@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
           v-for="group in search.groupedResults"
           :key="group.type"
         >
-          <h2 class="text-xs font-semibold uppercase tracking-wide text-muted">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
             {{ group.label }}
           </h2>
           <ul class="mt-2 space-y-2">
@@ -199,11 +199,11 @@ onBeforeUnmount(() => {
               :key="result.ulid"
             >
               <RouterLink
-                class="block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                class="block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sv-focus"
                 :data-testid="`search-result-${result.type}`"
                 :to="target(result)"
               >
-                <SvCard class="min-h-[44px] p-3 hover:border-brand">
+                <SvCard class="min-h-[44px] p-3 hover:border-sv-brand">
                   <div class="flex flex-wrap items-baseline justify-between gap-2">
                     <span class="font-medium text-heading">{{ result.title }}</span>
                     <span
@@ -213,11 +213,11 @@ onBeforeUnmount(() => {
                   </div>
                   <p
                     v-if="result.subtitle"
-                    class="mt-0.5 text-sm text-body"
+                    class="mt-0.5 text-sm text-sv-text"
                   >
                     {{ result.subtitle }}
                   </p>
-                  <p class="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">
+                  <p class="mt-1 flex flex-wrap gap-x-3 text-xs text-sv-text-muted">
                     <span v-if="result.status">{{ result.status }}</span>
                     <span v-if="result.branch?.name">{{ result.branch.name }}</span>
                     <span v-if="result.date">{{ result.date.slice(0, 10) }}</span>

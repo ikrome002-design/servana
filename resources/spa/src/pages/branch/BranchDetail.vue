@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import { useBranchStore } from '@/stores/branchStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Branch detail (Scope §3.3). Branch-scoped: a non-assigned user 404s at the API.
 const route = useRoute();
@@ -15,26 +16,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
+  <section class="mx-auto max-w-6xl">
     <template v-if="branches.activeBranch">
-      <div class="flex items-center justify-between">
-        <h1 class="font-display text-2xl font-bold text-heading">
-          {{ branches.activeBranch.name }}
-        </h1>
-        <RouterLink
-          :to="{ name: 'branch.operating-hours', params: { id } }"
-          class="text-sm font-semibold text-heading underline"
-        >
-          Operating hours
-        </RouterLink>
-        <!-- REM-SCR-002B — the date-specific calendar overrides sit beside the weekly hours. -->
-        <RouterLink
-          :to="{ name: 'branch.calendar', params: { id } }"
-          class="text-sm font-semibold text-heading underline"
-        >
-          Branch calendar
-        </RouterLink>
-      </div>
+      <SvPageHeader
+        :title="branches.activeBranch.name"
+        eyebrow="Branch"
+      >
+        <template #actions>
+          <RouterLink
+            :to="{ name: 'branch.operating-hours', params: { id } }"
+            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-sv-border-strong bg-sv-surface-raised px-4 py-2 text-sm font-semibold text-sv-text-heading hover:bg-sv-surface-subtle"
+          >
+            Operating hours
+          </RouterLink>
+          <!-- REM-SCR-002B — the date-specific calendar overrides sit beside the weekly hours. -->
+          <RouterLink
+            :to="{ name: 'branch.calendar', params: { id } }"
+            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-sv-border-strong bg-sv-surface-raised px-4 py-2 text-sm font-semibold text-sv-text-heading hover:bg-sv-surface-subtle"
+          >
+            Branch calendar
+          </RouterLink>
+        </template>
+      </SvPageHeader>
       <SvCard
         as="div"
         padding="md"

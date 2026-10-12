@@ -11,6 +11,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceWorkspaceStore, type FinanceDuplicateReview } from '@/stores/financeWorkspaceStore';
 import { PAYMENT_METHODS, usePaymentStore } from '@/stores/paymentStore';
 import { formatDateTime } from '@/utils/dates';
+import { statusLabel } from '@/utils/statusLabel';
 
 const store = useFinanceWorkspaceStore();
 const payments = usePaymentStore();
@@ -20,6 +21,8 @@ const reason = ref('');
 const busy = ref(false);
 const actionError = ref<string | null>(null);
 const state = computed(() => (store.duplicatesLoading ? 'loading' : store.duplicatesError ? 'error' : store.duplicates.length ? 'success' : 'empty'));
+/** UI16-CONTENT-001: the method's own label from the payment-method vocabulary, not its token. */
+const methodLabel = (method: string): string => PAYMENT_METHODS.find((m) => m.value === method)?.label ?? statusLabel(method);
 const methodOptions = [{ value: '', label: 'All reference methods' }, ...PAYMENT_METHODS.filter((method) => method.value !== 'cash')];
 
 function load(): void {
@@ -101,7 +104,7 @@ onMounted(load);
                 {{ item.reference_masked ?? 'Masked reference unavailable' }}
               </h2>
               <p class="mt-1 text-sm text-text-muted">
-                {{ item.method }} · checked {{ formatDateTime(item.checked_at) }}
+                {{ methodLabel(item.method) }} · checked {{ formatDateTime(item.checked_at) }}
               </p>
             </div>
             <p class="font-display text-xl font-bold text-heading">
@@ -118,7 +121,7 @@ onMounted(load);
                 Invoice {{ item.current.invoice_number ?? '—' }}
               </p>
               <p class="mt-1 text-sm text-text-muted">
-                {{ item.current.recorded_by }} · {{ item.current.group_status }}
+                {{ item.current.recorded_by }} · {{ statusLabel(item.current.group_status) }}
               </p>
             </div>
             <div class="rounded-control border border-sv-border bg-surface-alt p-3">
@@ -130,7 +133,7 @@ onMounted(load);
                   Invoice {{ item.conflict.invoice_number ?? '—' }}
                 </p>
                 <p class="mt-1 text-sm text-text-muted">
-                  {{ item.conflict.amount.formatted }} · {{ item.conflict.group_status }}
+                  {{ item.conflict.amount.formatted }} · {{ statusLabel(item.conflict.group_status) }}
                 </p>
               </template>
               <p

@@ -65,7 +65,7 @@ onMounted(() => {
       @retry="store.fetchOverview()"
     >
       <template v-if="overview">
-        <div class="grid gap-3 sm:grid-cols-3">
+        <div class="grid gap-3 md:grid-cols-3">
           <SvCard
             as="article"
             class="border-l-4 border-l-sv-error-border"

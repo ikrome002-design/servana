@@ -252,7 +252,7 @@ function goGetStarted(): void {
       >
         Your live tools will appear here as you complete get-started.
       </p>
-      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         <template
           v-for="item in liveActions"
           :key="item.key"
@@ -292,7 +292,7 @@ function goGetStarted(): void {
       >
         Coming soon
       </h2>
-      <ul class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <ul class="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
         <li
           v-for="item in plannedItems"
           :key="item.key"

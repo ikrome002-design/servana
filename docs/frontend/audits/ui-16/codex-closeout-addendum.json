@@ -1,0 +1,4412 @@
+{
+  "schema": "servana.ui16.codex-closeout-addendum.v1",
+  "phase": "UI-16",
+  "branch": "phase-ui-16-responsive-accessibility-theme-visual-regression",
+  "base_commit": "088a6cd764534ac5a4e44d1ce8c1e72cebfd480b",
+  "original_manifest": {
+    "path": "docs/frontend/audits/ui-16/claude-to-codex-handoff.json",
+    "sha256": "2d7930ee5f67082553beb41c33d93241325e2eac325b4363d64318f8484ad8b9",
+    "paths_verified": 467,
+    "extra_paths": 0,
+    "staged_paths": 0
+  },
+  "release_state": "CI_VERIFICATION_PENDING",
+  "self_hash_convention": "Only this JSON has null SHA-256 and size to avoid recursion; external digest captured before staging.",
+  "original_changes": [
+    ".github/workflows/ci.yml",
+    "docs/CHANGELOG.md",
+    "docs/PROGRESS.md",
+    "docs/frontend/audits/ui-16/implementation-checklist.md",
+    "docs/proof/ui-16.md"
+  ],
+  "local_results": {
+    "focused_vitest": "20/20, threads=1; initial fork startup ran zero tests and failed",
+    "original_browser_sample": "14/14",
+    "added_archetype_compare": "24/24 strict compare, 32.1 seconds",
+    "original_baselines": "106 unchanged",
+    "new_windows_active_frames": 8,
+    "new_linux_active_frames": 0,
+    "contracts": "current: tokens, UI source inventory, UI06/UI07/UI08-UI15, API 307/358",
+    "git_integrity": "git fsck --full --no-dangling exit 0",
+    "diff_check": "exit 0"
+  },
+  "pending": [
+    "Hosted capture/review of eight added Linux frames",
+    "Current production-image browser gate",
+    "All five exact-final-head CI jobs",
+    "PR governance, normal protected merge, equal trees, synchronized clean main"
+  ],
+  "source_fingerprint": "8ea2a79506f9d1af5cba65722463f96dbebd350c7b908ead01cde3c1111d48fa",
+  "not_started": [
+    "UI-17",
+    "Phase 25",
+    "Gate W"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "status": " M",
+      "class": "ci_gate",
+      "owner": "codex_continuation",
+      "before_sha256": "f4438b73062645c9ddde5f57c25378696c9cb04018fef8b4eb9de8f11049495a",
+      "sha256": "15e7101abf838bb64857ef13270cad12123761509d577c54a721373a6ad10e90",
+      "bytes": 23757
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": " M",
+      "class": "lifecycle_projection",
+      "owner": "codex_continuation",
+      "before_sha256": "570beddb8e9272c564749ab67c6dc72d7054659a542bb0f83611bf30189bb39d",
+      "sha256": "8ee99aef5a52b8dbee760960fb3a8ebacfa0312b8e0899203cc0212c8767e2a4",
+      "bytes": 400128
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/defect-closure.json",
+      "status": " M",
+      "class": "predecessor_reconciliation_append_only",
+      "owner": "claude_frozen",
+      "before_sha256": "7de6306f4db39c1c67a0efbf9af8e5321d7908986801429f095c733657547b80",
+      "sha256": "7de6306f4db39c1c67a0efbf9af8e5321d7908986801429f095c733657547b80",
+      "bytes": 18017
+    },
+    {
+      "path": "docs/frontend/audits/ui-15/implementation-checklist.md",
+      "status": " M",
+      "class": "predecessor_reconciliation_append_only",
+      "owner": "claude_frozen",
+      "before_sha256": "3fde174fd7543caf7c5482289ef07cf85e58ffa309e4c05859060d0e2743fb2d",
+      "sha256": "3fde174fd7543caf7c5482289ef07cf85e58ffa309e4c05859060d0e2743fb2d",
+      "bytes": 12777
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/browser-proof.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "0169ade5cc3391f93fa4182dff198fd9c0865cee559627f2559bb59a9d25da11",
+      "sha256": "0169ade5cc3391f93fa4182dff198fd9c0865cee559627f2559bb59a9d25da11",
+      "bytes": 3456
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/claude-to-codex-handoff.json",
+      "status": "??",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "2d7930ee5f67082553beb41c33d93241325e2eac325b4363d64318f8484ad8b9",
+      "bytes": 137970
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/claude-to-codex-handoff.md",
+      "status": "??",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "f21dfe4b31d4e9ed6f629d017b74d4e6342ed35bf92aa5b13d64cd12c1192aef",
+      "bytes": 3987
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/codex-closeout-addendum.json",
+      "status": "??",
+      "class": "codex_scope_manifest",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/codex-visual-baseline-index.json",
+      "status": "??",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "8d7cf9bbb041820f2901c803f820889db0ccbee095fadfd315b92d24daa72d0f",
+      "bytes": 4838
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/component-registry-audit.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "3310b7f12f9473d9885e80f53d78ac6868558221fdfba7c0a7a37035e60e128f",
+      "sha256": "3310b7f12f9473d9885e80f53d78ac6868558221fdfba7c0a7a37035e60e128f",
+      "bytes": 4436
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/defect-closure.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "76e822cb0552c6006dfaf555f511b9fd684cc60b8715642a9dc47079a0fd0b4d",
+      "sha256": "76e822cb0552c6006dfaf555f511b9fd684cc60b8715642a9dc47079a0fd0b4d",
+      "bytes": 40161
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/design-inspiration-notes.md",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "74b618fc4ea3e914a20c0351c18bbc50010f2c23017afaafaca0e82dba9c490d",
+      "sha256": "74b618fc4ea3e914a20c0351c18bbc50010f2c23017afaafaca0e82dba9c490d",
+      "bytes": 5572
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/historical-evidence-baseline.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "2814e0d1f00ee7f562320e346bba064988b88ac458357e72becbc795ef329e1f",
+      "sha256": "2814e0d1f00ee7f562320e346bba064988b88ac458357e72becbc795ef329e1f",
+      "bytes": 3852
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/historical-evidence-restoration.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "7bdf4dfb527e98c5f5e7277298258926a3ec3532ff27794b0d7994a1dc129d90",
+      "sha256": "7bdf4dfb527e98c5f5e7277298258926a3ec3532ff27794b0d7994a1dc129d90",
+      "bytes": 40317
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/implementation-checklist.md",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "codex_continuation",
+      "before_sha256": "535874d1d2fb13d7995df5a10f9c6dd8f175bc9d0b7977862c47b0327bcb17cb",
+      "sha256": "5a07417af55d3ae336a0542435921a54c8704210cb8c4f0de8d93fd3f4f2950c",
+      "bytes": 6787
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/page-visual-acceptance.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "d57257c4cef2056fc16e067b6b97b1d728a0de1662fe6df27848fd2109cde8bc",
+      "sha256": "d57257c4cef2056fc16e067b6b97b1d728a0de1662fe6df27848fd2109cde8bc",
+      "bytes": 320466
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/production-host-proof.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "0f955e8772474fa285b43852ef6e5bc5232b6006a8cc552061b96e02cd4adbd8",
+      "sha256": "0f955e8772474fa285b43852ef6e5bc5232b6006a8cc552061b96e02cd4adbd8",
+      "bytes": 4475
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/responsive-accessibility-theme.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "3cfba6e8e8303fd3f8498511edafd6395638e703200e66c202cbeacfc6d861e5",
+      "sha256": "3cfba6e8e8303fd3f8498511edafd6395638e703200e66c202cbeacfc6d861e5",
+      "bytes": 165540
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f9723dfb6289f85eaaed71c2db558a83f948de2efbfba4e82f6605bfe7682cad",
+      "sha256": "f9723dfb6289f85eaaed71c2db558a83f948de2efbfba4e82f6605bfe7682cad",
+      "bytes": 99592
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.branch-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5405e140ec8f3b40259abc006958c33f1566bf906b89f6dd0b7eecfcdbea2293",
+      "sha256": "5405e140ec8f3b40259abc006958c33f1566bf906b89f6dd0b7eecfcdbea2293",
+      "bytes": 115007
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.branches.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "96556d0c1eaca9af0b7c26fcf3b9f0cec58b37b8afda5b5750f116220cf6f4b0",
+      "sha256": "96556d0c1eaca9af0b7c26fcf3b9f0cec58b37b8afda5b5750f116220cf6f4b0",
+      "bytes": 83983
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.compensation-payout-approvals.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4002e796a07d2462f86ea485a5c6c678ef32e41f8e9a75e95be4cd94623fdc28",
+      "sha256": "4002e796a07d2462f86ea485a5c6c678ef32e41f8e9a75e95be4cd94623fdc28",
+      "bytes": 93694
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.compensation.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "eedac8230a23885d11ee3f92b01a292fa0c0dc0bbd4500732cb7c1fa1670c199",
+      "sha256": "eedac8230a23885d11ee3f92b01a292fa0c0dc0bbd4500732cb7c1fa1670c199",
+      "bytes": 127302
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6969cf6875de86339d6e9fdc472aab1e3f30082b2e92d2ac92ff1c67f59ddd39",
+      "sha256": "6969cf6875de86339d6e9fdc472aab1e3f30082b2e92d2ac92ff1c67f59ddd39",
+      "bytes": 181873
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.finance-period-reopen-approvals.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5c0e7518f1c8e0f40333eeb9517cd2fa5b2e01470e622a89c7223d09878355e4",
+      "sha256": "5c0e7518f1c8e0f40333eeb9517cd2fa5b2e01470e622a89c7223d09878355e4",
+      "bytes": 88080
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f33bbb614ef975e6010f9e8118284885ceb6c440b4eb90b0d74db1f7d330c2fe",
+      "sha256": "f33bbb614ef975e6010f9e8118284885ceb6c440b4eb90b0d74db1f7d330c2fe",
+      "bytes": 187915
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.merchant-profile.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "2d5e3efd3427ea2d8165e75f59b853b203e660f8bac3a79c1ba56ded1b8bb1e3",
+      "sha256": "2d5e3efd3427ea2d8165e75f59b853b203e660f8bac3a79c1ba56ded1b8bb1e3",
+      "bytes": 86292
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.setup.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "fd0a313c1e47d884b14ef630fa85aba0504cf17bdbe515d35ddab6c202734dd6",
+      "sha256": "fd0a313c1e47d884b14ef630fa85aba0504cf17bdbe515d35ddab6c202734dd6",
+      "bytes": 46537
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e6abed3ae2bf48cc29fd4e396de34be4ef36daf798da37366aea4a6ff226ed19",
+      "sha256": "e6abed3ae2bf48cc29fd4e396de34be4ef36daf798da37366aea4a6ff226ed19",
+      "bytes": 111728
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-invoice-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6a59757fe4b860649da9faccb604b64a4ebf187c8f647f34c7d5613c8789bc25",
+      "sha256": "6a59757fe4b860649da9faccb604b64a4ebf187c8f647f34c7d5613c8789bc25",
+      "bytes": 107038
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d7481cf9abb3624b231f83737731239f910f7e0b0a2ae7e4bfa9aa77ba8f2836",
+      "sha256": "d7481cf9abb3624b231f83737731239f910f7e0b0a2ae7e4bfa9aa77ba8f2836",
+      "bytes": 93427
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-plan.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9aa37714d2d9f56713c580ef8b20b56286195dfce2af14d36fc70e5829379cca",
+      "sha256": "9aa37714d2d9f56713c580ef8b20b56286195dfce2af14d36fc70e5829379cca",
+      "bytes": 94048
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "66b3674e174903b84ffa90794b4349d72a2457814224fc7065d3772fe5931f8c",
+      "sha256": "66b3674e174903b84ffa90794b4349d72a2457814224fc7065d3772fe5931f8c",
+      "bytes": 112208
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d3c60d2aeb054359d9df3dc408f185fdbc09289c725e9902b0c6af8b8aa9d4ca",
+      "sha256": "d3c60d2aeb054359d9df3dc408f185fdbc09289c725e9902b0c6af8b8aa9d4ca",
+      "bytes": 105008
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-access.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "bc2130f9bbb7cf1bf21bde578bb4db06d02063a1f38aba4c3b118d6c1dc6e8fd",
+      "sha256": "bc2130f9bbb7cf1bf21bde578bb4db06d02063a1f38aba4c3b118d6c1dc6e8fd",
+      "bytes": 139700
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-compensation.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d5a1e2ddb83afde05395633ca5e9783fc2e725c4d6c9274ed7d7e52ac1f1cf66",
+      "sha256": "d5a1e2ddb83afde05395633ca5e9783fc2e725c4d6c9274ed7d7e52ac1f1cf66",
+      "bytes": 143081
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-event-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "434682316199be67d877fbe3d8b9f10ba67907297cf65664138f7b5443792938",
+      "sha256": "434682316199be67d877fbe3d8b9f10ba67907297cf65664138f7b5443792938",
+      "bytes": 103081
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-finance.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "062c0930c570082eb05e8144947af6d7328320b4af0a01eaacf1bcca0b66df53",
+      "sha256": "062c0930c570082eb05e8144947af6d7328320b4af0a01eaacf1bcca0b66df53",
+      "bytes": 139293
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-flags.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "a2e9f886f1e71201985f888a898b9ecb1ddb3e92d202eae40e3addc1dc993575",
+      "sha256": "a2e9f886f1e71201985f888a898b9ecb1ddb3e92d202eae40e3addc1dc993575",
+      "bytes": 120139
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-integrity.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ae0cd2ba567f45c8390fb023edb825fb93d569348d8b8666ac628d4998f01f96",
+      "sha256": "ae0cd2ba567f45c8390fb023edb825fb93d569348d8b8666ac628d4998f01f96",
+      "bytes": 166515
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-operations.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5169186e16d32b973538994c41f258283175dd528ad0d009fbb2d8bdfc79528e",
+      "sha256": "5169186e16d32b973538994c41f258283175dd528ad0d009fbb2d8bdfc79528e",
+      "bytes": 136367
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit-privacy-preferred.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "8d0b3ccf45f35f77b13183c8b68eae3d16cfe8fd90b1cd621cf0d5e9480b9059",
+      "sha256": "8d0b3ccf45f35f77b13183c8b68eae3d16cfe8fd90b1cd621cf0d5e9480b9059",
+      "bytes": 144027
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "55004130b2d681541aeeddd4ca9e7fa01cecde3ba0da8befec113bb805ced9e6",
+      "sha256": "55004130b2d681541aeeddd4ca9e7fa01cecde3ba0da8befec113bb805ced9e6",
+      "bytes": 115084
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6787f58f16b8107b18b5d17961a993c23e7fca0a72e94be4715486bf8bbab03d",
+      "sha256": "6787f58f16b8107b18b5d17961a993c23e7fca0a72e94be4715486bf8bbab03d",
+      "bytes": 173075
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.exports-history.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d6e18a1206c975a020011e2e178d91aabc55d8742c329209b1f8a8866f897c67",
+      "sha256": "d6e18a1206c975a020011e2e178d91aabc55d8742c329209b1f8a8866f897c67",
+      "bytes": 97915
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.exports.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "953cdb292a860bc64bde17baefe35a1ebdfcec6567252bfac9b8b31c5cc56b20",
+      "sha256": "953cdb292a860bc64bde17baefe35a1ebdfcec6567252bfac9b8b31c5cc56b20",
+      "bytes": 131989
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_audit.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0b9d5b0ba28001c2e8e717a298940e5c826544e4b66828209ca61f798f8292a6",
+      "sha256": "0b9d5b0ba28001c2e8e717a298940e5c826544e4b66828209ca61f798f8292a6",
+      "bytes": 166934
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ba79cc923e9b2b5d3e3d0ee56f20a3ce58775774378f5001f25e8afcc2933113",
+      "sha256": "ba79cc923e9b2b5d3e3d0ee56f20a3ce58775774378f5001f25e8afcc2933113",
+      "bytes": 98689
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "49d70c6dcb57f0970a007ee557d37c76b0c7cf348f9d6bd7eb9c94caa1f8ab2c",
+      "sha256": "49d70c6dcb57f0970a007ee557d37c76b0c7cf348f9d6bd7eb9c94caa1f8ab2c",
+      "bytes": 79994
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-calendar.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "46c03d2fecbe7d6d9c78221e25f84a1cd0c1eeb6f4d9bebfc5267f5513752f48",
+      "sha256": "46c03d2fecbe7d6d9c78221e25f84a1cd0c1eeb6f4d9bebfc5267f5513752f48",
+      "bytes": 85870
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-day.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7768db6a6d6d1ff61700f0dd6209b52e5b5ee3791cad9e423fa5b049b0213aad",
+      "sha256": "7768db6a6d6d1ff61700f0dd6209b52e5b5ee3791cad9e423fa5b049b0213aad",
+      "bytes": 87573
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-profile.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "956e21d07ea07dd561eb2592ac1d9e15b6943fe71fe59e1f199c07732a10a7a6",
+      "sha256": "956e21d07ea07dd561eb2592ac1d9e15b6943fe71fe59e1f199c07732a10a7a6",
+      "bytes": 89162
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.cash-up.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1bc3292a0752710571b738090e3758b088af5b2c1f1c4085b94b865ee3a10b41",
+      "sha256": "1bc3292a0752710571b738090e3758b088af5b2c1f1c4085b94b865ee3a10b41",
+      "bytes": 93165
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "72f03708d59ba852c12586dd37a593b364b0d0457d923abc87db0563d80c201e",
+      "sha256": "72f03708d59ba852c12586dd37a593b364b0d0457d923abc87db0563d80c201e",
+      "bytes": 168547
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9b15cf03c03d4731f84a3e0675e0bbe7d5a84bad246aaec8aa621daf1ea6ef70",
+      "sha256": "9b15cf03c03d4731f84a3e0675e0bbe7d5a84bad246aaec8aa621daf1ea6ef70",
+      "bytes": 84431
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-payments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "daa7f7389023788e086b3e441181160c2e459505aef7d552e1b5e35f3ef474b5",
+      "sha256": "daa7f7389023788e086b3e441181160c2e459505aef7d552e1b5e35f3ef474b5",
+      "bytes": 87288
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-receipts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5ceac4944dff436e495721c1211a3155fe40a9f9ebe748668b40b9e6e274ab5f",
+      "sha256": "5ceac4944dff436e495721c1211a3155fe40a9f9ebe748668b40b9e6e274ab5f",
+      "bytes": 76554
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e6aff72264ec23e18c71d855fefa171e04fb080251f35b326c2c6f887aef601d",
+      "sha256": "e6aff72264ec23e18c71d855fefa171e04fb080251f35b326c2c6f887aef601d",
+      "bytes": 169758
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.operations-appointments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "88e6a24b72b9470cf0f0a15c876f168f96fd66c01a0994e9fa6b2cb05cef57b8",
+      "sha256": "88e6a24b72b9470cf0f0a15c876f168f96fd66c01a0994e9fa6b2cb05cef57b8",
+      "bytes": 75929
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.operations-queue.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "878a894c0b2f47814a586bec8f40ae4a4ef4bb5b6f22e8f47156232642af624d",
+      "sha256": "878a894c0b2f47814a586bec8f40ae4a4ef4bb5b6f22e8f47156232642af624d",
+      "bytes": 72957
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.services.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "50bee0fe05d28940a07590e48b4e393ef5f813f99ff454e17561f577442a9580",
+      "sha256": "50bee0fe05d28940a07590e48b4e393ef5f813f99ff454e17561f577442a9580",
+      "bytes": 90525
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d779ff651a67123551ff9fce228eb55cfc90b7e8bd72c5ebdb7acbd6beffd41d",
+      "sha256": "d779ff651a67123551ff9fce228eb55cfc90b7e8bd72c5ebdb7acbd6beffd41d",
+      "bytes": 81814
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4feceb957f942a4bc65787555e872e71900fd11b62e387fc03f8af92921c431e",
+      "sha256": "4feceb957f942a4bc65787555e872e71900fd11b62e387fc03f8af92921c431e",
+      "bytes": 81286
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.cash-up.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c3f8b07d7b05873b775438eecdb209f2a18a64ca52cbc52cb4e3645def4e92ef",
+      "sha256": "c3f8b07d7b05873b775438eecdb209f2a18a64ca52cbc52cb4e3645def4e92ef",
+      "bytes": 78348
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.compensation-liabilities.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "059caedf136841f79018d6dd48fd3c43c6a2fd1c1a786e01f5eb2cb2c2b700fe",
+      "sha256": "059caedf136841f79018d6dd48fd3c43c6a2fd1c1a786e01f5eb2cb2c2b700fe",
+      "bytes": 102379
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.compensation-queries.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "bee56663e73b0cfa686cdde621851f090b8ed380a4f60b83619d64bc3a2c5b51",
+      "sha256": "bee56663e73b0cfa686cdde621851f090b8ed380a4f60b83619d64bc3a2c5b51",
+      "bytes": 82792
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "243ab60b9a46190f4ef4d6058b2aa63cd30de68b8278a57f275d91315244427e",
+      "sha256": "243ab60b9a46190f4ef4d6058b2aa63cd30de68b8278a57f275d91315244427e",
+      "bytes": 170466
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.disputes.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "fef71db070c224a2aa61c6e4db65c16b0dd77bff9e0d67bf2a06a46a742ed0ea",
+      "sha256": "fef71db070c224a2aa61c6e4db65c16b0dd77bff9e0d67bf2a06a46a742ed0ea",
+      "bytes": 71591
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.exports.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "10f629f8e213d073b33414d16efa2d491d42caf217a07f19667669653c5f2653",
+      "sha256": "10f629f8e213d073b33414d16efa2d491d42caf217a07f19667669653c5f2653",
+      "bytes": 71393
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "b6d17adbd7123dfaf433fdff75528f511c746a083622117e7931db9d9e7b5aac",
+      "sha256": "b6d17adbd7123dfaf433fdff75528f511c746a083622117e7931db9d9e7b5aac",
+      "bytes": 171238
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ebbad613ba8622988aab3a12e1f735e49355c83759edcb270a55a582f74fcdb6",
+      "sha256": "ebbad613ba8622988aab3a12e1f735e49355c83759edcb270a55a582f74fcdb6",
+      "bytes": 78739
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-duplicates.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "8cb7da18dd3a21876d3b69c17cd72751f0feefb39d41a2cdef41492ad94c8e1d",
+      "sha256": "8cb7da18dd3a21876d3b69c17cd72751f0feefb39d41a2cdef41492ad94c8e1d",
+      "bytes": 100592
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-partial-split.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "36be03bc47d4f4d1d5dd05a859a40a0f27defcad47f40028c43cd4b8d6ffe8ca",
+      "sha256": "36be03bc47d4f4d1d5dd05a859a40a0f27defcad47f40028c43cd4b8d6ffe8ca",
+      "bytes": 102857
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-validation-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d462eaa05acfb306ac04bb9823089d8aae55095845c61df7d3e602cd7ea57b0c",
+      "sha256": "d462eaa05acfb306ac04bb9823089d8aae55095845c61df7d3e602cd7ea57b0c",
+      "bytes": 87182
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-validations.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1a2a40d9de2055c753489499829a5cc17a7ceae46f4d6b55a90fc10751351e35",
+      "sha256": "1a2a40d9de2055c753489499829a5cc17a7ceae46f4d6b55a90fc10751351e35",
+      "bytes": 79299
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "08d6cd60fbefe35aea092054826c32cda805702a1aae057f2d0f294aee03a72e",
+      "sha256": "08d6cd60fbefe35aea092054826c32cda805702a1aae057f2d0f294aee03a72e",
+      "bytes": 78222
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payouts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "034b26994681b6208e7037babcf7aabec5b51f724d57dfa7f818728ae2e9d88f",
+      "sha256": "034b26994681b6208e7037babcf7aabec5b51f724d57dfa7f818728ae2e9d88f",
+      "bytes": 90262
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.periods.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ee09c04c58a6807981fc4e5aee4c8f81112dd328979692fa36779106f953b7aa",
+      "sha256": "ee09c04c58a6807981fc4e5aee4c8f81112dd328979692fa36779106f953b7aa",
+      "bytes": 74924
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.receipts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "edc8d64ce5d9f7184776c3b30f29f09ddf0eccc2e5166703afa81a2a4e898c5d",
+      "sha256": "edc8d64ce5d9f7184776c3b30f29f09ddf0eccc2e5166703afa81a2a4e898c5d",
+      "bytes": 69781
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.refunds.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "acfecca73b8209715ec56152ec6207cced920dec1816efa70460ae4ae80e71c6",
+      "sha256": "acfecca73b8209715ec56152ec6207cced920dec1816efa70460ae4ae80e71c6",
+      "bytes": 74321
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.settings.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6859cbbd57adbd523763d0113454a2e8ea7794adad251feb460d16b1c1a548d3",
+      "sha256": "6859cbbd57adbd523763d0113454a2e8ea7794adad251feb460d16b1c1a548d3",
+      "bytes": 95512
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.tasks.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c9c8a51c856c70428865652596e0fa637083eb20ffb2b5e302ef8473b4f0dcc6",
+      "sha256": "c9c8a51c856c70428865652596e0fa637083eb20ffb2b5e302ef8473b4f0dcc6",
+      "bytes": 109459
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "909d21322fd767e6b40788018a4b30423b4abf6958ecc7d20fb1c11ff8f26e88",
+      "sha256": "909d21322fd767e6b40788018a4b30423b4abf6958ecc7d20fb1c11ff8f26e88",
+      "bytes": 118997
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.activity.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "953099edc7b529e20162eaea96eb945160b9005f10ce60e8b06f69fc1d7b23bb",
+      "sha256": "953099edc7b529e20162eaea96eb945160b9005f10ce60e8b06f69fc1d7b23bb",
+      "bytes": 95582
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.appointments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "74b089c341c624c626cf9f42f53d1922931d3b4d6e785167d172c0ddff9622c2",
+      "sha256": "74b089c341c624c626cf9f42f53d1922931d3b4d6e785167d172c0ddff9622c2",
+      "bytes": 94896
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.client-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "953dd6d8fd587ba78fbd7879321d9b26d6666f59d4e5167579300f289a66676d",
+      "sha256": "953dd6d8fd587ba78fbd7879321d9b26d6666f59d4e5167579300f289a66676d",
+      "bytes": 100812
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.clients-create.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f1543b55a2677a06702cf122a7de45a56863eeb0e8842f3250dc1eb1ae855382",
+      "sha256": "f1543b55a2677a06702cf122a7de45a56863eeb0e8842f3250dc1eb1ae855382",
+      "bytes": 93514
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.clients.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c37d996e4e9759a8678be852ae3c8b89a18e38dd9c5106179a40246fcf7e6898",
+      "sha256": "c37d996e4e9759a8678be852ae3c8b89a18e38dd9c5106179a40246fcf7e6898",
+      "bytes": 94698
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f1d6387d2647ecdf9f3adb04a97f79631d2d52b6eb59d2b33e62df3dc9df138a",
+      "sha256": "f1d6387d2647ecdf9f3adb04a97f79631d2d52b6eb59d2b33e62df3dc9df138a",
+      "bytes": 149688
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "75ca731b2465b17c5cb1006238ea7b52d0fe710faaa12141f76a97cbedbc0df7",
+      "sha256": "75ca731b2465b17c5cb1006238ea7b52d0fe710faaa12141f76a97cbedbc0df7",
+      "bytes": 146475
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.invoice-payment-create.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "506215a85c89b25529ed38b4720792c6c2c3308879753481c237c1ef2c89564c",
+      "sha256": "506215a85c89b25529ed38b4720792c6c2c3308879753481c237c1ef2c89564c",
+      "bytes": 128595
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.invoices-create.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d6e18f05e6caab5b521218fd7131aff7b7e8214d3c0a8ce59cf1e35e30f8f6bc",
+      "sha256": "d6e18f05e6caab5b521218fd7131aff7b7e8214d3c0a8ce59cf1e35e30f8f6bc",
+      "bytes": 96921
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "19826e3022883af1b1d4b77737cb02c2a244c8e937b280452b1bc22cfa7e1931",
+      "sha256": "19826e3022883af1b1d4b77737cb02c2a244c8e937b280452b1bc22cfa7e1931",
+      "bytes": 95892
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.payments-status.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c96eed84b059e2b5a7e04493534b2495f1c7867536a37c77d4d1fc5fd4c32cf5",
+      "sha256": "c96eed84b059e2b5a7e04493534b2495f1c7867536a37c77d4d1fc5fd4c32cf5",
+      "bytes": 110381
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.queue-transfer.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "37c39624ccd4b01e9bda4d7b5f7f5ff5160709154106f3421baacc9ae4461748",
+      "sha256": "37c39624ccd4b01e9bda4d7b5f7f5ff5160709154106f3421baacc9ae4461748",
+      "bytes": 113241
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.queue.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4545b7b0e871b13542b3b32a667a8afcb593360f1f86e6d764917b7f1ec2b142",
+      "sha256": "4545b7b0e871b13542b3b32a667a8afcb593360f1f86e6d764917b7f1ec2b142",
+      "bytes": 108365
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.search.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c0e0c125e4901ec3dffab5cfd91b346dedcb1ea7bd1163b416b3a51fadf179c5",
+      "sha256": "c0e0c125e4901ec3dffab5cfd91b346dedcb1ea7bd1163b416b3a51fadf179c5",
+      "bytes": 98037
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.sessions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "48406dc730111fcd9784fd22c18ba05694ac09c27ef16dfec8f0b5fe9587d565",
+      "sha256": "48406dc730111fcd9784fd22c18ba05694ac09c27ef16dfec8f0b5fe9587d565",
+      "bytes": 110038
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_front_office.walk-ins.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c132282389a5ca3bd51a6ce7d2252bd430e8986e3adda8e8771f3dc5e7cf4570",
+      "sha256": "c132282389a5ca3bd51a6ce7d2252bd430e8986e3adda8e8771f3dc5e7cf4570",
+      "bytes": 112222
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d57507782596b07f1f961e0ff6a0bd2708c661b98457d67ff8c50f183fe860a1",
+      "sha256": "d57507782596b07f1f961e0ff6a0bd2708c661b98457d67ff8c50f183fe860a1",
+      "bytes": 95042
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e6583fac0018161269ed86976af0db0b2f364a5863b7e5c8583b0a771908daef",
+      "sha256": "e6583fac0018161269ed86976af0db0b2f364a5863b7e5c8583b0a771908daef",
+      "bytes": 94985
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.availability.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "281311355310f089b01db7025e8d458dfd2a01a62d728f4a37c69cda1722ec7d",
+      "sha256": "281311355310f089b01db7025e8d458dfd2a01a62d728f4a37c69cda1722ec7d",
+      "bytes": 80846
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "467ffac7b57eb9709ad2646a65ee08716224029b85257e1c4fe3a1d62224b1df",
+      "sha256": "467ffac7b57eb9709ad2646a65ee08716224029b85257e1c4fe3a1d62224b1df",
+      "bytes": 97033
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-history.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "eeb6a348d0c8745ec0b7d3812af6a4eda89902a8af439807e13d313e94a33a94",
+      "sha256": "eeb6a348d0c8745ec0b7d3812af6a4eda89902a8af439807e13d313e94a33a94",
+      "bytes": 77684
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-setup.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ac79e3b2cd6f37fd68b6d0c669212c33d8e288d497eceb6f41bf8692a5a809d9",
+      "sha256": "ac79e3b2cd6f37fd68b6d0c669212c33d8e288d497eceb6f41bf8692a5a809d9",
+      "bytes": 92921
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7e4b83c494ef2445cdb204f9226c4943b1303316a95ab10679b4665f5a01c607",
+      "sha256": "7e4b83c494ef2445cdb204f9226c4943b1303316a95ab10679b4665f5a01c607",
+      "bytes": 85896
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e058a62b5aa5820567604ab08bbc6d02fca12079cf3c4e43ededdc0512cfc19e",
+      "sha256": "e058a62b5aa5820567604ab08bbc6d02fca12079cf3c4e43ededdc0512cfc19e",
+      "bytes": 167714
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.eligibility.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "361efb2301b31542d61854ee96ed4bcde8a0d8331d55feee70ce5b36b7e617fd",
+      "sha256": "361efb2301b31542d61854ee96ed4bcde8a0d8331d55feee70ce5b36b7e617fd",
+      "bytes": 77142
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "dd905335eff067c0e50284d3a4a5c6e1dc13f3f8d821bd52da471f7595bdf2b5",
+      "sha256": "dd905335eff067c0e50284d3a4a5c6e1dc13f3f8d821bd52da471f7595bdf2b5",
+      "bytes": 172479
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.payouts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "52204faafe1b55ab605fea98bb31987597c11c53850ee4cd829719e569a222e1",
+      "sha256": "52204faafe1b55ab605fea98bb31987597c11c53850ee4cd829719e569a222e1",
+      "bytes": 85870
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-detail-lifecycle.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e6a076fce033927db96972487c172d509e5e3e2830008884d429424c19650519",
+      "sha256": "e6a076fce033927db96972487c172d509e5e3e2830008884d429424c19650519",
+      "bytes": 103280
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d9d496738b749d5bdb798820028be4b85ba574041c5e9756618dc42652579949",
+      "sha256": "d9d496738b749d5bdb798820028be4b85ba574041c5e9756618dc42652579949",
+      "bytes": 123957
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-invite.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "becea522c669eb1345c78727a3ec52e80258c30eefa997b15efa7589181e1d77",
+      "sha256": "becea522c669eb1345c78727a3ec52e80258c30eefa997b15efa7589181e1d77",
+      "bytes": 87150
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "cb5d2990df4fcf1422b7ffd442e5561b190dccf8e4f8353e447cce6b34f4743d",
+      "sha256": "cb5d2990df4fcf1422b7ffd442e5561b190dccf8e4f8353e447cce6b34f4743d",
+      "bytes": 84949
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0a18b7b69f46f5b4f13f35fa50110d50a3745f764d519570a42e553c713927f8",
+      "sha256": "0a18b7b69f46f5b4f13f35fa50110d50a3745f764d519570a42e553c713927f8",
+      "bytes": 94606
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.availability.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "99244e8194bc2647864241fa5c79cb6757b51260a37d044f222c49838affb3c0",
+      "sha256": "99244e8194bc2647864241fa5c79cb6757b51260a37d044f222c49838affb3c0",
+      "bytes": 117186
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.clients.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f3fead8b30468f0693f8a4f24562ab36712ba78ceeddb6b140d577b88f9bbeef",
+      "sha256": "f3fead8b30468f0693f8a4f24562ab36712ba78ceeddb6b140d577b88f9bbeef",
+      "bytes": 112398
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7be0860631fc721ca7723137010be375d11ed63fb6cbef2d0ccc53920fbcae28",
+      "sha256": "7be0860631fc721ca7723137010be375d11ed63fb6cbef2d0ccc53920fbcae28",
+      "bytes": 173603
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-commission.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c3ddbb8a7c5e81b4e66bcf12f8e714b47bee172c056dafe8134bdda02bf66622",
+      "sha256": "c3ddbb8a7c5e81b4e66bcf12f8e714b47bee172c056dafe8134bdda02bf66622",
+      "bytes": 95889
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-payouts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1af2c37b641926ae88fde7af46247ffdc4334f06c458a9ac4b6c70d928e96936",
+      "sha256": "1af2c37b641926ae88fde7af46247ffdc4334f06c458a9ac4b6c70d928e96936",
+      "bytes": 101420
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-queries.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "279501789560700dc8ff0f3c6ef2f8824b3a35858018c90f586a60a859990255",
+      "sha256": "279501789560700dc8ff0f3c6ef2f8824b3a35858018c90f586a60a859990255",
+      "bytes": 106480
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-salary.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f37e75514b7b5ffee63b1ac426cba8c2f5d803dc12db76dc6865e65ee8143ede",
+      "sha256": "f37e75514b7b5ffee63b1ac426cba8c2f5d803dc12db76dc6865e65ee8143ede",
+      "bytes": 95828
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-statements.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "59610f37d614c00c7ad6322a2fbd280d1f39f6f3e2164a58768087c3571e1567",
+      "sha256": "59610f37d614c00c7ad6322a2fbd280d1f39f6f3e2164a58768087c3571e1567",
+      "bytes": 97407
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings-terms.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "429aa393e4669480bb60471ecc00fadb2b9cc5a48608684ead00cbf3dac2e64f",
+      "sha256": "429aa393e4669480bb60471ecc00fadb2b9cc5a48608684ead00cbf3dac2e64f",
+      "bytes": 150537
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.earnings.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1e75d01ecc4c14e89ddac3c6412e5937a81ecb0fd270d06fc602f5fd14aa4d43",
+      "sha256": "1e75d01ecc4c14e89ddac3c6412e5937a81ecb0fd270d06fc602f5fd14aa4d43",
+      "bytes": 154792
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f59f5aebcc356fc77fde089e630f9d356c150db07184d10811627b706aedb24c",
+      "sha256": "f59f5aebcc356fc77fde089e630f9d356c150db07184d10811627b706aedb24c",
+      "bytes": 166804
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.messages-compose.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "87f83463f2c49cdb2f6154d7541a01135da2d326ffd284db7796648e549c0cca",
+      "sha256": "87f83463f2c49cdb2f6154d7541a01135da2d326ffd284db7796648e549c0cca",
+      "bytes": 101091
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.messages.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7f0a025698314c873a278f314d980aeb945e20cc2cc5ca4f41425db801ee8875",
+      "sha256": "7f0a025698314c873a278f314d980aeb945e20cc2cc5ca4f41425db801ee8875",
+      "bytes": 81508
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.work-appointments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "60d9429220928ff812ded2ff886df3f120c5c5bf1a12903857cb855526e166f8",
+      "sha256": "60d9429220928ff812ded2ff886df3f120c5c5bf1a12903857cb855526e166f8",
+      "bytes": 110859
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.work-history.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3fbcde5930a24b73ab12f1df8641e7df26502e02306b07b71edcf5b6ce9ede73",
+      "sha256": "3fbcde5930a24b73ab12f1df8641e7df26502e02306b07b71edcf5b6ce9ede73",
+      "bytes": 111375
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.work-preferred-requests.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ef954eeed93b0fea181f9604b5bed0d065b20f087b89c14316ba0b0442fe2151",
+      "sha256": "ef954eeed93b0fea181f9604b5bed0d065b20f087b89c14316ba0b0442fe2151",
+      "bytes": 97157
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.work-queue.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "b6e3b9652dbfeda1234cf9c5384535fb6faa9d61a787058e1cb8767c0b90edb5",
+      "sha256": "b6e3b9652dbfeda1234cf9c5384535fb6faa9d61a787058e1cb8767c0b90edb5",
+      "bytes": 129005
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/merchant_personnel.work-sessions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9e384b1ef2e1912e4951f7f7fcf497dae413ef7c4e7d8a17a80bf89fc3de4609",
+      "sha256": "9e384b1ef2e1912e4951f7f7fcf497dae413ef7c4e7d8a17a80bf89fc3de4609",
+      "bytes": 101237
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "2a1d0a2adccb732f10da295732c4c33f2355804826c4f91e26ec8fcfd6cb5e2b",
+      "sha256": "2a1d0a2adccb732f10da295732c4c33f2355804826c4f91e26ec8fcfd6cb5e2b",
+      "bytes": 87970
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "af537ae276a8db7fc4ed7a60a7cdca6f91e26c03940aef5566c9909a53565cc5",
+      "sha256": "af537ae276a8db7fc4ed7a60a7cdca6f91e26c03940aef5566c9909a53565cc5",
+      "bytes": 103409
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-free-periods.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "8199b9e9b80c30ab4b42cd00b685bf94e6b9e93e6bcfd76d9cecc3ad8533e184",
+      "sha256": "8199b9e9b80c30ab4b42cd00b685bf94e6b9e93e6bcfd76d9cecc3ad8533e184",
+      "bytes": 74045
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-plans.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "b2ff4141e90c43cba47ea8bf9c2df4ed7d2043764aedddbbf30e235d42d74100",
+      "sha256": "b2ff4141e90c43cba47ea8bf9c2df4ed7d2043764aedddbbf30e235d42d74100",
+      "bytes": 97067
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-preferred-personnel-fees.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9979a94292ed5c8e0b648cc9233a280ad3cdd08f11bcc0afaa2a60f03114f030",
+      "sha256": "9979a94292ed5c8e0b648cc9233a280ad3cdd08f11bcc0afaa2a60f03114f030",
+      "bytes": 108369
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-prices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1dcd44f8000c898dd900cd8b98074856886ea9a00c8ed4107c8242c15844ac63",
+      "sha256": "1dcd44f8000c898dd900cd8b98074856886ea9a00c8ed4107c8242c15844ac63",
+      "bytes": 109796
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-promotions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5ab3840edec44ed373e295ea668fc7208cd9451536c2d721b1d84f7aa64eccd5",
+      "sha256": "5ab3840edec44ed373e295ea668fc7208cd9451536c2d721b1d84f7aa64eccd5",
+      "bytes": 101535
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-settings.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0a47421c4403176321e3dc25157809322419b30e2d15426f318ccf1ed8e331f5",
+      "sha256": "0a47421c4403176321e3dc25157809322419b30e2d15426f318ccf1ed8e331f5",
+      "bytes": 104881
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-sms.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f36c0cf780ca1c0d89edc7425d2f84c85b24be44698d6d64cc6ac2abe6cc7760",
+      "sha256": "f36c0cf780ca1c0d89edc7425d2f84c85b24be44698d6d64cc6ac2abe6cc7760",
+      "bytes": 101604
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-subscriptions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4654a16d4951b384bcc48c59f6c5185ffac693982a12f2ac3903e52c384e3491",
+      "sha256": "4654a16d4951b384bcc48c59f6c5185ffac693982a12f2ac3903e52c384e3491",
+      "bytes": 102400
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ad41ae173943dfd907ee272897053e9bc4cfaaffc2fb61bdd016b3f0ecd327e9",
+      "sha256": "ad41ae173943dfd907ee272897053e9bc4cfaaffc2fb61bdd016b3f0ecd327e9",
+      "bytes": 173461
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.feature-flags.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1a846446f057806672ad76d8495c84cfbc1d001fba95451c641a42cda8d55c3a",
+      "sha256": "1a846446f057806672ad76d8495c84cfbc1d001fba95451c641a42cda8d55c3a",
+      "bytes": 80443
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f11c75d7052339e636bdb88f09700002be6c73119fc6dbfd8077efbdf7b0c104",
+      "sha256": "f11c75d7052339e636bdb88f09700002be6c73119fc6dbfd8077efbdf7b0c104",
+      "bytes": 111383
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchant-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7265ceb66afd49712fcb720d2150dcaac67bd155fe1994e1fc14faa3f8348010",
+      "sha256": "7265ceb66afd49712fcb720d2150dcaac67bd155fe1994e1fc14faa3f8348010",
+      "bytes": 91289
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchant-registrations.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "900d03b53539dec9928d969b65bc998a0aaee31793f68f876916450647c35134",
+      "sha256": "900d03b53539dec9928d969b65bc998a0aaee31793f68f876916450647c35134",
+      "bytes": 114253
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchants.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "85dd01a049fa1f0d3c9b09b95414fc45b55349d145d4592df60705cf3ad11134",
+      "sha256": "85dd01a049fa1f0d3c9b09b95414fc45b55349d145d4592df60705cf3ad11134",
+      "bytes": 101219
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.platform-access.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "fe474ef388872fde892bd2aca1929914dff3c8b7b5d043d69760a4afb5e23af0",
+      "sha256": "fe474ef388872fde892bd2aca1929914dff3c8b7b5d043d69760a4afb5e23af0",
+      "bytes": 116693
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "58f7df7607a1f3818f2b1d6ffd566736235d20910e1f2a19a9d2701deac5823a",
+      "sha256": "58f7df7607a1f3818f2b1d6ffd566736235d20910e1f2a19a9d2701deac5823a",
+      "bytes": 91374
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.branch-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e0df240efa5ab908a5aa18d149967a4141b877c698d96d136714e300ca5855fe",
+      "sha256": "e0df240efa5ab908a5aa18d149967a4141b877c698d96d136714e300ca5855fe",
+      "bytes": 88892
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.branches.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0690d3d367565b68b4ca5731c631bb240539563c6796bdbfd2e13687224a878d",
+      "sha256": "0690d3d367565b68b4ca5731c631bb240539563c6796bdbfd2e13687224a878d",
+      "bytes": 61365
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.compensation-payout-approvals.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6a73e3b255c95f11adcc4f946d3a99c7d1783b18aef2cc3165c58b3994e192e2",
+      "sha256": "6a73e3b255c95f11adcc4f946d3a99c7d1783b18aef2cc3165c58b3994e192e2",
+      "bytes": 65308
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.compensation.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0e2c25a7e1a239af103847375ab87e67ee184a417feb16526129bf5d0f6f5a09",
+      "sha256": "0e2c25a7e1a239af103847375ab87e67ee184a417feb16526129bf5d0f6f5a09",
+      "bytes": 73234
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "649794df36fad569b6c51f875dfc17b0802fff9fce8ec2be9f3ae3e6559a1fae",
+      "sha256": "649794df36fad569b6c51f875dfc17b0802fff9fce8ec2be9f3ae3e6559a1fae",
+      "bytes": 113905
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.finance-period-reopen-approvals.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4f23b2c4cbb835fc7e96ca5793e95eac19ae62867b3d89399224a06bbe3a44e3",
+      "sha256": "4f23b2c4cbb835fc7e96ca5793e95eac19ae62867b3d89399224a06bbe3a44e3",
+      "bytes": 61218
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ad1b3fbdcd0fa910e05450d87e83fb19948d7b90c142f92b12ea548373088f57",
+      "sha256": "ad1b3fbdcd0fa910e05450d87e83fb19948d7b90c142f92b12ea548373088f57",
+      "bytes": 100260
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.merchant-profile.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "68839939eb04b8a43aada6069af6d4887b19aca148ec61c8574cd8eb1acb6328",
+      "sha256": "68839939eb04b8a43aada6069af6d4887b19aca148ec61c8574cd8eb1acb6328",
+      "bytes": 67800
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.setup.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "fb8a1b42937d18b1e1e98142b49a59ac4c3e0bfe87992f6b464ae498675f467b",
+      "sha256": "fb8a1b42937d18b1e1e98142b49a59ac4c3e0bfe87992f6b464ae498675f467b",
+      "bytes": 23544
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "401319c2f16066cbe099f1c44d6fa3d8fee716b11fd2b0869a56c18924aac211",
+      "sha256": "401319c2f16066cbe099f1c44d6fa3d8fee716b11fd2b0869a56c18924aac211",
+      "bytes": 90874
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-invoice-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "702f283e03f8f1fddd7246514b9f971e30928e68d73be91a8a8b30592242c52d",
+      "sha256": "702f283e03f8f1fddd7246514b9f971e30928e68d73be91a8a8b30592242c52d",
+      "bytes": 76705
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f20735074e3d5ac315144ea54f05ff5a491fc3465e49bd0bc836dbe40da169ac",
+      "sha256": "f20735074e3d5ac315144ea54f05ff5a491fc3465e49bd0bc836dbe40da169ac",
+      "bytes": 71293
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-plan.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0723cab438789121a8aa66d38c0d2893baf5bfd375ec87bf39252fe0c7ccd7f4",
+      "sha256": "0723cab438789121a8aa66d38c0d2893baf5bfd375ec87bf39252fe0c7ccd7f4",
+      "bytes": 70319
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d2af5bbb2dc82d3c5daf7eb2a744237d64801a2b4a83a31f948852370355633d",
+      "sha256": "d2af5bbb2dc82d3c5daf7eb2a744237d64801a2b4a83a31f948852370355633d",
+      "bytes": 87572
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "078cd765a52f5d72182b43ef9ec0005dffca15c8a2652ca0631d82304aea1330",
+      "sha256": "078cd765a52f5d72182b43ef9ec0005dffca15c8a2652ca0631d82304aea1330",
+      "bytes": 88012
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "b4460da8386d96d11793badeefbbf22b28e2cf52669840f15061f1756a645c09",
+      "sha256": "b4460da8386d96d11793badeefbbf22b28e2cf52669840f15061f1756a645c09",
+      "bytes": 56035
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-calendar.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "f4048032ed09e5907c5a7fdbade5d5340d7b09ff90ade9c2d24e754d8abbcde1",
+      "sha256": "f4048032ed09e5907c5a7fdbade5d5340d7b09ff90ade9c2d24e754d8abbcde1",
+      "bytes": 67930
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-day.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "eb4d8b22be8e3a77f2215f3b2e1da4a436243fcd1e7386622d934a8a0ce36f1e",
+      "sha256": "eb4d8b22be8e3a77f2215f3b2e1da4a436243fcd1e7386622d934a8a0ce36f1e",
+      "bytes": 66637
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-profile.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "fc190fca86bf4451694247fe7bf9f533dc34174d3e9e87a7e36adbcf39d732d3",
+      "sha256": "fc190fca86bf4451694247fe7bf9f533dc34174d3e9e87a7e36adbcf39d732d3",
+      "bytes": 66412
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.cash-up.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5a8861e0e5c1034895595c32cf43a405118fa0b04482568c1a752a1b9c400a5b",
+      "sha256": "5a8861e0e5c1034895595c32cf43a405118fa0b04482568c1a752a1b9c400a5b",
+      "bytes": 59761
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "db3172356dab4a4586e3f215e795e11436b6c521a6c9ae7add775d22a75e59df",
+      "sha256": "db3172356dab4a4586e3f215e795e11436b6c521a6c9ae7add775d22a75e59df",
+      "bytes": 134962
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3c0a1c0335aa1027f56205210b2aa8d189f5a6ebf56edc90d467bd5fc6b29ffa",
+      "sha256": "3c0a1c0335aa1027f56205210b2aa8d189f5a6ebf56edc90d467bd5fc6b29ffa",
+      "bytes": 60839
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-payments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "7c3ba704d98dd5ce8a3b9429143d0efa24ea4e6fdf7941bab74e0e7ffa838f04",
+      "sha256": "7c3ba704d98dd5ce8a3b9429143d0efa24ea4e6fdf7941bab74e0e7ffa838f04",
+      "bytes": 63087
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-receipts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "393f7d330c209e4f649d0b872a62241b6b84104ade7e63d15cf838ee23e80fc6",
+      "sha256": "393f7d330c209e4f649d0b872a62241b6b84104ade7e63d15cf838ee23e80fc6",
+      "bytes": 53563
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "2c7cfb3ac62da88c572c721edcc3b063d60ccfe8db95d3a6368343fd7dee64ec",
+      "sha256": "2c7cfb3ac62da88c572c721edcc3b063d60ccfe8db95d3a6368343fd7dee64ec",
+      "bytes": 75024
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.operations-appointments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ae1dea91214dee57c55c7fcffd41990563409c5e5a75abd19c1d5e0c75db6097",
+      "sha256": "ae1dea91214dee57c55c7fcffd41990563409c5e5a75abd19c1d5e0c75db6097",
+      "bytes": 52432
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.operations-queue.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0a79d6df5c15f7372c81f1fa473199c3fb3c89ebcd5e520e943ca208539cf75a",
+      "sha256": "0a79d6df5c15f7372c81f1fa473199c3fb3c89ebcd5e520e943ca208539cf75a",
+      "bytes": 44732
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.services.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "947d38b53ebe60d4288a15c6e5b936b43ba2ea5c955e0bb6c70f678133c5d069",
+      "sha256": "947d38b53ebe60d4288a15c6e5b936b43ba2ea5c955e0bb6c70f678133c5d069",
+      "bytes": 60953
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "a19fd4e8fa1f3653f588794d57fa68d229b27fddf453a16b491581a8c2727a69",
+      "sha256": "a19fd4e8fa1f3653f588794d57fa68d229b27fddf453a16b491581a8c2727a69",
+      "bytes": 55723
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "405d91fc13808f417e63deae8a04daf40470f6c770a65809215b0b3b75718b92",
+      "sha256": "405d91fc13808f417e63deae8a04daf40470f6c770a65809215b0b3b75718b92",
+      "bytes": 51935
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.cash-up.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "961ba1959b7ada52d2f0465f45cb670b99a7da4311a60562f3874583d593bead",
+      "sha256": "961ba1959b7ada52d2f0465f45cb670b99a7da4311a60562f3874583d593bead",
+      "bytes": 44600
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.compensation-liabilities.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "84a9b3c8a184b30fe4583c64655d340f7075c458f0169ba3f5fd295d8572d9f8",
+      "sha256": "84a9b3c8a184b30fe4583c64655d340f7075c458f0169ba3f5fd295d8572d9f8",
+      "bytes": 82185
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.compensation-queries.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5035d449709e20c9a9deaff0a6e3a46fc97262334cb4863329cdc1518d58e13f",
+      "sha256": "5035d449709e20c9a9deaff0a6e3a46fc97262334cb4863329cdc1518d58e13f",
+      "bytes": 54575
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "c1910454b86f540ed0f0e376dd0256142ed9aef26a5e9973207064df3490ef79",
+      "sha256": "c1910454b86f540ed0f0e376dd0256142ed9aef26a5e9973207064df3490ef79",
+      "bytes": 99091
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.disputes.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ca4193799e8d92798ac30386a1d5197540ccdd903622e2923bc59ffe16c8f026",
+      "sha256": "ca4193799e8d92798ac30386a1d5197540ccdd903622e2923bc59ffe16c8f026",
+      "bytes": 42037
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.exports.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "233d050e3c449ee34e88e6acde7545067a8fd501a06a55ccf80a1679747ad0f3",
+      "sha256": "233d050e3c449ee34e88e6acde7545067a8fd501a06a55ccf80a1679747ad0f3",
+      "bytes": 41385
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "09682a52934339179b32efd0b55b53a85e661fe3309efae9d53935091f69d4cf",
+      "sha256": "09682a52934339179b32efd0b55b53a85e661fe3309efae9d53935091f69d4cf",
+      "bytes": 69608
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.invoices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ed88e977219f452f9e5394feffd61514c4a2bf8b933e880d2e5382270d3ab88c",
+      "sha256": "ed88e977219f452f9e5394feffd61514c4a2bf8b933e880d2e5382270d3ab88c",
+      "bytes": 45133
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-duplicates.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4fe87c82e4bbaa6e2992c6111304d0ff9788ea9d0577460cd45c5b5e252fad6c",
+      "sha256": "4fe87c82e4bbaa6e2992c6111304d0ff9788ea9d0577460cd45c5b5e252fad6c",
+      "bytes": 75600
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-partial-split.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "bc3bd772bfc547cb9be014b3bd4d013fda86cd91e6e59095adb290697dde6cb2",
+      "sha256": "bc3bd772bfc547cb9be014b3bd4d013fda86cd91e6e59095adb290697dde6cb2",
+      "bytes": 78276
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-validation-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5a0ac6380d2873bfcc612854ac9633c9249a394f5f64d8d35f1e97dc206987a4",
+      "sha256": "5a0ac6380d2873bfcc612854ac9633c9249a394f5f64d8d35f1e97dc206987a4",
+      "bytes": 61188
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-validations.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0d49606d13abfa1511c68f9e8635a3e2b25c74f6efef1dbe9318114eea6fc1f8",
+      "sha256": "0d49606d13abfa1511c68f9e8635a3e2b25c74f6efef1dbe9318114eea6fc1f8",
+      "bytes": 54516
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5903f39dc4895f3b74c0814ef8bdbea770af25bdf0e62c97556198df5e77c5be",
+      "sha256": "5903f39dc4895f3b74c0814ef8bdbea770af25bdf0e62c97556198df5e77c5be",
+      "bytes": 53100
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payouts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d2d01fab76385b0c3225b4794be9d5bee84a36a3420dc496519bb75f2086a388",
+      "sha256": "d2d01fab76385b0c3225b4794be9d5bee84a36a3420dc496519bb75f2086a388",
+      "bytes": 62477
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.periods.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "aba5203935a32614092242c893cf90ae19dc006f66649b3faa537ce2e7509c6d",
+      "sha256": "aba5203935a32614092242c893cf90ae19dc006f66649b3faa537ce2e7509c6d",
+      "bytes": 41466
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.receipts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "bd90ce1c9cc8ff08a6cc709b660d72ac2011566ecfbed518062521b13948f2f6",
+      "sha256": "bd90ce1c9cc8ff08a6cc709b660d72ac2011566ecfbed518062521b13948f2f6",
+      "bytes": 41903
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.refunds.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5bcf95f937a6a9656e073ad943632827b8e0f9816522ea64584a8861d4ede87b",
+      "sha256": "5bcf95f937a6a9656e073ad943632827b8e0f9816522ea64584a8861d4ede87b",
+      "bytes": 43730
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.settings.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d20c352759c824ff33e906e8eb1611eafa8b06d58bbcca73e56c022ffbb4e60f",
+      "sha256": "d20c352759c824ff33e906e8eb1611eafa8b06d58bbcca73e56c022ffbb4e60f",
+      "bytes": 81137
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.tasks.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "450d7fbdf2e39e7f1590a85fae44079ec7c808d6ce1c717a74165a15e2077428",
+      "sha256": "450d7fbdf2e39e7f1590a85fae44079ec7c808d6ce1c717a74165a15e2077428",
+      "bytes": 74445
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "789b860032f7e9ccd3a7034b0a92d9d3f16c0e03805bdc588d8bf31e03f9b007",
+      "sha256": "789b860032f7e9ccd3a7034b0a92d9d3f16c0e03805bdc588d8bf31e03f9b007",
+      "bytes": 84074
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "2f01fbd7f93f077f37ae716ea57e068fc70f09b8aee44e63029ac0b3436139fb",
+      "sha256": "2f01fbd7f93f077f37ae716ea57e068fc70f09b8aee44e63029ac0b3436139fb",
+      "bytes": 75466
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.availability.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "e1d7f9c6324c83f26bc88e9f844f01146b77904b7017599a6e43e9ff85d37691",
+      "sha256": "e1d7f9c6324c83f26bc88e9f844f01146b77904b7017599a6e43e9ff85d37691",
+      "bytes": 60011
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "aa5ddb88f0eb326ba462c3b8c8b5c8ff72a5ad95a956ce793906d7546a761f47",
+      "sha256": "aa5ddb88f0eb326ba462c3b8c8b5c8ff72a5ad95a956ce793906d7546a761f47",
+      "bytes": 76972
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-history.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "a666dfee4cdf7fbd8b2ce8fbc838e1e34d19b253dd6160407b5fc0c52a7f0d5b",
+      "sha256": "a666dfee4cdf7fbd8b2ce8fbc838e1e34d19b253dd6160407b5fc0c52a7f0d5b",
+      "bytes": 57323
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-setup.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "1bebffc4983e087acb975780c5f285d57bdc01c5defc4efaa5cc878ec28f7c04",
+      "sha256": "1bebffc4983e087acb975780c5f285d57bdc01c5defc4efaa5cc878ec28f7c04",
+      "bytes": 71522
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "ee85bb4d97ea29c0ccace5185c4a2c86154fbf42532361da33642405c1700d7e",
+      "sha256": "ee85bb4d97ea29c0ccace5185c4a2c86154fbf42532361da33642405c1700d7e",
+      "bytes": 64222
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "057cd7e86cdc732ac4bbe4d27d80cc71eb76fc47a378340f74fc4edd8e3ccf4f",
+      "sha256": "057cd7e86cdc732ac4bbe4d27d80cc71eb76fc47a378340f74fc4edd8e3ccf4f",
+      "bytes": 100628
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.eligibility.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3c48c736b465adb34d3f2b85fabf9ca4ea59940fd6f3abef266928a3de41398a",
+      "sha256": "3c48c736b465adb34d3f2b85fabf9ca4ea59940fd6f3abef266928a3de41398a",
+      "bytes": 57459
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "2e2cdac92e8a734dbc9bc7743000b319f41c2a72ea7ad9a237d3f95fc4f2ddf2",
+      "sha256": "2e2cdac92e8a734dbc9bc7743000b319f41c2a72ea7ad9a237d3f95fc4f2ddf2",
+      "bytes": 84224
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.payouts.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9031565b55c215c61ad4f33ce074596329bb2898a039d8548de0065dd5cbf09b",
+      "sha256": "9031565b55c215c61ad4f33ce074596329bb2898a039d8548de0065dd5cbf09b",
+      "bytes": 66014
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-detail-lifecycle.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0195b5c12419413aca1f6783265750996826f26edee053d3da22f0deab0bd5c3",
+      "sha256": "0195b5c12419413aca1f6783265750996826f26edee053d3da22f0deab0bd5c3",
+      "bytes": 84713
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "20b9644f32cb7c74065939b8406e46839ab00f36445f581fbd576ac595857835",
+      "sha256": "20b9644f32cb7c74065939b8406e46839ab00f36445f581fbd576ac595857835",
+      "bytes": 101635
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-invite.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "a69e5219b9577337a7800ff76eba16c2fca117fa2e2de6bad7bcaec8e1e32de2",
+      "sha256": "a69e5219b9577337a7800ff76eba16c2fca117fa2e2de6bad7bcaec8e1e32de2",
+      "bytes": 67657
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3850794565fec59cb2de069c0c7a06bfedd34360c9fe2ce6850d8656cde8a0fc",
+      "sha256": "3850794565fec59cb2de069c0c7a06bfedd34360c9fe2ce6850d8656cde8a0fc",
+      "bytes": 64808
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.account.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6921990b034d023fdaa689a4abb4c6b8b0cd7815268cb352fb3b116f6369e7fa",
+      "sha256": "6921990b034d023fdaa689a4abb4c6b8b0cd7815268cb352fb3b116f6369e7fa",
+      "bytes": 74549
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.audit.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "088fe408657cb0cb20007d6c3114fea7f02542539ad0bd67b4efb26bb2945537",
+      "sha256": "088fe408657cb0cb20007d6c3114fea7f02542539ad0bd67b4efb26bb2945537",
+      "bytes": 110504
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-free-periods.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3e9743557bcbf6f2f5202aa068829bef160560cfb43ad06970b772e8fdb6372e",
+      "sha256": "3e9743557bcbf6f2f5202aa068829bef160560cfb43ad06970b772e8fdb6372e",
+      "bytes": 51380
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-plans.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "0920ebae618ca7d67f11f7a4e60d0e8d5ced0d36c976443b1794464d5e2f3436",
+      "sha256": "0920ebae618ca7d67f11f7a4e60d0e8d5ced0d36c976443b1794464d5e2f3436",
+      "bytes": 66120
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-preferred-personnel-fees.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "be5dd8ced7ae6d063d96a843d5153273bced0d7079760ebdf76f17df4358d20b",
+      "sha256": "be5dd8ced7ae6d063d96a843d5153273bced0d7079760ebdf76f17df4358d20b",
+      "bytes": 73821
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-prices.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "d98a84e1e6c7f5c91897ad18bd44b8e725a5b28bb823af101a5b6eab1017c416",
+      "sha256": "d98a84e1e6c7f5c91897ad18bd44b8e725a5b28bb823af101a5b6eab1017c416",
+      "bytes": 74267
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-promotions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "51a29448b5a9fd2fb68259e55daed00f32d7fcc484d16a6fb41ca23b0d2a96be",
+      "sha256": "51a29448b5a9fd2fb68259e55daed00f32d7fcc484d16a6fb41ca23b0d2a96be",
+      "bytes": 60732
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-settings.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "4d928f32b6ec57d71dd8f4f183768207d5e683d61a76451329f43d23e0821f50",
+      "sha256": "4d928f32b6ec57d71dd8f4f183768207d5e683d61a76451329f43d23e0821f50",
+      "bytes": 66285
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-sms.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "061ef06e87ee7bd0b89a4eee57a5524e820bc43e207b46ebda60c703e17bfa1d",
+      "sha256": "061ef06e87ee7bd0b89a4eee57a5524e820bc43e207b46ebda60c703e17bfa1d",
+      "bytes": 77137
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-subscriptions.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "5e98732278350394230cdc7037b7c4ff1697432de04c2d13fa48ee12e92ce1b2",
+      "sha256": "5e98732278350394230cdc7037b7c4ff1697432de04c2d13fa48ee12e92ce1b2",
+      "bytes": 82737
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.dashboard.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6e9968542586249ec5663a4d067d7f09d601b91eb89b092c15c8acfca79bdf9c",
+      "sha256": "6e9968542586249ec5663a4d067d7f09d601b91eb89b092c15c8acfca79bdf9c",
+      "bytes": 70688
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.feature-flags.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "3733822026c22cb2fd9cbb532cdc5d95bdfe9f7f1d880244ab45e2117b70dbdd",
+      "sha256": "3733822026c22cb2fd9cbb532cdc5d95bdfe9f7f1d880244ab45e2117b70dbdd",
+      "bytes": 54015
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.get-started.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "da19bfdc92ad59d604c0248594d12044f0939e46b85f69cf74e4d500577ee82c",
+      "sha256": "da19bfdc92ad59d604c0248594d12044f0939e46b85f69cf74e4d500577ee82c",
+      "bytes": 74036
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchant-detail.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "9c3b5f094bb37b19e21889f4f48a14918ce5e5bd475bca8f576420c714be9be4",
+      "sha256": "9c3b5f094bb37b19e21889f4f48a14918ce5e5bd475bca8f576420c714be9be4",
+      "bytes": 59940
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchant-registrations.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "81ad14a36b95a71730712ae6e81ae93f38cb418473c680c53a28cc9e92cd756a",
+      "sha256": "81ad14a36b95a71730712ae6e81ae93f38cb418473c680c53a28cc9e92cd756a",
+      "bytes": 108474
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchants.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "6e642f941245486712be920c0f80d8d938bfb2ae4c76894ceb6f184c5c75f941",
+      "sha256": "6e642f941245486712be920c0f80d8d938bfb2ae4c76894ceb6f184c5c75f941",
+      "bytes": 106542
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.platform-access.png",
+      "status": "??",
+      "class": "ui16_evidence_image",
+      "owner": "claude_frozen",
+      "before_sha256": "65c35cc35ead8ad010e2ab4242b67482490671872ddf09d7e31e2b70b2125010",
+      "sha256": "65c35cc35ead8ad010e2ab4242b67482490671872ddf09d7e31e2b70b2125010",
+      "bytes": 99505
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/visual-baseline-index.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "0d7132657d3e9a52aa6f55d2fa1747689a294a32da1a4eac4522504b2ee29c61",
+      "sha256": "0d7132657d3e9a52aa6f55d2fa1747689a294a32da1a4eac4522504b2ee29c61",
+      "bytes": 70563
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/visual-debt-closure.json",
+      "status": "??",
+      "class": "ui16_evidence",
+      "owner": "claude_frozen",
+      "before_sha256": "27a4fb21e4b88388d88a9dc2f01a2c68b95dfc250b74350726b012b8fb774824",
+      "sha256": "27a4fb21e4b88388d88a9dc2f01a2c68b95dfc250b74350726b012b8fb774824",
+      "bytes": 87457
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "status": " M",
+      "class": "lifecycle_projection",
+      "owner": "codex_continuation",
+      "before_sha256": "03d8c61761956a10701bac12671c79169dfaddc7ba65b376db09c2f36a9f8238",
+      "sha256": "415a24023b9d85cd1c06abf30043f75f9df01a4c94abf1e76b0c5b22deca2b2b",
+      "bytes": 524777
+    },
+    {
+      "path": "docs/proof/ui-15.md",
+      "status": " M",
+      "class": "predecessor_reconciliation_append_only",
+      "owner": "claude_frozen",
+      "before_sha256": "dcd7caa40336d4d84bab74731152df949aa950e4dfdd514a359f3bbb90c30a42",
+      "sha256": "dcd7caa40336d4d84bab74731152df949aa950e4dfdd514a359f3bbb90c30a42",
+      "bytes": 18517
+    },
+    {
+      "path": "docs/proof/ui-16.md",
+      "status": "??",
+      "class": "ui16_proof",
+      "owner": "codex_continuation",
+      "before_sha256": "356848f6336b6bc040a7696cec47fec216266a74989de2c178395348cc1738a5",
+      "sha256": "045bd1c33547ef0bb940df08e8fedec52f47cb0d57977c068b47df704aae94af",
+      "bytes": 21861
+    },
+    {
+      "path": "docs/traceability/servana-requirements.csv",
+      "status": " M",
+      "class": "lifecycle_projection",
+      "owner": "claude_frozen",
+      "before_sha256": "93c6562f6b64a9c82befed1280011a48885cb147ae1943c135b6a7ebba4f1ec9",
+      "sha256": "93c6562f6b64a9c82befed1280011a48885cb147ae1943c135b6a7ebba4f1ec9",
+      "bytes": 329282
+    },
+    {
+      "path": "playwright.origin.config.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "239feb7efa207b00f8dfb23237eeaa8d9fcaf74bbfe9e18f2f5be1191bf28742",
+      "sha256": "239feb7efa207b00f8dfb23237eeaa8d9fcaf74bbfe9e18f2f5be1191bf28742",
+      "bytes": 1045
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditDomainEvents.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "86c8392c85192ae724aca8d94e46c58affecbbadf6238c4d7aa55c728b8a77ba",
+      "sha256": "86c8392c85192ae724aca8d94e46c58affecbbadf6238c4d7aa55c728b8a77ba",
+      "bytes": 3707
+    },
+    {
+      "path": "resources/spa/src/components/audit/AuditEventCard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ebf669a92f67b349aa0c2b99f002ae99b1103190e74897f91b3c13852a7b8539",
+      "sha256": "ebf669a92f67b349aa0c2b99f002ae99b1103190e74897f91b3c13852a7b8539",
+      "bytes": 7165
+    },
+    {
+      "path": "resources/spa/src/components/files/SvFileUpload.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "e3d5b432d8b733f256343de1a5deefa0ed3bd39bdc6995abe083edfe8bf4f38d",
+      "sha256": "e3d5b432d8b733f256343de1a5deefa0ed3bd39bdc6995abe083edfe8bf4f38d",
+      "bytes": 5658
+    },
+    {
+      "path": "resources/spa/src/components/layout/AppShell.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9c58140a043d62e43dc12b9b64790ecfe60457961c99c3b0d322aba52005dc80",
+      "sha256": "9c58140a043d62e43dc12b9b64790ecfe60457961c99c3b0d322aba52005dc80",
+      "bytes": 19492
+    },
+    {
+      "path": "resources/spa/src/components/layout/RoleLandingScaffold.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ff4ea25abe391af9328114dbeae52de396f57b26e86c929759f7ed32edb5ea88",
+      "sha256": "ff4ea25abe391af9328114dbeae52de396f57b26e86c929759f7ed32edb5ea88",
+      "bytes": 13604
+    },
+    {
+      "path": "resources/spa/src/components/navigation/GatedNavigationEntry.vue",
+      "status": "??",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "fcff7d265ebe865379f7b72ea48046e1e35c278fb53ab5181735054e12d126a4",
+      "sha256": "fcff7d265ebe865379f7b72ea48046e1e35c278fb53ab5181735054e12d126a4",
+      "bytes": 3681
+    },
+    {
+      "path": "resources/spa/src/components/navigation/HeaderGroupNavigation.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "08fb200952017b965ec1976255f226277fe3902f52624a474bf727436c9d6855",
+      "sha256": "08fb200952017b965ec1976255f226277fe3902f52624a474bf727436c9d6855",
+      "bytes": 20786
+    },
+    {
+      "path": "resources/spa/src/components/onboarding/GetStartedChecklist.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ae185676886c1ea5a92a3196d04ac477991cc78f18dcbdbdf816bcfbe63c0200",
+      "sha256": "ae185676886c1ea5a92a3196d04ac477991cc78f18dcbdbdf816bcfbe63c0200",
+      "bytes": 11782
+    },
+    {
+      "path": "resources/spa/src/components/platform/merchants/MerchantGovernancePanel.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5e742092d447ca36817016168e9be05bee538d98b1d69496013fb91c2e0d20c4",
+      "sha256": "5e742092d447ca36817016168e9be05bee538d98b1d69496013fb91c2e0d20c4",
+      "bytes": 13425
+    },
+    {
+      "path": "resources/spa/src/components/platform/PlatformRuleWorkspace.vue",
+      "status": "??",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "78d4c0b6ef68dafd36cbd48c1ba341de463e4eba108dd93afcaa37eb4e6064ad",
+      "sha256": "78d4c0b6ef68dafd36cbd48c1ba341de463e4eba108dd93afcaa37eb4e6064ad",
+      "bytes": 1873
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvDataTable.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "0a4c12a02c3f34bf0fbada25e49d2a58cad5f9f4d51a60f98dd91ddd2fda5e26",
+      "sha256": "0a4c12a02c3f34bf0fbada25e49d2a58cad5f9f4d51a60f98dd91ddd2fda5e26",
+      "bytes": 7900
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvFilterBar.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "e26d88fa6a2e9f4a4dbfb75b1f36daf9a6bd3687b54b5f20f8b3b3ffe796e343",
+      "sha256": "e26d88fa6a2e9f4a4dbfb75b1f36daf9a6bd3687b54b5f20f8b3b3ffe796e343",
+      "bytes": 3255
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvFixedFooter.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "15d0e1d79fa60e9f6bb2ddb04152f3a2647a1d898213902a112de29cb014174b",
+      "sha256": "15d0e1d79fa60e9f6bb2ddb04152f3a2647a1d898213902a112de29cb014174b",
+      "bytes": 6278
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvPageHeader.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5ea47c622086c8f497865a09469c49d28d2572aac0c0c8c5eeac96336d231988",
+      "sha256": "5ea47c622086c8f497865a09469c49d28d2572aac0c0c8c5eeac96336d231988",
+      "bytes": 3401
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvStateBoundary.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "03e043f28864273658df788b019e5e8165d4b13c481890cb2c233eb16435c97c",
+      "sha256": "03e043f28864273658df788b019e5e8165d4b13c481890cb2c233eb16435c97c",
+      "bytes": 3068
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvTonalPageHeader.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "eca9991bb8d4c7d621421a841c5348437530db043bb0c0e545bca85e922901d1",
+      "sha256": "eca9991bb8d4c7d621421a841c5348437530db043bb0c0e545bca85e922901d1",
+      "bytes": 4655
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvUi16Primitives.spec.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "b52ced6cbce787b1134fed8aa48ab7e82af940f39dad8dee02b4be7f245577c9",
+      "sha256": "b52ced6cbce787b1134fed8aa48ab7e82af940f39dad8dee02b4be7f245577c9",
+      "bytes": 5544
+    },
+    {
+      "path": "resources/spa/src/design-system/componentRegistry.ts",
+      "status": " M",
+      "class": "design_system_source_or_generated",
+      "owner": "claude_frozen",
+      "before_sha256": "8c2886cdfc4c358f034e1c37bbb65c600b8569c0a225a3c98f2059c085a3b127",
+      "sha256": "8c2886cdfc4c358f034e1c37bbb65c600b8569c0a225a3c98f2059c085a3b127",
+      "bytes": 29463
+    },
+    {
+      "path": "resources/spa/src/design-system/pageTone.ts",
+      "status": "??",
+      "class": "design_system_source_or_generated",
+      "owner": "claude_frozen",
+      "before_sha256": "4be850742ba98989905338ab574339d6f0ab1b540e3105eeba5a7bf5f7b81709",
+      "sha256": "4be850742ba98989905338ab574339d6f0ab1b540e3105eeba5a7bf5f7b81709",
+      "bytes": 1138
+    },
+    {
+      "path": "resources/spa/src/design-system/tokens.generated.ts",
+      "status": " M",
+      "class": "design_system_source_or_generated",
+      "owner": "claude_frozen",
+      "before_sha256": "ae9a14b5b77b7bb4c5bf923e1e530c673aedcfd62a1c680bf6292e293f7071c9",
+      "sha256": "ae9a14b5b77b7bb4c5bf923e1e530c673aedcfd62a1c680bf6292e293f7071c9",
+      "bytes": 12146
+    },
+    {
+      "path": "resources/spa/src/design-system/tokens.json",
+      "status": " M",
+      "class": "design_system_source_or_generated",
+      "owner": "claude_frozen",
+      "before_sha256": "99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b",
+      "sha256": "99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b",
+      "bytes": 22201
+    },
+    {
+      "path": "resources/spa/src/design-system/ui16SourceGuards.spec.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "52d3bfca840d1d82e2f0ec5812d06496e63b9c2a15838bcfd1cdc61a49596930",
+      "sha256": "52d3bfca840d1d82e2f0ec5812d06496e63b9c2a15838bcfd1cdc61a49596930",
+      "bytes": 6415
+    },
+    {
+      "path": "resources/spa/src/layouts/AuthLayout.vue",
+      "status": " M",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": "7fdd87db2671a6df3d137867d5d8535d6ae102d699584620c27df82d707a3995",
+      "sha256": "ae42c98672261ab2c0ece549cfca578b47fdb9db6aae2c3b71afe9fea37eb456",
+      "bytes": 1240
+    },
+    {
+      "path": "resources/spa/src/pages/auth/Login.vue",
+      "status": " M",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": "3013eec8800217731b9b3b42bdc0afca34fd5fc93dbea473c0367760340f6111",
+      "sha256": "b87609763bdf6148f36d80254e75412b89d86e607f53758bd9a1fefe0d79ffdc",
+      "bytes": 2878
+    },
+    {
+      "path": "resources/spa/src/pages/billing/PlatformFees.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "c72b24c314bcc89a414582d463a7304b7d21575de0bc32d8189b2b32d0ce7c9b",
+      "sha256": "c72b24c314bcc89a414582d463a7304b7d21575de0bc32d8189b2b32d0ce7c9b",
+      "bytes": 21633
+    },
+    {
+      "path": "resources/spa/src/pages/branch/AppointmentsReadOnly.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "e1c462607cc8d0431a8bd2cef35232ff54a4d73e217680504db6bba07eeddc59",
+      "sha256": "e1c462607cc8d0431a8bd2cef35232ff54a4d73e217680504db6bba07eeddc59",
+      "bytes": 3530
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchAudit.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "dee9d2432bf97890881e3134d33a69a4875bd85a9a414c661a4ba988e9364c53",
+      "sha256": "dee9d2432bf97890881e3134d33a69a4875bd85a9a414c661a4ba988e9364c53",
+      "bytes": 3157
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchCalendar.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "38f2678aba1034f9048c517c71532bedc869a39a7875a3399abb214a4bbe7c59",
+      "sha256": "38f2678aba1034f9048c517c71532bedc869a39a7875a3399abb214a4bbe7c59",
+      "bytes": 17716
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchDashboard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "75c317868ad5663ef0c651d14591152a9ad457e11f352caa87ce63ed6e91081c",
+      "sha256": "75c317868ad5663ef0c651d14591152a9ad457e11f352caa87ce63ed6e91081c",
+      "bytes": 12422
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchDay.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "defab3bb44a0f7eb10353896a1af61acfb88949935370797d1ff69dfbfd0c764",
+      "sha256": "defab3bb44a0f7eb10353896a1af61acfb88949935370797d1ff69dfbfd0c764",
+      "bytes": 5318
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "41200f28616ba28070be145f37da19612eac171b101f536adfc63b51a60e3838",
+      "sha256": "41200f28616ba28070be145f37da19612eac171b101f536adfc63b51a60e3838",
+      "bytes": 2359
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchPreferredFeeCard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ab4b2b94e902c8990131db857d0aaf6cbf576d332daeaf485a8485271ffaad30",
+      "sha256": "ab4b2b94e902c8990131db857d0aaf6cbf576d332daeaf485a8485271ffaad30",
+      "bytes": 3152
+    },
+    {
+      "path": "resources/spa/src/pages/branch/BranchReceipts.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "72b8a4e21cb3b58095e0c311629519ad7f1c5e53b3cb4991d5d6f17c04a412fe",
+      "sha256": "72b8a4e21cb3b58095e0c311629519ad7f1c5e53b3cb4991d5d6f17c04a412fe",
+      "bytes": 2525
+    },
+    {
+      "path": "resources/spa/src/pages/branch/CashUp.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ef393f8d3fed116c7774ee4266806fead7e24a98ae462fc12e1b463682676b50",
+      "sha256": "ef393f8d3fed116c7774ee4266806fead7e24a98ae462fc12e1b463682676b50",
+      "bytes": 11550
+    },
+    {
+      "path": "resources/spa/src/pages/branch/FinancialVisibility.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "77bac228a132953a6eee70d400ed734bee38d7a24d1a353edbb89c8943b5d4d3",
+      "sha256": "77bac228a132953a6eee70d400ed734bee38d7a24d1a353edbb89c8943b5d4d3",
+      "bytes": 3730
+    },
+    {
+      "path": "resources/spa/src/pages/branch/OperatingHours.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "708cee160408a4b9cbad4642299a8ad8784be6ebaac93ccd2c4a77b77e843678",
+      "sha256": "708cee160408a4b9cbad4642299a8ad8784be6ebaac93ccd2c4a77b77e843678",
+      "bytes": 3509
+    },
+    {
+      "path": "resources/spa/src/pages/branch/PersonnelSchedule.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "50842ff217eccf70c9ff6530c3395a3ac13f4f5805a84b085b575060d618ffe3",
+      "sha256": "50842ff217eccf70c9ff6530c3395a3ac13f4f5805a84b085b575060d618ffe3",
+      "bytes": 9837
+    },
+    {
+      "path": "resources/spa/src/pages/branch/QueueReadOnly.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "7ac3733327fe07e7f7cb08c33ab2e77debfc0a046947ec81c0c56438421f2313",
+      "sha256": "7ac3733327fe07e7f7cb08c33ab2e77debfc0a046947ec81c0c56438421f2313",
+      "bytes": 3303
+    },
+    {
+      "path": "resources/spa/src/pages/branch/ServiceCatalogue.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "40ae9a808040294520f05eb00432b2c87a42b206374995c2bf74b607d9d42a21",
+      "sha256": "40ae9a808040294520f05eb00432b2c87a42b206374995c2bf74b607d9d42a21",
+      "bytes": 10645
+    },
+    {
+      "path": "resources/spa/src/pages/dev/DesignSystemDemo.vue",
+      "status": " M",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": "244a989260aaae519f0f39ed87400c19a4b1617ea3e65262443be98738a9e036",
+      "sha256": "d9166fc9470349071c7b011e27978ed56c0d144e787c32ec48f1ffcc3c6aa1ca",
+      "bytes": 11899
+    },
+    {
+      "path": "resources/spa/src/pages/finance/CashUpDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "e89e5fb73a40978e9070ad24dd2daa9a68386bcf4c235a64a9a3d393cd25633a",
+      "sha256": "e89e5fb73a40978e9070ad24dd2daa9a68386bcf4c235a64a9a3d393cd25633a",
+      "bytes": 9204
+    },
+    {
+      "path": "resources/spa/src/pages/finance/CashUpReviewList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "4a37b4cab48f6a27ba7ac20d392b278668ba69bee5dffd6a778c84aec599926f",
+      "sha256": "4a37b4cab48f6a27ba7ac20d392b278668ba69bee5dffd6a778c84aec599926f",
+      "bytes": 3510
+    },
+    {
+      "path": "resources/spa/src/pages/finance/CompensationLiabilities.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "647d4e6cd689a873d17c4ee52cc48ede93136ef2c36f17e89f782cebf31add76",
+      "sha256": "647d4e6cd689a873d17c4ee52cc48ede93136ef2c36f17e89f782cebf31add76",
+      "bytes": 35842
+    },
+    {
+      "path": "resources/spa/src/pages/finance/DashboardStub.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "bb966a325ac75dfe14ac2d71eeb7d637888ce1f1f1c0315e74f740adc498fa71",
+      "sha256": "bb966a325ac75dfe14ac2d71eeb7d637888ce1f1f1c0315e74f740adc498fa71",
+      "bytes": 245
+    },
+    {
+      "path": "resources/spa/src/pages/finance/DisputeDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "c4654420eff0bbc0b285cfa40132573f7ce968df142b4107f2cff9ba3256b165",
+      "sha256": "c4654420eff0bbc0b285cfa40132573f7ce968df142b4107f2cff9ba3256b165",
+      "bytes": 5799
+    },
+    {
+      "path": "resources/spa/src/pages/finance/DisputeList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ca5ce43e30ac5aad1489ba9df44bec73800741132305c55eabf8c348ea49846f",
+      "sha256": "ca5ce43e30ac5aad1489ba9df44bec73800741132305c55eabf8c348ea49846f",
+      "bytes": 6189
+    },
+    {
+      "path": "resources/spa/src/pages/finance/DuplicateReferenceReview.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9c5d31dea38fa2d8028a4f38961125b9bcb79568e1f13d994ad699fe6ff02521",
+      "sha256": "9c5d31dea38fa2d8028a4f38961125b9bcb79568e1f13d994ad699fe6ff02521",
+      "bytes": 7901
+    },
+    {
+      "path": "resources/spa/src/pages/finance/EarningsQueries.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "db80d7012f287edfcc715298b536df6db3d2648104cf8cfcccecbb5e9c7b1955",
+      "sha256": "db80d7012f287edfcc715298b536df6db3d2648104cf8cfcccecbb5e9c7b1955",
+      "bytes": 17702
+    },
+    {
+      "path": "resources/spa/src/pages/finance/FinanceDashboard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "65e2f19ae26bdbd22763d41d5dafef0c535fe54f1100696ce95426bd54f96484",
+      "sha256": "65e2f19ae26bdbd22763d41d5dafef0c535fe54f1100696ce95426bd54f96484",
+      "bytes": 15845
+    },
+    {
+      "path": "resources/spa/src/pages/finance/FinanceExportList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "847ddb9bd478e74136287bd89bb79bf47b21dc227dc793d0729877d9324be418",
+      "sha256": "847ddb9bd478e74136287bd89bb79bf47b21dc227dc793d0729877d9324be418",
+      "bytes": 7087
+    },
+    {
+      "path": "resources/spa/src/pages/finance/FinanceTaskInbox.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "42874f134c448d21ec1588e33c0c8c03cb88aacc591a1c2f094ac0681739dc61",
+      "sha256": "42874f134c448d21ec1588e33c0c8c03cb88aacc591a1c2f094ac0681739dc61",
+      "bytes": 5651
+    },
+    {
+      "path": "resources/spa/src/pages/finance/PartialSplitPayments.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "fcf12b11b1627dc974e38463a36928fc059ca701ba6367ee4e57af218f28f8ad",
+      "sha256": "fcf12b11b1627dc974e38463a36928fc059ca701ba6367ee4e57af218f28f8ad",
+      "bytes": 7974
+    },
+    {
+      "path": "resources/spa/src/pages/finance/PayoutRuns.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "981704e2ac0f6054db02b8cc0e372747dbbb60ccd9a310f1404c16bd03bb6f03",
+      "sha256": "981704e2ac0f6054db02b8cc0e372747dbbb60ccd9a310f1404c16bd03bb6f03",
+      "bytes": 24727
+    },
+    {
+      "path": "resources/spa/src/pages/finance/PeriodLockList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "a73dd1baa141e876552d95b33b6b8a5b8e88272205dabcb683a661312bedf7e2",
+      "sha256": "a73dd1baa141e876552d95b33b6b8a5b8e88272205dabcb683a661312bedf7e2",
+      "bytes": 8618
+    },
+    {
+      "path": "resources/spa/src/pages/finance/ReceiptDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "f6e45670e93f26e0a3d5fad0cf58f3863a06dd921040417e614d7fe386ea1a23",
+      "sha256": "f6e45670e93f26e0a3d5fad0cf58f3863a06dd921040417e614d7fe386ea1a23",
+      "bytes": 5661
+    },
+    {
+      "path": "resources/spa/src/pages/finance/ReceiptList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "a5a70af6247e765ef5c5f246a78eefabf6aafd8796fbd58b246b84a7233c4845",
+      "sha256": "a5a70af6247e765ef5c5f246a78eefabf6aafd8796fbd58b246b84a7233c4845",
+      "bytes": 3236
+    },
+    {
+      "path": "resources/spa/src/pages/finance/RefundDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "4c95f6d11dd612aeeb9f5955e2e4d38e727e326c429a03561f71b2953681966a",
+      "sha256": "4c95f6d11dd612aeeb9f5955e2e4d38e727e326c429a03561f71b2953681966a",
+      "bytes": 5765
+    },
+    {
+      "path": "resources/spa/src/pages/finance/RefundList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "522b9d26f35da2625f6854ae954c8b9bd29ab71343c42e37e8c1aab96ac8dbb2",
+      "sha256": "522b9d26f35da2625f6854ae954c8b9bd29ab71343c42e37e8c1aab96ac8dbb2",
+      "bytes": 6891
+    },
+    {
+      "path": "resources/spa/src/pages/finance/TaskInbox.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "d60fb181b6d21f03958cf356127c6e616b372e7a3bf9df4263cf4e06f7572428",
+      "sha256": "d60fb181b6d21f03958cf356127c6e616b372e7a3bf9df4263cf4e06f7572428",
+      "bytes": 6329
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/AppointmentDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9ff9f2243b065c9987f6b756b28b63e0e90ee0bfb816fe7859a33e36841fb27a",
+      "sha256": "9ff9f2243b065c9987f6b756b28b63e0e90ee0bfb816fe7859a33e36841fb27a",
+      "bytes": 11062
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/AppointmentList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "0e043c908392a3c06563bfd0384ded39ba5ed656077f0d7f0ddce908fdee2d25",
+      "sha256": "0e043c908392a3c06563bfd0384ded39ba5ed656077f0d7f0ddce908fdee2d25",
+      "bytes": 5714
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/ServiceSessionList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ec08b3094d8772bbaf7a457f435d41833ecfee81648ce3c21f7cfb27079ddc2d",
+      "sha256": "ec08b3094d8772bbaf7a457f435d41833ecfee81648ce3c21f7cfb27079ddc2d",
+      "bytes": 9251
+    },
+    {
+      "path": "resources/spa/src/pages/get-started/RoleGetStarted.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ddb811d6684a68bb20158ced849628abb64e6d20fb9b1646b27ff1a89a97889e",
+      "sha256": "ddb811d6684a68bb20158ced849628abb64e6d20fb9b1646b27ff1a89a97889e",
+      "bytes": 12969
+    },
+    {
+      "path": "resources/spa/src/pages/hr/Compensation.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "300fdc46297ce92380b9ea0c3bc2f6bfc5c687c3aafea0806eed9936fcdee50c",
+      "sha256": "300fdc46297ce92380b9ea0c3bc2f6bfc5c687c3aafea0806eed9936fcdee50c",
+      "bytes": 51326
+    },
+    {
+      "path": "resources/spa/src/pages/hr/CompensationDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "2f8a8309bebcacc615b73b7bef87fe8385df6d2594a3dae761e1339952abb89d",
+      "sha256": "2f8a8309bebcacc615b73b7bef87fe8385df6d2594a3dae761e1339952abb89d",
+      "bytes": 8210
+    },
+    {
+      "path": "resources/spa/src/pages/hr/CompensationHistory.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "69623154f5c2d837a6f69f52c7a8151194eb342330c7af4b7d4db0e00908e3bb",
+      "sha256": "69623154f5c2d837a6f69f52c7a8151194eb342330c7af4b7d4db0e00908e3bb",
+      "bytes": 3466
+    },
+    {
+      "path": "resources/spa/src/pages/hr/CompensationSetup.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "fdb32a67c3d6386537a45e011401fde9c924a45cf887086d89ad4c82f9420b6d",
+      "sha256": "fdb32a67c3d6386537a45e011401fde9c924a45cf887086d89ad4c82f9420b6d",
+      "bytes": 11022
+    },
+    {
+      "path": "resources/spa/src/pages/hr/HrAuditActivity.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "74c3261d646775aec3095d88c02ca7a9a3efe2f84fd23470869be2ad8da8712a",
+      "sha256": "74c3261d646775aec3095d88c02ca7a9a3efe2f84fd23470869be2ad8da8712a",
+      "bytes": 6907
+    },
+    {
+      "path": "resources/spa/src/pages/hr/HrDashboard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "6184f8a1cb3216eb9ffd1c807a234b7256c787bb4e8d9b7170cf1c91fdf186f4",
+      "sha256": "6184f8a1cb3216eb9ffd1c807a234b7256c787bb4e8d9b7170cf1c91fdf186f4",
+      "bytes": 11807
+    },
+    {
+      "path": "resources/spa/src/pages/hr/PayoutRuns.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "0922227cdb84361ce2e5fdc9b7558bc6fc8ad62fbeb8898bbc6483723f6aaffa",
+      "sha256": "0922227cdb84361ce2e5fdc9b7558bc6fc8ad62fbeb8898bbc6483723f6aaffa",
+      "bytes": 23400
+    },
+    {
+      "path": "resources/spa/src/pages/hr/StaffInvitations.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "923d38c40abc2ae3f8ea0321726eb40b514d4dd847a43d8ca0ce9fbb80982804",
+      "sha256": "923d38c40abc2ae3f8ea0321726eb40b514d4dd847a43d8ca0ce9fbb80982804",
+      "bytes": 6525
+    },
+    {
+      "path": "resources/spa/src/pages/hr/StaffLifecycle.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5c446be58f2c1329440fcf0a491ccd8b0513305e2e80a923de5f94a4716f5ce5",
+      "sha256": "5c446be58f2c1329440fcf0a491ccd8b0513305e2e80a923de5f94a4716f5ce5",
+      "bytes": 7767
+    },
+    {
+      "path": "resources/spa/src/pages/hr/StaffList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "6c1b8db856ce23aca61ce8848d98dc5ede3b6860c1809e1e4f4b8d589e44b907",
+      "sha256": "6c1b8db856ce23aca61ce8848d98dc5ede3b6860c1809e1e4f4b8d589e44b907",
+      "bytes": 7171
+    },
+    {
+      "path": "resources/spa/src/pages/hr/StaffProfile.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "790cc5e80e34068f8784a4a8f13523e131ad153d357b85465dde3dfcb1838c93",
+      "sha256": "790cc5e80e34068f8784a4a8f13523e131ad153d357b85465dde3dfcb1838c93",
+      "bytes": 7756
+    },
+    {
+      "path": "resources/spa/src/pages/invoicing/InvoiceCreate.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "00c5967e779aa09a2ea77f9287b3d1197fe29d5cc37688273cd9ec00dda4ddb3",
+      "sha256": "00c5967e779aa09a2ea77f9287b3d1197fe29d5cc37688273cd9ec00dda4ddb3",
+      "bytes": 5833
+    },
+    {
+      "path": "resources/spa/src/pages/invoicing/InvoiceDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "57a7565c836694238caa4320d9f7f38e524cbdaceb861c78d6fbea98da647bb5",
+      "sha256": "57a7565c836694238caa4320d9f7f38e524cbdaceb861c78d6fbea98da647bb5",
+      "bytes": 13228
+    },
+    {
+      "path": "resources/spa/src/pages/invoicing/InvoiceList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "a5d2f1eb8f7fd5518fe76357f6809e3c519823ceb6222477868e6e3783931f9e",
+      "sha256": "a5d2f1eb8f7fd5518fe76357f6809e3c519823ceb6222477868e6e3783931f9e",
+      "bytes": 5921
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/CompensationSummary.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "6cb501d55dd3c32dbfa3f413e1f398096071b4dbb87335272d8de2746fe4f908",
+      "sha256": "6cb501d55dd3c32dbfa3f413e1f398096071b4dbb87335272d8de2746fe4f908",
+      "bytes": 16711
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/Dashboard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5ac46a93fe5aef8ba4278800bd7e89f1982df11b7a9988685da5b63a2b922fce",
+      "sha256": "5ac46a93fe5aef8ba4278800bd7e89f1982df11b7a9988685da5b63a2b922fce",
+      "bytes": 12968
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/MerchantAdministratorPages.spec.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "c09604fa83c33020d4447100c2cb433c4679768ad742be8769f51689c9e2ec74",
+      "sha256": "c09604fa83c33020d4447100c2cb433c4679768ad742be8769f51689c9e2ec74",
+      "bytes": 6792
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/MerchantBranchDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "2427c39667ec3c974fd8a6072bbfdc2da8c8d0ddb7bf300093b7153f36e2cc23",
+      "sha256": "2427c39667ec3c974fd8a6072bbfdc2da8c8d0ddb7bf300093b7153f36e2cc23",
+      "bytes": 3924
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/MerchantProfile.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "c5c8efdf1471ad6ccb19ef7dc8d3ca827bb9cb0c73a785784fa24e4d261ea823",
+      "sha256": "c5c8efdf1471ad6ccb19ef7dc8d3ca827bb9cb0c73a785784fa24e4d261ea823",
+      "bytes": 13138
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/PeriodReopenApprovals.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "cbb999b31f759a319e8f9adfd81d7c41cb02b2f674a115f19b852fca9d8edb17",
+      "sha256": "cbb999b31f759a319e8f9adfd81d7c41cb02b2f674a115f19b852fca9d8edb17",
+      "bytes": 4007
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/PlanManagement.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "730e575c9610864b4e7c2c7a32583ec97621fdf70e3ca11fc0f4a7b77564f20f",
+      "sha256": "730e575c9610864b4e7c2c7a32583ec97621fdf70e3ca11fc0f4a7b77564f20f",
+      "bytes": 8881
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/StaffOverview.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "b8264d56df98342a3dfb211a31c8b9b2c7dced6cddb07667d20c0de551b95b2f",
+      "sha256": "b8264d56df98342a3dfb211a31c8b9b2c7dced6cddb07667d20c0de551b95b2f",
+      "bytes": 14373
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/SubscriptionInvoiceDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9b4ee9481f84314ae8a1693cf734fe4eeb8052a05e76da69d326ca62ef83d963",
+      "sha256": "9b4ee9481f84314ae8a1693cf734fe4eeb8052a05e76da69d326ca62ef83d963",
+      "bytes": 6915
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/SubscriptionInvoices.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "d0d50f661e4c36bb2f41538862222b9a7debb24ba02d8a54623bcfe76e17416c",
+      "sha256": "d0d50f661e4c36bb2f41538862222b9a7debb24ba02d8a54623bcfe76e17416c",
+      "bytes": 10644
+    },
+    {
+      "path": "resources/spa/src/pages/onboarding/FirstTimeSetup.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "3994f66ac6107696a0f9cdac4372d56eab103fb957106b8ae2c2b9de535a3542",
+      "sha256": "3994f66ac6107696a0f9cdac4372d56eab103fb957106b8ae2c2b9de535a3542",
+      "bytes": 15363
+    },
+    {
+      "path": "resources/spa/src/pages/payments/PaymentGroupDetail.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "b7d60e7f0322c870163fdfa125ed8a27b3e3f49841441cc5d2b114f460147dec",
+      "sha256": "b7d60e7f0322c870163fdfa125ed8a27b3e3f49841441cc5d2b114f460147dec",
+      "bytes": 13923
+    },
+    {
+      "path": "resources/spa/src/pages/payments/PaymentGroupList.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9f30d7959fee7d03a13a01009e529067c643da990ed71a0fcc064ed6c17ecb11",
+      "sha256": "9f30d7959fee7d03a13a01009e529067c643da990ed71a0fcc064ed6c17ecb11",
+      "bytes": 4439
+    },
+    {
+      "path": "resources/spa/src/pages/payments/RecordPayment.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "485ddb789fa7f90b23069df3da4c7f980800a4dd9c68dff4bd90a729a2804b22",
+      "sha256": "485ddb789fa7f90b23069df3da4c7f980800a4dd9c68dff4bd90a729a2804b22",
+      "bytes": 15138
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Earnings.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "caca2ae136d0b297e821a866988c3de0878775f9fe6ed88750a4c8001b3f8b2f",
+      "sha256": "caca2ae136d0b297e821a866988c3de0878775f9fe6ed88750a4c8001b3f8b2f",
+      "bytes": 25370
+    },
+    {
+      "path": "resources/spa/src/pages/platform/AccountAndSecurity.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "bade7fa191704a04f91e7a85e63fe1327913191e2f92c8914f5aace1c7268717",
+      "sha256": "bade7fa191704a04f91e7a85e63fe1327913191e2f92c8914f5aace1c7268717",
+      "bytes": 26367
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/BillingSettingsSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "ada5b7e47fe49e885fa2b70ffc4c82e41524e65e797bde3f9d57ebbc4a065193",
+      "sha256": "ada5b7e47fe49e885fa2b70ffc4c82e41524e65e797bde3f9d57ebbc4a065193",
+      "bytes": 5933
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/GeneralSettingsSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9b22c627bc033a51cee038563c3c0494178a2cc25fc5611ffbae324530b63780",
+      "sha256": "9b22c627bc033a51cee038563c3c0494178a2cc25fc5611ffbae324530b63780",
+      "bytes": 4991
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/PlanPricesSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "3a57af838ba246b2a739a25c8c796ef66812a75a3d69e052ff2a6ad6e3df9e37",
+      "sha256": "3a57af838ba246b2a739a25c8c796ef66812a75a3d69e052ff2a6ad6e3df9e37",
+      "bytes": 11723
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/PlatformFeeConfigSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5e50e07c3c779f86edb850ecddc747342a265536562a69b8e7a61c6549663754",
+      "sha256": "5e50e07c3c779f86edb850ecddc747342a265536562a69b8e7a61c6549663754",
+      "bytes": 18770
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/PreferredFeeRulesSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "fb7a98950137cd74e56ab6dbd2d249eaef417fccb2cbceebc9082dc1ac6b6ef9",
+      "sha256": "fb7a98950137cd74e56ab6dbd2d249eaef417fccb2cbceebc9082dc1ac6b6ef9",
+      "bytes": 16567
+    },
+    {
+      "path": "resources/spa/src/pages/platform/billing/SubscriptionPlansSection.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9feed24d8ea9bf641aee07cc6cbcc82fec1582b6de73a71aaa31056fb3922216",
+      "sha256": "9feed24d8ea9bf641aee07cc6cbcc82fec1582b6de73a71aaa31056fb3922216",
+      "bytes": 10374
+    },
+    {
+      "path": "resources/spa/src/pages/platform/FeatureFlags.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "7e713565ca102e3265cae7d08ad01f9d15e588e231b75596560d0391109056b6",
+      "sha256": "7e713565ca102e3265cae7d08ad01f9d15e588e231b75596560d0391109056b6",
+      "bytes": 17141
+    },
+    {
+      "path": "resources/spa/src/pages/platform/InternalPlatformAccess.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "a0040c497dd894e8ed3f30c8384386d9b31380edba6460b155d8db503c3a287d",
+      "sha256": "a0040c497dd894e8ed3f30c8384386d9b31380edba6460b155d8db503c3a287d",
+      "bytes": 27608
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlanPrices.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "8222079f080dfe615fe9b36cdeae51a32f1c0af20392ff7d1ff52b6a1bc6d753",
+      "sha256": "8222079f080dfe615fe9b36cdeae51a32f1c0af20392ff7d1ff52b6a1bc6d753",
+      "bytes": 3061
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlansAndEntitlements.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "f9915304ca202c40390355e5de11b6d69cd0360adf77636d4be427ab40a88fcc",
+      "sha256": "f9915304ca202c40390355e5de11b6d69cd0360adf77636d4be427ab40a88fcc",
+      "bytes": 2806
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlatformAudit.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "780f2e4628aaa8a0adf92edd39b6fd4081ee254910125ce1b6b27f46309e5d3c",
+      "sha256": "780f2e4628aaa8a0adf92edd39b6fd4081ee254910125ce1b6b27f46309e5d3c",
+      "bytes": 18279
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlatformBillingSettings.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "965fc34d9c2b468528454e62f5eef1affdec06e868ce097eb3b82e67add92f07",
+      "sha256": "965fc34d9c2b468528454e62f5eef1affdec06e868ce097eb3b82e67add92f07",
+      "bytes": 4003
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlatformDashboard.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "f3e844b820de4de3cf165f7872a73aef0c8a64b946e9e6f30a8feefed2313ca1",
+      "sha256": "f3e844b820de4de3cf165f7872a73aef0c8a64b946e9e6f30a8feefed2313ca1",
+      "bytes": 18980
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PlatformGetStarted.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "1c9654df3744c63c52b2f7e101798ca04ee6670fd3489df5d7366fc583790540",
+      "sha256": "1c9654df3744c63c52b2f7e101798ca04ee6670fd3489df5d7366fc583790540",
+      "bytes": 11919
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PreferredPersonnelFeeRules.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "35200d6776b3071912e728a092990a2bc0a94c2af101a2fd83bfd34f8bbf18b8",
+      "sha256": "35200d6776b3071912e728a092990a2bc0a94c2af101a2fd83bfd34f8bbf18b8",
+      "bytes": 2149
+    },
+    {
+      "path": "resources/spa/src/pages/platform/PromotionalDiscounts.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "5d4c7bb642f658cc8c21c4f37cac72d84b1e82b06071b45eca3be5ebef8e96ac",
+      "sha256": "5d4c7bb642f658cc8c21c4f37cac72d84b1e82b06071b45eca3be5ebef8e96ac",
+      "bytes": 2402
+    },
+    {
+      "path": "resources/spa/src/pages/platform/Promotions.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "8e298be08c2016509a96991efbb64ad2bbbf3ddac8d722c7bc5ab524474b5d09",
+      "sha256": "8e298be08c2016509a96991efbb64ad2bbbf3ddac8d722c7bc5ab524474b5d09",
+      "bytes": 23640
+    },
+    {
+      "path": "resources/spa/src/pages/platform/SmsBillingSettings.spec.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "90e99639828dcb5da8921fbe76cc271b5478bfd3c31ae9ebdcca5f1e65a59ad0",
+      "sha256": "90e99639828dcb5da8921fbe76cc271b5478bfd3c31ae9ebdcca5f1e65a59ad0",
+      "bytes": 9225
+    },
+    {
+      "path": "resources/spa/src/pages/platform/SmsBillingSettings.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "8d12f75b8945575f99cff815aaecf894a1fb138ae1986a667c42f13e122f1853",
+      "sha256": "8d12f75b8945575f99cff815aaecf894a1fb138ae1986a667c42f13e122f1853",
+      "bytes": 26337
+    },
+    {
+      "path": "resources/spa/src/pages/platform/SubscriptionOperations.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "094b398028adf308a95254af982134ec4d3fa26d7dbc8ddfd70769ec3e694e9d",
+      "sha256": "094b398028adf308a95254af982134ec4d3fa26d7dbc8ddfd70769ec3e694e9d",
+      "bytes": 24472
+    },
+    {
+      "path": "resources/spa/src/pages/search/GlobalSearch.vue",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "30ab0a9e92e83eeb26ec0aacebff745dcaab7605777f0bc51f836b8e7009d049",
+      "sha256": "30ab0a9e92e83eeb26ec0aacebff745dcaab7605777f0bc51f836b8e7009d049",
+      "bytes": 7941
+    },
+    {
+      "path": "resources/spa/src/stores/platformGetStartedStore.ts",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "9fdd373dc10fd3eb22bdcaba4c4cc105c21a5893d6ae01fdabdd7a095092a402",
+      "sha256": "9fdd373dc10fd3eb22bdcaba4c4cc105c21a5893d6ae01fdabdd7a095092a402",
+      "bytes": 16146
+    },
+    {
+      "path": "resources/spa/src/styles/generated/tokens.css",
+      "status": " M",
+      "class": "design_system_source_or_generated",
+      "owner": "claude_frozen",
+      "before_sha256": "c291f1a83e6bad20f1c88f6d721a9e7e70e0fa5592fc2e7257a8b5094e5730c4",
+      "sha256": "c291f1a83e6bad20f1c88f6d721a9e7e70e0fa5592fc2e7257a8b5094e5730c4",
+      "bytes": 8532
+    },
+    {
+      "path": "resources/spa/src/utils/dates.ts",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "7f738fdfdfea741a24423d42c92ea10a94ac8058587efc9fa58e15118599f0e1",
+      "sha256": "7f738fdfdfea741a24423d42c92ea10a94ac8058587efc9fa58e15118599f0e1",
+      "bytes": 1047
+    },
+    {
+      "path": "resources/spa/src/utils/personnelStatus.ts",
+      "status": " M",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "396457c72e7848afbacae1322ab5559b87a46e3b8db76f5bbf1503bf3afa249c",
+      "sha256": "396457c72e7848afbacae1322ab5559b87a46e3b8db76f5bbf1503bf3afa249c",
+      "bytes": 3219
+    },
+    {
+      "path": "resources/spa/src/utils/statusLabel.ts",
+      "status": "??",
+      "class": "frontend_source",
+      "owner": "claude_frozen",
+      "before_sha256": "f687d2eae67c23fdb8bb75b3c6c22d3291e46f6db68e34e85bdb4801ea33b125",
+      "sha256": "f687d2eae67c23fdb8bb75b3c6c22d3291e46f6db68e34e85bdb4801ea33b125",
+      "bytes": 719
+    },
+    {
+      "path": "tests/e2e-origin/production-origin.spec.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "1e62bd983f38ad3fcd63b5065567adf8e6a38e9b5fd81b12c064abce8d977381",
+      "sha256": "1e62bd983f38ad3fcd63b5065567adf8e6a38e9b5fd81b12c064abce8d977381",
+      "bytes": 5242
+    },
+    {
+      "path": "tests/e2e/phase-20c.spec.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "660f33d6036a42cf427aa56ed01253d8b12d494f97146910623b6e9d1a740c58",
+      "sha256": "660f33d6036a42cf427aa56ed01253d8b12d494f97146910623b6e9d1a740c58",
+      "bytes": 14251
+    },
+    {
+      "path": "tests/e2e/phase-23-release-audit.spec.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "70d0375dcc38f0838a4930cc5402be1d4835fe59477e32438ab05516a97a8cdd",
+      "sha256": "70d0375dcc38f0838a4930cc5402be1d4835fe59477e32438ab05516a97a8cdd",
+      "bytes": 23113
+    },
+    {
+      "path": "tests/e2e/support/releaseAudit.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "995d0409922f72112c394d4e1d9951be5f782f0ea0d91495e01d425b14a2f88a",
+      "sha256": "995d0409922f72112c394d4e1d9951be5f782f0ea0d91495e01d425b14a2f88a",
+      "bytes": 83528
+    },
+    {
+      "path": "tests/e2e/support/ui08Platform.ts",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "dcb8c656ab28e755fa9575c6a77336d9950606b8dac09c0071c8cad9648da54d",
+      "sha256": "dcb8c656ab28e755fa9575c6a77336d9950606b8dac09c0071c8cad9648da54d",
+      "bytes": 23953
+    },
+    {
+      "path": "tests/e2e/support/ui16Visual.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "9841ab74c2d82622eff1ce675faa7d4e7ea6991e63fa209ba2efd7a319978290",
+      "sha256": "9841ab74c2d82622eff1ce675faa7d4e7ea6991e63fa209ba2efd7a319978290",
+      "bytes": 7337
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts",
+      "status": "??",
+      "class": "codex_ui16_continuation",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "f61e3ee298c02e16510aa5fc219409d95f13069701b1a24bff43cde399bf0e86",
+      "bytes": 5360
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/form--dark-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "73bfaf887106e5516ab1489a004c0c800201ca9c0ad3da11728788d85eb52017",
+      "bytes": 35907
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/form--light-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "08a1b4716886455ba766fa8ff0f459506a8a3a9c7a39ec14dac0ae9455369fa7",
+      "bytes": 36657
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/legal--dark-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "8eeabd0dbfb211fb6becdf991dd87cebc1d98e86e40263fdc4ace74bf6bafcaf",
+      "bytes": 181785
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/legal--light-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "9feb3c331f7fef804ddfa65cdd3809b557810a31e28112adbb87a22bad6963dd",
+      "bytes": 180277
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-card-detail--dark-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "a5444d1eb2535ee5b99957be4839ad8ffab85b94a13a287252fed009b51ef2e5",
+      "bytes": 9441
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-card-detail--light-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "6370eaab9e2e9bde7f7be319228a9fcee22070956bf40993c07f086f400005f7",
+      "bytes": 9162
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-cards--dark-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "9e9b33b0cf975641c6211e77ad1a9ae15420fa95e8fcd88f5a2868e0a5a33dd0",
+      "bytes": 66396
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-cards--light-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "cf912204813adb5377b03ef564dae97420ca0257007b6565800cbe23ea2aaaf0",
+      "bytes": 66187
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/states--dark-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "3dce0ac025f472ce50b4cc5e78a7056d05461e09b398083c145d1fd6f605cd32",
+      "bytes": 46264
+    },
+    {
+      "path": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/states--light-chromium-win32.png",
+      "status": "??",
+      "class": "codex_visual_frame",
+      "owner": "codex_continuation",
+      "before_sha256": null,
+      "sha256": "44520c62751508d9d8f1dda12bb53dcf438a35dbf9641dea1ae2296f5a07f285",
+      "bytes": 45431
+    },
+    {
+      "path": "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "4cfe6669964475254813a615ae6dfadb237f2a3ca47ce0120d43c17b80af3f9f",
+      "sha256": "4cfe6669964475254813a615ae6dfadb237f2a3ca47ce0120d43c17b80af3f9f",
+      "bytes": 16172
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts",
+      "status": "??",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "2b3b874a6bc91fc12098e2dcc74bbcec1759ac3dd0a69f9c249cbca29d5c3271",
+      "sha256": "2b3b874a6bc91fc12098e2dcc74bbcec1759ac3dd0a69f9c249cbca29d5c3271",
+      "bytes": 7446
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-administrator-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "d0d2973ab3c2b6b64b89b005b3fa639db9c6a641f991786e8ee48da77fcc4216",
+      "sha256": "d0d2973ab3c2b6b64b89b005b3fa639db9c6a641f991786e8ee48da77fcc4216",
+      "bytes": 429646
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-administrator-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "81077db4d840ec759be169d5419b66637c83e5e0f855a241d7040aaec8647fc3",
+      "sha256": "81077db4d840ec759be169d5419b66637c83e5e0f855a241d7040aaec8647fc3",
+      "bytes": 451380
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-audit-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "6ccc8a2fdaedccc13fba8530535cbfc126c94a9e0dc7211d5bbe3dd382ac9136",
+      "sha256": "6ccc8a2fdaedccc13fba8530535cbfc126c94a9e0dc7211d5bbe3dd382ac9136",
+      "bytes": 347572
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-audit-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "3cb099fb9e4ae521c69e20d68af632772b82a01d184f3670a3e031a72431b1b5",
+      "sha256": "3cb099fb9e4ae521c69e20d68af632772b82a01d184f3670a3e031a72431b1b5",
+      "bytes": 366681
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-branch-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "22894f26ca85fa2e6d6afbcdaa98bc58e4abf108d105778962e858bb5e0b9346",
+      "sha256": "22894f26ca85fa2e6d6afbcdaa98bc58e4abf108d105778962e858bb5e0b9346",
+      "bytes": 418362
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-branch-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "fe931b7c6f4f6f32fe3f927e05d8d2c6005091dc17ea34b4cd13e48ce147e54f",
+      "sha256": "fe931b7c6f4f6f32fe3f927e05d8d2c6005091dc17ea34b4cd13e48ce147e54f",
+      "bytes": 443635
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-finance-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "2c6ddcd06326442035b57a4a6942b34d4198a9cbf1b84d9cc9976f7653a657e5",
+      "sha256": "2c6ddcd06326442035b57a4a6942b34d4198a9cbf1b84d9cc9976f7653a657e5",
+      "bytes": 458128
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-finance-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "93c4a556e62fc341e12919ebe3711885b8d0e321707b2c528502612bb920d3c6",
+      "sha256": "93c4a556e62fc341e12919ebe3711885b8d0e321707b2c528502612bb920d3c6",
+      "bytes": 478608
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-front-office-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "5ab9ef1eedf45234caca874f6b66ef38839b7020093aeadc39e0de50edc84cfb",
+      "sha256": "5ab9ef1eedf45234caca874f6b66ef38839b7020093aeadc39e0de50edc84cfb",
+      "bytes": 374077
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-front-office-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f8732343e1366274bef66b3abfb1fe8279815eeaf68c65bdac6f92b2304ce330",
+      "sha256": "f8732343e1366274bef66b3abfb1fe8279815eeaf68c65bdac6f92b2304ce330",
+      "bytes": 393518
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-human-resource-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "e7e3e9144489c1fd5fa8fd64056659ba670e9fcd5103958a07ace963f45c2369",
+      "sha256": "e7e3e9144489c1fd5fa8fd64056659ba670e9fcd5103958a07ace963f45c2369",
+      "bytes": 327785
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-human-resource-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "3508fd3eb50ae7cbca51a9b77eac37b5516ce512b74be16c278ca00100eb6180",
+      "sha256": "3508fd3eb50ae7cbca51a9b77eac37b5516ce512b74be16c278ca00100eb6180",
+      "bytes": 347191
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-personnel-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "ba924cea5c1029647bdd6c3ed2c672da612f03939f8ee5df9d7eeaafd8fcc4ef",
+      "sha256": "ba924cea5c1029647bdd6c3ed2c672da612f03939f8ee5df9d7eeaafd8fcc4ef",
+      "bytes": 329432
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-personnel-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "d81efcd5a4b40a43566bab0a99f2065fd7ceb28893a919384e2f2287ef14ab3b",
+      "sha256": "d81efcd5a4b40a43566bab0a99f2065fd7ceb28893a919384e2f2287ef14ab3b",
+      "bytes": 350010
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--super-administrator-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "ca4ce2e63df21006105c5d12b3335d364510320fa99d65290de939e93c3e7245",
+      "sha256": "ca4ce2e63df21006105c5d12b3335d364510320fa99d65290de939e93c3e7245",
+      "bytes": 400046
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--super-administrator-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "fa745638612f44fe3a52d1e2ccbc7136f860126d736850987ffa7b0c07d00cb8",
+      "sha256": "fa745638612f44fe3a52d1e2ccbc7136f860126d736850987ffa7b0c07d00cb8",
+      "bytes": 415412
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "276313c783e72453ff6cb6286617e4eb86f03ba3d2bbfb39afb5d4e9e5183501",
+      "sha256": "276313c783e72453ff6cb6286617e4eb86f03ba3d2bbfb39afb5d4e9e5183501",
+      "bytes": 184098
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "4a98de3608c02aa3c0261a8612a3592fd9617bc1eb044def116dd0f9a0770fc9",
+      "sha256": "4a98de3608c02aa3c0261a8612a3592fd9617bc1eb044def116dd0f9a0770fc9",
+      "bytes": 190091
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "cbe8a221658e671c04b9d3818da80b8089520dd0c9c0e6d2d36aebf7e86fbe9c",
+      "sha256": "cbe8a221658e671c04b9d3818da80b8089520dd0c9c0e6d2d36aebf7e86fbe9c",
+      "bytes": 123580
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "b4a811c7900aca2ff8824bf0b94c00192c8b0daf61cd3f0c205335524c99ca82",
+      "sha256": "b4a811c7900aca2ff8824bf0b94c00192c8b0daf61cd3f0c205335524c99ca82",
+      "bytes": 124504
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "84c7b6b0397c8b7925e9980bf6d5729f5ff52716cfbb8c8570e6deb5ba191861",
+      "sha256": "84c7b6b0397c8b7925e9980bf6d5729f5ff52716cfbb8c8570e6deb5ba191861",
+      "bytes": 446354
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "e07b7a2f925a3aaf6d36d7e2cba8c5535c2ccf8e0323629ade807b121d7d740f",
+      "sha256": "e07b7a2f925a3aaf6d36d7e2cba8c5535c2ccf8e0323629ade807b121d7d740f",
+      "bytes": 457931
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "cf458033fa5cac81826f199934cdc1b792c552015c7de165b48b749437655ef2",
+      "sha256": "cf458033fa5cac81826f199934cdc1b792c552015c7de165b48b749437655ef2",
+      "bytes": 442036
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f2aac0a955fca8760d4608cf23ee792b21e96373157d10afbe84fa5589ba7a56",
+      "sha256": "f2aac0a955fca8760d4608cf23ee792b21e96373157d10afbe84fa5589ba7a56",
+      "bytes": 453863
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "2e59997cb8c36fc7b98e4c8192dd5e2380146623318c39c6f50e2c990a03e89a",
+      "sha256": "2e59997cb8c36fc7b98e4c8192dd5e2380146623318c39c6f50e2c990a03e89a",
+      "bytes": 175416
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f985df186471b56c39a04f689f5cd7dcd6897272982b8af574abb11ac1b0fafc",
+      "sha256": "f985df186471b56c39a04f689f5cd7dcd6897272982b8af574abb11ac1b0fafc",
+      "bytes": 172966
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "6bfa8e79d1f724d98c4d767a9222fde4206e27e69cc3386ebbd5a5cce5c2c2fd",
+      "sha256": "6bfa8e79d1f724d98c4d767a9222fde4206e27e69cc3386ebbd5a5cce5c2c2fd",
+      "bytes": 423354
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "6c5911647f2de085d9cf0a7238342c3c6c22cdf29110343c624ee15cc8559d38",
+      "sha256": "6c5911647f2de085d9cf0a7238342c3c6c22cdf29110343c624ee15cc8559d38",
+      "bytes": 434994
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "a8bb9f3d3b6529e87aaa1a596271188151a6f1d295b42543ff1e9b96e17c253c",
+      "sha256": "a8bb9f3d3b6529e87aaa1a596271188151a6f1d295b42543ff1e9b96e17c253c",
+      "bytes": 343179
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "cdf613f16083f0c3b4db86e1bb8838b7ed63687c88285ecad5b632e8acf1f8bd",
+      "sha256": "cdf613f16083f0c3b4db86e1bb8838b7ed63687c88285ecad5b632e8acf1f8bd",
+      "bytes": 340424
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "ce006d3d6fbadda2e712f49c6ceff738dbabf23d2b203030709569f7c5205640",
+      "sha256": "ce006d3d6fbadda2e712f49c6ceff738dbabf23d2b203030709569f7c5205640",
+      "bytes": 434693
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "b8da3e8cbaebc3cc9250319413c306860bb5f3b70ec3e06a0998f633c3fbe973",
+      "sha256": "b8da3e8cbaebc3cc9250319413c306860bb5f3b70ec3e06a0998f633c3fbe973",
+      "bytes": 441903
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "0d9b2321eba1153e761fd6f7dba2e14735916cb90e95e8baa13aff19ce82c78f",
+      "sha256": "0d9b2321eba1153e761fd6f7dba2e14735916cb90e95e8baa13aff19ce82c78f",
+      "bytes": 434364
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "d5aa81661b1d365c95c3eb13c32f7fc9bc6f047a8ad3e3d2fbd186376aa1f322",
+      "sha256": "d5aa81661b1d365c95c3eb13c32f7fc9bc6f047a8ad3e3d2fbd186376aa1f322",
+      "bytes": 439742
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "a7f2c39fd607ac1450cb499d4b2407dea322213dceef0f1e238e2ca69ef8ede8",
+      "sha256": "a7f2c39fd607ac1450cb499d4b2407dea322213dceef0f1e238e2ca69ef8ede8",
+      "bytes": 166547
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "8b6c271f55bd4ea6c869d1bb536892b4ab5bfdc495bbba7c7d6fe0ab4eabbf3c",
+      "sha256": "8b6c271f55bd4ea6c869d1bb536892b4ab5bfdc495bbba7c7d6fe0ab4eabbf3c",
+      "bytes": 164965
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "dbcade148033df79a586b487228fe99d8d91e723936331f1e7510176fb9634ad",
+      "sha256": "dbcade148033df79a586b487228fe99d8d91e723936331f1e7510176fb9634ad",
+      "bytes": 445355
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "9d708b7389c5d99b11f4af06b571d2b4c125256c0407e3f099d09f78b6445025",
+      "sha256": "9d708b7389c5d99b11f4af06b571d2b4c125256c0407e3f099d09f78b6445025",
+      "bytes": 455676
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "7e7658f2f2d95ccd7655c2ad42412780e92ebd9ab60d6fd614ea99293428f425",
+      "sha256": "7e7658f2f2d95ccd7655c2ad42412780e92ebd9ab60d6fd614ea99293428f425",
+      "bytes": 449295
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "74de35e40f97965a204749c92511ed46d7d3e86f70c979461dc62da24baf2d68",
+      "sha256": "74de35e40f97965a204749c92511ed46d7d3e86f70c979461dc62da24baf2d68",
+      "bytes": 456637
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "d350aadfe1c6c6830a2b138d6b328ebbfe4ecccde075affdaa86a937cd6483f2",
+      "sha256": "d350aadfe1c6c6830a2b138d6b328ebbfe4ecccde075affdaa86a937cd6483f2",
+      "bytes": 151491
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "99db8771ec34a208f88589ec940d628446969ab0af88b1d4b78b16369a30fa66",
+      "sha256": "99db8771ec34a208f88589ec940d628446969ab0af88b1d4b78b16369a30fa66",
+      "bytes": 150442
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "918de4611a33f7508f31606ca1154f85e815a06da641c80a7adafc99377e7703",
+      "sha256": "918de4611a33f7508f31606ca1154f85e815a06da641c80a7adafc99377e7703",
+      "bytes": 188698
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "718586ba5af142f5763be8339707091855cf8d241aab68fd4830f4c0dfe91d40",
+      "sha256": "718586ba5af142f5763be8339707091855cf8d241aab68fd4830f4c0dfe91d40",
+      "bytes": 199040
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "a1c3be174739f5c02fdbfab55b76844a14715bbb22b03bc4c845fc34e0a546da",
+      "sha256": "a1c3be174739f5c02fdbfab55b76844a14715bbb22b03bc4c845fc34e0a546da",
+      "bytes": 136014
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f9b3a9bc0455f0c7ffe05cbf564d6ffbb549d5dea2d91230082634990acc2050",
+      "sha256": "f9b3a9bc0455f0c7ffe05cbf564d6ffbb549d5dea2d91230082634990acc2050",
+      "bytes": 140461
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "387bc332af96215cf298e9c3a1e54d7e1a488fa45c15edc01b7ad8bebb97e1a6",
+      "sha256": "387bc332af96215cf298e9c3a1e54d7e1a488fa45c15edc01b7ad8bebb97e1a6",
+      "bytes": 175915
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "1bd6e833878817229e5cdbe0935d69277e403a9ccfeb3da461b48f860982d829",
+      "sha256": "1bd6e833878817229e5cdbe0935d69277e403a9ccfeb3da461b48f860982d829",
+      "bytes": 183103
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "077be818355ece2ec5c16241cf74a2a4e7de3e12fae253ba8dda13846b3de538",
+      "sha256": "077be818355ece2ec5c16241cf74a2a4e7de3e12fae253ba8dda13846b3de538",
+      "bytes": 136007
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "24d01a0e2a07530527c791033e554af2f34847bbcbeee1ce5876ce7bd54ad8f0",
+      "sha256": "24d01a0e2a07530527c791033e554af2f34847bbcbeee1ce5876ce7bd54ad8f0",
+      "bytes": 137490
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "62676232fb31ae1c384545226e972ae82b0b137ed677b03fcb0d1833dd3aad1f",
+      "sha256": "62676232fb31ae1c384545226e972ae82b0b137ed677b03fcb0d1833dd3aad1f",
+      "bytes": 454930
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "3bcaae9c08e5262236cf411c68fe7413d5a2070a4f4b904be5c7d668aaee5e3a",
+      "sha256": "3bcaae9c08e5262236cf411c68fe7413d5a2070a4f4b904be5c7d668aaee5e3a",
+      "bytes": 467024
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "ab6ccce3a11f8a2d25990045e94a5c6c4829b107d9a57cd0e1f3fb1c83c16b59",
+      "sha256": "ab6ccce3a11f8a2d25990045e94a5c6c4829b107d9a57cd0e1f3fb1c83c16b59",
+      "bytes": 448407
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "275b51193ccc6106c74ea879deb6edc6979dab9b31574f5c3d007e0277b446d1",
+      "sha256": "275b51193ccc6106c74ea879deb6edc6979dab9b31574f5c3d007e0277b446d1",
+      "bytes": 458211
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "69c989a43a0770c2998a61691a9b3d1fe9aac6c61b21937dc6ae543e3776f86e",
+      "sha256": "69c989a43a0770c2998a61691a9b3d1fe9aac6c61b21937dc6ae543e3776f86e",
+      "bytes": 176446
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "8aa0ee980592e9f3c638ba9319b4be532633a20a2530aca8e534f8c06eee7349",
+      "sha256": "8aa0ee980592e9f3c638ba9319b4be532633a20a2530aca8e534f8c06eee7349",
+      "bytes": 175161
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "9b6597b6cf5e3f38f1281055e406b409407fa74f637ba90638d17678895dfcab",
+      "sha256": "9b6597b6cf5e3f38f1281055e406b409407fa74f637ba90638d17678895dfcab",
+      "bytes": 173481
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "8eb09e2705fed35934a7995e943c7137e97f22147010422b78ae8826bab05885",
+      "sha256": "8eb09e2705fed35934a7995e943c7137e97f22147010422b78ae8826bab05885",
+      "bytes": 180340
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "a9df13693a7c0b39bd9dff2a195d913846a8c9ac2d41e013f4eb8300ce14e0a8",
+      "sha256": "a9df13693a7c0b39bd9dff2a195d913846a8c9ac2d41e013f4eb8300ce14e0a8",
+      "bytes": 111200
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "e560de2f6178f876dd4cf800a6caab35ab880642d5afad29b7d3257fe2c0c2a1",
+      "sha256": "e560de2f6178f876dd4cf800a6caab35ab880642d5afad29b7d3257fe2c0c2a1",
+      "bytes": 112824
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "52e7a2227391774286e61980bbf3c4c60ed908eb9b2c1af85c472a4b0865b267",
+      "sha256": "52e7a2227391774286e61980bbf3c4c60ed908eb9b2c1af85c472a4b0865b267",
+      "bytes": 178755
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "580fa16340497e69530e8a5a8af7526d487010c30a2dfb76c710bc9d661a6589",
+      "sha256": "580fa16340497e69530e8a5a8af7526d487010c30a2dfb76c710bc9d661a6589",
+      "bytes": 195058
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "686403ca778ee99cf2eeb48bb218ba15f594f1518a686e5f7718e15bd3241fee",
+      "sha256": "686403ca778ee99cf2eeb48bb218ba15f594f1518a686e5f7718e15bd3241fee",
+      "bytes": 141661
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "715a8247f80bb1efb8d4242b1d1d17919a78463d092e3aab58afb267c4413f0e",
+      "sha256": "715a8247f80bb1efb8d4242b1d1d17919a78463d092e3aab58afb267c4413f0e",
+      "bytes": 153854
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "5b93da12a74e62b8371e83163fbda4abd9d361dbb567f87a9e6aee42a7a75b67",
+      "sha256": "5b93da12a74e62b8371e83163fbda4abd9d361dbb567f87a9e6aee42a7a75b67",
+      "bytes": 378235
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "6b9a540911ce4d34038b81c97cdbbd75bee7adcac9418947467dbea2e08418eb",
+      "sha256": "6b9a540911ce4d34038b81c97cdbbd75bee7adcac9418947467dbea2e08418eb",
+      "bytes": 388190
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "cc0e50dfda18c091373b483af95907e406bed57de244b22aceb2a48cc877eab2",
+      "sha256": "cc0e50dfda18c091373b483af95907e406bed57de244b22aceb2a48cc877eab2",
+      "bytes": 377325
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "581979b20e3252e8815a8e1f9709112c471c4962a884edd109a396c05b4110d8",
+      "sha256": "581979b20e3252e8815a8e1f9709112c471c4962a884edd109a396c05b4110d8",
+      "bytes": 387812
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "2853b10ff3ac39af4b2f6d266e7e53b42df2f66d02154843ff9b79337e3295d3",
+      "sha256": "2853b10ff3ac39af4b2f6d266e7e53b42df2f66d02154843ff9b79337e3295d3",
+      "bytes": 156707
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "69801b1a2ed678d2b9e74ef6738365f65af5ae77568ec9e718eb2b77a4a748d5",
+      "sha256": "69801b1a2ed678d2b9e74ef6738365f65af5ae77568ec9e718eb2b77a4a748d5",
+      "bytes": 155976
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "dc704302a9f9ab63555607a527060818e461c634d31ed4d4295f76b21104cbea",
+      "sha256": "dc704302a9f9ab63555607a527060818e461c634d31ed4d4295f76b21104cbea",
+      "bytes": 448758
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "adf54a15adebf598275b1ae0dc362787c1c820633dd0f69641496216dfeaac8a",
+      "sha256": "adf54a15adebf598275b1ae0dc362787c1c820633dd0f69641496216dfeaac8a",
+      "bytes": 462536
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "33e44c08431bd4b49d6faf06b0a17b019d3c23333af576bf45d5ffefef84407c",
+      "sha256": "33e44c08431bd4b49d6faf06b0a17b019d3c23333af576bf45d5ffefef84407c",
+      "bytes": 451369
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "8d7afbdd67a1514ae2a51b6002326fdfb36568b4693c928b04932dbc30bfc4c8",
+      "sha256": "8d7afbdd67a1514ae2a51b6002326fdfb36568b4693c928b04932dbc30bfc4c8",
+      "bytes": 464050
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "bf4c086c46fc7b80ef5358913774c01f3fa49f4bd50f9bc6becbfd82fa56c7ee",
+      "sha256": "bf4c086c46fc7b80ef5358913774c01f3fa49f4bd50f9bc6becbfd82fa56c7ee",
+      "bytes": 157818
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "3945b0a883d806efa48af72fe5a699d747dc08d3a3c4f22b1c7c9ef451ceda69",
+      "sha256": "3945b0a883d806efa48af72fe5a699d747dc08d3a3c4f22b1c7c9ef451ceda69",
+      "bytes": 154316
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "3e1ce9da02f769893bbb0130cbba0ab5b4d8701ef834f3f05abc0bc91c754654",
+      "sha256": "3e1ce9da02f769893bbb0130cbba0ab5b4d8701ef834f3f05abc0bc91c754654",
+      "bytes": 191093
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "1fd66d669e567c293b8f666a407ab70773484398346fcd5aa439042433471086",
+      "sha256": "1fd66d669e567c293b8f666a407ab70773484398346fcd5aa439042433471086",
+      "bytes": 202591
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "11104355461c3c98e983870e5f8b7fded899a4531fd9554666591ef65e8d1841",
+      "sha256": "11104355461c3c98e983870e5f8b7fded899a4531fd9554666591ef65e8d1841",
+      "bytes": 142504
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "803d1d460d2fb6441278f5a8e29351bfa94c71312413a82d53887439a55458e3",
+      "sha256": "803d1d460d2fb6441278f5a8e29351bfa94c71312413a82d53887439a55458e3",
+      "bytes": 147175
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f81f3aac99f3d514289c6733677f3292827fc1bdb55685da86e5ea545ee71f43",
+      "sha256": "f81f3aac99f3d514289c6733677f3292827fc1bdb55685da86e5ea545ee71f43",
+      "bytes": 493159
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "92b493a586c92bf2e863988818e186f217af06c5a3cce2b61a4b5cf57f348ef5",
+      "sha256": "92b493a586c92bf2e863988818e186f217af06c5a3cce2b61a4b5cf57f348ef5",
+      "bytes": 503872
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "95585613b323b80d8c66f614a64ea9bb1a72d7da79be8d2abea5e9c1bff478f5",
+      "sha256": "95585613b323b80d8c66f614a64ea9bb1a72d7da79be8d2abea5e9c1bff478f5",
+      "bytes": 486831
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "37e526dd550b779fc4e719b97a73dbf11a6185935e066e4289edae2857b73614",
+      "sha256": "37e526dd550b779fc4e719b97a73dbf11a6185935e066e4289edae2857b73614",
+      "bytes": 498171
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "dc833758f38b9725c1e93d598e8a54d88dc69c97547a6a138558336f97e106a8",
+      "sha256": "dc833758f38b9725c1e93d598e8a54d88dc69c97547a6a138558336f97e106a8",
+      "bytes": 157298
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "10f16dc0f61db4bbaa5911a289f0380dae6f439ac1f5aced1aab75264055b1ac",
+      "sha256": "10f16dc0f61db4bbaa5911a289f0380dae6f439ac1f5aced1aab75264055b1ac",
+      "bytes": 156432
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--finance-drawer-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "eb3ef455999d0cdaf9aeefab2bf0a55686cf8641c9001871af51933423153824",
+      "sha256": "eb3ef455999d0cdaf9aeefab2bf0a55686cf8641c9001871af51933423153824",
+      "bytes": 35218
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--finance-drawer-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "8d8fa0cdfae2080a0fcd8c1b4ef059ac03ca44d10d50bc59036c01eeb8437a93",
+      "sha256": "8d8fa0cdfae2080a0fcd8c1b4ef059ac03ca44d10d50bc59036c01eeb8437a93",
+      "bytes": 37728
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--merchant-administrator-sidebar-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "302eca603356b694fc3e2cb1c547eebbcbbdcb1719e6c4194060ac4da8ed8054",
+      "sha256": "302eca603356b694fc3e2cb1c547eebbcbbdcb1719e6c4194060ac4da8ed8054",
+      "bytes": 45411
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--merchant-administrator-sidebar-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "5486f0f4fba70f32ca23485c68605e0a0a7d0be83c46910859d8a979965c5c1d",
+      "sha256": "5486f0f4fba70f32ca23485c68605e0a0a7d0be83c46910859d8a979965c5c1d",
+      "bytes": 45928
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--super-administrator-header-open-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "deee9f77596269f07b0572a5cd3f763d1c29b5c8f7fc1c92b325d6bcab5ee464",
+      "sha256": "deee9f77596269f07b0572a5cd3f763d1c29b5c8f7fc1c92b325d6bcab5ee464",
+      "bytes": 291718
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--super-administrator-header-open-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "0738ebe43875f511f1d093790c673af4f23e7b2d5e3772ba55da1755cf6c42e9",
+      "sha256": "0738ebe43875f511f1d093790c673af4f23e7b2d5e3772ba55da1755cf6c42e9",
+      "bytes": 294981
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "efef9a64b17c5db40e0ba667e940fa42fe3651ea036237c56e9df2977b2bd098",
+      "sha256": "efef9a64b17c5db40e0ba667e940fa42fe3651ea036237c56e9df2977b2bd098",
+      "bytes": 213436
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "f62dcddf295bf89d29fa0200bda6b8cff0ce44c19761ef390b3747fd5f436875",
+      "sha256": "f62dcddf295bf89d29fa0200bda6b8cff0ce44c19761ef390b3747fd5f436875",
+      "bytes": 217358
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "e7c3e139aab969025bbcec0dc07b76cbfa46467dc50fb44a7a395b9f3e1e5e54",
+      "sha256": "e7c3e139aab969025bbcec0dc07b76cbfa46467dc50fb44a7a395b9f3e1e5e54",
+      "bytes": 190475
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "06f9dc92ce34bb70a4124cf5bd7f626c3f3caa7f7190205cb3bd4ce3d7ae0e62",
+      "sha256": "06f9dc92ce34bb70a4124cf5bd7f626c3f3caa7f7190205cb3bd4ce3d7ae0e62",
+      "bytes": 192349
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "59df82436970d03303ee385a9c2395a92b22813efaf6002a821c387226b1e10a",
+      "sha256": "59df82436970d03303ee385a9c2395a92b22813efaf6002a821c387226b1e10a",
+      "bytes": 506730
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "dc1a96f9014c19316a7723bbc66e510f07cc2d8d748496c8d5637594f6382388",
+      "sha256": "dc1a96f9014c19316a7723bbc66e510f07cc2d8d748496c8d5637594f6382388",
+      "bytes": 504390
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "1f19686848b5d3800473cb50d5f7f36f376b0421eb1989ca66379865939f94fb",
+      "sha256": "1f19686848b5d3800473cb50d5f7f36f376b0421eb1989ca66379865939f94fb",
+      "bytes": 493306
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "2cb1dcdcbbb3c451a19a338f5fbfca04a332782b5575cd74b19614b198007b36",
+      "sha256": "2cb1dcdcbbb3c451a19a338f5fbfca04a332782b5575cd74b19614b198007b36",
+      "bytes": 491835
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--mobile-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "ef3fc50df46bb6b38e880da906bfd26b25adb482961d3fcda68fe3e694ad07b0",
+      "sha256": "ef3fc50df46bb6b38e880da906bfd26b25adb482961d3fcda68fe3e694ad07b0",
+      "bytes": 180551
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--mobile-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "d4189a370f7d6acb50967c4c287bf4389c92261ea0d75d304db91a6d644f1ccf",
+      "sha256": "d4189a370f7d6acb50967c4c287bf4389c92261ea0d75d304db91a6d644f1ccf",
+      "bytes": 179482
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--desktop-light-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "c2de5e2907d64408d75fa706b950920afe6494a09750cb1e0d7c1f878ea9ed3c",
+      "sha256": "c2de5e2907d64408d75fa706b950920afe6494a09750cb1e0d7c1f878ea9ed3c",
+      "bytes": 174973
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--desktop-light-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "519cb04467443eed3ad56824e0f4764e1c114fd28768f27e23d2c6dc9e5a5a24",
+      "sha256": "519cb04467443eed3ad56824e0f4764e1c114fd28768f27e23d2c6dc9e5a5a24",
+      "bytes": 186464
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--tablet-dark-chromium-linux.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "17c524e21f234cd568a4a42c1e2bab1b834a66ba4b6cf251d3f64f5881f407fb",
+      "sha256": "17c524e21f234cd568a4a42c1e2bab1b834a66ba4b6cf251d3f64f5881f407fb",
+      "bytes": 166061
+    },
+    {
+      "path": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--tablet-dark-chromium-win32.png",
+      "status": "??",
+      "class": "visual_baseline",
+      "owner": "claude_frozen",
+      "before_sha256": "7568c68cd86350240f86d1255c07dbd92111977b810eedad5eb5775b93c51a91",
+      "sha256": "7568c68cd86350240f86d1255c07dbd92111977b810eedad5eb5775b93c51a91",
+      "bytes": 179863
+    },
+    {
+      "path": "tests/Feature/DesignSystem/ComponentContractTest.php",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "fb183cf0853ede27f841abc3904de3ee2bd7c3eb46f902ad39c492e88e8e57f5",
+      "sha256": "fb183cf0853ede27f841abc3904de3ee2bd7c3eb46f902ad39c492e88e8e57f5",
+      "bytes": 10453
+    },
+    {
+      "path": "tests/Feature/Traceability/Phase23TraceabilityTest.php",
+      "status": " M",
+      "class": "test",
+      "owner": "claude_frozen",
+      "before_sha256": "81fd5d00a133ddcc11c2f14238abf0755173f4edc907181b3f854295e780afb3",
+      "sha256": "81fd5d00a133ddcc11c2f14238abf0755173f4edc907181b3f854295e780afb3",
+      "bytes": 26774
+    }
+  ]
+}

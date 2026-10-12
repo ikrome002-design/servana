@@ -8,6 +8,8 @@ import { useMerchantProfileStore } from '@/stores/merchantProfileStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import type { MerchantProfileUpdate } from '@/types/models';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { formatDate } from '@/utils/dates';
 
 /**
  * Merchant business profile (REM-SCR-002A; Plan §27.3 Merchant Administrator "merchant profile").
@@ -113,13 +115,12 @@ async function save(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-2xl p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Business profile
-    </h1>
-    <p class="mt-1 text-sm text-muted">
-      Your business details as they appear to clients and on receipts.
-    </p>
+  <section class="mx-auto w-full max-w-4xl">
+    <SvPageHeader
+      title="Business profile"
+      eyebrow="Merchant"
+      description="Your business details as they appear to clients and on receipts."
+    />
 
     <SvStateBoundary
       :state="boundaryState"
@@ -132,9 +133,9 @@ async function save(): Promise<void> {
         class="mt-6"
       >
         <!-- Read-only identity: owned by registration and platform governance, not this screen. -->
-        <dl class="grid gap-3 border-b border-border pb-4 sm:grid-cols-2">
+        <dl class="grid gap-3 border-b border-border pb-4 md:grid-cols-2">
           <div>
-            <dt class="text-xs font-medium uppercase tracking-wide text-muted">
+            <dt class="text-xs font-medium uppercase tracking-wide text-sv-text-muted">
               Business name
             </dt>
             <dd class="mt-1 text-sm text-text">
@@ -142,7 +143,7 @@ async function save(): Promise<void> {
             </dd>
           </div>
           <div>
-            <dt class="text-xs font-medium uppercase tracking-wide text-muted">
+            <dt class="text-xs font-medium uppercase tracking-wide text-sv-text-muted">
               Country
             </dt>
             <dd class="mt-1 text-sm text-text">
@@ -157,7 +158,7 @@ async function save(): Promise<void> {
           </h2>
           <p
             v-if="!store.profile.logo"
-            class="mt-1 text-sm text-muted"
+            class="mt-1 text-sm text-sv-text-muted"
           >
             No logo uploaded yet.
           </p>
@@ -188,11 +189,22 @@ async function save(): Promise<void> {
             @uploaded="onLogoUploaded"
             @rejected="onLogoRejected"
           />
-          <div v-if="store.profile.logo_history.length > 0" class="mt-4">
-            <h3 class="text-sm font-semibold text-heading">Replacement history</h3>
-            <ul class="mt-2 space-y-1 text-sm text-text-muted" aria-label="Logo replacement history">
-              <li v-for="entry in store.profile.logo_history" :key="entry.id">
-                {{ entry.filename }}<span v-if="entry.available_at"> · {{ new Date(entry.available_at).toLocaleDateString('en-KE') }}</span>
+          <div
+            v-if="store.profile.logo_history.length > 0"
+            class="mt-4"
+          >
+            <h3 class="text-sm font-semibold text-heading">
+              Replacement history
+            </h3>
+            <ul
+              class="mt-2 space-y-1 text-sm text-text-muted"
+              aria-label="Logo replacement history"
+            >
+              <li
+                v-for="entry in store.profile.logo_history"
+                :key="entry.id"
+              >
+                {{ entry.filename }}<span v-if="entry.available_at"> · {{ formatDate(entry.available_at) }}</span>
               </li>
             </ul>
           </div>
@@ -220,7 +232,7 @@ async function save(): Promise<void> {
             <p
               v-if="errorsFor('business_category').length"
               id="mp-business-category-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('business_category')[0] }}
             </p>
@@ -243,7 +255,7 @@ async function save(): Promise<void> {
             <p
               v-if="errorsFor('contact_phone').length"
               id="mp-contact-phone-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('contact_phone')[0] }}
             </p>
@@ -266,7 +278,7 @@ async function save(): Promise<void> {
             <p
               v-if="errorsFor('contact_email').length"
               id="mp-contact-email-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('contact_email')[0] }}
             </p>
@@ -284,7 +296,7 @@ async function save(): Promise<void> {
               :disabled="!canUpdate"
               class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
             >
-            <p class="text-xs text-muted">
+            <p class="text-xs text-sv-text-muted">
               Shown on receipts when it differs from the business name.
             </p>
           </div>
@@ -318,7 +330,7 @@ async function save(): Promise<void> {
             >
             <p
               v-if="errorsFor('town').length"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('town')[0] }}
             </p>
@@ -341,7 +353,7 @@ async function save(): Promise<void> {
             <p
               v-if="errorsFor('timezone').length"
               id="mp-timezone-error"
-              class="text-sm text-danger"
+              class="text-sm text-sv-error-fg"
             >
               {{ errorsFor('timezone')[0] }}
             </p>
@@ -360,7 +372,7 @@ async function save(): Promise<void> {
           </div>
           <p
             v-else
-            class="text-sm text-muted"
+            class="text-sm text-sv-text-muted"
           >
             You have view-only access to the business profile.
           </p>

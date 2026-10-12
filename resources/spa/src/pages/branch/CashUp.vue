@@ -8,6 +8,8 @@ import { useCashUpStore } from '@/stores/cashUpStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import { useAuthStore } from '@/stores/authStore';
 import { PAYMENT_METHODS } from '@/stores/paymentStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { statusLabel } from '@/utils/statusLabel';
 
 /**
  * Branch Manager cash-up (Plan §45; Phase 18B). The Branch Manager (maker) enters the
@@ -107,13 +109,14 @@ onMounted(load);
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Cash-up and reconciliation
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Cash-up and reconciliation"
+      eyebrow="Branch operations"
+      description="Count the day’s cash as the maker. Expected totals come from Servana; Finance checks and approves the cash-up."
+    />
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load the cash-up."
       :empty-message="!hasBranch ? 'You are not assigned to a branch yet.' : 'Cash-up is available to Branch Managers.'"
@@ -124,10 +127,10 @@ onMounted(load);
           v-model="date"
           type="date"
           label="Business date"
-          class="w-full sm:w-48"
+          class="w-full md:w-48"
         />
         <p class="text-sm text-text-muted">
-          Status: <span class="font-semibold text-heading">{{ status }}</span>
+          Status: <span class="font-semibold text-heading">{{ statusLabel(status) }}</span>
         </p>
       </div>
 

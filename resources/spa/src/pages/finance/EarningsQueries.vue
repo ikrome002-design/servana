@@ -20,6 +20,7 @@ import {
   earningsQuerySubjectLabel,
   earningsQueryTypeLabel,
 } from '@/content/payout';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance earnings-query responder (Plan §63, §19.3; Phase 20H; D-H12-1). Finance is the sole
@@ -186,14 +187,12 @@ async function submitRespond(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-4xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Earnings queries
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      Questions staff have raised about their own earnings. Resolve or reject each one. If a correction is
-      needed, it is recorded as a separate additive adjustment — the original earnings are never rewritten.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Earnings queries"
+      eyebrow="Compensation Finance"
+      description="Questions staff have raised about their own earnings. Resolve or reject each one. If a correction is needed, it is recorded as a separate additive adjustment — the original earnings are never rewritten."
+    />
 
     <p
       ref="statusRegion"
@@ -397,7 +396,7 @@ async function submitRespond(): Promise<void> {
             </label>
             <div
               v-if="form.withCorrection"
-              class="mt-3 grid gap-3 sm:grid-cols-3"
+              class="mt-3 grid gap-3 md:grid-cols-3"
             >
               <SvSelect
                 id="correction-direction"
@@ -424,7 +423,7 @@ async function submitRespond(): Promise<void> {
               <SvTextInput
                 id="correction-reason"
                 label="Correction reason"
-                class="sm:col-span-3"
+                class="md:col-span-3"
                 :model-value="form.reason"
                 :errors="responseErrors['correction.reason']"
                 @update:model-value="form.reason = $event"
@@ -432,7 +431,7 @@ async function submitRespond(): Promise<void> {
               <p
                 v-if="correctionPreview"
                 data-testid="correction-preview"
-                class="text-sm text-text sm:col-span-3"
+                class="text-sm text-text md:col-span-3"
                 role="status"
               >
                 This will record a separate adjustment of <span class="font-semibold">{{ correctionPreview }}</span>.

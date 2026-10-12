@@ -22,6 +22,7 @@ import {
   PLATFORM_FEE_LEDGER_STATUS_LABELS,
   tierLabel,
 } from '@/content/platformFee';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Phase 20E — the merchant/Finance/Branch/Audit platform-fee surface (Plan §51, §19.3). ONE component,
 // server-side scoped by the backend (`platform_fee.view`): Merchant Admin/Finance see the whole merchant,
@@ -185,15 +186,12 @@ async function submitReview(): Promise<void> {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Platform fees
-    </h1>
-    <p class="mt-1 max-w-2xl text-sm text-text-muted">
-      The percentage fee Servana charges on validated merchant-client activity. Amounts are shown exactly as
-      Servana calculated them. Pending fees are not yet on a subscription invoice; invoiced fees appear on an
-      issued invoice; adjustments are later additive corrections that never rewrite issued history.
-    </p>
+  <div class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Platform fees"
+      eyebrow="Billing"
+      description="The percentage fee Servana charges on validated merchant-client activity. Amounts are shown exactly as Servana calculated them. Pending fees are not yet on a subscription invoice; invoiced fees appear on an issued invoice; adjustments are later additive corrections that never rewrite issued history."
+    />
 
     <!-- Summary cards (server-authoritative earned totals per currency) -->
     <section
@@ -211,7 +209,7 @@ async function submitReview(): Promise<void> {
         :state="fees.summaryLoading ? 'loading' : fees.summary.length === 0 ? 'empty' : 'success'"
         empty-message="No earned platform fees yet."
       >
-        <div class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-2 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           <SvCard
             v-for="row in fees.summary"
             :key="row.currency"

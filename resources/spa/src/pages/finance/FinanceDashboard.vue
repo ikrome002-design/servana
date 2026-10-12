@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
-import SvCard from '@/components/ui/SvCard.vue';
-import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import { SvIconChevronRight, SvIconSecurity } from '@/design-system/icons';
 import { useAuthStore } from '@/stores/authStore';
 import { useFinanceWorkspaceStore, type FinanceMoney } from '@/stores/financeWorkspaceStore';
 
@@ -22,24 +22,92 @@ onMounted(() => {
 </script>
 
 <template>
+  <!--
+    UI16-VIS-014: the Finance dashboard split its greeting header from a flat brown "control
+    position" panel, then led with four identical top-bordered money cards ABOVE the checker's own
+    queue. The checker's work now leads: the command hero carries the greeting, the control position
+    and the four counts; the priority queue is the dominant panel beside the close controls; the
+    money position follows as a Billings-reference ledger band with the server's formatted amounts.
+    Every amount and count is the `/finance/workspace` projection — nothing is summed or converted
+    across currencies in the browser, and recorded money is never shown as recognised.
+  -->
   <section
     class="mx-auto max-w-7xl"
     data-testid="finance-dashboard"
   >
-    <SvPageHeader
-      :title="`Good day, ${auth.user?.name ?? 'Finance'}`"
+    <SvOperationalHero
+      class="mb-6"
       eyebrow="Financial control desk"
+      :title="`Good day, ${auth.user?.name ?? 'Finance'}`"
       :description="overview ? `${overview.branch_context.label} · checker-owned controls and reconciliation` : 'Validate payments, close periods and move Finance work forward without crossing maker/checker boundaries.'"
+      context="Checker"
     >
       <template #actions>
         <RouterLink
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-primary px-4 py-2 text-sm font-semibold text-brand-deep"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-sv-brand px-4 py-2 text-sm font-semibold text-sv-text-on-brand hover:bg-sv-brand-hover"
           :to="{ name: 'finance.payments-validations' }"
         >
           Review validations
         </RouterLink>
+        <RouterLink
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+          :to="{ name: 'finance.tasks' }"
+        >
+          Open task inbox
+        </RouterLink>
       </template>
-    </SvPageHeader>
+
+      <div v-if="overview">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+          Control position
+        </p>
+        <h2 class="sr-only">
+          {{ overview.branch_context.label }}
+        </h2>
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-white/75">
+          Recorded money remains pending until a different authorized checker validates the whole group. Receipt issuance follows that server decision automatically.
+        </p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.payments.pending_validation }} awaiting validation</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.payments.duplicate_risk }} duplicate risks</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.controls.cash_ups_requiring_review }} cash-ups to review</span>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div class="rounded-card border border-white/15 bg-white/10 p-4">
+            <p class="sv-numeric font-display text-3xl font-extrabold leading-none">
+              {{ overview.invoices.outstanding }}
+            </p>
+            <p class="mt-1 text-xs text-white/75">
+              Outstanding invoices
+            </p>
+          </div>
+          <div class="rounded-card border border-white/10 bg-white/5 p-4">
+            <p class="sv-numeric font-display text-3xl font-extrabold leading-none">
+              {{ overview.controls.original_receipts }}
+            </p>
+            <p class="mt-1 text-xs text-white/75">
+              Original receipts
+            </p>
+          </div>
+          <div class="rounded-card border border-white/10 bg-white/5 p-4">
+            <p class="sv-numeric font-display text-3xl font-extrabold leading-none">
+              {{ overview.compensation.payouts_requiring_action }}
+            </p>
+            <p class="mt-1 text-xs text-white/75">
+              Payout actions
+            </p>
+          </div>
+          <div class="rounded-card border border-white/10 bg-white/5 p-4">
+            <p class="sv-numeric font-display text-3xl font-extrabold leading-none">
+              {{ overview.controls.reopen_requests }}
+            </p>
+            <p class="mt-1 text-xs text-white/75">
+              Reopen requests
+            </p>
+          </div>
+        </div>
+      </div>
+    </SvOperationalHero>
 
     <SvStateBoundary
       :state="state"
@@ -48,247 +116,228 @@ onMounted(() => {
       @retry="store.fetchOverview()"
     >
       <template v-if="overview">
-        <div class="overflow-hidden rounded-card border border-sv-border bg-sv-surface shadow-card">
-          <div class="grid gap-6 bg-brand-deep p-5 text-white md:grid-cols-[1.3fr_0.7fr] md:p-7">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
-                Control position
-              </p>
-              <h2 class="mt-2 font-display text-2xl font-extrabold">
-                {{ overview.branch_context.label }}
-              </h2>
-              <p class="mt-2 max-w-2xl text-sm leading-6 text-white/75">
-                Recorded money remains pending until a different authorized checker validates the whole group. Receipt issuance follows that server decision automatically.
-              </p>
-              <div class="mt-5 flex flex-wrap gap-2">
-                <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.payments.pending_validation }} awaiting validation</span>
-                <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.payments.duplicate_risk }} duplicate risks</span>
-                <span class="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">{{ overview.controls.cash_ups_requiring_review }} cash-ups to review</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="rounded-control bg-white/10 p-3">
-                <p class="text-2xl font-bold">
-                  {{ overview.invoices.outstanding }}
-                </p>
-                <p class="text-xs text-white/75">
-                  Outstanding invoices
-                </p>
-              </div>
-              <div class="rounded-control bg-white/10 p-3">
-                <p class="text-2xl font-bold">
-                  {{ overview.controls.original_receipts }}
-                </p>
-                <p class="text-xs text-white/75">
-                  Original receipts
-                </p>
-              </div>
-              <div class="rounded-control bg-white/10 p-3">
-                <p class="text-2xl font-bold">
-                  {{ overview.compensation.payouts_requiring_action }}
-                </p>
-                <p class="text-xs text-white/75">
-                  Payout actions
-                </p>
-              </div>
-              <div class="rounded-control bg-white/10 p-3">
-                <p class="text-2xl font-bold">
-                  {{ overview.controls.reopen_requests }}
-                </p>
-                <p class="text-xs text-white/75">
-                  Reopen requests
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <SvCard
-            as="article"
-            class="border-t-4 border-t-sv-brand"
-          >
-            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Recorded, not recognized
-            </p>
-            <h2 class="mt-1 font-display font-bold text-heading">
-              Pending payments
-            </h2>
-            <p class="mt-3 text-lg font-bold text-heading">
-              {{ moneySummary(overview.payments.pending_recorded) }}
-            </p>
-            <RouterLink
-              class="mt-3 inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
-              :to="{ name: 'finance.payments' }"
-            >
-              Inspect records
-            </RouterLink>
-          </SvCard>
-          <SvCard
-            as="article"
-            class="border-t-4 border-t-sv-warning-border"
-          >
-            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Balance still due
-            </p>
-            <h2 class="mt-1 font-display font-bold text-heading">
-              Invoice exposure
-            </h2>
-            <p class="mt-3 text-lg font-bold text-heading">
-              {{ moneySummary(overview.invoices.outstanding_balance) }}
-            </p>
-            <RouterLink
-              class="mt-3 inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
-              :to="{ name: 'finance.invoices' }"
-            >
-              Review invoices
-            </RouterLink>
-          </SvCard>
-          <SvCard
-            as="article"
-            class="border-t-4 border-t-sv-success-border"
-          >
-            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Server-recognized
-            </p>
-            <h2 class="mt-1 font-display font-bold text-heading">
-              Validated payments
-            </h2>
-            <p class="mt-3 text-lg font-bold text-heading">
-              {{ moneySummary(overview.invoices.validated_payments) }}
-            </p>
-            <RouterLink
-              class="mt-3 inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
-              :to="{ name: 'finance.receipts' }"
-            >
-              Open receipts
-            </RouterLink>
-          </SvCard>
-          <SvCard
-            as="article"
-            class="border-t-4 border-t-sv-info-border"
-          >
-            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              People liability
-            </p>
-            <h2 class="mt-1 font-display font-bold text-heading">
-              Salary + commission
-            </h2>
-            <p class="mt-3 text-sm font-bold text-heading">
-              Salary {{ moneySummary(overview.compensation.salary_due) }}
-            </p>
-            <p class="mt-1 text-sm font-bold text-heading">
-              Commission {{ moneySummary(overview.compensation.commission_due) }}
-            </p>
-            <RouterLink
-              class="mt-3 inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
-              :to="{ name: 'finance.compensation-liabilities' }"
-            >
-              Review liabilities
-            </RouterLink>
-          </SvCard>
-        </div>
-
-        <div class="mt-5 grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
-          <SvCard
-            as="section"
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+          <section
             aria-labelledby="finance-attention-heading"
+            class="sv-finance-queue rounded-card border border-sv-border p-5 shadow-card md:p-6"
           >
-            <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
                   Priority queue
                 </p>
                 <h2
                   id="finance-attention-heading"
-                  class="font-display text-lg font-bold text-heading"
+                  class="mt-1 font-display text-xl font-extrabold text-sv-text-heading"
                 >
                   Work requiring attention
                 </h2>
               </div>
-              <RouterLink
-                class="inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
-                :to="{ name: 'finance.tasks' }"
-              >
-                Open task inbox
-              </RouterLink>
             </div>
-            <ul class="mt-3 divide-y divide-border">
+            <ul class="mt-5 grid gap-3">
               <li
                 v-for="task in overview.tasks.filter((item) => item.count > 0).slice(0, 5)"
                 :key="task.key"
-                class="flex min-h-sv-touch items-center justify-between gap-3 py-3"
+                class="flex min-h-sv-touch items-center gap-4 rounded-card border border-sv-border bg-sv-surface-raised p-3 pl-4"
               >
-                <span>
-                  <span class="block text-sm font-semibold text-heading">{{ task.label }}</span>
-                  <span class="text-xs text-text-muted">{{ task.maker_checker }}<template v-if="task.step_up_required"> · fresh step-up</template></span>
+                <span class="sv-finance-queue__count sv-numeric inline-flex h-10 min-w-10 shrink-0 items-center justify-center rounded-control px-2 font-display text-lg font-extrabold">{{ task.count }}</span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-semibold text-sv-text-heading">{{ task.label }}</span>
+                  <span class="flex flex-wrap items-center gap-2 text-xs text-sv-text-muted">
+                    {{ task.maker_checker }}
+                    <span
+                      v-if="task.step_up_required"
+                      class="inline-flex items-center gap-1 rounded-pill border border-sv-warning-border bg-sv-warning-bg px-2 py-px font-semibold text-sv-warning-fg"
+                    ><SvIconSecurity
+                      aria-hidden="true"
+                      class="h-3.5 w-3.5"
+                    />Fresh step-up</span>
+                  </span>
                 </span>
-                <span class="flex items-center gap-3">
-                  <strong class="text-heading">{{ task.count }}</strong>
-                  <RouterLink
-                    class="sv-focus-ring rounded-control px-2 py-1 text-sm font-semibold text-heading underline"
-                    :to="{ name: task.route_name }"
-                  >Open</RouterLink>
-                </span>
+                <RouterLink
+                  class="sv-focus-ring inline-flex min-h-sv-touch shrink-0 items-center gap-1 rounded-control px-3 py-2 text-sm font-semibold text-sv-link hover:bg-sv-surface-subtle"
+                  :to="{ name: task.route_name }"
+                >
+                  Open<SvIconChevronRight
+                    aria-hidden="true"
+                    class="h-4 w-4"
+                  />
+                </RouterLink>
               </li>
               <li
                 v-if="overview.tasks.every((task) => task.count === 0)"
-                class="py-4 text-sm text-text-muted"
+                class="rounded-card border border-dashed border-sv-border p-4 text-sm text-sv-text-muted"
               >
                 No Finance control tasks are currently waiting.
               </li>
             </ul>
-          </SvCard>
+          </section>
 
-          <div class="space-y-4">
-            <SvCard as="section">
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Close controls
-              </p>
-              <h2 class="mt-1 font-display text-lg font-bold text-heading">
-                Reconcile before locking
-              </h2>
-              <dl class="mt-3 grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <dt class="text-text-muted">
-                    Cash-ups
-                  </dt><dd class="mt-1 text-xl font-bold text-heading">
-                    {{ overview.controls.cash_ups_requiring_review }}
-                  </dd>
-                </div>
-                <div>
-                  <dt class="text-text-muted">
-                    Open periods
-                  </dt><dd class="mt-1 text-xl font-bold text-heading">
-                    {{ overview.controls.open_periods }}
-                  </dd>
-                </div>
-                <div>
-                  <dt class="text-text-muted">
-                    Disputes
-                  </dt><dd class="mt-1 text-xl font-bold text-heading">
-                    {{ overview.controls.active_disputes }}
-                  </dd>
-                </div>
-                <div>
-                  <dt class="text-text-muted">
-                    Refunds
-                  </dt><dd class="mt-1 text-xl font-bold text-heading">
-                    {{ overview.controls.refunds_requiring_action }}
-                  </dd>
-                </div>
-              </dl>
-            </SvCard>
-            <SvAlert
-              severity="info"
-              title="Wallet billing remains gated"
-              data-testid="finance-wallet-gate"
+          <section
+            aria-labelledby="finance-close-heading"
+            class="rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
+          >
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
+              Close controls
+            </p>
+            <h2
+              id="finance-close-heading"
+              class="mt-1 font-display text-lg font-bold text-sv-text-heading"
             >
-              {{ overview.subscription.reason }} No amount or status is shown as zero in its place.
-            </SvAlert>
-          </div>
+              Reconcile before locking
+            </h2>
+            <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-control bg-sv-surface-subtle p-3">
+                <dt class="text-sv-text-muted">
+                  Cash-ups
+                </dt><dd class="sv-numeric mt-1 font-display text-2xl font-extrabold text-sv-text-heading">
+                  {{ overview.controls.cash_ups_requiring_review }}
+                </dd>
+              </div>
+              <div class="rounded-control bg-sv-surface-subtle p-3">
+                <dt class="text-sv-text-muted">
+                  Open periods
+                </dt><dd class="sv-numeric mt-1 font-display text-2xl font-extrabold text-sv-text-heading">
+                  {{ overview.controls.open_periods }}
+                </dd>
+              </div>
+              <div class="rounded-control bg-sv-surface-subtle p-3">
+                <dt class="text-sv-text-muted">
+                  Disputes
+                </dt><dd class="sv-numeric mt-1 font-display text-2xl font-extrabold text-sv-text-heading">
+                  {{ overview.controls.active_disputes }}
+                </dd>
+              </div>
+              <div class="rounded-control bg-sv-surface-subtle p-3">
+                <dt class="text-sv-text-muted">
+                  Refunds
+                </dt><dd class="sv-numeric mt-1 font-display text-2xl font-extrabold text-sv-text-heading">
+                  {{ overview.controls.refunds_requiring_action }}
+                </dd>
+              </div>
+            </dl>
+          </section>
         </div>
+
+        <!-- Money position: the Billings-reference ledger band. -->
+        <section
+          aria-labelledby="finance-money-heading"
+          class="mt-6 rounded-card border border-sv-border bg-sv-surface-raised shadow-card"
+        >
+          <h2
+            id="finance-money-heading"
+            class="px-5 pt-5 font-display text-lg font-bold text-sv-text-heading"
+          >
+            Money position
+          </h2>
+          <div class="mt-3 grid divide-y divide-sv-border border-t border-sv-border md:grid-cols-2 md:divide-y-0 lg:grid-cols-4 lg:divide-x">
+            <article class="sv-finance-money p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                Recorded, not recognized
+              </p>
+              <h3 class="mt-1 font-display font-bold text-sv-text-heading">
+                Pending payments
+              </h3>
+              <p class="sv-numeric mt-3 font-display text-xl font-extrabold text-sv-text-heading">
+                {{ moneySummary(overview.payments.pending_recorded) }}
+              </p>
+              <RouterLink
+                class="sv-focus-ring mt-2 inline-flex min-h-sv-touch items-center gap-1 text-sm font-semibold text-sv-link hover:text-sv-link-hover"
+                :to="{ name: 'finance.payments' }"
+              >
+                Inspect records<SvIconChevronRight
+                  aria-hidden="true"
+                  class="h-4 w-4"
+                />
+              </RouterLink>
+            </article>
+            <article class="sv-finance-money p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                Balance still due
+              </p>
+              <h3 class="mt-1 font-display font-bold text-sv-text-heading">
+                Invoice exposure
+              </h3>
+              <p class="sv-numeric mt-3 font-display text-xl font-extrabold text-sv-text-heading">
+                {{ moneySummary(overview.invoices.outstanding_balance) }}
+              </p>
+              <RouterLink
+                class="sv-focus-ring mt-2 inline-flex min-h-sv-touch items-center gap-1 text-sm font-semibold text-sv-link hover:text-sv-link-hover"
+                :to="{ name: 'finance.invoices' }"
+              >
+                Review invoices<SvIconChevronRight
+                  aria-hidden="true"
+                  class="h-4 w-4"
+                />
+              </RouterLink>
+            </article>
+            <article class="sv-finance-money p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                Server-recognized
+              </p>
+              <h3 class="mt-1 font-display font-bold text-sv-text-heading">
+                Validated payments
+              </h3>
+              <p class="sv-numeric mt-3 font-display text-xl font-extrabold text-sv-text-heading">
+                {{ moneySummary(overview.invoices.validated_payments) }}
+              </p>
+              <RouterLink
+                class="sv-focus-ring mt-2 inline-flex min-h-sv-touch items-center gap-1 text-sm font-semibold text-sv-link hover:text-sv-link-hover"
+                :to="{ name: 'finance.receipts' }"
+              >
+                Open receipts<SvIconChevronRight
+                  aria-hidden="true"
+                  class="h-4 w-4"
+                />
+              </RouterLink>
+            </article>
+            <article class="sv-finance-money p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                People liability
+              </p>
+              <h3 class="mt-1 font-display font-bold text-sv-text-heading">
+                Salary + commission
+              </h3>
+              <p class="sv-numeric mt-3 text-sm font-bold text-sv-text-heading">
+                Salary {{ moneySummary(overview.compensation.salary_due) }}
+              </p>
+              <p class="sv-numeric mt-1 text-sm font-bold text-sv-text-heading">
+                Commission {{ moneySummary(overview.compensation.commission_due) }}
+              </p>
+              <RouterLink
+                class="sv-focus-ring mt-2 inline-flex min-h-sv-touch items-center gap-1 text-sm font-semibold text-sv-link hover:text-sv-link-hover"
+                :to="{ name: 'finance.compensation-liabilities' }"
+              >
+                Review liabilities<SvIconChevronRight
+                  aria-hidden="true"
+                  class="h-4 w-4"
+                />
+              </RouterLink>
+            </article>
+          </div>
+        </section>
+
+        <SvAlert
+          class="mt-6"
+          severity="info"
+          title="Wallet billing remains gated"
+          data-testid="finance-wallet-gate"
+        >
+          {{ overview.subscription.reason }} No amount or status is shown as zero in its place.
+        </SvAlert>
       </template>
     </SvStateBoundary>
   </section>
 </template>
+
+<style scoped>
+.sv-finance-queue {
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-brand-secondary) 10%, transparent), transparent 42%),
+    var(--sv-color-surface-raised);
+}
+.sv-finance-queue__count {
+  background: color-mix(in srgb, var(--sv-color-brand-secondary) 14%, var(--sv-color-surface-raised));
+  color: var(--sv-color-text-heading);
+}
+</style>

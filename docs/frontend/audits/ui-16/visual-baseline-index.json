@@ -1,0 +1,1837 @@
+{
+  "schema": "ui-16.visual-baselines.v1",
+  "phase": "UI-16",
+  "status": "UI-16 approved CANDIDATE baselines — agent-reviewed; product-owner acceptance is a separate, later decision",
+  "spec": "tests/e2e/ui-16-visual-regression.spec.ts",
+  "source_base_commit": "088a6cd764534ac5a4e44d1ce8c1e72cebfd480b",
+  "source": "UI-16 working tree (uncommitted) after source freeze, build of the same tree",
+  "determinism": "release-audit harness: pinned 2026-07-15 12:00 Africa/Nairobi clock, fixed identifiers, synthetic fixtures; self-hosted fonts awaited; reduced motion; animations and caret disabled; no personal data, secret or signed URL in any frame",
+  "platforms": {
+    "win32": {
+      "os": "Windows 10 Pro 10.0.19045",
+      "browser": "Chromium via @playwright/test 1.62.0",
+      "generated": "npx playwright test tests/e2e/ui-16-visual-regression.spec.ts --update-snapshots=all; verified by a second compare-only run 54/54"
+    },
+    "linux": {
+      "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\" / NAME=\"Ubuntu\" / VERSION_ID=\"24.04\"",
+      "node": "v24.18.0",
+      "browser": "Chromium via Version 1.62.0",
+      "image": "mcr.microsoft.com/playwright:v1.62.0-noble (repository mounted read-only)",
+      "generated": "same spec with --update-snapshots=all inside the image; verified by a second compare-only run 54/54"
+    }
+  },
+  "policy": [
+    "Baselines are never mass-updated after a failed comparison: view the diff, link the intended change to a defect or decision, regenerate only the affected frame, record its new hash here.",
+    "A negative control recolours the Finance hero and must FAIL the comparison; it is skipped only during a baseline-generation run, where Playwright would otherwise write the perturbed frame.",
+    "Predecessor UI-01…UI-15 evidence is separate and frozen (historical-evidence-baseline.json)."
+  ],
+  "counts": {
+    "frames": 106,
+    "per_platform": 53,
+    "subjects": 19
+  },
+  "frames": [
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-administrator-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-administrator",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "d0d2973ab3c2b6b64b89b005b3fa639db9c6a641f991786e8ee48da77fcc4216",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-administrator-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-administrator",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "81077db4d840ec759be169d5419b66637c83e5e0f855a241d7040aaec8647fc3",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-audit-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-audit",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "6ccc8a2fdaedccc13fba8530535cbfc126c94a9e0dc7211d5bbe3dd382ac9136",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-audit-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-audit",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "3cb099fb9e4ae521c69e20d68af632772b82a01d184f3670a3e031a72431b1b5",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-branch-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-branch",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "22894f26ca85fa2e6d6afbcdaa98bc58e4abf108d105778962e858bb5e0b9346",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-branch-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-branch",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "fe931b7c6f4f6f32fe3f927e05d8d2c6005091dc17ea34b4cd13e48ce147e54f",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-finance-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-finance",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "2c6ddcd06326442035b57a4a6942b34d4198a9cbf1b84d9cc9976f7653a657e5",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-finance-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-finance",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "93c4a556e62fc341e12919ebe3711885b8d0e321707b2c528502612bb920d3c6",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-front-office-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-front-office",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "5ab9ef1eedf45234caca874f6b66ef38839b7020093aeadc39e0de50edc84cfb",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-front-office-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-front-office",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "f8732343e1366274bef66b3abfb1fe8279815eeaf68c65bdac6f92b2304ce330",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-human-resource-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-human-resource",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "e7e3e9144489c1fd5fa8fd64056659ba670e9fcd5103958a07ace963f45c2369",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-human-resource-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-human-resource",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "3508fd3eb50ae7cbca51a9b77eac37b5516ce512b74be16c278ca00100eb6180",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-personnel-chromium-linux.png",
+      "subject": "landing",
+      "variant": "merchant-personnel",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "ba924cea5c1029647bdd6c3ed2c672da612f03939f8ee5df9d7eeaafd8fcc4ef",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--merchant-personnel-chromium-win32.png",
+      "subject": "landing",
+      "variant": "merchant-personnel",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "d81efcd5a4b40a43566bab0a99f2065fd7ceb28893a919384e2f2287ef14ab3b",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--super-administrator-chromium-linux.png",
+      "subject": "landing",
+      "variant": "super-administrator",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "ca4ce2e63df21006105c5d12b3335d364510320fa99d65290de939e93c3e7245",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/landing--super-administrator-chromium-win32.png",
+      "subject": "landing",
+      "variant": "super-administrator",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "fa745638612f44fe3a52d1e2ccbc7136f860126d736850987ffa7b0c07d00cb8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--desktop-light-chromium-linux.png",
+      "subject": "merchant-administrator-branches",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "276313c783e72453ff6cb6286617e4eb86f03ba3d2bbfb39afb5d4e9e5183501",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--desktop-light-chromium-win32.png",
+      "subject": "merchant-administrator-branches",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "4a98de3608c02aa3c0261a8612a3592fd9617bc1eb044def116dd0f9a0770fc9",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--tablet-dark-chromium-linux.png",
+      "subject": "merchant-administrator-branches",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "cbe8a221658e671c04b9d3818da80b8089520dd0c9c0e6d2d36aebf7e86fbe9c",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-branches--tablet-dark-chromium-win32.png",
+      "subject": "merchant-administrator-branches",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "b4a811c7900aca2ff8824bf0b94c00192c8b0daf61cd3f0c205335524c99ca82",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "84c7b6b0397c8b7925e9980bf6d5729f5ff52716cfbb8c8570e6deb5ba191861",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "e07b7a2f925a3aaf6d36d7e2cba8c5535c2ccf8e0323629ade807b121d7d740f",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "cf458033fa5cac81826f199934cdc1b792c552015c7de165b48b749437655ef2",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "f2aac0a955fca8760d4608cf23ee792b21e96373157d10afbe84fa5589ba7a56",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "2e59997cb8c36fc7b98e4c8192dd5e2380146623318c39c6f50e2c990a03e89a",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-administrator-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "f985df186471b56c39a04f689f5cd7dcd6897272982b8af574abb11ac1b0fafc",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--desktop-light-chromium-linux.png",
+      "subject": "merchant-administrator-get-started",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "6bfa8e79d1f724d98c4d767a9222fde4206e27e69cc3386ebbd5a5cce5c2c2fd",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--desktop-light-chromium-win32.png",
+      "subject": "merchant-administrator-get-started",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "6c5911647f2de085d9cf0a7238342c3c6c22cdf29110343c624ee15cc8559d38",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--tablet-dark-chromium-linux.png",
+      "subject": "merchant-administrator-get-started",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "a8bb9f3d3b6529e87aaa1a596271188151a6f1d295b42543ff1e9b96e17c253c",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-administrator-get-started--tablet-dark-chromium-win32.png",
+      "subject": "merchant-administrator-get-started",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "cdf613f16083f0c3b4db86e1bb8838b7ed63687c88285ecad5b632e8acf1f8bd",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "ce006d3d6fbadda2e712f49c6ceff738dbabf23d2b203030709569f7c5205640",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "b8da3e8cbaebc3cc9250319413c306860bb5f3b70ec3e06a0998f633c3fbe973",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "0d9b2321eba1153e761fd6f7dba2e14735916cb90e95e8baa13aff19ce82c78f",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "d5aa81661b1d365c95c3eb13c32f7fc9bc6f047a8ad3e3d2fbd186376aa1f322",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "a7f2c39fd607ac1450cb499d4b2407dea322213dceef0f1e238e2ca69ef8ede8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-audit-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-audit-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "8b6c271f55bd4ea6c869d1bb536892b4ab5bfdc495bbba7c7d6fe0ab4eabbf3c",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "dbcade148033df79a586b487228fe99d8d91e723936331f1e7510176fb9634ad",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "9d708b7389c5d99b11f4af06b571d2b4c125256c0407e3f099d09f78b6445025",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "7e7658f2f2d95ccd7655c2ad42412780e92ebd9ab60d6fd614ea99293428f425",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "74de35e40f97965a204749c92511ed46d7d3e86f70c979461dc62da24baf2d68",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "d350aadfe1c6c6830a2b138d6b328ebbfe4ecccde075affdaa86a937cd6483f2",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-branch-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "99db8771ec34a208f88589ec940d628446969ab0af88b1d4b78b16369a30fa66",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--desktop-light-chromium-linux.png",
+      "subject": "merchant-branch-services",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "918de4611a33f7508f31606ca1154f85e815a06da641c80a7adafc99377e7703",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--desktop-light-chromium-win32.png",
+      "subject": "merchant-branch-services",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "718586ba5af142f5763be8339707091855cf8d241aab68fd4830f4c0dfe91d40",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--tablet-dark-chromium-linux.png",
+      "subject": "merchant-branch-services",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "a1c3be174739f5c02fdbfab55b76844a14715bbb22b03bc4c845fc34e0a546da",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-branch-services--tablet-dark-chromium-win32.png",
+      "subject": "merchant-branch-services",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "f9b3a9bc0455f0c7ffe05cbf564d6ffbb549d5dea2d91230082634990acc2050",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--desktop-light-chromium-linux.png",
+      "subject": "merchant-finance-audit",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "387bc332af96215cf298e9c3a1e54d7e1a488fa45c15edc01b7ad8bebb97e1a6",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--desktop-light-chromium-win32.png",
+      "subject": "merchant-finance-audit",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "1bd6e833878817229e5cdbe0935d69277e403a9ccfeb3da461b48f860982d829",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--tablet-dark-chromium-linux.png",
+      "subject": "merchant-finance-audit",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "077be818355ece2ec5c16241cf74a2a4e7de3e12fae253ba8dda13846b3de538",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-audit--tablet-dark-chromium-win32.png",
+      "subject": "merchant-finance-audit",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "24d01a0e2a07530527c791033e554af2f34847bbcbeee1ce5876ce7bd54ad8f0",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "62676232fb31ae1c384545226e972ae82b0b137ed677b03fcb0d1833dd3aad1f",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "3bcaae9c08e5262236cf411c68fe7413d5a2070a4f4b904be5c7d668aaee5e3a",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "ab6ccce3a11f8a2d25990045e94a5c6c4829b107d9a57cd0e1f3fb1c83c16b59",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "275b51193ccc6106c74ea879deb6edc6979dab9b31574f5c3d007e0277b446d1",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "69c989a43a0770c2998a61691a9b3d1fe9aac6c61b21937dc6ae543e3776f86e",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-finance-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "8aa0ee980592e9f3c638ba9319b4be532633a20a2530aca8e534f8c06eee7349",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--desktop-light-chromium-linux.png",
+      "subject": "merchant-finance-payments-validations",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "9b6597b6cf5e3f38f1281055e406b409407fa74f637ba90638d17678895dfcab",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--desktop-light-chromium-win32.png",
+      "subject": "merchant-finance-payments-validations",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "8eb09e2705fed35934a7995e943c7137e97f22147010422b78ae8826bab05885",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--tablet-dark-chromium-linux.png",
+      "subject": "merchant-finance-payments-validations",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "a9df13693a7c0b39bd9dff2a195d913846a8c9ac2d41e013f4eb8300ce14e0a8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-payments-validations--tablet-dark-chromium-win32.png",
+      "subject": "merchant-finance-payments-validations",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "e560de2f6178f876dd4cf800a6caab35ab880642d5afad29b7d3257fe2c0c2a1",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--desktop-light-chromium-linux.png",
+      "subject": "merchant-finance-settings",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "52e7a2227391774286e61980bbf3c4c60ed908eb9b2c1af85c472a4b0865b267",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--desktop-light-chromium-win32.png",
+      "subject": "merchant-finance-settings",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "580fa16340497e69530e8a5a8af7526d487010c30a2dfb76c710bc9d661a6589",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--tablet-dark-chromium-linux.png",
+      "subject": "merchant-finance-settings",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "686403ca778ee99cf2eeb48bb218ba15f594f1518a686e5f7718e15bd3241fee",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-finance-settings--tablet-dark-chromium-win32.png",
+      "subject": "merchant-finance-settings",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "715a8247f80bb1efb8d4242b1d1d17919a78463d092e3aab58afb267c4413f0e",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "5b93da12a74e62b8371e83163fbda4abd9d361dbb567f87a9e6aee42a7a75b67",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "6b9a540911ce4d34038b81c97cdbbd75bee7adcac9418947467dbea2e08418eb",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "cc0e50dfda18c091373b483af95907e406bed57de244b22aceb2a48cc877eab2",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "581979b20e3252e8815a8e1f9709112c471c4962a884edd109a396c05b4110d8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "2853b10ff3ac39af4b2f6d266e7e53b42df2f66d02154843ff9b79337e3295d3",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-front-office-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-front-office-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "69801b1a2ed678d2b9e74ef6738365f65af5ae77568ec9e718eb2b77a4a748d5",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "dc704302a9f9ab63555607a527060818e461c634d31ed4d4295f76b21104cbea",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "adf54a15adebf598275b1ae0dc362787c1c820633dd0f69641496216dfeaac8a",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "33e44c08431bd4b49d6faf06b0a17b019d3c23333af576bf45d5ffefef84407c",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "8d7afbdd67a1514ae2a51b6002326fdfb36568b4693c928b04932dbc30bfc4c8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "bf4c086c46fc7b80ef5358913774c01f3fa49f4bd50f9bc6becbfd82fa56c7ee",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-human-resource-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "3945b0a883d806efa48af72fe5a699d747dc08d3a3c4f22b1c7c9ef451ceda69",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--desktop-light-chromium-linux.png",
+      "subject": "merchant-human-resource-staff",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "3e1ce9da02f769893bbb0130cbba0ab5b4d8701ef834f3f05abc0bc91c754654",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--desktop-light-chromium-win32.png",
+      "subject": "merchant-human-resource-staff",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "1fd66d669e567c293b8f666a407ab70773484398346fcd5aa439042433471086",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--tablet-dark-chromium-linux.png",
+      "subject": "merchant-human-resource-staff",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "11104355461c3c98e983870e5f8b7fded899a4531fd9554666591ef65e8d1841",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-human-resource-staff--tablet-dark-chromium-win32.png",
+      "subject": "merchant-human-resource-staff",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "803d1d460d2fb6441278f5a8e29351bfa94c71312413a82d53887439a55458e3",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "f81f3aac99f3d514289c6733677f3292827fc1bdb55685da86e5ea545ee71f43",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "92b493a586c92bf2e863988818e186f217af06c5a3cce2b61a4b5cf57f348ef5",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-light-chromium-linux.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "95585613b323b80d8c66f614a64ea9bb1a72d7da79be8d2abea5e9c1bff478f5",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--desktop-light-chromium-win32.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "37e526dd550b779fc4e719b97a73dbf11a6185935e066e4289edae2857b73614",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--mobile-light-chromium-linux.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "dc833758f38b9725c1e93d598e8a54d88dc69c97547a6a138558336f97e106a8",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/merchant-personnel-dashboard--mobile-light-chromium-win32.png",
+      "subject": "merchant-personnel-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "10f16dc0f61db4bbaa5911a289f0380dae6f439ac1f5aced1aab75264055b1ac",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--finance-drawer-dark-chromium-linux.png",
+      "subject": "shell",
+      "variant": "finance-drawer-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "360x780",
+      "sha256": "eb3ef455999d0cdaf9aeefab2bf0a55686cf8641c9001871af51933423153824",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--finance-drawer-dark-chromium-win32.png",
+      "subject": "shell",
+      "variant": "finance-drawer-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "360x780",
+      "sha256": "8d8fa0cdfae2080a0fcd8c1b4ef059ac03ca44d10d50bc59036c01eeb8437a93",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--merchant-administrator-sidebar-chromium-linux.png",
+      "subject": "shell",
+      "variant": "merchant-administrator-sidebar",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "302eca603356b694fc3e2cb1c547eebbcbbdcb1719e6c4194060ac4da8ed8054",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--merchant-administrator-sidebar-chromium-win32.png",
+      "subject": "shell",
+      "variant": "merchant-administrator-sidebar",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "5486f0f4fba70f32ca23485c68605e0a0a7d0be83c46910859d8a979965c5c1d",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--super-administrator-header-open-chromium-linux.png",
+      "subject": "shell",
+      "variant": "super-administrator-header-open",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "deee9f77596269f07b0572a5cd3f763d1c29b5c8f7fc1c92b325d6bcab5ee464",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/shell--super-administrator-header-open-chromium-win32.png",
+      "subject": "shell",
+      "variant": "super-administrator-header-open",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "0738ebe43875f511f1d093790c673af4f23e7b2d5e3772ba55da1755cf6c42e9",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--desktop-light-chromium-linux.png",
+      "subject": "super-administrator-billing-promotions",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "efef9a64b17c5db40e0ba667e940fa42fe3651ea036237c56e9df2977b2bd098",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--desktop-light-chromium-win32.png",
+      "subject": "super-administrator-billing-promotions",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "f62dcddf295bf89d29fa0200bda6b8cff0ce44c19761ef390b3747fd5f436875",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--tablet-dark-chromium-linux.png",
+      "subject": "super-administrator-billing-promotions",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "e7c3e139aab969025bbcec0dc07b76cbfa46467dc50fb44a7a395b9f3e1e5e54",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-billing-promotions--tablet-dark-chromium-win32.png",
+      "subject": "super-administrator-billing-promotions",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "06f9dc92ce34bb70a4124cf5bd7f626c3f3caa7f7190205cb3bd4ce3d7ae0e62",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-dark-chromium-linux.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "desktop-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "59df82436970d03303ee385a9c2395a92b22813efaf6002a821c387226b1e10a",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-dark-chromium-win32.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "desktop-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "sha256": "dc1a96f9014c19316a7723bbc66e510f07cc2d8d748496c8d5637594f6382388",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-light-chromium-linux.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "1f19686848b5d3800473cb50d5f7f36f376b0421eb1989ca66379865939f94fb",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--desktop-light-chromium-win32.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "2cb1dcdcbbb3c451a19a338f5fbfca04a332782b5575cd74b19614b198007b36",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--mobile-light-chromium-linux.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "mobile-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "ef3fc50df46bb6b38e880da906bfd26b25adb482961d3fcda68fe3e694ad07b0",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-dashboard--mobile-light-chromium-win32.png",
+      "subject": "super-administrator-dashboard",
+      "variant": "mobile-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "360x780",
+      "sha256": "d4189a370f7d6acb50967c4c287bf4389c92261ea0d75d304db91a6d644f1ccf",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--desktop-light-chromium-linux.png",
+      "subject": "super-administrator-merchants",
+      "variant": "desktop-light",
+      "platform": "linux",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "c2de5e2907d64408d75fa706b950920afe6494a09750cb1e0d7c1f878ea9ed3c",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--desktop-light-chromium-win32.png",
+      "subject": "super-administrator-merchants",
+      "variant": "desktop-light",
+      "platform": "win32",
+      "theme": "light",
+      "viewport": "1440x900",
+      "sha256": "519cb04467443eed3ad56824e0f4764e1c114fd28768f27e23d2c6dc9e5a5a24",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--tablet-dark-chromium-linux.png",
+      "subject": "super-administrator-merchants",
+      "variant": "tablet-dark",
+      "platform": "linux",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "17c524e21f234cd568a4a42c1e2bab1b834a66ba4b6cf251d3f64f5881f407fb",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    },
+    {
+      "file": "tests/e2e/ui-16-visual-regression.spec.ts-snapshots/super-administrator-merchants--tablet-dark-chromium-win32.png",
+      "subject": "super-administrator-merchants",
+      "variant": "tablet-dark",
+      "platform": "win32",
+      "theme": "dark",
+      "viewport": "768x1024",
+      "sha256": "7568c68cd86350240f86d1255c07dbd92111977b810eedad5eb5775b93c51a91",
+      "prior_sha256": null,
+      "threshold": {
+        "maxDiffPixelRatio": 0.015,
+        "animations": "disabled",
+        "caret": "hide",
+        "reducedMotion": "reduce"
+      },
+      "reviewer_decision": "accepted_after_visual_review_ui16_candidate"
+    }
+  ]
+}

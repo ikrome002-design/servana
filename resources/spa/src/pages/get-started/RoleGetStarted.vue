@@ -96,6 +96,98 @@ onMounted(() => {
   if (identity.value === 'merchant_personnel') void personnelExperience.fetchWorkspace();
 });
 
+interface Orientation {
+  eyebrow: string;
+  title: string;
+  description: string;
+  context?: string;
+  facts?: ReadonlyArray<{ title: string; body: string }>;
+}
+
+/**
+ * Each account's orientation hero — the page's single `<h1>`.
+ *
+ * UI16-A11Y-001: before UI-16 only Front Office, Personnel and Audit rendered a hero, so the
+ * Merchant Administrator, Branch, Human Resource and Finance Get Started pages had NO `<h1>` at all
+ * (the checklist's "Get started" is a section `<h2>`). Every account now leads with one. The copy
+ * restates the role boundaries the Scope already fixes; nothing here grants, computes or claims a
+ * completion — progress still comes only from the server-observed checklist below.
+ */
+const ORIENTATION = computed<Partial<Record<RoleIdentity, Orientation>>>(() => ({
+  merchant_administrator: {
+    eyebrow: 'Owner setup journey',
+    title: 'Set up the business your teams will run',
+    description: 'Confirm your plan, business identity and first branch, then bring in the Branch Manager, HR, Finance and Front Office owners. You oversee the business; they operate it.',
+    facts: [
+      { title: 'Owner decisions', body: 'Plan, business profile, branches and owner approvals.' },
+      { title: 'Operational ownership', body: 'Services, pricing, staff assignment and payment checks belong to operational roles.' },
+      { title: 'Observed, not ticked', body: 'Owner steps complete only when Servana observes them.' },
+    ],
+  },
+  merchant_branch: {
+    eyebrow: 'Branch opening journey',
+    title: 'Prepare your branch to open its day',
+    description: 'Confirm the branch profile, publish operating hours and the service catalogue, then open the branch day. Finance stays the checker for money; HR owns staff assignment.',
+    context: branchExperience.overview?.branch.name,
+    facts: [
+      { title: 'Your branch only', body: 'Every step acts on the branch you are assigned to.' },
+      { title: 'Services and hours', body: 'Catalogue, pricing, durations and the operating calendar.' },
+      { title: 'Day operations', body: 'Open the day, follow the queue and submit cash-up for Finance.' },
+    ],
+  },
+  merchant_human_resource: {
+    eyebrow: 'Workforce readiness journey',
+    title: 'Make your team ready to serve',
+    description: 'Invite operational staff, set service eligibility and availability, and configure compensation terms for your branch. You prepare payouts; Finance verifies and records them.',
+    context: hrWorkspace.overview?.branch.name,
+    facts: [
+      { title: 'Same-branch scope', body: 'People, eligibility and terms for your branch only.' },
+      { title: 'Maker, not checker', body: 'Payout runs you submit are verified by Finance.' },
+      { title: 'Observed progress', body: 'Readiness steps complete when Servana observes them.' },
+    ],
+  },
+  merchant_finance: {
+    eyebrow: 'Checker orientation',
+    title: 'Own the controls that make money trustworthy',
+    description: 'Enroll in MFA, then learn validation, duplicate-reference, cash-up, period-lock and payout separation. Recorded money stays pending until a checker validates it; receipts follow that server decision.',
+    facts: [
+      { title: 'Step-up for control actions', body: 'Sensitive decisions ask for a fresh MFA check.' },
+      { title: 'Maker and checker apart', body: 'You never validate money you recorded yourself.' },
+      { title: 'Server-owned totals', body: 'Every amount and status comes from Servana, never the browser.' },
+    ],
+  },
+  merchant_front_office: {
+    eyebrow: 'Guided branch journey',
+    title: 'From welcome to verified receipt',
+    description: 'Follow the real service-desk sequence. Server-owned completion moves from client registration through service and invoice creation to a recorded payment that Finance must validate before the original receipt appears.',
+  },
+  merchant_personnel: {
+    eyebrow: 'Your private orientation',
+    title: 'Know your work, pay and privacy boundaries',
+    description: 'Learn the path from own assignment to completed service, understand when commission is actually earned, and keep served-client follow-up inside Servana.',
+    context: personnelExperience.workspace?.staff.branch?.name,
+    facts: [
+      { title: 'Work states', body: 'Queue, appointment and session facts remain separate.' },
+      { title: 'Pay states', body: 'Pending, earned, approved, paid and reversed are not interchangeable.' },
+      { title: 'Private follow-up', body: 'Masked contacts, consent checks and branch-billed SMS.' },
+    ],
+  },
+  // Phase UI-15: the Audit orientation. Teaching only — no item grants export or unmask access.
+  merchant_audit: {
+    eyebrow: 'Your Audit orientation',
+    title: 'Review the evidence without changing it',
+    description: 'Learn your branch scope, how to search and read masked events, how a review flag works, what an export contains and how the audit chain is checked.',
+    context: 'Read-only reviewer',
+    facts: [
+      { title: 'Immutable record', body: 'Events are appended once and never edited or deleted.' },
+      { title: 'Two different facts', body: 'Event severity never changes; review status is your team’s progress.' },
+      { title: 'Masked and scoped', body: 'Only your branch, with protected values masked by the server.' },
+    ],
+  },
+}));
+
+const orientation = computed<Orientation | null>(() => (identity.value ? ORIENTATION.value[identity.value] ?? null : null));
+
 const dismissed = computed(() =>
   identity.value && userId.value
     ? store.isDismissed(userId.value, identity.value)
@@ -111,55 +203,30 @@ function reopen(): void {
 </script>
 
 <template>
-  <div :class="identity === 'merchant_front_office' || identity === 'merchant_personnel' || identity === 'merchant_audit' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
+  <div class="mx-auto max-w-5xl">
     <template v-if="identity && userId">
       <SvOperationalHero
-        v-if="identity === 'merchant_front_office'"
+        v-if="orientation"
         class="mb-5"
-        eyebrow="Guided branch journey"
-        title="From welcome to verified receipt"
-        description="Follow the real service-desk sequence. Server-owned completion moves from client registration through service and invoice creation to a recorded payment that Finance must validate before the original receipt appears."
-      />
-      <SvOperationalHero
-        v-if="identity === 'merchant_personnel'"
-        class="mb-5"
-        eyebrow="Your private orientation"
-        title="Know your work, pay and privacy boundaries"
-        description="Learn the path from own assignment to completed service, understand when commission is actually earned, and keep served-client follow-up inside Servana."
-        :context="personnelExperience.workspace?.staff.branch?.name"
+        :eyebrow="orientation.eyebrow"
+        :title="orientation.title"
+        :description="orientation.description"
+        :context="orientation.context"
       >
-        <div class="grid gap-3 text-sm md:grid-cols-3">
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Work states</strong><span class="text-white/70">Queue, appointment and session facts remain separate.</span>
+        <template
+          v-if="orientation.facts"
+          #default
+        >
+          <div class="grid gap-3 text-sm md:grid-cols-3">
+            <div
+              v-for="fact in orientation.facts"
+              :key="fact.title"
+              class="rounded-control border border-white/10 bg-white/10 p-3"
+            >
+              <strong class="block">{{ fact.title }}</strong><span class="text-white/70">{{ fact.body }}</span>
+            </div>
           </div>
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Pay states</strong><span class="text-white/70">Pending, earned, approved, paid and reversed are not interchangeable.</span>
-          </div>
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Private follow-up</strong><span class="text-white/70">Masked contacts, consent checks and branch-billed SMS.</span>
-          </div>
-        </div>
-      </SvOperationalHero>
-      <!-- Phase UI-15: the Audit orientation. Teaching only — no item grants export or unmask access. -->
-      <SvOperationalHero
-        v-if="identity === 'merchant_audit'"
-        class="mb-5"
-        eyebrow="Your Audit orientation"
-        title="Review the evidence without changing it"
-        description="Learn your branch scope, how to search and read masked events, how a review flag works, what an export contains and how the audit chain is checked."
-        context="Read-only reviewer"
-      >
-        <div class="grid gap-3 text-sm md:grid-cols-3">
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Immutable record</strong><span class="text-white/70">Events are appended once and never edited or deleted.</span>
-          </div>
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Two different facts</strong><span class="text-white/70">Event severity never changes; review status is your team’s progress.</span>
-          </div>
-          <div class="rounded-control border border-white/10 bg-white/10 p-3">
-            <strong class="block">Masked and scoped</strong><span class="text-white/70">Only your branch, with protected values masked by the server.</span>
-          </div>
-        </div>
+        </template>
       </SvOperationalHero>
       <div
         v-if="dismissed"

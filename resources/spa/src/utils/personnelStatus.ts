@@ -1,4 +1,5 @@
 import type { SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
+import { statusLabel } from '@/utils/statusLabel';
 
 /**
  * Presentation-only status vocabulary for the Personnel experience (Phase UI-14).
@@ -22,9 +23,7 @@ export function personnelStatusTone(status: string | null | undefined): SvStatus
 }
 
 export function humanizeStatus(status: string | null | undefined): string {
-  if (!status) return 'Not recorded';
-  const text = status.replaceAll('_', ' ').trim();
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  return statusLabel(status);
 }
 
 export function compensationModelLabel(model: string | null | undefined): string {

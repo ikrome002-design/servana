@@ -176,7 +176,10 @@ test.describe('Super Administrator promotions surface', () => {
       await stubPromotions(page, [promo({ status, name: `Promo ${status}` })]);
       await gotoPromotions(page);
       await expect(page.getByText(`Promo ${status}`)).toBeVisible();
-      await expect(page.getByText(status, { exact: true })).toBeVisible();
+      // UI-16 (UI16-CONTENT-001): the badge shows the human status label, never the raw enum token.
+      const label = `${status.charAt(0).toUpperCase()}${status.slice(1)}`;
+      await expect(page.getByTestId('sv-status-badge').filter({ hasText: label }).first()).toBeVisible();
+      await expect(page.getByText(status, { exact: true })).toHaveCount(0);
     });
   }
 

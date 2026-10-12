@@ -8,6 +8,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import { useHrWorkspaceStore, type HrAuditActivity } from '@/stores/hrWorkspaceStore';
+import { severityPresentation } from '@/utils/auditPresentation';
 import { formatDateTime } from '@/utils/dates';
 
 const store = useHrWorkspaceStore();
@@ -29,11 +30,13 @@ const severityOptions = [
   { value: 'critical', label: 'Critical' },
 ];
 
+/**
+ * UI-16: HR activity rows are `audit_logs` rows, so their severity is the same `AuditSeverity`
+ * vocabulary the Audit account presents — one label and tone source, instead of a local copy that
+ * rendered the raw token ("warn") as the badge text.
+ */
 function tone(severity: string): SvStatusTone {
-  if (severity === 'critical' || severity === 'high') return 'error';
-  if (severity === 'warning') return 'warning';
-  if (severity === 'notice') return 'info';
-  return 'neutral';
+  return severityPresentation(severity).tone;
 }
 
 function humanize(value: string): string {
@@ -79,7 +82,7 @@ onMounted(() => {
 
     <SvCard
       as="form"
-      class="grid gap-4 sm:grid-cols-[1fr_1fr_auto]"
+      class="grid gap-4 md:grid-cols-[1fr_1fr_auto]"
       aria-label="HR audit filters"
       @submit.prevent="load(1)"
     >
@@ -133,7 +136,7 @@ onMounted(() => {
           class="relative"
         >
           <span
-            class="absolute -left-[1.63rem] top-5 h-3 w-3 rounded-full border-2 border-sv-surface bg-sv-brand"
+            class="absolute -left-[1.63rem] top-5 h-3 w-3 rounded-full border-2 border-sv-surface-raised bg-sv-brand"
             aria-hidden="true"
           />
           <SvCard as="article">
@@ -147,7 +150,7 @@ onMounted(() => {
                 </p>
               </div>
               <SvStatusBadge
-                :label="event.severity"
+                :label="severityPresentation(event.severity).label"
                 :tone="tone(event.severity)"
               />
             </div>
@@ -164,7 +167,7 @@ onMounted(() => {
               <summary class="sv-focus-ring cursor-pointer rounded-control text-sm font-semibold text-heading">
                 Masked event context
               </summary>
-              <dl class="mt-3 grid gap-2 sm:grid-cols-2">
+              <dl class="mt-3 grid gap-2 md:grid-cols-2">
                 <div
                   v-for="[label, value] in contextPairs(event)"
                   :key="label"

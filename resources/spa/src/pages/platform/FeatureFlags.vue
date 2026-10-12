@@ -33,6 +33,8 @@ import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { usePlatformFeatureFlagStore, type FeatureFlagRow } from '@/stores/platformFeatureFlagStore';
+import { statusLabel } from '@/utils/statusLabel';
+import { SvIconFlag } from '@/design-system/icons';
 
 const store = usePlatformFeatureFlagStore();
 const { can } = useCan();
@@ -256,20 +258,29 @@ const stateTone = (state: string | null | undefined): 'success' | 'warning' | 'n
         <li
           v-for="row in store.flags"
           :key="flagKeyOf(row)"
-          class="rounded-card border border-sv-border bg-sv-surface-raised p-4"
+          class="rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
         >
+          <!-- UI-16 (UI16-VIS-019): the flag key leads as a heading with its facts as labelled chips. -->
           <div class="flex flex-wrap items-start justify-between gap-3">
-            <div class="min-w-0">
-              <p class="break-words font-medium text-sv-text">
-                {{ flagKeyOf(row) }}
-              </p>
-              <p class="mt-1 text-xs text-sv-text-muted">
-                Environment {{ row.state?.environment ?? 'not configured' }} · rollout
-                {{ row.state?.rollout_basis_points ?? 0 }} basis points
-              </p>
+            <div class="flex min-w-0 items-start gap-3">
+              <span
+                aria-hidden="true"
+                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-sv-surface-subtle text-sv-text-heading"
+              >
+                <SvIconFlag class="h-5 w-5" />
+              </span>
+              <div class="min-w-0">
+                <p class="break-words font-mono text-base font-semibold text-sv-text-heading">
+                  {{ flagKeyOf(row) }}
+                </p>
+                <p class="mt-2 flex flex-wrap gap-2 text-xs text-sv-text-secondary">
+                  <span class="rounded-pill border border-sv-border bg-sv-surface-subtle px-2.5 py-0.5">Environment {{ row.state?.environment ?? 'not configured' }}</span>
+                  <span class="rounded-pill border border-sv-border bg-sv-surface-subtle px-2.5 py-0.5">Rollout {{ row.state?.rollout_basis_points ?? 0 }} basis points</span>
+                </p>
+              </div>
             </div>
             <SvStatusBadge
-              :label="String(row.effective_state ?? row.state?.state ?? 'inactive')"
+              :label="statusLabel(String(row.effective_state ?? row.state?.state ?? 'inactive'))"
               :tone="stateTone(String(row.effective_state ?? row.state?.state ?? ''))"
               sr-prefix="Rollout state:"
             />

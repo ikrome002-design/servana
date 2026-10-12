@@ -146,14 +146,14 @@ function preferredFeeCopy(plan: CompensationPlan): string {
 // on a light surface at badge text size (2.14:1). The amber tint carries the semantics; the label
 // text carries the status (never colour alone), so the foreground uses the adaptive text token —
 // which reads AA against the tinted background in BOTH themes.
-// `draft` keeps `text-brand-deep` because `--color-cream` is not overridden for dark either, so that
-// pair stays brand-dark-on-cream (AA) in both themes. The tinted-surface badges cannot: a /15 tint
-// over the dark surface IS dark, so they take the adaptive text token.
+// `draft` used `text-brand-deep` on the assumption that `--color-cream` stays cream in dark mode. It
+// does not — `--color-cream` aliases `--sv-color-surface-warm`, which is #273340 in dark — so the
+// pair was brown-on-charcoal (UI16-A11Y-003). Every badge now takes the adaptive heading token.
 const statusClass: Record<string, string> = {
   active: 'bg-sv-success-bg text-sv-success-fg',
   scheduled: 'bg-primary/15 text-text',
   pending_approval: 'bg-warning/15 text-text',
-  draft: 'bg-cream text-brand-deep',
+  draft: 'bg-cream text-sv-text-heading',
 };
 
 function badgeClass(status: string): string {
@@ -639,7 +639,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         </SvButton>
       </div>
 
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-4 grid gap-4 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-3">
         <SvSelect
           id="comp-status-filter"
           label="Status"
@@ -696,7 +696,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
                     >Backdated</span>
                     <span
                       v-if="plan.status === 'pending_approval'"
-                      class="rounded-control bg-cream px-2 py-0.5 text-xs text-brand-deep"
+                      class="rounded-control bg-cream px-2 py-0.5 text-xs text-sv-text-heading"
                     >Awaiting a different approver</span>
                   </p>
                   <p class="mt-1 text-sm text-text-muted">
@@ -854,7 +854,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         />
         <div
           v-else
-          class="grid gap-4 sm:grid-cols-2"
+          class="grid gap-4 md:grid-cols-2"
         >
           <SvTextInput
             id="comp-rule-fixed"
@@ -1021,7 +1021,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </label>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="comp-rule-from"
             label="Effective from"
@@ -1110,7 +1110,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         />
 
         <template v-if="needsSalary">
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-4 md:grid-cols-2">
             <SvTextInput
               id="comp-plan-salary"
               label="Salary amount (major units)"
@@ -1129,7 +1129,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
               @update:model-value="planForm.salary_currency = $event"
             />
           </div>
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-4 md:grid-cols-2">
             <SvSelect
               id="comp-plan-period"
               label="Salary period"
@@ -1169,7 +1169,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           A salary only plan cannot reference a commission rule.
         </p>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="comp-plan-from"
             label="Effective from"

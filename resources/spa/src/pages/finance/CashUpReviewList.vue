@@ -5,6 +5,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCashUpStore } from '@/stores/cashUpStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance cash-up review inbox (Plan §45; Phase 18B). Finance (checker) reviews the
@@ -36,23 +37,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Cash-up and reconciliation
-      </h1>
-      <SvSelect
-        id="cash-up-status-filter"
-        v-model="store.filterStatus"
-        label="Filter"
-        :options="statusOptions"
-        class="w-full sm:w-56"
-        @update:model-value="() => store.fetchCashUps()"
-      />
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Cash-up and reconciliation"
+      eyebrow="Controls & Close"
+      description="Branch cash-ups submitted for checking. Approve or reject each one against the totals Servana expects; the branch counts, Finance checks."
+    >
+      <template #actions>
+        <SvSelect
+          id="cash-up-status-filter"
+          v-model="store.filterStatus"
+          label="Filter"
+          :options="statusOptions"
+          class="w-full md:w-56"
+          @update:model-value="() => store.fetchCashUps()"
+        />
+      </template>
+    </SvPageHeader>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load cash-ups."
       empty-message="No cash-ups match this filter."

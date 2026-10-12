@@ -232,8 +232,10 @@ export const usePlatformGetStartedStore = defineStore('platformGetStarted', () =
         label: 'Configure trial, grace, overdue and suspension thresholds',
         description: 'Set how long a trial runs, how long read-only grace lasts, and when an overdue account is suspended.',
         state: settingsVersionExists.value ? 'complete' : 'incomplete',
+        // UI16-DATA-002: `String(undefined)` printed "a undefined-day trial" whenever the server
+        // omitted a figure. An absent figure is now stated as absent, never rendered as a value.
         evidence: settingsVersionExists.value
-          ? `An effective settings version defines a ${String(billingSettings.value?.default_trial_days)}-day trial and ${String(billingSettings.value?.grace_days)} grace day(s).`
+          ? `An effective settings version is in force: ${typeof billingSettings.value?.default_trial_days === 'number' ? `a ${billingSettings.value.default_trial_days}-day default trial` : 'no default trial length recorded'} and ${typeof billingSettings.value?.grace_days === 'number' ? `${billingSettings.value.grace_days} grace day(s)` : 'no grace period recorded'}.`
           : 'No effective settings version defines trial, grace, overdue or suspension behaviour.',
         routeName: 'platform.billing-settings',
         gate: null,

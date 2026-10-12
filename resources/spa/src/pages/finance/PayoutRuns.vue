@@ -15,6 +15,7 @@ import { useNotificationStore } from '@/stores/notificationStore';
 import { usePayoutRunStore, type PayoutRun } from '@/stores/payoutRunStore';
 import { formatMoney } from '@/utils/money';
 import { PAYOUT_RUN_STATUS_FILTER, payoutRunStatusLabel } from '@/content/payout';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance Payout Runs (Plan §62, §25.5, §19.3; Phase 20H). Merchant-scoped Finance worklist: verify a
@@ -235,15 +236,12 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
 </script>
 
 <template>
-  <section class="mx-auto max-w-5xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Payout runs
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      Verify submitted payout runs, approve ordinary runs, reject, and mark an approved run paid after an
-      external payment has been made. Marking a run paid records that a payment already happened outside
-      Servana — Servana does not move any money.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Payout runs"
+      eyebrow="Compensation Finance"
+      description="Verify submitted payout runs, approve ordinary runs, reject, and mark an approved run paid after an external payment has been made. Marking a run paid records that a payment already happened outside Servana — Servana does not move any money."
+    />
 
     <p
       ref="statusRegion"
@@ -269,7 +267,7 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
 
     <template v-else>
       <form
-        class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+        class="mt-6 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
         novalidate
         aria-label="Payout run filters"
         @submit.prevent="applyFilters"

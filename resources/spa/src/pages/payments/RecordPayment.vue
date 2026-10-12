@@ -17,6 +17,7 @@ import {
 } from '@/stores/paymentStore';
 import type { Invoice } from '@/types/models';
 import SvMoney from '@/components/ui/SvMoney.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 
 /**
  * Front Office payment recording (Plan §41; Phase 18A). Records a single or

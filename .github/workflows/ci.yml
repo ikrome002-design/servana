@@ -405,8 +405,8 @@ jobs:
       # UI-01 found the deployed root serving Laravel's scaffold and the SPA chunks
       # 404ing, while every existing browser test passed against a Vite preview
       # origin. This step probes the real Nginx image so that class of defect cannot
-      # ship again. It is NOT the release-wide browser gate — UI01-PROV-003 stays
-      # open and is owned by UI-16.
+      # ship again. The browser gate on the same origin (UI01-PROV-003) follows the
+      # smokes below (Phase UI-16).
       # ---------------------------------------------------------------------------
       # The PROD php target is used deliberately: it is self-contained (`COPY . /var/www/html`),
       # whereas the dev target expects a bind-mounted source and would serve nothing here.
@@ -460,11 +460,35 @@ jobs:
         run: node scripts/ui05-production-smoke.mjs http://127.0.0.1:8080 servana.test
 
       # Phase UI-06: the Playwright suite runs against a Vite preview origin with no Laravel behind
-      # it, so the account context it exercises is installed by the harness (UI01-PROV-003, owned by
-      # UI-16). This closes the other half: the eight public surfaces probed over HTTP with genuine
+      # it, so the account context it exercises is installed by the harness (UI01-PROV-003; the UI-16
+      # browser gate below covers the served origin). This closes the other half: the eight public surfaces probed over HTTP with genuine
       # account Host headers, so the context is resolved by the SERVER exactly as in production.
       - name: Smoke — UI-06 public surfaces on the built image
         run: node scripts/ui06-public-host-smoke.mjs --origin http://127.0.0.1:8080
+
+      # Phase UI-16 (closes UI01-PROV-003): the release BROWSER gate on the built production origin.
+      # A real Chromium resolves every canonical account host to this edge, so the served shell,
+      # entry assets, server-resolved account context and anonymous sign-in redirect are exactly
+      # what production serves — not the Vite preview the main Playwright suite uses.
+      - name: Install Playwright Chromium for the production-origin gate
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Browser gate — eight account hosts on the built production origin (UI-16)
+        env:
+          SERVANA_ORIGIN: 127.0.0.1:8080
+          PLAYWRIGHT_JUNIT_OUTPUT_FILE: test-results/production-origin.xml
+        run: npx playwright test -c playwright.origin.config.ts --reporter=list,junit
+
+      - name: Upload production-origin browser results (UI-16)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui16-production-origin
+          path: test-results/
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Upload host matrix
         if: always()
@@ -512,7 +536,9 @@ jobs:
     # exactly 20m15s with 870/870 completed tests PASSING and none failed — the job
     # was killed mid-test, it did not fail. No test, assertion, retry or reporter
     # setting is relaxed here; every test still runs and still has to pass.
-    timeout-minutes: 60
+    # UI-16 adds 307 responsive/axe/theme cases and 54 visual comparisons. The frozen
+    # Windows full run took 78 minutes; preserve a bounded allowance for the larger suite.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -531,19 +557,29 @@ jobs:
       - name: Build SPA — Vite (production)
         run: npm run build
 
+      - name: UI-16 additional archetype visual comparisons
+        env:
+          PLAYWRIGHT_JUNIT_OUTPUT_FILE: /tmp/ui16-archetypes.xml
+        run: npx playwright test tests/e2e/ui-16-archetype-visual-regression.spec.ts --update-snapshots=none --reporter=list,junit
+
       - name: End-to-end tests — Playwright (Chromium)
         # `npm run e2e` exits non-zero on any failed Playwright test, failing the
         # workflow. Existing tests are run unmodified — no skip, no extra retry,
         # no suppression (playwright.config.ts already pins CI retries=1, workers=1).
-        run: npm run e2e
+        env:
+          PLAYWRIGHT_JUNIT_OUTPUT_FILE: test-results/e2e.xml
+        run: npm run e2e -- --update-snapshots=none --reporter=list,junit,html
 
-      - name: Upload Playwright report + test results (on failure)
-        if: failure()
+      - name: Upload Playwright report + test results (UI-16 acceptance)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: |
+            /tmp/ui16-archetypes.xml
             playwright-report/
             test-results/
-          if-no-files-found: ignore
-          retention-days: 7
+            tests/e2e/ui-16-visual-regression.spec.ts-snapshots/
+            tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/
+          if-no-files-found: error
+          retention-days: 14

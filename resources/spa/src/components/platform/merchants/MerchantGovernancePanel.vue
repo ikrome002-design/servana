@@ -166,7 +166,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
         block. Conflating them is what makes an operator believe a payment reopened a merchant that
         was suspended for policy reasons.
       -->
-      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
         <div
           class="rounded-control border border-border p-4"
           data-testid="operational-status-card"
@@ -218,7 +218,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
         </div>
       </div>
 
-      <dl class="mt-4 grid gap-3 sm:grid-cols-2">
+      <dl class="mt-4 grid gap-3 md:grid-cols-2">
         <div v-if="merchant.billing_status_reason">
           <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
             Billing status reason

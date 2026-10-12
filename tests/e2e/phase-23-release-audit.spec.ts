@@ -293,7 +293,10 @@ test.describe('accessibility behaviour', () => {
   test('landmarks are present and unique', async ({ page }) => {
     await prepare(page, shellScreen);
     await open(page, shellScreen);
-    await expect(page.locator('header')).toHaveCount(1);
+    // UI-16: the page title band is a <header> scoped inside <main> (no banner role), so
+    // uniqueness is asserted on the banner LANDMARK, not on the element name.
+    await expect(page.getByRole('banner')).toHaveCount(1);
+    await expect(page.locator('main#main-content header')).toHaveCount(1);
     await expect(page.locator('main#main-content')).toHaveCount(1);
     await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
   });

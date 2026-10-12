@@ -13,6 +13,7 @@ import { useMerchantCompensationSummaryStore } from '@/stores/merchantCompensati
 import { usePayoutRunStore, type PayoutRun } from '@/stores/payoutRunStore';
 import { formatMoney } from '@/utils/money';
 import { payoutRunStatusLabel } from '@/content/payout';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 const props = withDefaults(defineProps<{ mode?: 'combined' | 'summary' | 'approvals' }>(), {
   mode: 'combined',
@@ -140,22 +141,24 @@ async function submitApprove(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-5xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      {{ showApprovals && !showSummary ? 'High-value payout approvals' : 'Compensation summary' }}
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      <template v-if="showApprovals && !showSummary">
-        Review only payout runs that crossed the server-configured high-value threshold. Approval
-        needs a fresh identity step-up and allows Finance to record an external payment; Servana
-        does not move money.
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      :title="showApprovals && !showSummary ? 'High-value payout approvals' : 'Compensation summary'"
+      eyebrow="Compensation & Approvals"
+    >
+      <template #description>
+        <template v-if="showApprovals && !showSummary">
+          Review only payout runs that crossed the server-configured high-value threshold. Approval
+          needs a fresh identity step-up and allows Finance to record an external payment; Servana
+          does not move money.
+        </template>
+        <template v-else>
+          What your business owes staff and what has been paid, grouped by currency. Amounts are shown
+          exactly as Servana calculated them and are never combined across currencies. This overview
+          cannot create, verify, standard-approve or mark a payout as paid.
+        </template>
       </template>
-      <template v-else>
-        What your business owes staff and what has been paid, grouped by currency. Amounts are shown
-        exactly as Servana calculated them and are never combined across currencies. This overview
-        cannot create, verify, standard-approve or mark a payout as paid.
-      </template>
-    </p>
+    </SvPageHeader>
 
     <p
       ref="statusRegion"
@@ -189,28 +192,40 @@ async function submitApprove(): Promise<void> {
         empty-message="No compensation activity yet."
         @retry="summaryStore.fetchSummary()"
       >
+        <!--
+          UI-16 (UI16-VIS-017): owed and paid are now two toned panels with their figures set large,
+          one row per currency — never a combined cross-currency total — instead of small cards
+          floating in a half-empty grid.
+        -->
         <div class="grid gap-6 lg:grid-cols-2">
-          <section aria-labelledby="outstanding-heading">
+          <section
+            aria-labelledby="outstanding-heading"
+            class="sv-comp-panel rounded-card border p-5 shadow-card"
+            data-tone="owed"
+          >
             <h2
               id="outstanding-heading"
-              class="text-sm font-semibold text-text"
+              class="font-display text-lg font-bold text-sv-text-heading"
             >
               Outstanding liability by currency
             </h2>
-            <div class="mt-2 grid gap-3 sm:grid-cols-2">
+            <p class="text-xs text-sv-text-muted">
+              What your business owes staff, as Servana calculated it.
+            </p>
+            <div class="mt-4 grid gap-3">
               <SvCard
                 v-for="row in summaryStore.summary.outstanding_liability_by_currency"
                 :key="row.currency"
                 padding="sm"
                 data-testid="outstanding-card"
               >
-                <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
                   {{ row.currency }}
                 </p>
-                <p class="mt-1 text-lg font-bold text-text">
+                <p class="sv-numeric mt-1 font-display text-3xl font-extrabold text-sv-text-heading">
                   {{ money(row.combined_net_liability_minor, row.currency) }}
                 </p>
-                <p class="text-xs text-text-muted">
+                <p class="text-xs text-sv-text-muted">
                   Combined net owed
                 </p>
               </SvCard>
@@ -223,24 +238,31 @@ async function submitApprove(): Promise<void> {
             </div>
           </section>
 
-          <section aria-labelledby="paid-heading">
+          <section
+            aria-labelledby="paid-heading"
+            class="sv-comp-panel rounded-card border p-5 shadow-card"
+            data-tone="paid"
+          >
             <h2
               id="paid-heading"
-              class="text-sm font-semibold text-text"
+              class="font-display text-lg font-bold text-sv-text-heading"
             >
               Paid by currency
             </h2>
-            <div class="mt-2 grid gap-3 sm:grid-cols-2">
+            <p class="text-xs text-sv-text-muted">
+              Payout runs Finance recorded as paid outside Servana.
+            </p>
+            <div class="mt-4 grid gap-3">
               <SvCard
                 v-for="row in summaryStore.summary.paid_by_currency"
                 :key="row.currency"
                 padding="sm"
                 data-testid="paid-card"
               >
-                <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
                   {{ row.currency }}
                 </p>
-                <p class="mt-1 text-lg font-bold text-text">
+                <p class="sv-numeric mt-1 font-display text-3xl font-extrabold text-sv-text-heading">
                   {{ money(row.paid_gross_minor, row.currency) }}
                 </p>
                 <p class="text-xs text-text-muted">
@@ -259,11 +281,11 @@ async function submitApprove(): Promise<void> {
 
         <section
           aria-labelledby="status-heading"
-          class="mt-6"
+          class="mt-6 rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
         >
           <h2
             id="status-heading"
-            class="text-sm font-semibold text-text"
+            class="font-display text-lg font-bold text-sv-text-heading"
           >
             Payout runs by status
           </h2>
@@ -272,7 +294,7 @@ async function submitApprove(): Promise<void> {
               v-for="[status, count] in statusRows"
               :key="status"
               data-testid="status-count"
-              class="rounded-control bg-surface-alt px-3 py-1 text-sm text-text"
+              class="rounded-pill border border-sv-border bg-sv-surface-subtle px-3 py-1 text-sm text-sv-text"
             >
               {{ payoutRunStatusLabel(status) }}: <span class="font-semibold">{{ count }}</span>
             </li>
@@ -409,3 +431,12 @@ async function submitApprove(): Promise<void> {
     </SvDialog>
   </section>
 </template>
+
+<style scoped>
+.sv-comp-panel {
+  --sv-comp: var(--sv-color-brand-primary);
+  border-color: color-mix(in srgb, var(--sv-comp) 30%, var(--sv-color-border-default));
+  background: linear-gradient(165deg, color-mix(in srgb, var(--sv-comp) 10%, var(--sv-color-surface-raised)), var(--sv-color-surface-raised) 65%);
+}
+.sv-comp-panel[data-tone='paid'] { --sv-comp: var(--sv-color-growth); }
+</style>
