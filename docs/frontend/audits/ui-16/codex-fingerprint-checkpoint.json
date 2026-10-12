@@ -1,0 +1,41 @@
+{
+  "schema": "servana.ui16.codex-fingerprint-checkpoint.v1",
+  "phase": "UI-16",
+  "implementation_commit": "45d518f5ccf82649f94b58184835bc1d7bff6c40",
+  "implementation_tree": "9ca6c163e2cdcfefe50f244b58646f32cd77315c",
+  "purpose": "Bind one verified non-secret source digest to its introducing commit under existing exact-fingerprint policy; record release checkpoint",
+  "gitleaks_history": {
+    "command": "gitleaks git --log-opts origin/main..HEAD --redact",
+    "commits_scanned": 1,
+    "exit_code": 0,
+    "findings": 0
+  },
+  "pending": "CI_VERIFICATION_PENDING: hosted Linux frames and all five final-head jobs, governance and normal merge",
+  "self_hash_convention": "null only for this JSON; external digest captured before staging",
+  "files": [
+    {
+      "path": ".gitleaksignore",
+      "before_sha256": "cc7a529af3f39ffe4d3ae20bb5caa51393622115007b71d1048c2e4f139ef09e",
+      "after_sha256": "8c2fcaa44c926cd68b6d354b8ae45ceb4ea18244d9eabcc38070ccc4cce1fab6",
+      "bytes": 4480
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "before_sha256": "415a24023b9d85cd1c06abf30043f75f9df01a4c94abf1e76b0c5b22deca2b2b",
+      "after_sha256": "5e5ca50594f3fc1ae6db9853acb15b8017d88adaa5d8eab4cbe29cc4659fd908",
+      "bytes": 525154
+    },
+    {
+      "path": "docs/proof/ui-16.md",
+      "before_sha256": "045bd1c33547ef0bb940df08e8fedec52f47cb0d57977c068b47df704aae94af",
+      "after_sha256": "163db2f378cf1d4d8406f18cc41eaec22f82ace4c67da3682175f33bee99e6b8",
+      "bytes": 22540
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/codex-fingerprint-checkpoint.json",
+      "before_sha256": null,
+      "after_sha256": null,
+      "bytes": null
+    }
+  ]
+}

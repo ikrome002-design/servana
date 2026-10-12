@@ -207,6 +207,11 @@ gates await hosted execution and review under prompt §6.1. Merge remains prohib
 head has all five successful jobs and accepted images. The original Claude manifest is not rewritten.
 No actual PR/merge, independent reviewer or product-owner visual approval is implied by this checkpoint.
 
+Implementation committed as `45d518f5ccf82649f94b58184835bc1d7bff6c40` (485 exact approved paths,
+staged blob parity, clean worktree afterward). A narrow follow-up binds the verified non-secret
+token-source digest to that commit via the existing `.gitleaksignore` fingerprint policy.
+Publication remains provisional; Linux baseline acceptance, final CI and merge are pending.
+
 ### Phase UI-15 — Audit experience — verified complete
 
 Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at
