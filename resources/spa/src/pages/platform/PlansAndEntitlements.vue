@@ -19,6 +19,7 @@ import PlanEntitlementsSection from '@/pages/platform/billing/PlanEntitlementsSe
 import SubscriptionPlansSection from '@/pages/platform/billing/SubscriptionPlansSection.vue';
 import { useCan } from '@/composables/useCan';
 import type { SubscriptionPlan } from '@/stores/subscriptionPlanStore';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 const selectedPlan = ref<SubscriptionPlan | null>(null);
@@ -30,7 +31,7 @@ function onSelect(plan: SubscriptionPlan): void {
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-plans-screen"
   >
     <SvPageHeader
@@ -42,32 +43,35 @@ function onSelect(plan: SubscriptionPlan): void {
     <SvPermissionState v-if="!can('platform.plan.view')" />
 
     <template v-else>
-      <section
-        aria-label="Subscription plans"
-        class="mb-10"
-      >
-        <SubscriptionPlansSection @select="onSelect" />
-      </section>
-
-      <section aria-label="Plan entitlements">
-        <SvAlert
-          v-if="selectedPlan === null"
-          severity="info"
-          data-testid="plans-select-prompt"
+      <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
+      <PlatformRuleWorkspace>
+        <section
+          aria-label="Subscription plans"
+          class="mb-10"
         >
-          <p>Select a plan above to review and edit the entitlements it grants.</p>
-        </SvAlert>
+          <SubscriptionPlansSection @select="onSelect" />
+        </section>
 
-        <PlanEntitlementsSection
-          v-else
-          :plan="selectedPlan"
-        />
-      </section>
+        <section aria-label="Plan entitlements">
+          <SvAlert
+            v-if="selectedPlan === null"
+            severity="info"
+            data-testid="plans-select-prompt"
+          >
+            <p>Select a plan above to review and edit the entitlements it grants.</p>
+          </SvAlert>
 
-      <p class="mt-8 text-xs text-sv-text-muted">
-        Removing an entitlement takes effect at the next applicable boundary for merchants already
-        using the capability. Retiring a plan preserves existing subscription history.
-      </p>
+          <PlanEntitlementsSection
+            v-else
+            :plan="selectedPlan"
+          />
+        </section>
+        <template #rule>
+          <p>
+            Removing an entitlement takes effect at the next applicable boundary for merchants already using the capability. Retiring a plan preserves existing subscription history.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

@@ -49,7 +49,7 @@ onMounted(() => { void store.fetchReceipts(); });
         >
           <SvCard
             as="article"
-            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+            class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
           >
             <div>
               <h2 class="font-display font-bold text-heading">

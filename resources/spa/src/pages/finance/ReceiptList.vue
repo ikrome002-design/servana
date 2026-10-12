@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useReceiptStore } from '@/stores/receiptStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Receipt list (Plan §43; Phase 18B). Shared by Finance and Front Office — both hold
@@ -36,13 +37,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Receipts
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Receipts"
+      eyebrow="Merchant-Client Finance"
+      description="Receipts are issued automatically when Finance validates a payment."
+    />
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load receipts."
       empty-message="No receipts yet. A receipt is issued automatically when Finance validates a payment."

@@ -15,6 +15,7 @@ import { useNotificationStore } from '@/stores/notificationStore';
 import type { Appointment, ServiceEligibility } from '@/types/models';
 import { appointmentStatusLabel, toBusinessIso } from '@/utils/appointment';
 import { SvIconBack } from '@/design-system/icons';
+import { formatDateTime } from '@/utils/dates';
 
 // Appointment detail with capability-gated actions (Plan §36; Phase 16A). Action
 // availability is driven by the API `can` map (UX only); the API re-checks every
@@ -48,7 +49,7 @@ const personnelOptions = computed(() =>
 );
 
 function fmt(iso: string | null): string {
-  return iso === null ? '—' : new Date(iso).toLocaleString();
+  return iso === null ? '—' : formatDateTime(iso);
 }
 
 async function load(): Promise<void> {

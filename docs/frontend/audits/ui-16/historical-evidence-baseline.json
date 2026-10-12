@@ -1,0 +1,100 @@
+{
+  "schema": "servana.ui16.historical-evidence-baseline.v1",
+  "phase": "UI-16",
+  "captured_before_final_full_playwright": true,
+  "captured_at": "2026-10-12",
+  "verified_base_commit": "088a6cd764534ac5a4e44d1ce8c1e72cebfd480b",
+  "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF (same algorithm as UI-15)",
+  "state": "every frozen scope equals HEAD except docs/frontend/audits/ui-15 and docs/proof, whose aggregates are post-reconciliation: the once-only UI-15 lifecycle append (docs/proof/ui-15.md, ui-15/implementation-checklist.md, ui-15/defect-closure.json post_merge_reconciliation) is the only predecessor edit. Pre-reconciliation HEAD aggregates: ui-15 e03e6c64a7e9189c20cf6e2d9f540aead61f485dd8431faff405ff9cd5497832, docs/proof 8bf89e40186d8b0a381d12e4ad188f4857368ac3b2eda54766e016e3c5f0bbd6.",
+  "excluded": [
+    "docs/frontend/audits/ui-16/* (this phase)",
+    "docs/proof/ui-16.md (this phase)"
+  ],
+  "frozen_scopes": [
+    {
+      "path": "docs/frontend/audits/ui-01",
+      "files": 8,
+      "aggregate_sha256": "8c3ffaf289d3d61d0ac16e17273007d317b7b5e796755c965be2d4452548d236"
+    },
+    {
+      "path": "docs/frontend/audits/ui-02",
+      "files": 12,
+      "aggregate_sha256": "61027fba525e3906325cb361e4122af6b7808133d0fae400f481c340b467c99f"
+    },
+    {
+      "path": "docs/frontend/audits/ui-03",
+      "files": 14,
+      "aggregate_sha256": "3baaafbf9ecb4f976f5c714661330bbc0d2d4ac302e80ffd802ea7a3f62e8123"
+    },
+    {
+      "path": "docs/frontend/audits/ui-04",
+      "files": 15,
+      "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553"
+    },
+    {
+      "path": "docs/frontend/audits/ui-05",
+      "files": 10,
+      "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04"
+    },
+    {
+      "path": "docs/frontend/audits/ui-06",
+      "files": 51,
+      "aggregate_sha256": "d7145f2dcd43f38ec0f2cedfbcb1cd1cf40e362862246ec9877b4d9824d77c6e"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07",
+      "files": 16,
+      "aggregate_sha256": "052f6b797634911203db4dd216ff5a7cff3bda50ca6e2a85b5df403e6046dac7"
+    },
+    {
+      "path": "docs/frontend/audits/ui-08",
+      "files": 50,
+      "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc"
+    },
+    {
+      "path": "docs/frontend/audits/ui-09",
+      "files": 45,
+      "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4"
+    },
+    {
+      "path": "docs/frontend/audits/ui-10",
+      "files": 36,
+      "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2"
+    },
+    {
+      "path": "docs/frontend/audits/ui-11",
+      "files": 36,
+      "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1"
+    },
+    {
+      "path": "docs/frontend/audits/ui-12",
+      "files": 43,
+      "aggregate_sha256": "9617558abf24c449ffa5d3fa4d58cd5823fdd46dd034bfb83a9a4b83f933eda9"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13",
+      "files": 66,
+      "aggregate_sha256": "ca0579382c9b02bc20ab950ffc841a6623ab95f3893945ba3e2425bcc824dbd4"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14",
+      "files": 92,
+      "aggregate_sha256": "ea6adbb406721daaadcb3b8350785c6714a7b73922b6a5c1066b5eafc53f2c4c"
+    },
+    {
+      "path": "docs/frontend/audits/ui-15",
+      "files": 87,
+      "aggregate_sha256": "00891b9e8200792b118496ef24a84c65dc13db6f4842845b77180ece2e143555"
+    },
+    {
+      "path": "docs/proof",
+      "files": 356,
+      "aggregate_sha256": "ab60c274f4355603e0db15b466c8bd3900188abf9af56291b2d48539b9ac2e99"
+    },
+    {
+      "path": "docs/frontend/screens",
+      "files": 334,
+      "aggregate_sha256": "4cac8d0666883526a580e6e54965979e276901d2136ab87eda49d6d0b7cf8511"
+    }
+  ]
+}

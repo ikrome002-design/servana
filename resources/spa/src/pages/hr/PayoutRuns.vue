@@ -286,7 +286,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
 
       <!-- filters -->
       <form
-        class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+        class="mt-6 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
         novalidate
         aria-label="Payout run filters"
         @submit.prevent="applyFilters"
@@ -427,7 +427,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
           required
           @update:model-value="createForm.branch_ulid = $event"
         />
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="create-start"
             label="Period start"
@@ -542,7 +542,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
           <p class="text-sm font-semibold text-text">
             Edit draft period
           </p>
-          <div class="mt-2 grid gap-3 sm:grid-cols-3">
+          <div class="mt-2 grid gap-3 md:grid-cols-3">
             <SvTextInput
               id="edit-start"
               label="Period start"

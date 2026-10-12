@@ -6,6 +6,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import { useBranchStore } from '@/stores/branchStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import type { BranchOperatingHour } from '@/types/models';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Weekly operating hours (Scope §3.3). One row per weekday.
 const route = useRoute();
@@ -49,10 +50,11 @@ async function save(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-2xl p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Operating hours
-    </h1>
+  <section class="mx-auto max-w-4xl">
+    <SvPageHeader
+      title="Operating hours"
+      eyebrow="Branch setup"
+    />
 
     <SvCard
       as="div"

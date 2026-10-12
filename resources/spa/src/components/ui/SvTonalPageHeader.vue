@@ -11,25 +11,32 @@
  * `SvPageHeader`, so it is a drop-in replacement. It computes nothing: every fact rendered in the
  * default slot arrives already decided by the server.
  *
- * `tone` selects the accent wash only; it never carries meaning on its own.
+ * `tone` selects the accent wash only; it never carries meaning on its own. When a page passes no
+ * tone, the account default provided by the shell applies (Phase UI-16, `design-system/pageTone`).
  */
-withDefaults(
+import { computed, inject } from 'vue';
+import { PAGE_TONE_KEY, type PageTone } from '@/design-system/pageTone';
+
+const props = withDefaults(
   defineProps<{
     title: string;
     eyebrow?: string;
     description?: string;
     /** Short context pill beside the eyebrow, e.g. a branch or period. */
     context?: string;
-    tone?: 'warm' | 'teal' | 'green';
+    tone?: PageTone;
   }>(),
-  { eyebrow: undefined, description: undefined, context: undefined, tone: 'warm' },
+  { eyebrow: undefined, description: undefined, context: undefined, tone: undefined },
 );
+
+const accountDefault = inject(PAGE_TONE_KEY, null);
+const resolvedTone = computed<PageTone>(() => props.tone ?? accountDefault?.value ?? 'warm');
 </script>
 
 <template>
   <header
     class="sv-tonal-header relative isolate mb-6 overflow-hidden rounded-card border border-sv-border px-5 py-6 shadow-card md:px-8 md:py-7"
-    :data-tone="tone"
+    :data-tone="resolvedTone"
     data-testid="sv-page-header"
   >
     <span
@@ -62,11 +69,14 @@ withDefaults(
         >
           {{ title }}
         </h1>
+        <!-- A `description` slot carries rich copy (emphasis, conditional sentences) verbatim. -->
         <p
-          v-if="description"
+          v-if="description || $slots.description"
           class="mt-2 max-w-2xl text-sm leading-6 text-sv-text-secondary md:text-base"
         >
-          {{ description }}
+          <slot name="description">
+            {{ description }}
+          </slot>
         </p>
       </div>
       <div

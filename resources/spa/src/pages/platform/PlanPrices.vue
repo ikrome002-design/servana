@@ -20,6 +20,7 @@ import PlanPricesSection from '@/pages/platform/billing/PlanPricesSection.vue';
 import SubscriptionPlansSection from '@/pages/platform/billing/SubscriptionPlansSection.vue';
 import { useCan } from '@/composables/useCan';
 import type { SubscriptionPlan } from '@/stores/subscriptionPlanStore';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 const selectedPlan = ref<SubscriptionPlan | null>(null);
@@ -31,7 +32,7 @@ function onSelect(plan: SubscriptionPlan): void {
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-prices-screen"
   >
     <SvPageHeader
@@ -43,36 +44,35 @@ function onSelect(plan: SubscriptionPlan): void {
     <SvPermissionState v-if="!can('platform.plan.view')" />
 
     <template v-else>
-      <section
-        aria-label="Choose a plan"
-        class="mb-10"
-      >
-        <SubscriptionPlansSection @select="onSelect" />
-      </section>
-
-      <section aria-label="Plan prices">
-        <SvAlert
-          v-if="selectedPlan === null"
-          severity="info"
-          data-testid="prices-select-prompt"
+      <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
+      <PlatformRuleWorkspace>
+        <section
+          aria-label="Choose a plan"
+          class="mb-10"
         >
-          <p>Select a plan above to review its current, scheduled and superseded prices.</p>
-        </SvAlert>
+          <SubscriptionPlansSection @select="onSelect" />
+        </section>
 
-        <PlanPricesSection
-          v-else
-          :plan="selectedPlan"
-        />
-      </section>
+        <section aria-label="Plan prices">
+          <SvAlert
+            v-if="selectedPlan === null"
+            severity="info"
+            data-testid="prices-select-prompt"
+          >
+            <p>Select a plan above to review its current, scheduled and superseded prices.</p>
+          </SvAlert>
 
-      <p
-        class="mt-8 text-xs text-sv-text-muted"
-        data-testid="prices-immutability-note"
-      >
-        A price change is not applied mid-cycle and is not back-applied. Issued invoices keep the
-        price snapshot they were created with, and merchants are not automatically grandfathered
-        onto an older price.
-      </p>
+          <PlanPricesSection
+            v-else
+            :plan="selectedPlan"
+          />
+        </section>
+        <template #rule>
+          <p data-testid="prices-immutability-note">
+            A price change is not applied mid-cycle and is not back-applied. Issued invoices keep the price snapshot they were created with, and merchants are not automatically grandfathered onto an older price.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

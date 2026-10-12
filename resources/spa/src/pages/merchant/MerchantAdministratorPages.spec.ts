@@ -21,6 +21,9 @@ const routes = [
   { path: '/subscription/invoices', name: 'merchant.subscription-invoices', component: stub },
   { path: '/subscription/invoices/:invoiceUlid', name: 'merchant.subscription-invoice-detail', component: stub },
   { path: '/compensation', name: 'merchant.compensation', component: stub },
+  // UI-16: the recomposed dashboard links the owner's own routes.
+  { path: '/merchant/profile', name: 'merchant.merchant-profile', component: stub },
+  { path: '/compensation/payout-approvals', name: 'merchant.compensation-payout-approvals', component: stub },
 ];
 
 const dashboard: MerchantDashboardOverview = {

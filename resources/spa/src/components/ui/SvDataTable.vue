@@ -82,20 +82,27 @@ function alignmentClass(column: SvColumn<TRow>): string {
       :title="emptyMessage"
     />
 
+    <!--
+      UI16-VIS-003: the table sits on its own raised surface (Billings reference: a bordered,
+      softly shadowed history panel with a tinted header row), instead of floating as bare rows on
+      the page background. `border-separate` + zero spacing lets the header cells carry the card's
+      rounded corners without clipping anything — no `overflow-hidden` hides content here.
+    -->
     <div
       v-else-if="showsTable"
-      :class="scrollable ? 'overflow-x-auto' : ''"
+      class="sv-data-table-surface rounded-card border border-sv-border bg-sv-surface-raised shadow-card"
+      :class="[scrollable ? 'overflow-x-auto' : '', captionHidden ? '' : 'sv-data-table-surface--captioned']"
       :tabindex="scrollable ? 0 : undefined"
       :role="scrollable ? 'region' : undefined"
       :aria-label="scrollable ? `${caption} (scrollable)` : undefined"
     >
       <table
-        class="w-full border-collapse text-sm"
+        class="w-full border-separate border-spacing-0 text-sm"
         data-testid="sv-data-table"
       >
         <caption
-          class="text-left text-sm text-sv-text-muted"
-          :class="captionHidden ? 'sr-only' : 'mb-2'"
+          class="text-left text-sm font-semibold text-sv-text-heading"
+          :class="captionHidden ? 'sr-only' : 'px-4 pb-3 pt-4'"
         >
           {{ caption }}
         </caption>
@@ -107,7 +114,7 @@ function alignmentClass(column: SvColumn<TRow>): string {
               :key="column.key"
               scope="col"
               :aria-sort="column.sortable === true ? ariaSortFor(column.key, sort) : undefined"
-              class="border-b border-sv-border px-3 py-2 font-semibold text-sv-text"
+              class="border-b border-sv-border px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-sv-text-muted"
               :class="alignmentClass(column)"
             >
               <button
@@ -130,7 +137,7 @@ function alignmentClass(column: SvColumn<TRow>): string {
             <th
               v-if="$slots.actions"
               scope="col"
-              class="border-b border-sv-border px-3 py-2 text-right font-semibold text-sv-text"
+              class="border-b border-sv-border px-3 py-2.5 text-right text-xs font-semibold uppercase tracking-wide text-sv-text-muted"
             >
               Actions
             </th>
@@ -155,13 +162,13 @@ function alignmentClass(column: SvColumn<TRow>): string {
             v-for="row in rows"
             v-else
             :key="rowKey(row)"
-            class="hover:bg-sv-table-hover"
+            class="sv-data-table-row transition-colors duration-sv-fast hover:bg-sv-table-hover"
             :data-testid="`sv-data-row-${rowKey(row)}`"
           >
             <td
               v-for="column in columns"
               :key="column.key"
-              class="border-b border-sv-border px-3 py-2 text-sv-text"
+              class="border-b border-sv-border px-3 py-3 text-sv-text"
               :class="alignmentClass(column)"
             >
               <!-- Rich cells come from a slot; no caller HTML is ever rendered. -->
@@ -174,7 +181,7 @@ function alignmentClass(column: SvColumn<TRow>): string {
             </td>
             <td
               v-if="$slots.actions"
-              class="border-b border-sv-border px-3 py-2 text-right"
+              class="border-b border-sv-border px-3 py-3 text-right"
             >
               <slot
                 name="actions"
@@ -187,3 +194,11 @@ function alignmentClass(column: SvColumn<TRow>): string {
     </div>
   </div>
 </template>
+
+<style scoped>
+.sv-data-table-surface thead tr { background: var(--sv-color-table-header); }
+.sv-data-table-surface:not(.sv-data-table-surface--captioned) thead th:first-child { border-start-start-radius: var(--sv-radius-card); }
+.sv-data-table-surface:not(.sv-data-table-surface--captioned) thead th:last-child { border-start-end-radius: var(--sv-radius-card); }
+/* The card's own border closes the table; the last row needs no second rule. */
+.sv-data-table-surface tbody tr:last-child td { border-block-end-width: 0; }
+</style>

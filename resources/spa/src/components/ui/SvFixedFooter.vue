@@ -87,47 +87,57 @@ const legalLinks = computed(() => {
     data-testid="sv-fixed-footer"
   >
     <div
-      class="mx-auto flex h-full max-w-sv-content flex-col justify-center gap-2 py-2 md:flex-row md:items-center md:justify-between md:gap-4"
+      class="mx-auto flex h-full max-w-sv-content flex-col justify-center gap-1 py-1.5 md:flex-row md:items-center md:justify-between md:gap-4 md:py-2"
     >
-      <!-- Row one: identity and legal. -->
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+      <!--
+        Row one: identity and legal.
+
+        UI16-FOOTER-001: on a 360px phone this row wrapped freely into three lines, so the footer
+        grew to 125px while the page reserved the 88px mobile token — the bottom ~37px of EVERY
+        mobile page sat under the footer. Mobile now breaks deterministically: the copyright on its
+        own line, then the links on at most two, at a compact size; tablet and desktop keep the one
+        inline row. The mobile token is sized to that worst case, so the reserve covers it.
+      -->
+      <div class="flex flex-col gap-y-0.5 text-[0.6875rem] leading-4 md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-1 md:text-xs">
         <span data-testid="sv-footer-copyright">{{ COPYRIGHT }}</span>
 
-        <SvLink
-          :href="CORPORATE_SITE"
-          new-tab
-          variant="quiet"
-          data-testid="sv-footer-corporate"
-        >
-          Citrus Labs
-        </SvLink>
+        <span class="flex flex-wrap items-center gap-x-3 gap-y-0.5 md:contents">
+          <SvLink
+            :href="CORPORATE_SITE"
+            new-tab
+            variant="quiet"
+            data-testid="sv-footer-corporate"
+          >
+            Citrus Labs
+          </SvLink>
 
-        <SvLink
-          v-for="link in legalLinks"
-          :key="link.key"
-          :to="link.to"
-          variant="quiet"
-          :data-testid="`sv-footer-${link.key}`"
-        >
-          {{ link.label }}
-        </SvLink>
+          <SvLink
+            v-for="link in legalLinks"
+            :key="link.key"
+            :to="link.to"
+            variant="quiet"
+            :data-testid="`sv-footer-${link.key}`"
+          >
+            {{ link.label }}
+          </SvLink>
 
-        <!--
+          <!--
           Rendered only when a real destination exists. A dead FAQ link would be worse than no
           link: it promises content the product cannot yet serve.
         -->
-        <SvLink
-          v-if="faqTo !== null"
-          :to="faqTo"
-          variant="quiet"
-          data-testid="sv-footer-faq"
-        >
-          FAQ
-        </SvLink>
+          <SvLink
+            v-if="faqTo !== null"
+            :to="faqTo"
+            variant="quiet"
+            data-testid="sv-footer-faq"
+          >
+            FAQ
+          </SvLink>
+        </span>
       </div>
 
       <!-- Row two: social and the theme control. -->
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-0.5 md:gap-1">
         <SvLink
           v-for="social in SOCIAL_LINKS"
           :key="social.key"
@@ -135,7 +145,7 @@ const legalLinks = computed(() => {
           new-tab
           variant="quiet"
           :show-external-icon="false"
-          class="min-h-sv-touch min-w-sv-touch justify-center text-xs"
+          class="min-h-sv-touch min-w-sv-touch justify-center text-[0.6875rem] md:text-xs"
           :data-testid="`sv-footer-${social.key}`"
         >
           <!-- Named in text, so the control is identifiable to a screen reader and at a glance. -->

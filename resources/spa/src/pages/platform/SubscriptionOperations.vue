@@ -29,6 +29,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { statusLabel } from '@/utils/statusLabel';
 import {
   usePlatformSubscriptionOperationsStore,
   type BillingCreditRow,
@@ -205,7 +206,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
         </h2>
 
         <div
-          class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          class="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
           data-testid="subscriptions-summary"
         >
           <SvMetricCard
@@ -339,7 +340,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
             >
               <template #cell:status="{ row }">
                 <SvStatusBadge
-                  :label="row.status"
+                  :label="statusLabel(row.status)"
                   :tone="statusTone(row.status)"
                   sr-prefix="Status:"
                 />
@@ -370,7 +371,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
             >
               <template #cell:status="{ row }">
                 <SvStatusBadge
-                  :label="row.status"
+                  :label="statusLabel(row.status)"
                   :tone="statusTone(row.status)"
                   sr-prefix="Status:"
                 />
@@ -402,7 +403,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
             >
               <template #cell:status="{ row }">
                 <SvStatusBadge
-                  :label="row.status"
+                  :label="statusLabel(row.status)"
                   :tone="statusTone(row.status)"
                   sr-prefix="Status:"
                 />

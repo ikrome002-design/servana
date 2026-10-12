@@ -8,6 +8,7 @@ import SvDialog from '@/components/ui/SvDialog.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceExportStore, SUPPORTED_EXPORT_TYPES, type FinanceExportView } from '@/stores/financeExportStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance exports (Plan §65, §67; Phase 18B). Finance requests a scoped, masked export
@@ -92,29 +93,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Exports
-      </h1>
-      <div class="flex flex-wrap items-center gap-2">
-        <SvSelect
-          id="export-status-filter"
-          v-model="store.filterStatus"
-          label="Filter"
-          :options="statusOptions"
-          class="w-full sm:w-56"
-          @update:model-value="() => store.fetchExports()"
-        />
-        <SvButton
-          v-if="canCreate"
-          data-testid="export-request-open"
-          @click="requesting = true"
-        >
-          Request export
-        </SvButton>
-      </div>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Exports"
+      eyebrow="Reporting & Audit"
+      description="Masked, audited exports of finance records. Requesting an export and downloading it are authorised separately."
+    >
+      <template #actions>
+        <div class="flex flex-wrap items-center gap-2">
+          <SvSelect
+            id="export-status-filter"
+            v-model="store.filterStatus"
+            label="Filter"
+            :options="statusOptions"
+            class="w-full md:w-56"
+            @update:model-value="() => store.fetchExports()"
+          />
+          <SvButton
+            v-if="canCreate"
+            data-testid="export-request-open"
+            @click="requesting = true"
+          >
+            Request export
+          </SvButton>
+        </div>
+      </template>
+    </SvPageHeader>
 
     <p
       v-if="actionError"

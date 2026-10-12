@@ -9,6 +9,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCashUpStore } from '@/stores/cashUpStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import SvMoney from '@/components/ui/SvMoney.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance cash-up detail + review (Plan §45; Phase 18B). Finance (checker) approves,
@@ -71,10 +72,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Cash-up review
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Cash-up review"
+      eyebrow="Controls & Close"
+    />
 
     <SvStateBoundary
       class="mt-6"

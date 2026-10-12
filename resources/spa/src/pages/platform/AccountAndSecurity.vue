@@ -32,21 +32,24 @@
  * a timezone override have no field on the user record, and notification preferences belong to the
  * gated Notifications runtime — none of the three is rendered as a working control.
  */
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvConfirmDialog from '@/components/ui/SvConfirmDialog.vue';
 import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
-import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvResponsiveRecordList from '@/components/ui/SvResponsiveRecordList.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvThemeToggle from '@/components/ui/SvThemeToggle.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
+import { SvIconSecurity } from '@/design-system/icons';
+import { PAGE_TONE_KEY } from '@/design-system/pageTone';
+import { useAccountContextStore } from '@/stores/accountContextStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionFamilyStore, type HostSessionView } from '@/stores/sessionFamilyStore';
+import { formatDateTime } from '@/utils/dates';
 
 const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' | 'hr' | 'finance' | 'front-office' | 'personnel' | 'audit' }>(), {
   experience: 'platform',
@@ -54,6 +57,7 @@ const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 
 
 const auth = useAuthStore();
 const sessions = useSessionFamilyStore();
+const contexts = useAccountContextStore();
 
 const enrollmentSecret = ref<{ secret: string; otpauth_uri: string } | null>(null);
 const enrollmentCode = ref('');
@@ -87,6 +91,41 @@ const mfaPolicyNote = computed(() => {
   if (props.experience === 'audit') return 'Audit exports need a recent authenticator check, so keeping two-factor authentication set up here is what lets you request one. This page cannot grant export or unmask access.';
   return 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.';
 });
+/** The account accent the shell provides (decoration only), so the band follows the account. */
+const tone = inject(PAGE_TONE_KEY, null)?.value ?? 'warm';
+
+const ROLE_LABELS: Readonly<Record<string, string>> = {
+  platform: 'Super Administrator',
+  merchant: 'Merchant Administrator',
+  branch: 'Branch Manager',
+  hr: 'Human Resource',
+  finance: 'Finance',
+};
+const roleLabel = computed(() => ROLE_LABELS[props.experience] ?? 'Servana account');
+/**
+ * The server-resolved account context (branch, else merchant); the platform account has neither.
+ * Read only if the shell already loaded it — this page issues no extra request for a label.
+ */
+const contextLabel = computed(() => {
+  const current = contexts.loaded ? contexts.currentContext : null;
+  if (props.experience === 'platform') return 'Citrus platform';
+  return current?.branch_name ?? current?.merchant_name ?? 'Assigned by your merchant';
+});
+const initials = computed(() =>
+  (user.value?.name ?? '').split(/\s+/).filter(Boolean).map((part) => part[0]).slice(0, 2).join('').toUpperCase() || '·',
+);
+
+/** Four facts the server already decided. A session count is shown only once the read settled. */
+const heroFacts = computed(() => [
+  { label: 'Active context', value: contextLabel.value },
+  { label: 'Sign-in method', value: 'Magic Link — no password' },
+  { label: 'Two-factor', value: mfaConfirmed.value ? 'Confirmed' : mfaEnrolled.value ? 'Enrollment pending' : 'Not enrolled' },
+  {
+    label: 'Active sessions',
+    value: sessions.loading || sessions.error !== null ? 'Not yet known' : String(sessions.sessions.length),
+  },
+]);
+
 const scopeNote = computed(() => props.experience === 'platform'
   ? 'This page changes your own account only. It cannot view, edit, suspend or sign out another platform user, and it cannot tell you whether another account exists.'
   : 'This page changes your own identity and sessions only. It cannot view, edit, suspend or sign out another merchant user, and it cannot tell you whether another account exists.');
@@ -105,9 +144,10 @@ const experienceLabels: Readonly<Record<string, string>> = {
 const sessionColumns: SvColumn<HostSessionView>[] = [
   { key: 'host', label: 'Account host', priority: 'primary', value: (row) => row.host },
   { key: 'account_key', label: 'Experience', priority: 'secondary', value: (row) => experienceLabels[row.account_key] ?? 'Servana account' },
-  { key: 'last_activity_at', label: 'Last active', priority: 'secondary', value: (row) => row.last_activity_at },
+  // UI16-CONTENT-003: Nairobi time, not the raw ISO string the server sends.
+  { key: 'last_activity_at', label: 'Last active', priority: 'secondary', value: (row) => (row.last_activity_at ? formatDateTime(row.last_activity_at) : '—') },
   { key: 'merchant_name', label: 'Merchant', priority: 'detail', value: (row) => row.merchant_name ?? '—' },
-  { key: 'created_at', label: 'Signed in', priority: 'detail', value: (row) => row.created_at ?? '—' },
+  { key: 'created_at', label: 'Signed in', priority: 'detail', value: (row) => (row.created_at ? formatDateTime(row.created_at) : '—') },
 ];
 
 const sessionState = computed<SvDataState>(() => {
@@ -118,6 +158,7 @@ const sessionState = computed<SvDataState>(() => {
 
 onMounted(() => {
   void sessions.fetchSessions();
+
   void auth.fetchMfaStatus().catch(() => {
     // The bootstrap already carries MFA state; a refresh failure must not blank the page.
   });
@@ -181,13 +222,74 @@ async function revokePending(): Promise<void> {
       :description="pageDescription"
       context="Magic Link · assigned branch"
     />
-    <!-- Personnel and Audit render their own Profile-style identity headers that own the h1. -->
-    <SvPageHeader
+    <!--
+      Personnel and Audit render their own Profile-style identity headers that own the h1.
+
+      UI16-VIS-004: the five older accounts used to open on the bare title band every other page
+      shares. They now get the same Profile-reference identity composition UI-14/UI-15 introduced —
+      a tonal band, the initials avatar, the role and branch context, and four server facts — so
+      "who am I signed in as, and how" is answered before any control. Every fact is read from the
+      bootstrap or the session family; nothing here can change a role, a branch or MFA policy.
+    -->
+    <header
       v-else-if="experience !== 'personnel' && experience !== 'audit'"
-      title="Account and security"
-      eyebrow="Your account"
-      :description="pageDescription"
-    />
+      class="sv-account-hero relative isolate mb-5 overflow-hidden rounded-card border border-sv-border bg-sv-surface-raised shadow-raised"
+      :data-tone="tone"
+      data-testid="sv-page-header"
+    >
+      <div
+        aria-hidden="true"
+        class="sv-account-hero__band h-20 md:h-24"
+      />
+      <div class="px-5 pb-6 md:px-8">
+        <div class="flex flex-wrap items-end gap-4">
+          <span
+            aria-hidden="true"
+            class="sv-account-hero__avatar -mt-10 inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-full font-display text-2xl font-extrabold"
+          >{{ initials }}</span>
+          <div class="min-w-0 pt-3">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
+              Your account
+            </p>
+            <h1
+              class="font-display text-2xl font-extrabold tracking-tight text-sv-text-heading md:text-3xl"
+              data-testid="sv-page-title"
+            >
+              Account and security
+            </h1>
+            <p class="text-sm text-sv-text-secondary">
+              {{ user?.name ?? 'Your account' }} · {{ roleLabel }}
+            </p>
+          </div>
+          <span class="ml-auto inline-flex items-center gap-1 rounded-pill border border-sv-info-border bg-sv-info-bg px-3 py-1 text-xs font-semibold text-sv-info-fg">
+            <SvIconSecurity
+              aria-hidden="true"
+              class="h-4 w-4"
+            />Magic Link sign-in
+          </span>
+        </div>
+        <p class="mt-4 max-w-3xl text-sm leading-6 text-sv-text-secondary">
+          {{ pageDescription }}
+        </p>
+        <dl
+          class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4"
+          data-testid="account-hero-facts"
+        >
+          <div
+            v-for="fact in heroFacts"
+            :key="fact.label"
+            class="rounded-control border border-sv-border bg-sv-surface-raised p-3"
+          >
+            <dt class="text-xs text-sv-text-muted">
+              {{ fact.label }}
+            </dt>
+            <dd class="mt-1 text-sm font-semibold text-sv-text-heading">
+              {{ fact.value }}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </header>
 
     <!-- Identity ------------------------------------------------------------------------------ -->
     <SvCard
@@ -514,3 +616,21 @@ async function revokePending(): Promise<void> {
     />
   </div>
 </template>
+
+<style scoped>
+.sv-account-hero {
+  --sv-account-tone: var(--sv-color-brand-primary);
+}
+.sv-account-hero[data-tone='teal'] { --sv-account-tone: var(--sv-color-brand-secondary); }
+.sv-account-hero[data-tone='green'] { --sv-account-tone: var(--sv-color-growth); }
+.sv-account-hero__band {
+  background:
+    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--sv-color-accent) 42%, transparent), transparent 55%),
+    linear-gradient(120deg, color-mix(in srgb, var(--sv-account-tone) 58%, var(--sv-color-surface-raised)), color-mix(in srgb, var(--sv-color-text-on-brand) 30%, var(--sv-color-surface-raised)));
+}
+.sv-account-hero__avatar {
+  background: color-mix(in srgb, var(--sv-account-tone) 18%, var(--sv-color-surface-raised));
+  color: var(--sv-color-text-heading);
+  box-shadow: 0 0 0 4px var(--sv-color-surface-raised), var(--sv-shadow-card);
+}
+</style>

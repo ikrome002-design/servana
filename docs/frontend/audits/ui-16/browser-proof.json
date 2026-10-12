@@ -1,0 +1,38 @@
+{
+  "schema": "servana.ui16.browser-proof.v1",
+  "phase": "UI-16",
+  "lifecycle": "local_complete",
+  "environment": "Windows 10 Pro 10.0.19045, Node 24.15.0, @playwright/test 1.62.0 (Chromium); Linux baselines in mcr.microsoft.com/playwright:v1.62.0-noble",
+  "build": "npm run build (vue-tsc + Vite production) of the frozen UI-16 tree, then vite preview on http://localhost:4173; no product source changed after the build (later edits: two predecessor spec expectations only)",
+  "focused": {
+    "responsive_accessibility_theme": {
+      "command": "npx playwright test tests/e2e/ui-16-responsive-accessibility-theme.spec.ts --workers 3",
+      "collected": 307, "passed": 307, "failed": 0, "flaky": 0, "skipped": 0, "minutes": 11.5,
+      "covers": "160-row coverage (132 live + 28 gated); 132 pages x 7 widths + 640x400 (200% zoom); axe light 1440 + dark 360 on all 132; first-paint light under OS dark (8 accounts); dark persistence; reduced motion; 28 gate negatives; compiled-utility check + negative control"
+    },
+    "visual_regression": {
+      "command": "npx playwright test tests/e2e/ui-16-visual-regression.spec.ts",
+      "win32": { "collected": 54, "passed": 54, "failed": 0, "note": "53 frames + negative control (recoloured Finance hero must fail the comparison)" },
+      "linux": { "collected": 54, "passed": 54, "failed": 0, "note": "compare-only run inside the pinned Playwright image after generation" }
+    }
+  },
+  "whole_product_playwright": {
+    "command": "npx playwright test --reporter=line",
+    "collected": 2082, "passed": 2078, "failed": 4, "flaky": 0, "skipped": 0, "exit_code": 1, "minutes": 78,
+    "failures": [
+      { "test": "phase-20c.spec.ts › renders a scheduled|active|paused promotion with its status (3)", "cause": "stale expectation of the raw enum token; UI16-CONTENT-001 intentionally shows the human label", "correction": "asserts the status badge shows the label and the raw token is absent" },
+      { "test": "phase-23-release-audit.spec.ts › accessibility behaviour › landmarks are present and unique", "cause": "counted <header> ELEMENTS; MerchantProfile now uses SvPageHeader, a <header> scoped inside <main> (not a banner landmark, axe clean)", "correction": "asserts exactly one banner landmark and one in-main page header" }
+    ],
+    "corrective_reruns": [
+      { "command": "npx playwright test tests/e2e/phase-20c.spec.ts tests/e2e/phase-23-release-audit.spec.ts", "passed": 545, "failed": 3, "note": "landmark case green; the 3 promotion cases failed again on an exact-text locator (badge text is 'Status: <label>')" },
+      { "command": "npx playwright test tests/e2e/phase-20c.spec.ts", "collected": 18, "passed": 18, "failed": 0, "note": "after switching to the sv-status-badge locator" }
+    ],
+    "net_result": "every one of the 2,082 cases has a passing result on the final tree (2,078 in the whole run + the 4 corrected cases in the re-runs); a single uninterrupted whole-product run after the correction was NOT repeated (78 min) — Codex CI re-runs the suite",
+    "predecessor_evidence": "rewritten by the runs and restored exactly — historical-evidence-restoration.json"
+  },
+  "unit": {
+    "vitest": { "files": 154, "tests": 1467, "failed": 0 },
+    "ui16_specs": ["resources/spa/src/design-system/ui16SourceGuards.spec.ts (9)", "resources/spa/src/components/ui/SvUi16Primitives.spec.ts (9)"]
+  },
+  "production_origin_gate": "see production-host-proof.json"
+}

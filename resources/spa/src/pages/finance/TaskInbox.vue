@@ -11,6 +11,7 @@ import { useCashUpStore } from '@/stores/cashUpStore';
 import { usePeriodLockStore } from '@/stores/periodLockStore';
 import { useFinanceExportStore } from '@/stores/financeExportStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance task inbox (Plan §42–§46, §65; Phase 18B). One capability-gated home that
@@ -97,18 +98,19 @@ onMounted(load);
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Finance task inbox
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Finance task inbox"
+      eyebrow="Home"
+      description="Every Finance control waiting on you, grouped by the work it needs."
+    />
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load your task inbox."
       empty-message="You have no Finance tasks."
     >
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         <SvCard
           v-for="tile in tiles"
           :key="tile.key"

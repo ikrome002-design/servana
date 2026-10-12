@@ -7,6 +7,8 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import SvLockedState from '@/components/ui/SvLockedState.vue';
+import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvThemeToggle from '@/components/ui/SvThemeToggle.vue';
 import SvFaq from '@/components/ui/SvFaq.vue';
@@ -182,7 +184,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
       </SvCard>
 
       <!-- SvStateBoundary -->
-      <SvCard>
+      <SvCard data-testid="visual-state-family">
         <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvStateBoundary
         </h2>
@@ -224,6 +226,18 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
                 />Data loaded successfully.
               </p>
             </SvStateBoundary>
+          </div>
+          <div>
+            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+              Locked
+            </p>
+            <SvLockedState />
+          </div>
+          <div>
+            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+              Permission
+            </p>
+            <SvPermissionState />
           </div>
         </div>
       </SvCard>

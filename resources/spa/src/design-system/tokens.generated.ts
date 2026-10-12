@@ -3,14 +3,14 @@
 // Source:     resources/spa/src/design-system/tokens.json
 // Generator:  node scripts/generate-design-tokens.mjs
 // Verify:     node scripts/generate-design-tokens.mjs --check
-// Source SHA-256: 2e3bcf29894c6eff5dec3ec5b74438698d0f7027852cef81e1882d0a6b2dbe0a
+// Source SHA-256: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
 //
 // Typed access to the Servana design tokens (ADR-021). Components should consume the CSS custom
 // properties (via Tailwind's semantic aliases) rather than these constants; these exist so tests,
 // contrast guards and the design-system fixture can reason about token VALUES deterministically.
 
 export const DESIGN_TOKEN_SCHEMA_VERSION = '1.0.0';
-export const DESIGN_TOKEN_SOURCE_SHA256 = '2e3bcf29894c6eff5dec3ec5b74438698d0f7027852cef81e1882d0a6b2dbe0a';
+export const DESIGN_TOKEN_SOURCE_SHA256 = '99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b';
 
 export type ThemeName = 'light' | 'dark';
 
@@ -306,8 +306,8 @@ export const COMPONENT_TOKENS: Readonly<Record<ComponentToken, string>> = Object
   'radius-pill': "9999px",
   'border-width-hairline': "1px",
   'border-width-strong': "2px",
-  'shadow-card': "0 1px 3px rgb(0 0 0 / 0.08)",
-  'shadow-raised': "0 4px 12px rgb(0 0 0 / 0.10)",
+  'shadow-card': "0 1px 2px rgb(31 41 51 / 0.05), 0 8px 24px -12px rgb(31 41 51 / 0.14)",
+  'shadow-raised': "0 2px 4px rgb(31 41 51 / 0.05), 0 16px 32px -14px rgb(31 41 51 / 0.22)",
   'shadow-overlay': "0 16px 40px rgb(0 0 0 / 0.18)",
   'focus-ring-width': "2px",
   'focus-ring-offset': "2px",
@@ -334,9 +334,9 @@ export const COMPONENT_TOKENS: Readonly<Record<ComponentToken, string>> = Object
   'dialog-width-sm': "24rem",
   'dialog-width-md': "32rem",
   'dialog-width-lg': "44rem",
-  'footer-height-mobile': "5.5rem",
+  'footer-height-mobile': "7.25rem",
   'footer-height-tablet': "4.5rem",
-  'footer-height-desktop': "3.5rem",
+  'footer-height-desktop': "4rem",
   'footer-height-zoom-fallback': "9rem",
   'control-height-sm': "2.25rem",
   'control-height-md': "2.75rem",

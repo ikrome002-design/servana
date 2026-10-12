@@ -167,15 +167,20 @@ export async function stubPlatformApi(page: Page): Promise<void> {
       },
       meta: { generated_at: '2026-08-09T06:00:00+00:00' },
     }],
-    [/\/api\/v1\/platform\/billing-settings$/, { data: { id: '01SET', billing_mode: 'subscription_only', trial_days: 14, grace_days: 7, overdue_days: 14, suspension_days: 30, effective_from: '2026-01-01', version: 3, can: { update: true } } }],
+    // UI16-FIX-001: aligned to PlatformBillingSettingsResource (default_trial_days, currency, settings).
+    [/\/api\/v1\/platform\/billing-settings$/, { data: { id: '01SET', billing_mode: 'fixed_amount', default_trial_days: 14, grace_days: 7, currency: 'KES', settings: { invoice_due_days: 7, support_email: 'billing@citrus.example', statement_footer: 'Citrus Labs Limited' }, effective_from: '2026-01-01' } }],
     [/\/api\/v1\/platform\/plans\/[^/]+\/prices/, page1([{ id: '01PRICE', plan_id: '01PLAN', billing_interval: 'monthly', amount_minor_units: 250000, currency: 'KES', effective_from: '2026-01-01', effective_to: null, lifecycle: 'current', can: { cancel: false } }])],
     [/\/api\/v1\/platform\/plans\/[^/]+\/entitlements/, page1([{ entitlement_key: 'branches.max', enabled: true, limit_int: 3 }])],
     [/\/api\/v1\/platform\/plans(\?|$)/, page1([{ id: '01PLAN', key: 'growth', name: 'Growth', status: 'active', prices: [], entitlements: [], can: { retire: true, manage: true } }])],
-    [/\/api\/v1\/platform\/promotional-discounts/, page1([{ id: '01PROMO', name: 'Launch 10%', status: 'active', discount_type: 'percentage', basis_points: 1000, target_type: 'global', effective_from: '2026-07-01', effective_to: null, can: { approve: false, pause: true, resume: false, cancel: true, update: false } }])],
-    [/\/api\/v1\/platform\/free-period-offers/, page1([{ id: '01FREE', name: 'Free 30', status: 'active', free_days: 30, target_type: 'global', effective_from: '2026-07-01', effective_to: null, can: { approve: false, pause: true, resume: false, cancel: true, update: false } }])],
-    [/\/api\/v1\/platform\/preferred-personnel-fee-rules/, page1([{ id: '01FEE', calculation_type: 'fixed', fixed_amount_minor_units: 5000, basis_points: null, scope: 'platform_default', service_id: null, status: 'active', effective_from: '2026-01-01', can: { approve: false, cancel: false, supersede: true } }])],
+    // UI16-FIX-001: PromotionalDiscountResource (type/value/target_scope); the old shape rendered 'KES NaN'.
+    [/\/api\/v1\/platform\/promotional-discounts/, page1([{ id: '01PROMO', name: 'Launch offer', type: 'fixed_amount', value: 50000, currency: 'KES', target_scope: 'all_new_merchants', effective_from: '2026-07-01', effective_to: null, status: 'active', approved_at: '2026-06-28T00:00:00+00:00', change_reason: 'Launch', targets: [] }])],
+    // UI16-FIX-001: FreePeriodOfferResource (free_period_days, target_scope).
+    [/\/api\/v1\/platform\/free-period-offers/, page1([{ id: '01FREE', name: 'Free 30', free_period_days: 30, target_scope: 'all_new_merchants', effective_from: '2026-07-01', effective_to: null, status: 'active', approved_at: '2026-06-28T00:00:00+00:00', change_reason: 'Launch', targets: [] }])],
+    // UI16-FIX-001: PreferredPersonnelFeeRuleResource field names.
+    [/\/api\/v1\/platform\/preferred-personnel-fee-rules/, page1([{ id: '01FEE', calculation_type: 'fixed_amount', fixed_amount_minor: 5000, percentage_basis_points: null, currency: 'KES', calculation_basis: 'service_item_net_amount', scope: 'platform_default', service_id: null, effective_from: '2026-01-01T00:00:00+00:00', effective_to: null, status: 'active', approved_at: '2025-12-20T00:00:00+00:00', change_reason: 'Launch default' }])],
     [/\/api\/v1\/platform\/platform-fee-configurations/, page1([{ id: '01PFC', tier: 'shared', basis_points: 250, merchant_split_basis_points: 125, status: 'active', effective_from: '2026-01-01', can: { approve: false, supersede: true, cancel: false, update: false } }])],
-    [/\/api\/v1\/platform\/sms-billing-usage/, page1([{ merchant_id: MERCHANT_A, merchant_name: 'Acme Salon', billable_units: 420, amount_minor: 42000, currency: 'KES', period_start: '2026-07-01', period_end: '2026-07-31' }])],
+    // UI16-FIX-001: the published usage row (usage_month, message and recipient counts); the old shape rendered 'undefined'.
+    [/\/api\/v1\/platform\/sms-billing-usage/, page1([{ usage_month: '2026-07', merchant_id: MERCHANT_A, currency: 'KES', message_count: 380, recipient_count: 360, billable_units: 420, amount_minor: 42000 }])],
     [/\/api\/v1\/platform\/sms-billing-charge-reconciliation/, {
       data: {
         as_of: '2026-08-09T06:00:00+00:00',
@@ -194,8 +199,9 @@ export async function stubPlatformApi(page: Page): Promise<void> {
       meta: { currency: 'KES' },
     }],
     [/\/api\/v1\/platform\/sms-billing-settings\/cost-notice-preview/, { data: { billable_units: 3, unit_price_minor: 100, amount_minor: 300, currency: 'KES' } }],
-    [/\/api\/v1\/platform\/sms-billing-settings\/versions/, page1([{ id: '01SMS', unit_price_minor: 100, currency: 'KES', state: 'in_force', effective_from: '2026-01-01', effective_to: null, scheduled_by: 'o***@citrus.example', can: { cancel: false } }])],
-    [/\/api\/v1\/platform\/sms-billing-settings(\?|$)/, { data: { current: { id: '01SMS', unit_price_minor: 100, currency: 'KES', state: 'in_force', effective_from: '2026-01-01', effective_to: null, can: { cancel: false } }, next: null, currency: 'KES', currency_authority: 'Platform billing settings' } }],
+    // UI16-FIX-001: SmsBillingRuleResource (unit_cost_minor, tax_basis_points, reason).
+    [/\/api\/v1\/platform\/sms-billing-settings\/versions/, page1([{ id: '01SMS', state: 'in_force', unit_cost_minor: 100, currency: 'KES', tax_basis_points: null, usage_warning_threshold_units: 1000, usage_anomaly_threshold_basis_points: 5000, effective_from: '2026-01-01T00:00:00+00:00', reason: 'Launch price', cancelled_at: null, cancellation_reason: null }])],
+    [/\/api\/v1\/platform\/sms-billing-settings(\?|$)/, { data: { current: { id: '01SMS', state: 'in_force', unit_cost_minor: 100, currency: 'KES', tax_basis_points: null, usage_warning_threshold_units: 1000, usage_anomaly_threshold_basis_points: 5000, effective_from: '2026-01-01T00:00:00+00:00', reason: 'Launch price', cancelled_at: null, cancellation_reason: null }, next: null, currency: 'KES', currency_authority: 'Platform billing settings' } }],
     [/\/api\/v1\/platform\/subscription-operations\/summary/, {
       data: {
         as_of: '2026-08-09T06:00:00+00:00',
@@ -217,8 +223,10 @@ export async function stubPlatformApi(page: Page): Promise<void> {
         authorization_authority: 'platform.merchant.view; the API re-checks it on every read.',
       },
     }],
-    [/\/api\/v1\/platform\/subscriptions(\?|$)/, page1([{ id: '01SUB', merchant: { id: MERCHANT_A, name: 'Acme Salon' }, plan: { id: '01PLAN', name: 'Growth' }, billing_interval: 'monthly', state: 'active', current_state: { state: 'active', explanation: 'Paid and inside the current billing period.' }, current_period_end: '2026-08-31', amount_minor: 250000, currency: 'KES' }])],
-    [/\/api\/v1\/platform\/subscription-invoices/, page1([{ id: '01INV', number: 'SUB-2026-000042', merchant: { id: MERCHANT_A, name: 'Acme Salon' }, state: 'issued', total_minor: 250000, balance_minor: 250000, currency: 'KES', issued_at: '2026-08-01T00:00:00+00:00', due_at: '2026-08-15T00:00:00+00:00' }])],
+    // UI16-FIX-001: PlatformSubscriptionResource (`status`, not `state`); the old shape rendered a blank badge.
+    [/\/api\/v1\/platform\/subscriptions(\?|$)/, page1([{ id: '01SUB', merchant: { id: MERCHANT_A, name: 'Acme Salon', status: 'active', billing_status: 'active' }, plan: { id: '01PLAN', key: 'growth', name: 'Growth' }, status: 'active', billing_interval: 'monthly', trial_started_at: '2026-07-01T00:00:00+00:00', trial_ends_at: '2026-07-15T00:00:00+00:00', trial_days_snapshot: 14, current_period_start: '2026-08-01T00:00:00+00:00', current_period_end: '2026-08-31T00:00:00+00:00', cancelled_at: null, expired_at: null, scheduled_plan_change: null, current_state: { status: 'active', authorization_authority: 'merchants.billing_status', explanation: 'Paid and inside the current billing period.' } }])],
+    // UI16-FIX-001: PlatformSubscriptionInvoiceResource (status, money objects, stored snapshot).
+    [/\/api\/v1\/platform\/subscription-invoices/, page1([{ id: '01INV', invoice_number: 'SUB-2026-000042', merchant: { id: MERCHANT_A, name: 'Acme Salon' }, plan: { id: '01PLAN', key: 'growth' }, status: 'issued', period_start: '2026-08-01T00:00:00+00:00', period_end: '2026-08-31T00:00:00+00:00', issued_at: '2026-08-01T00:00:00+00:00', due_at: '2026-08-15T00:00:00+00:00', subtotal: { amount: 250000, currency: 'KES', formatted: 'Ksh 2,500.00' }, discount: { amount: 0, currency: 'KES', formatted: 'Ksh 0.00' }, total: { amount: 250000, currency: 'KES', formatted: 'Ksh 2,500.00' }, balance: { amount: 250000, currency: 'KES', formatted: 'Ksh 2,500.00' }, currency: 'KES', snapshot_note: 'Issued invoices are immutable financial records; these figures are the stored snapshot, never a recalculation.', wallet: { registration_status: 'not_registered', registered_at: null, authority: 'wallet_by_citrus' } }])],
     [/\/api\/v1\/platform\/billing-credits/, page1([{ id: '01CR', merchant: { id: MERCHANT_A, name: 'Acme Salon' }, amount_minor: 15000, currency: 'KES', reason: 'Goodwill', issued_at: '2026-07-20T00:00:00+00:00' }])],
     [/\/api\/v1\/platform\/subscription-escalations/, page1([{ id: '01ESC', merchant: { id: MERCHANT_A, name: 'Acme Salon' }, current_state: { state: 'open', explanation: 'The subscription is past its grace window with an unpaid invoice.' }, state: 'open', severity: 'high', opened_at: '2026-08-02T00:00:00+00:00', reason: 'Overdue beyond grace' }])],
     [/\/api\/v1\/platform\/registration-monitor/, page1([
@@ -229,18 +237,28 @@ export async function stubPlatformApi(page: Page): Promise<void> {
     [/\/api\/v1\/platform\/merchants(\?|$)/, page1([merchant(), merchant({ id: MERCHANT_B, name: 'Bella Spa', operational_status: 'suspended', billing_status: 'active', can: { suspend: false, reactivate: true, deactivate: true } })])],
     [/\/api\/v1\/platform\/audit-logs\/[^/?]+$/, { data: { id: '01AUDIT0000000000000000001', action: 'merchant.suspended', severity: 'high', actor: 'o***@citrus.example', subject_type: 'Merchant', context: { merchant_id: MERCHANT_A, from_status: 'active', to_status: 'suspended', reason: 'Policy review' }, correlation_id: 'corr-demo-1', created_at: '2026-08-01T09:00:00+00:00', can: { view: true } } }],
     [/\/api\/v1\/platform\/audit-logs(\?|$)/, page1([{ id: '01AUDIT0000000000000000001', action: 'merchant.suspended', severity: 'high', actor: 'o***@citrus.example', subject_type: 'Merchant', context: { merchant_id: MERCHANT_A, from_status: 'active', to_status: 'suspended' }, correlation_id: 'corr-demo-1', created_at: '2026-08-01T09:00:00+00:00', can: { view: true } }])],
-    [/\/api\/v1\/platform\/internal-access\/invitations/, page1([{ id: '01INVIT', email: 'n***@citrus.example', status: 'pending', invited_at: '2026-08-05T00:00:00+00:00', expires_at: '2026-08-12T00:00:00+00:00', can: { resend: true, revoke: true } }])],
+    // UI16-FIX-001: PlatformAccessInvitationResource (role_key, resend_count, last_sent_at).
+    [/\/api\/v1\/platform\/internal-access\/invitations/, page1([{ id: '01INVIT', email: 'n***@citrus.example', role_key: 'platform_owner', status: 'pending', redeemable: true, environment: 'local', invited_by: 'o***@citrus.example', expires_at: '2026-08-12T00:00:00+00:00', accepted_at: null, revoked_at: null, revocation_reason: null, resend_count: 1, last_sent_at: '2026-08-06T00:00:00+00:00' }])],
+    // UI16-FIX-001: PlatformAccessMembershipResource (role_key, active_session_count, mfa_enrolled).
     [/\/api\/v1\/platform\/internal-access\/users/, page1([{
       id: '01PU',
+      user: { id: '01JUSER0000000000000000002', email: 's***@citrus.example', name: 'Second Owner', status: 'active', mfa_enrolled: true, last_login_at: '2026-08-08T00:00:00+00:00' },
+      role_key: 'platform_owner',
       status: 'active',
       grants_access: true,
-      granted_permissions: ['platform.merchant.view'],
+      active_session_count: 1,
       denied_permissions: [],
-      user: { id: '01JUSER0000000000000000002', name: 'Second Owner', email: 's***@citrus.example', last_login_at: '2026-08-08T00:00:00+00:00' },
-      can: { suspend: true, reactivate: false, deactivate: true, revoke_sessions: true, update_permissions: true },
+      invited_at: '2026-06-01T00:00:00+00:00',
+      activated_at: '2026-06-02T00:00:00+00:00',
+      suspended_at: null,
+      deactivated_at: null,
+      last_action: null,
+      last_action_reason: null,
+      last_action_at: null,
     }])],
     [/\/api\/v1\/platform\/feature-flag-change-requests/, page1([{ id: '01FR', flag_key: 'platform.demo_flag', status: 'pending', requested_state: 'enabled', reason: 'Pilot', requested_at: '2026-08-07T00:00:00+00:00', can: { approve: true, reject: true, cancel: true } }])],
-    [/\/api\/v1\/platform\/feature-flags/, page1([{ key: 'platform.demo_flag', state: 'disabled', description: 'A synthetic demonstration flag.', targets: [], history: [], can: { request_change: true, pause: false } }])],
+    // UI16-FIX-001: the published index row (definition, state object, effective_state) and catalogue meta.
+    [/\/api\/v1\/platform\/feature-flags/, { ...page1([{ definition: 'platform.demo_flag', state: { id: '01FLAG', environment: 'production', state: 'active', rollout_basis_points: 2500, effective_from: '2026-07-01T00:00:00+00:00', effective_to: null, version: 2, approved_configuration_hash: null, targets: [] }, effective_state: 'active' }]), meta: { environment: 'production', catalogue_size: 1, catalogue_is_empty: false, catalogue_source: 'config/platform-feature-flags.php', note: 'The catalogue is code. The API cannot create a flag key, and an unknown key is rejected.' } }],
     [/\/api\/v1\/auth\/sessions/, { data: [{ id: '01JSESSION000000000000001', account_key: 'super_administrator', host: 'citrus.servana.ke', merchant_name: null, branch_name: null, created_at: '2026-08-01T08:00:00+00:00', last_activity_at: '2026-08-09T06:00:00+00:00', revoked: false, is_current: true }] }],
     [/\/api\/v1\/auth\/mfa$/, { data: { mfa: { enrolled: true, confirmed: true, required: true, verified: true, enrollment_required: false, challenge_required: false, step_up_fresh: true, step_up_fresh_until: '2099-01-01T00:00:00+00:00', recovery_codes_remaining: 8 } } }],
     [/\/api\/v1\/auth\/account-contexts/, { data: [{ context_id: 'c1', account_key: 'super_administrator', display_name: 'Citrus platform', target_host: 'citrus.servana.ke', default_route: '/dashboard', requires_mfa: true, merchant_id: null, merchant_name: null, branch_id: null, branch_name: null, role_label: 'Super Administrator', is_current: true }] }],

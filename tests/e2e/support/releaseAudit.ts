@@ -725,7 +725,7 @@ const QUEUE_ENTRY = {
 const AUDIT_EVENT = {
   id: IDS.auditEvent,
   action: 'branch.calendar_exception_set',
-  severity: 'warn',
+  severity: 'warning', // UI16-FIX-001: the AuditSeverity enum has no 'warn'
   actor: 'Ada Mwangi',
   branch: 'Westlands Branch',
   subject_type: 'BranchCalendarException',

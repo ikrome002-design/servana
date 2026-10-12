@@ -33,6 +33,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { statusLabel } from '@/utils/statusLabel';
 import {
   usePlatformSmsBillingStore,
   type SmsBillingRule,
@@ -274,7 +275,7 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           Effective and scheduled price
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvMetricCard
             label="Effective now"
             :context="store.settings?.current ? 'In force for every SMS charged today.' : 'No price is in force.'"
@@ -360,7 +361,7 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           >
             <template #cell:state="{ row }">
               <SvStatusBadge
-                :label="row.state"
+                :label="statusLabel(row.state)"
                 :tone="stateTone(row.state)"
                 sr-prefix="State:"
               />
@@ -390,7 +391,7 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           >
             <template #cell:state="{ row }">
               <SvStatusBadge
-                :label="row.state"
+                :label="statusLabel(row.state)"
                 :tone="stateTone(row.state)"
                 sr-prefix="State:"
               />
@@ -474,7 +475,7 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           <p class="text-sm text-sv-text">
             {{ store.costNotice.notice }}
           </p>
-          <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
+          <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm md:grid-cols-4">
             <dt class="text-sv-text-muted">
               Billable units
             </dt>
@@ -567,7 +568,7 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
         </h2>
 
         <div
-          class="grid gap-4 sm:grid-cols-2"
+          class="grid gap-4 md:grid-cols-2"
           data-testid="sms-reconciliation"
         >
           <SvMetricCard
@@ -585,18 +586,18 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           </SvMetricCard>
         </div>
 
-        <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
+        <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-sm md:grid-cols-4">
           <dt class="text-sv-text-muted">
             Threshold state
           </dt>
           <dd data-testid="sms-threshold-state">
-            {{ store.reconciliation.thresholds.warning_state }}
+            {{ statusLabel(store.reconciliation.thresholds.warning_state) }}
           </dd>
           <dt class="text-sv-text-muted">
             Anomaly state
           </dt>
           <dd data-testid="sms-anomaly-state">
-            {{ store.reconciliation.thresholds.anomaly_state }}
+            {{ statusLabel(store.reconciliation.thresholds.anomaly_state) }}
           </dd>
         </dl>
       </section>

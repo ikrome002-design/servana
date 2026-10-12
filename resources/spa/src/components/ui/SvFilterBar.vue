@@ -74,7 +74,7 @@ const panelId = 'sv-filter-bar-panel';
 
     <div
       :id="panelId"
-      class="mt-3 gap-3 md:mt-0 md:flex md:flex-wrap md:items-end"
+      class="mt-3 gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 md:mt-0 md:flex md:flex-wrap md:items-end md:shadow-card"
       :class="expanded ? 'flex flex-col' : 'hidden md:flex'"
       data-testid="sv-filter-bar-panel"
     >

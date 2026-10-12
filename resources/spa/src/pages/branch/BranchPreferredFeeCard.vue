@@ -56,7 +56,7 @@ onMounted(() => {
     >
       <dl
         v-if="store.rule"
-        class="mt-2 grid gap-2 text-sm sm:grid-cols-2"
+        class="mt-2 grid gap-2 text-sm md:grid-cols-2"
       >
         <div>
           <dt class="text-text-muted">

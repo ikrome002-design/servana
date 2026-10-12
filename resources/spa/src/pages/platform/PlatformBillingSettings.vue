@@ -25,6 +25,7 @@ import BillingSettingsSection from '@/pages/platform/billing/BillingSettingsSect
 import GeneralSettingsSection from '@/pages/platform/billing/GeneralSettingsSection.vue';
 import PlatformFeeConfigSection from '@/pages/platform/billing/PlatformFeeConfigSection.vue';
 import { useCan } from '@/composables/useCan';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 
@@ -40,7 +41,7 @@ const canViewAnything = computed(
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-billing-settings-screen"
   >
     <SvPageHeader
@@ -52,37 +53,40 @@ const canViewAnything = computed(
     <SvPermissionState v-if="!canViewAnything" />
 
     <template v-else>
-      <!--
-        A denied section is ABSENT, never disabled: a disabled control still advertises a capability
-        the user does not have. The API remains the boundary either way.
-      -->
-      <section
-        v-if="canViewBilling"
-        aria-labelledby="billing-settings-section"
-        class="mb-10"
-      >
-        <BillingSettingsSection id="billing-settings-section" />
-      </section>
+      <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
+      <PlatformRuleWorkspace>
+        <!--
+          A denied section is ABSENT, never disabled: a disabled control still advertises a capability
+          the user does not have. The API remains the boundary either way.
+        -->
+        <section
+          v-if="canViewBilling"
+          aria-labelledby="billing-settings-section"
+          class="mb-10"
+        >
+          <BillingSettingsSection id="billing-settings-section" />
+        </section>
 
-      <section
-        v-if="canViewGeneral"
-        aria-labelledby="general-settings-section"
-        class="mb-10"
-      >
-        <GeneralSettingsSection id="general-settings-section" />
-      </section>
+        <section
+          v-if="canViewGeneral"
+          aria-labelledby="general-settings-section"
+          class="mb-10"
+        >
+          <GeneralSettingsSection id="general-settings-section" />
+        </section>
 
-      <section
-        v-if="canConfigurePlatformFees"
-        aria-labelledby="platform-fee-section"
-      >
-        <PlatformFeeConfigSection id="platform-fee-section" />
-      </section>
-
-      <p class="mt-8 text-xs text-sv-text-muted">
-        Plan changes and price changes do not prorate the current cycle. A new effective version
-        applies from its own effective date onward.
-      </p>
+        <section
+          v-if="canConfigurePlatformFees"
+          aria-labelledby="platform-fee-section"
+        >
+          <PlatformFeeConfigSection id="platform-fee-section" />
+        </section>
+        <template #rule>
+          <p>
+            Plan changes and price changes do not prorate the current cycle. A new effective version applies from its own effective date onward.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

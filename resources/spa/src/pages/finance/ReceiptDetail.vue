@@ -9,6 +9,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useReceiptStore } from '@/stores/receiptStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import SvMoney from '@/components/ui/SvMoney.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Receipt detail (Plan §43; Phase 18B). View the immutable receipt + its snapshot
@@ -67,10 +68,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Receipt
-    </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Receipt"
+      eyebrow="Receipts"
+    />
 
     <SvStateBoundary
       class="mt-6"

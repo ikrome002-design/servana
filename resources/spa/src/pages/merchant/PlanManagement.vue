@@ -8,6 +8,7 @@ import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { formatMoney } from '@/utils/money';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Plan management (Plan §48; Phase 20B). Schedule / cancel a NO-PRORATION next-cycle plan change.
@@ -92,16 +93,17 @@ function resolveError(err: unknown, fallback: string): string {
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-4xl flex-col gap-6">
-    <header>
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Plan management
-      </h1>
-      <p class="mt-1 text-sm text-text-muted">
+  <div class="mx-auto flex max-w-5xl flex-col gap-6">
+    <SvPageHeader
+      class="!mb-0"
+      title="Plan management"
+      eyebrow="Subscription & Billing"
+    >
+      <template #description>
         Choose a plan for your next billing cycle. Changes take effect at the cycle boundary with
         <strong>no proration</strong>.
-      </p>
-    </header>
+      </template>
+    </SvPageHeader>
 
     <p
       v-if="!can('merchant.subscription.view')"
@@ -182,7 +184,7 @@ function resolveError(err: unknown, fallback: string): string {
 
           <ul
             role="list"
-            class="mt-4 grid gap-4 sm:grid-cols-2"
+            class="mt-4 grid gap-4 md:grid-cols-2"
           >
             <li
               v-for="plan in store.plans"
@@ -203,7 +205,7 @@ function resolveError(err: unknown, fallback: string): string {
                   </div>
                   <span
                     v-if="plan.is_current"
-                    class="rounded-full bg-cream px-2 py-0.5 text-xs font-semibold text-brand-deep"
+                    class="rounded-full bg-cream px-2 py-0.5 text-xs font-semibold text-sv-text-heading"
                     data-testid="current-plan-badge"
                   >
                     Current

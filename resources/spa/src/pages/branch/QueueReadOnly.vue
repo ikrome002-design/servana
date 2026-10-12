@@ -4,6 +4,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useQueueStore } from '@/stores/queueStore';
 import { assignmentModeLabel, queueStatusLabel, waitEstimateLabel } from '@/utils/queue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Branch Manager read-only queue (Plan §37; Phase 16B). Visibility only — no
 // create/assign/transfer/reorder/call/start/complete/cancel/no-show controls. The
@@ -24,21 +25,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Branch queue
-      </h1>
-      <RouterLink
-        :to="{ name: 'branch.queue-configuration' }"
-        class="text-sm font-semibold text-heading underline"
-      >
-        Queue settings
-      </RouterLink>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Branch queue"
+      eyebrow="Operational visibility"
+      description="A read view of who is waiting and in service at your branch. Front Office runs the queue."
+    >
+      <template #actions>
+        <RouterLink
+          :to="{ name: 'branch.queue-configuration' }"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-sv-border-strong bg-sv-surface-raised px-4 py-2 text-sm font-semibold text-sv-text-heading hover:bg-sv-surface-subtle"
+        >
+          Queue settings
+        </RouterLink>
+      </template>
+    </SvPageHeader>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       empty-message="No one is in the queue right now."
       error-message="We couldn’t load the queue."

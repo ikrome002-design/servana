@@ -36,6 +36,15 @@ const UI04_REQUIRED_COMPONENTS = [
 ];
 
 /**
+ * UI-13/UI-14 compositions promoted into the registry by Phase UI-16 (UI16-DS-001). They were
+ * real, tested, shared components that the contract could not see; registering them subjects them
+ * to every check below. Domain compositions (the Audit event card, badges, diff) stay unregistered.
+ */
+const UI16_PROMOTED_COMPONENTS = [
+    'SvTonalPageHeader', 'SvOperationalHero', 'SvStatTile', 'SvLeadRecord', 'SvMaskedIdentity',
+];
+
+/**
  * Parse the registry into name => contract fields.
  *
  * @return array<string, array{source: string, test: string, category: string}>
@@ -73,14 +82,14 @@ function ui04Registry(): array
 }
 
 it('declares every shared component the plan requires', function (): void {
-    $missing = array_values(array_diff(UI04_REQUIRED_COMPONENTS, array_keys(ui04Registry())));
+    $missing = array_values(array_diff([...UI04_REQUIRED_COMPONENTS, ...UI16_PROMOTED_COMPONENTS], array_keys(ui04Registry())));
 
     expect($missing)->toBe([], 'components missing from the registry: '.implode(', ', $missing));
 });
 
 it('parses the whole registry, so a silent parse failure cannot hide a gap', function (): void {
     // A regex that quietly matched nothing would make every other assertion here vacuous.
-    expect(count(ui04Registry()))->toBe(count(UI04_REQUIRED_COMPONENTS));
+    expect(count(ui04Registry()))->toBe(count(UI04_REQUIRED_COMPONENTS) + count(UI16_PROMOTED_COMPONENTS));
 });
 
 it('points every registry entry at a source file that exists', function (): void {

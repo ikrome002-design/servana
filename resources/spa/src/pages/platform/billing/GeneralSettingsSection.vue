@@ -118,7 +118,7 @@ async function submit(): Promise<void> {
             :id="`setting-${entry.key}`"
             :key="entry.key"
             :label="entry.label"
-            help="entry.hint"
+            :help="entry.hint"
             :model-value="values[entry.key] ?? ''"
             :disabled="!canUpdate"
             :errors="errors[entry.key]"

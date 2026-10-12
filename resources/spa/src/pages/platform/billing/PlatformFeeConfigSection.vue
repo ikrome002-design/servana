@@ -431,7 +431,7 @@ async function confirmCancel(): Promise<void> {
           :errors="errors.currency"
           @update:model-value="form.currency = $event"
         />
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="pf-eff-from"
             label="Effective from"

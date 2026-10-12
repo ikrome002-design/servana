@@ -37,7 +37,40 @@ decodes CSS Color 4 instead of silently treating it as black. Thirty focused
 browser checks pass with transparent/matching-text negative controls; replacement
 exact-head five-job CI remains mandatory.
 
-### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — local_complete; security closeout verified; PR #66 final CI/merge pending
+### Phase UI-16 — Responsive, accessibility, theme and visual regression (`phase-ui-16-responsive-accessibility-theme-visual-regression`) — local_complete; uncommitted handoff
+
+Release-wide responsive, accessibility, theme and visual-regression acceptance, plus the mandatory
+visual remediation of the 82 older UI-08 … UI-12 pages to the UI-13/14/15 bar. The 160-page contract
+is unchanged (132 implemented / 28 disabled_by_gate); no route, API, permission, policy, migration,
+financial rule or authentication change.
+
+- **Convergence:** `SvPageHeader` renders the tonal title band with the account's tone; raised
+  `SvDataTable`/`SvFilterBar` surfaces; icon navigation with distinct inert gated entries
+  (`GatedNavigationEntry`); sticky sidebar; platform strip on its own row; recomposed Get Started
+  checklist; `PlatformRuleWorkspace` for effective-dated rule pages; five primitives registered.
+  24 older pages redesigned and 58 converged (mean 18.9 → 28.4 / 30); 50 newer pages preserved.
+- **Defects:** 76 `sm:`/`xl:` utilities that compiled to nothing; a footer taller than its reserve at
+  360 px; a multi-root state-boundary slot; dead colour utilities; raw status tokens; browser-local
+  timestamps; a literal `entry.hint`; a missing `SvDialog` import; fixture drift — each with a guard.
+- **Proof:** 307/307 responsive/axe/theme cases over all 160 rows; 106 candidate baselines
+  (win32 + linux) with a negative control; a new production-origin browser gate (16/16 on the built
+  images, closes `UI01-PROV-003`, wired into CI); backend 3,055 passed / 14 skipped; Vitest 1,467;
+  whole-product Playwright 2,078 passed / 4 stale expectations corrected and re-run green.
+- Predecessor evidence rewritten by the browser runs was restored file by file; all 17 frozen
+  aggregates match. Evidence: [ui-16.md](proof/ui-16.md).
+
+Codex verification additions: authentication now renders the shared account-context footer with
+reserved space, and offers merchant self-registration only where the canonical host registry allows
+it. Additional light/dark legal/form/state-family/mobile-record comparisons close the §21.7 coverage
+gap. CI preserves successful browser/JUnit evidence and has a bounded 120-minute E2E allowance.
+Hosted Linux review and all final-head jobs remain pending; see the Codex proof/addendum.
+
+### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — verified_complete; PR #66 merged
+
+Reconciled once on the UI-16 branch (2026-10-12): normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`
+merged `2026-10-11T18:23:30Z`; final head `0ae694b8…`, equal head/merge tree `73bd2171…`; exact-head CI
+`38160619788` all five jobs success; governance comment `6112205584`; 0 reviews / 0 approvals (not
+independent approval); source branch absent. The paragraphs below preserve the pre-merge record.
 
 Implements the 15-page Audit account on `audit.servana.ke` (UI/UX plan Phase UI-15, Appendix A §12):
 **14 implemented / 1 disabled_by_gate (Notifications, Phase 21N behind External Gate W) / 0 planned /

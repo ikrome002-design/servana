@@ -7,6 +7,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
+import { formatDateTime } from '@/utils/dates';
 
 const store = useBranchExperienceStore();
 const busy = ref(false);
@@ -91,7 +92,7 @@ onMounted(() => { void store.fetchOverview(); });
             <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
               Opened
             </p><p class="mt-3 text-lg font-bold text-heading">
-              {{ day.opened_at ? new Date(day.opened_at).toLocaleString() : 'Not opened' }}
+              {{ day.opened_at ? formatDateTime(day.opened_at) : 'Not opened' }}
             </p>
           </SvCard>
           <SvCard as="article">
@@ -123,7 +124,7 @@ onMounted(() => { void store.fetchOverview(); });
           </p>
           <ul
             v-else
-            class="mt-3 grid gap-2 sm:grid-cols-2"
+            class="mt-3 grid gap-2 md:grid-cols-2"
             aria-label="Close blockers"
           >
             <li

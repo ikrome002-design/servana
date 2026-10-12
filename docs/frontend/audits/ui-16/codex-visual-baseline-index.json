@@ -1,0 +1,95 @@
+{
+  "schema": "servana.ui16.codex-visual-baselines.v1",
+  "phase": "UI-16",
+  "source_base": "088a6cd764534ac5a4e44d1ce8c1e72cebfd480b",
+  "source_fingerprint": "8ea2a79506f9d1af5cba65722463f96dbebd350c7b908ead01cde3c1111d48fa",
+  "source_fingerprint_algorithm": "SHA-256 of sorted repository-relative path + NUL + file SHA-256 joined with LF; 730 non-PNG tracked SPA/e2e/config/scripts/package/Vite/TS/Playwright files plus the new archetype spec and origin config",
+  "browser": "Chromium, @playwright/test 1.62.0 Windows",
+  "determinism": "existing prepareVisual pinned Nairobi clock and synthetic fixtures; self-hosted fonts awaited; animations/caret disabled; reduced motion",
+  "windows_active_frames": 8,
+  "linux_active_frames": 0,
+  "linux_status": "not_run_environment_unavailable: Docker Linux-engine pipe absent; hosted frames and comparison pending",
+  "original_claude_frames_unchanged": 106,
+  "frames": [
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/form--dark-chromium-win32.png",
+      "sha256": "73bfaf887106e5516ab1489a004c0c800201ca9c0ad3da11728788d85eb52017",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/form--light-chromium-win32.png",
+      "sha256": "08a1b4716886455ba766fa8ff0f459506a8a3a9c7a39ec14dac0ae9455369fa7",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/legal--dark-chromium-win32.png",
+      "sha256": "8eeabd0dbfb211fb6becdf991dd87cebc1d98e86e40263fdc4ace74bf6bafcaf",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/legal--light-chromium-win32.png",
+      "sha256": "9feb3c331f7fef804ddfa65cdd3809b557810a31e28112adbb87a22bad6963dd",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-card-detail--dark-chromium-win32.png",
+      "sha256": "a5444d1eb2535ee5b99957be4839ad8ffab85b94a13a287252fed009b51ef2e5",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-card-detail--light-chromium-win32.png",
+      "sha256": "6370eaab9e2e9bde7f7be319228a9fcee22070956bf40993c07f086f400005f7",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-cards--dark-chromium-win32.png",
+      "sha256": "9e9b33b0cf975641c6211e77ad1a9ae15420fa95e8fcd88f5a2868e0a5a33dd0",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "superseded diagnostic: page viewport showed only card header",
+      "active": false
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/record-cards--light-chromium-win32.png",
+      "sha256": "cf912204813adb5377b03ef564dae97420ca0257007b6565800cbe23ea2aaaf0",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "superseded diagnostic: page viewport showed only card header",
+      "active": false
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/states--dark-chromium-win32.png",
+      "sha256": "3dce0ac025f472ce50b4cc5e78a7056d05461e09b398083c145d1fd6f605cd32",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    },
+    {
+      "file": "tests/e2e/ui-16-archetype-visual-regression.spec.ts-snapshots/states--light-chromium-win32.png",
+      "sha256": "44520c62751508d9d8f1dda12bb53dcf438a35dbf9641dea1ae2296f5a07f285",
+      "platform": "win32",
+      "reviewer": "Codex (agent, not product-owner approval)",
+      "decision": "accepted after individual visual inspection",
+      "active": true
+    }
+  ]
+}

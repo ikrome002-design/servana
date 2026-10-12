@@ -108,7 +108,7 @@ onMounted(async () => {
                 :tone="tone(current.status)"
               />
             </div>
-            <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+            <dl class="mt-5 grid gap-4 md:grid-cols-2">
               <div>
                 <dt class="text-xs text-text-muted">
                   Salary terms
@@ -188,7 +188,7 @@ onMounted(async () => {
           >
             All versions
           </h2>
-          <ul class="mt-3 grid gap-3 sm:grid-cols-2">
+          <ul class="mt-3 grid gap-3 md:grid-cols-2">
             <li
               v-for="plan in plans"
               :key="plan.id"

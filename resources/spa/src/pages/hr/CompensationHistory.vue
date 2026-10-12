@@ -56,7 +56,7 @@ onMounted(async () => {
           data-testid="history-event"
         >
           <span
-            class="absolute -left-[1.63rem] top-5 h-3 w-3 rounded-full border-2 border-sv-surface bg-sv-brand"
+            class="absolute -left-[1.63rem] top-5 h-3 w-3 rounded-full border-2 border-sv-surface-raised bg-sv-brand"
             aria-hidden="true"
           />
           <SvCard as="article">

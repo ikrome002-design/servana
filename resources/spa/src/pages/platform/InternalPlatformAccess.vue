@@ -35,6 +35,7 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
+import { statusLabel } from '@/utils/statusLabel';
 import {
   usePlatformAccessStore,
   type LifecycleAction,
@@ -364,7 +365,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'neutral'
           >
             <template #cell:status="{ row }">
               <SvStatusBadge
-                :label="row.status"
+                :label="statusLabel(row.status)"
                 :tone="statusTone(row.status)"
                 sr-prefix="Status:"
               />
@@ -387,7 +388,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'neutral'
           >
             <template #cell:status="{ row }">
               <SvStatusBadge
-                :label="row.status"
+                :label="statusLabel(row.status)"
                 :tone="statusTone(row.status)"
                 sr-prefix="Status:"
               />
@@ -496,7 +497,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'neutral'
           >
             <template #cell:status="{ row }">
               <SvStatusBadge
-                :label="row.status"
+                :label="statusLabel(row.status)"
                 :tone="statusTone(row.status)"
                 sr-prefix="Status:"
               />

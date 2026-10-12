@@ -90,7 +90,7 @@ onMounted(load);
           </div>
 
           <div
-            class="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4"
+            class="mt-4 grid gap-2 md:grid-cols-2 lg:grid-cols-4"
             aria-label="Invoice balance waterfall"
           >
             <div class="rounded-control bg-surface-alt p-3">
@@ -153,7 +153,7 @@ onMounted(load);
                 </div>
               </div>
               <ul
-                class="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3"
+                class="mt-3 grid gap-2 md:grid-cols-2 lg:grid-cols-3"
                 aria-label="Payment components"
               >
                 <li

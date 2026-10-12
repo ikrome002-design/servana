@@ -260,7 +260,7 @@ onMounted(() => {
 
         <p
           v-if="actionError"
-          class="mt-4 text-sm text-danger"
+          class="mt-4 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
@@ -376,7 +376,7 @@ onMounted(() => {
       />
       <p
         v-if="actionError"
-        class="mt-2 text-sm text-danger"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ actionError }}

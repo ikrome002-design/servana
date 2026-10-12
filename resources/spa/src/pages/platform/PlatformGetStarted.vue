@@ -34,6 +34,7 @@ import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import { usePlatformGetStartedStore, type GetStartedStep } from '@/stores/platformGetStartedStore';
+import { SvIconCheck, SvIconLocked } from '@/design-system/icons';
 
 const store = usePlatformGetStartedStore();
 const persistence = useGetStartedStore();
@@ -86,7 +87,7 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
 
 <template>
   <div
-    class="mx-auto w-full max-w-3xl"
+    class="mx-auto w-full max-w-6xl"
     data-testid="platform-get-started-screen"
   >
     <SvPageHeader
@@ -164,13 +165,28 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
         label="Checking your platform setup"
       />
 
-      <template v-else>
+      <!--
+        UI-16 (UI16-VIS-018): the guide was a single column of identical bordered boxes. It now
+        mirrors the merchant checklist — a progress panel that names the next step beside numbered
+        step cards whose marker states done / open / blocked — with the same server-read states,
+        evidence lines and controls.
+      -->
+      <div
+        v-else
+        class="grid gap-5 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:items-start"
+      >
         <!-- Progress ---------------------------------------------------------------------- -->
         <div
-          class="mb-6 rounded-card border border-sv-border bg-sv-surface-raised p-4"
+          class="sv-pgs-progress rounded-card border border-sv-border p-5 shadow-card lg:sticky lg:top-4"
           data-testid="get-started-progress"
         >
-          <p class="text-sm font-medium text-sv-text">
+          <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+            Setup progress
+          </p>
+          <p class="mt-1 font-display text-3xl font-extrabold leading-none text-sv-text-heading">
+            {{ store.progress.complete }}<span class="text-lg text-sv-text-muted"> / {{ store.progress.total }}</span>
+          </p>
+          <p class="mt-1 text-sm font-medium text-sv-text">
             {{ store.progress.complete }} of {{ store.progress.total }} steps complete
           </p>
           <p
@@ -194,18 +210,33 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
 
         <!-- Steps -------------------------------------------------------------------------- -->
         <ol
-          class="space-y-4"
+          class="flex flex-col gap-3"
           data-testid="get-started-steps"
         >
           <li
             v-for="step in store.steps"
             :key="step.id"
-            class="rounded-card border border-sv-border bg-sv-surface-raised p-4"
+            class="sv-pgs-step grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 rounded-card border p-4 shadow-card"
+            :data-state="step.state"
             :data-testid="`get-started-step-${step.id}`"
           >
+            <span
+              aria-hidden="true"
+              class="sv-pgs-step__marker row-span-4 inline-flex h-9 w-9 items-center justify-center rounded-full font-display text-sm font-extrabold"
+            >
+              <SvIconCheck
+                v-if="step.state === 'complete'"
+                class="h-5 w-5"
+              />
+              <SvIconLocked
+                v-else-if="step.state === 'blocked_by_gate'"
+                class="h-4 w-4"
+              />
+              <template v-else>{{ step.order }}</template>
+            </span>
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div class="min-w-0">
-                <p class="font-medium text-sv-text">
+                <p class="font-semibold text-sv-text-heading">
                   {{ step.order }}. {{ step.label }}
                 </p>
                 <p class="mt-1 text-sm text-sv-text-muted">
@@ -265,7 +296,32 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
             </div>
           </li>
         </ol>
-      </template>
+      </div>
     </template>
   </div>
 </template>
+
+<style scoped>
+.sv-pgs-progress {
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-accent) 22%, transparent), transparent 55%),
+    var(--sv-color-surface-raised);
+}
+.sv-pgs-step {
+  border-color: var(--sv-color-border-default);
+  background: var(--sv-color-surface-raised);
+}
+.sv-pgs-step__marker {
+  background: var(--sv-color-surface-subtle);
+  color: var(--sv-color-text-heading);
+}
+.sv-pgs-step[data-state='complete'] { border-color: var(--sv-color-status-success-border); }
+.sv-pgs-step[data-state='complete'] .sv-pgs-step__marker {
+  background: var(--sv-color-growth);
+  color: var(--sv-color-text-inverse);
+}
+.sv-pgs-step[data-state='incomplete'] .sv-pgs-step__marker {
+  background: color-mix(in srgb, var(--sv-color-brand-primary) 18%, var(--sv-color-surface-raised));
+}
+.sv-pgs-step[data-state='blocked_by_gate'] { border-style: dashed; }
+</style>

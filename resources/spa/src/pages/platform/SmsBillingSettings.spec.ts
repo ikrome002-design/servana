@@ -152,8 +152,9 @@ describe('SmsBillingSettings.vue — contract page §5.4.9', () => {
 
   it('shows the threshold and anomaly states from the server, not a client calculation', async () => {
     const wrapper = await mountWith([VIEW]);
-    expect(wrapper.find('[data-testid="sms-threshold-state"]').text()).toBe('within_threshold');
-    expect(wrapper.find('[data-testid="sms-anomaly-state"]').text()).toBe('normal');
+    // UI16-CONTENT-001: the server token is shown in words, not as a raw machine token.
+    expect(wrapper.find('[data-testid="sms-threshold-state"]').text()).toBe('Within threshold');
+    expect(wrapper.find('[data-testid="sms-anomaly-state"]').text()).toBe('Normal');
   });
 
   it('states that a new price never re-prices recorded usage', async () => {

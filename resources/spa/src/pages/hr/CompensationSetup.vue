@@ -160,7 +160,7 @@ onMounted(async () => {
             <h2 class="font-display text-lg font-bold text-heading">
               2. Salary terms
             </h2>
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
               <SvTextInput
                 id="salary-amount"
                 v-model="form.salary_amount_major"
@@ -230,7 +230,7 @@ onMounted(async () => {
             <h2 class="font-display text-lg font-bold text-heading">
               {{ requiresSalary || requiresRule ? '3' : '2' }}. Effective window and reason
             </h2>
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
               <SvTextInput
                 id="effective-from"
                 v-model="form.effective_from"

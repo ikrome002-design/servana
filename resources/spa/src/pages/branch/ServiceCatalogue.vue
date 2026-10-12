@@ -14,6 +14,7 @@ import { useForm } from '@/composables/useForm';
 import { useCatalogueStore } from '@/stores/catalogueStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import type { Service } from '@/types/models';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Branch Manager service catalogue (Plan §39; Phase 15A). Backend owns authority
 // (`service.*` + ServicePolicy); the buttons here are UX-only permission gates.
@@ -115,21 +116,24 @@ async function confirmArchive(): Promise<void> {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Services
-      </h1>
-      <PermissionGate permission="service.create">
-        <SvButton
-          variant="primary"
-          data-testid="add-service"
-          @click="openCreate"
-        >
-          Add service
-        </SvButton>
-      </PermissionGate>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Services"
+      eyebrow="Branch operations"
+      description="The services your branch offers, with the prices and durations clients are booked against."
+    >
+      <template #actions>
+        <PermissionGate permission="service.create">
+          <SvButton
+            variant="primary"
+            data-testid="add-service"
+            @click="openCreate"
+          >
+            Add service
+          </SvButton>
+        </PermissionGate>
+      </template>
+    </SvPageHeader>
 
     <div class="mt-4 flex gap-2">
       <SvButton
@@ -154,7 +158,7 @@ async function confirmArchive(): Promise<void> {
       @retry="load"
     >
       <ul
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
         aria-label="Services"
       >
         <li

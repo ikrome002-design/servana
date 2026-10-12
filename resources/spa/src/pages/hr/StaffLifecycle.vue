@@ -127,7 +127,7 @@ onMounted(() => {
           >
             Suspension and deactivation revoke sessions, unused Magic Links and pending access. Historical staff, compensation and payout records are preserved.
           </SvAlert>
-          <div class="mt-5 grid gap-3 sm:grid-cols-3">
+          <div class="mt-5 grid gap-3 md:grid-cols-3">
             <SvButton
               variant="secondary"
               :disabled="member.status !== 'active'"

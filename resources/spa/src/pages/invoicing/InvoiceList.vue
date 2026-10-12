@@ -10,6 +10,7 @@ import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.
 import { useInvoiceStore } from '@/stores/invoiceStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import { invoiceStatusLabel } from '@/utils/invoice';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Invoice list (Plan §40; Phase 17). Shared by Front Office and Finance — client
 // contact is masked, money is server-formatted KES, and "New invoice" appears only
@@ -61,7 +62,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section :class="isFinance ? 'p-4 md:p-6' : 'mx-auto max-w-6xl'">
+  <section class="mx-auto max-w-6xl">
     <SvOperationalHero
       v-if="!isFinance"
       eyebrow="Billing handoff"
@@ -78,14 +79,14 @@ onMounted(() => {
         </SvButton>
       </template>
     </SvOperationalHero>
-    <div
+    <!-- UI-16: Finance reads the same register through the shared tonal header (UI16-VIS-001). -->
+    <SvPageHeader
       v-else
-      class="flex flex-wrap items-center justify-between gap-3"
-    >
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Invoices
-      </h1>
-    </div>
+      class="!mb-0"
+      title="Invoices"
+      eyebrow="Merchant-Client Finance"
+      description="Every client invoice and its server-owned balance. Finance validates payments; it does not edit an issued invoice."
+    />
 
     <SvCard
       class="mt-5 flex flex-wrap items-end justify-between gap-3"

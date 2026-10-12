@@ -10,6 +10,7 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { usePaymentStore, type PaymentRecordingGroupView } from '@/stores/paymentStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import SvMoney from '@/components/ui/SvMoney.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance payment-recording detail (Plan §41–§42; Phase 18A + 18B). Shows the group and
@@ -145,13 +146,17 @@ onMounted(load);
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl" data-testid="finance-payment-validation-detail">
-    <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">Pending validations / group detail</p>
-    <h1 class="mt-1 font-display text-2xl font-bold text-heading">Payment validation detail</h1>
-    <p class="mt-1 text-sm text-text-muted">Review every component, then decide the server-defined group atomically. No component-only validation is available.</p>
+  <section
+    class="mx-auto max-w-6xl"
+    data-testid="finance-payment-validation-detail"
+  >
+    <SvPageHeader
+      title="Payment validation detail"
+      eyebrow="Pending validations / group detail"
+      description="Review every component, then decide the server-defined group atomically. No component-only validation is available."
+    />
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load this recording."
       empty-message="Recording not found."

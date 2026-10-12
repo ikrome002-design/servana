@@ -1,0 +1,151 @@
+{
+  "schema": "ui-16.component-registry-audit.v1",
+  "phase": "UI-16",
+  "registry": "resources/spa/src/design-system/componentRegistry.ts",
+  "contract_test": "tests/Feature/DesignSystem/ComponentContractTest.php (UI16_PROMOTED_COMPONENTS)",
+  "counts": {
+    "registered": 59,
+    "sv_files": 59,
+    "ui04_registered": 54,
+    "ui16_promoted": 5
+  },
+  "promoted": [
+    {
+      "name": "SvTonalPageHeader",
+      "origin": "UI-13/UI-14 page-local primitive, reused across accounts",
+      "spec": "resources/spa/src/components/ui/SvUi16Primitives.spec.ts",
+      "consumers": 24,
+      "registered": true
+    },
+    {
+      "name": "SvOperationalHero",
+      "origin": "UI-13/UI-14 page-local primitive, reused across accounts",
+      "spec": "resources/spa/src/components/ui/SvUi16Primitives.spec.ts",
+      "consumers": 26,
+      "registered": true
+    },
+    {
+      "name": "SvStatTile",
+      "origin": "UI-13/UI-14 page-local primitive, reused across accounts",
+      "spec": "resources/spa/src/components/ui/SvUi16Primitives.spec.ts",
+      "consumers": 12,
+      "registered": true
+    },
+    {
+      "name": "SvLeadRecord",
+      "origin": "UI-14/UI-15 primitive",
+      "spec": "resources/spa/src/components/ui/SvUi14Primitives.spec.ts",
+      "consumers": 10,
+      "registered": true
+    },
+    {
+      "name": "SvMaskedIdentity",
+      "origin": "UI-14/UI-15 primitive",
+      "spec": "resources/spa/src/components/ui/SvUi14Primitives.spec.ts",
+      "consumers": 10,
+      "registered": true
+    }
+  ],
+  "unregistered_sv_files": [
+    {
+      "name": "SvStateBoundary",
+      "consumers": 114,
+      "disposition": "infrastructure state wrapper (loading/empty/error/permission dispatcher over registered state primitives), not a visual primitive; deliberately left out of the visual registry"
+    }
+  ],
+  "registered_outside_ui_dir": [
+    {
+      "name": "SvFileUpload",
+      "file": "resources/spa/src/components/files/SvFileUpload.vue"
+    }
+  ],
+  "usage": {
+    "SvStateBoundary": 114,
+    "SvCard": 103,
+    "SvButton": 100,
+    "SvPageHeader": 76,
+    "SvTextInput": 58,
+    "SvSelect": 57,
+    "SvStatusBadge": 56,
+    "SvDialog": 47,
+    "SvTextArea": 40,
+    "SvAlert": 33,
+    "SvOperationalHero": 26,
+    "SvTonalPageHeader": 24,
+    "SvPermissionState": 22,
+    "SvDateTime": 19,
+    "SvPagination": 16,
+    "SvIconButton": 12,
+    "SvMoney": 12,
+    "SvSkeleton": 12,
+    "SvStatTile": 12,
+    "SvDataTable": 11,
+    "SvResponsiveRecordList": 11,
+    "SvLeadRecord": 10,
+    "SvMaskedIdentity": 10,
+    "SvEmptyState": 8,
+    "SvErrorState": 8,
+    "SvFormField": 8,
+    "SvLink": 8,
+    "SvFaq": 7,
+    "SvBreadcrumbs": 5,
+    "SvConfirmDialog": 5,
+    "SvFixedFooter": 5,
+    "SvLogo": 5,
+    "SvThemeToggle": 5,
+    "SvToast": 5,
+    "SvFilterBar": 4,
+    "SvLegalDocument": 4,
+    "SvMetricCard": 4,
+    "SvDatePicker": 3,
+    "SvDrawer": 3,
+    "SvLockedState": 3,
+    "SvMenu": 3,
+    "SvPhoneInput": 3,
+    "SvAccountContextSwitcher": 2,
+    "SvBanner": 2,
+    "SvCheckbox": 2,
+    "SvCombobox": 2,
+    "SvLandingSection": 2,
+    "SvMoneyInput": 2,
+    "SvNotificationsControl": 2,
+    "SvOfflineState": 2,
+    "SvProfileControl": 2,
+    "SvSearchInput": 2,
+    "SvAccordion": 1,
+    "SvAuditEvent": 1,
+    "SvPopover": 1,
+    "SvRadioGroup": 1,
+    "SvTabs": 1,
+    "SvTimeline": 1,
+    "SvTooltip": 1
+  },
+  "unused_registered": [],
+  "source_guard": "resources/spa/src/design-system/ui16SourceGuards.spec.ts fails on any Sv* component used in a template without an import, and on a static member-expression attribute (the UI16-FUNC-001 SvDialog defect class); negative controls included",
+  "recomposed": [
+    {
+      "component": "GetStartedChecklist",
+      "change": "two-part progress panel + step cards; every checklist-* testid preserved"
+    },
+    {
+      "component": "SvPageHeader",
+      "change": "h1 renders SvTonalPageHeader (account tone via PAGE_TONE_KEY); h2/h3 unchanged"
+    },
+    {
+      "component": "SvDataTable",
+      "change": "raised card surface, separated borders, muted uppercase headers"
+    },
+    {
+      "component": "SvFilterBar",
+      "change": "raised surface panel"
+    },
+    {
+      "component": "SvFixedFooter",
+      "change": "deterministic mobile wrap matching the footer token reserve"
+    },
+    {
+      "component": "SvStateBoundary",
+      "change": "success slot in one wrapper element (multi-root slot defect UI16-LAYOUT-001)"
+    }
+  ]
+}

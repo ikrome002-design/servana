@@ -10,6 +10,7 @@ import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { appointmentStatusLabel } from '@/utils/appointment';
+import { formatTime } from '@/utils/dates';
 
 // Front Office appointment list for a chosen business date (Plan §36; Phase 16A).
 // Branch-scoped; client contact is ALWAYS masked by the server. The API is the
@@ -41,7 +42,7 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 function time(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return formatTime(iso);
 }
 
 onMounted(() => {

@@ -214,9 +214,9 @@ async function confirmCancel(): Promise<void> {
                 <span
                   class="rounded-control px-2 py-0.5 text-xs"
                   :class="{
-                    'bg-primary/15 text-brand-deep': price.lifecycle === 'current',
+                    'bg-primary/15 text-sv-text-heading': price.lifecycle === 'current',
                     'bg-surface-alt text-text-muted': price.lifecycle === 'historical',
-                    'bg-cream text-brand-deep': price.lifecycle === 'future',
+                    'bg-cream text-sv-text-heading': price.lifecycle === 'future',
                   }"
                 >{{ price.lifecycle }}</span>
               </td>
@@ -260,7 +260,7 @@ async function confirmCancel(): Promise<void> {
           required
           @update:model-value="form.values.amount_major = $event"
         />
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="price-currency"
             label="Currency"
@@ -279,7 +279,7 @@ async function confirmCancel(): Promise<void> {
             @update:model-value="form.values.billing_interval = $event"
           />
         </div>
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
           <SvTextInput
             id="price-from"
             label="Effective from"

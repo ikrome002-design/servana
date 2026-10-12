@@ -27,10 +27,15 @@ import {
 
 const props = withDefaults(defineProps<{
   event: AuditEventView;
-  to: RouteLocationRaw;
+  /**
+   * The evidence record. Optional since UI-16: the Finance role's own finance-audit read is
+   * list-only by design (per-event drill-down is the Audit account's surface), so it renders the
+   * same evidence card with no "Open evidence" link rather than a link to a page it cannot open.
+   */
+  to?: RouteLocationRaw | null;
   canFlag?: boolean;
   compact?: boolean;
-}>(), { canFlag: false, compact: false });
+}>(), { to: null, canFlag: false, compact: false });
 
 const emit = defineEmits<{ flag: [event: AuditEventView] }>();
 
@@ -132,8 +137,12 @@ const activeReview = computed(() => isActiveReview(props.event.review?.status));
         </div>
       </dl>
 
-      <div class="mt-3 flex flex-wrap items-center gap-2">
+      <div
+        v-if="to || canFlag"
+        class="mt-3 flex flex-wrap items-center gap-2"
+      >
         <RouterLink
+          v-if="to"
           :to="to"
           class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-control px-3 text-sm font-semibold text-sv-link underline-offset-4 hover:underline"
           data-testid="audit-event-open"

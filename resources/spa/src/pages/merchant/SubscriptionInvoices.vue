@@ -13,6 +13,7 @@ import {
 } from '@/stores/subscriptionInvoiceStore';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { formatMoney } from '@/utils/money';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Subscription invoices (Plan §49; Phase 20B). List + detail of the immutable invoice financial
@@ -92,14 +93,12 @@ async function download(): Promise<void> {
 
 <template>
   <div class="mx-auto flex max-w-5xl flex-col gap-6">
-    <header>
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Subscription invoices
-      </h1>
-      <p class="mt-1 text-sm text-text-muted">
-        Your Servana subscription invoices and PDFs.
-      </p>
-    </header>
+    <SvPageHeader
+      class="!mb-0"
+      title="Subscription invoices"
+      eyebrow="Subscription & Billing"
+      description="Your Servana subscription invoices and PDFs."
+    />
 
     <p
       v-if="!can('merchant.subscription.invoice.view')"
@@ -167,7 +166,7 @@ async function download(): Promise<void> {
               </span>
             </div>
 
-            <dl class="grid gap-3 sm:grid-cols-2">
+            <dl class="grid gap-3 md:grid-cols-2">
               <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                   Subtotal

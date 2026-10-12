@@ -10,6 +10,7 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceDisputeStore } from '@/stores/financeDisputeStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * Finance dispute list (Plan §44; Phase 18B). Finance opens an investigation linked to
@@ -69,32 +70,34 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Disputes
-      </h1>
-      <div class="flex flex-wrap items-center gap-2">
-        <SvSelect
-          id="dispute-status-filter"
-          v-model="store.filterStatus"
-          label="Filter"
-          :options="statusOptions"
-          class="w-full sm:w-56"
-          @update:model-value="() => store.fetchDisputes()"
-        />
-        <SvButton
-          v-if="canManage"
-          data-testid="dispute-create-open"
-          @click="creating = true"
-        >
-          Open dispute
-        </SvButton>
-      </div>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Disputes"
+      eyebrow="Merchant-Client Finance"
+      description="Disputes raised against recorded payments and receipts, followed from opening to resolution."
+    >
+      <template #actions>
+        <div class="flex flex-wrap items-center gap-2">
+          <SvSelect
+            id="dispute-status-filter"
+            v-model="store.filterStatus"
+            label="Filter"
+            :options="statusOptions"
+            class="w-full md:w-56"
+            @update:model-value="() => store.fetchDisputes()"
+          />
+          <SvButton
+            v-if="canManage"
+            data-testid="dispute-create-open"
+            @click="creating = true"
+          >
+            Open dispute
+          </SvButton>
+        </div>
+      </template>
+    </SvPageHeader>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load disputes."
       empty-message="No disputes match this filter."

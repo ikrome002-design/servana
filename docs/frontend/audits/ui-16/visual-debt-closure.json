@@ -1,0 +1,2363 @@
+{
+  "schema": "ui-16.visual.v1",
+  "phase": "UI-16",
+  "rubric": {
+    "criteria": [
+      "composition",
+      "hierarchy",
+      "surface",
+      "spacing",
+      "typography",
+      "brand",
+      "role_fit",
+      "data_truth",
+      "interaction_feedback",
+      "mobile_reflow",
+      "tablet_desktop",
+      "light",
+      "dark",
+      "accessibility",
+      "distinctiveness"
+    ],
+    "scale": "0/1/2 per criterion, 30 points",
+    "pass": ">= 27, no criterion 0; redesigned pages also need 2/2 on composition, surface, brand, role_fit, light, dark, distinctiveness"
+  },
+  "reviewer": "Claude Code (agent review of captured frames) — NOT product-owner approval",
+  "capture_provenance": "release-audit harness via tests/e2e/support/ui16Visual.ts; Nairobi clock pinned; preview build of the UI-16 working tree; Chromium (Playwright 1.62.0) on Windows 10 at 1440x900",
+  "purpose": "Explicit page-by-page UI-08…UI-12 visual-debt disposition (live count derived, not hard-coded).",
+  "totals": {
+    "older_live_pages": 82,
+    "meets_bar": 82,
+    "before_mean": 18.9,
+    "after_mean": 28.4
+  },
+  "pages": [
+    {
+      "contract_key": "super_administrator.dashboard",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/dashboard",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.dashboard.png",
+        "sha256": "6e9968542586249ec5663a4d067d7f09d601b91eb89b092c15c8acfca79bdf9c",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-010",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001"
+      ],
+      "disposition": "redesigned",
+      "change": "SvOperationalHero command surface; governance queue 1.35fr beside commercial position; registrations/audit/gated integrations band",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.dashboard.png",
+        "sha256": "ad41ae173943dfd907ee272897053e9bc4cfaaffc2fb61bdd016b3f0ecd327e9",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.get-started",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/get-started",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.get-started.png",
+        "sha256": "da19bfdc92ad59d604c0248594d12044f0939e46b85f69cf74e4d500577ee82c",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-018",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-DATA-002"
+      ],
+      "disposition": "redesigned",
+      "change": "progress panel beside numbered state-marked step cards",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.get-started.png",
+        "sha256": "f11c75d7052339e636bdb88f09700002be6c73119fc6dbfd8077efbdf7b0c104",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-settings",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/settings",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-settings.png",
+        "sha256": "4d928f32b6ec57d71dd8f4f183768207d5e683d61a76451329f43d23e0821f50",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-016",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-DATA-001",
+        "UI16-RESP-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "redesigned",
+      "change": "PlatformRuleWorkspace: forms dominant, rule statement in a sticky guidance rail",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-settings.png",
+        "sha256": "0a47421c4403176321e3dc25157809322419b30e2d15426f318ccf1ed8e331f5",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-plans",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/plans",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-plans.png",
+        "sha256": "0920ebae618ca7d67f11f7a4e60d0e8d5ced0d36c976443b1794464d5e2f3436",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-016",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-A11Y-003"
+      ],
+      "disposition": "redesigned",
+      "change": "PlatformRuleWorkspace guidance rail",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-plans.png",
+        "sha256": "b2ff4141e90c43cba47ea8bf9c2df4ed7d2043764aedddbbf30e235d42d74100",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-prices",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/prices",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-prices.png",
+        "sha256": "d98a84e1e6c7f5c91897ad18bd44b8e725a5b28bb823af101a5b6eab1017c416",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-016",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-A11Y-003"
+      ],
+      "disposition": "redesigned",
+      "change": "PlatformRuleWorkspace guidance rail",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-prices.png",
+        "sha256": "1dcd44f8000c898dd900cd8b98074856886ea9a00c8ed4107c8242c15844ac63",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-promotions",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/promotions",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-promotions.png",
+        "sha256": "51a29448b5a9fd2fb68259e55daed00f32d7fcc484d16a6fb41ca23b0d2a96be",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-016",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "redesigned",
+      "change": "PlatformRuleWorkspace + labelled fact strip, status badge, sentence-case actions",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-promotions.png",
+        "sha256": "5ab3840edec44ed373e295ea668fc7208cd9451536c2d721b1d84f7aa64eccd5",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-free-periods",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/free-periods",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-free-periods.png",
+        "sha256": "3e9743557bcbf6f2f5202aa068829bef160560cfb43ad06970b772e8fdb6372e",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-CONTENT-001",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-FIX-001"
+      ],
+      "disposition": "redesigned",
+      "change": "labelled fact strip, status badge, sentence-case actions",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-free-periods.png",
+        "sha256": "8199b9e9b80c30ab4b42cd00b685bf94e6b9e93e6bcfd76d9cecc3ad8533e184",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-preferred-personnel-fees",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/preferred-personnel-fees",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-preferred-personnel-fees.png",
+        "sha256": "be5dd8ced7ae6d063d96a843d5153273bced0d7079760ebdf76f17df4358d20b",
+        "score": 16
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-016",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-A11Y-003",
+        "UI16-FIX-001"
+      ],
+      "disposition": "redesigned",
+      "change": "PlatformRuleWorkspace guidance rail",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-preferred-personnel-fees.png",
+        "sha256": "9979a94292ed5c8e0b648cc9233a280ad3cdd08f11bcc0afaa2a60f03114f030",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-sms",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/sms",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-sms.png",
+        "sha256": "061ef06e87ee7bd0b89a4eee57a5524e820bc43e207b46ebda60c703e17bfa1d",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-sms.png",
+        "sha256": "f36c0cf780ca1c0d89edc7425d2f84c85b24be44698d6d64cc6ac2abe6cc7760",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.merchant-registrations",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/merchants/registrations",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchant-registrations.png",
+        "sha256": "81ad14a36b95a71730712ae6e81ae93f38cb418473c680c53a28cc9e92cd756a",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchant-registrations.png",
+        "sha256": "900d03b53539dec9928d969b65bc998a0aaee31793f68f876916450647c35134",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.merchants",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/merchants",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchants.png",
+        "sha256": "6e642f941245486712be920c0f80d8d938bfb2ae4c76894ceb6f184c5c75f941",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchants.png",
+        "sha256": "85dd01a049fa1f0d3c9b09b95414fc45b55349d145d4592df60705cf3ad11134",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.merchant-detail",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/merchants/:merchantUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.merchant-detail.png",
+        "sha256": "9c3b5f094bb37b19e21889f4f48a14918ce5e5bd475bca8f576420c714be9be4",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-NAV-004",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.merchant-detail.png",
+        "sha256": "7265ceb66afd49712fcb720d2150dcaac67bd155fe1994e1fc14faa3f8348010",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.billing-subscriptions",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/billing/subscriptions",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.billing-subscriptions.png",
+        "sha256": "5e98732278350394230cdc7037b7c4ff1697432de04c2d13fa48ee12e92ce1b2",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.billing-subscriptions.png",
+        "sha256": "4654a16d4951b384bcc48c59f6c5185ffac693982a12f2ac3903e52c384e3491",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.audit",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/audit",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.audit.png",
+        "sha256": "088fe408657cb0cb20007d6c3114fea7f02542539ad0bd67b4efb26bb2945537",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-RESP-001",
+        "UI16-CONTENT-001",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.audit.png",
+        "sha256": "af537ae276a8db7fc4ed7a60a7cdca6f91e26c03940aef5566c9909a53565cc5",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.platform-access",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/platform-access",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.platform-access.png",
+        "sha256": "65c35cc35ead8ad010e2ab4242b67482490671872ddf09d7e31e2b70b2125010",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.platform-access.png",
+        "sha256": "fe474ef388872fde892bd2aca1929914dff3c8b7b5d043d69760a4afb5e23af0",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.feature-flags",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/platform/feature-flags",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.feature-flags.png",
+        "sha256": "3733822026c22cb2fd9cbb532cdc5d95bdfe9f7f1d880244ab45e2117b70dbdd",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-019",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001"
+      ],
+      "disposition": "redesigned",
+      "change": "flag key as heading with icon and labelled fact chips",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.feature-flags.png",
+        "sha256": "1a846446f057806672ad76d8495c84cfbc1d001fba95451c641a42cda8d55c3a",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "super_administrator.account",
+      "account": "super_administrator",
+      "owner_phase": "UI-08",
+      "route": "/account",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/super_administrator.account.png",
+        "sha256": "6921990b034d023fdaa689a4abb4c6b8b0cd7815268cb352fb3b116f6369e7fa",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-004",
+        "UI16-NAV-002",
+        "UI16-A11Y-002",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "Profile-reference identity hero with server facts",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/super_administrator.account.png",
+        "sha256": "2a1d0a2adccb732f10da295732c4c33f2355804826c4f91e26ec8fcfd6cb5e2b",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.setup",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/setup",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.setup.png",
+        "sha256": "fb8a1b42937d18b1e1e98142b49a59ac4c3e0bfe87992f6b464ae498675f467b",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.setup.png",
+        "sha256": "fd0a313c1e47d884b14ef630fa85aba0504cf17bdbe515d35ddab6c202734dd6",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.dashboard",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/dashboard",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.dashboard.png",
+        "sha256": "649794df36fad569b6c51f875dfc17b0802fff9fce8ec2be9f3ae3e6559a1fae",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-011",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-002"
+      ],
+      "disposition": "redesigned",
+      "change": "owner hero with four server facts; billing attention beside owner routes; gated reporting",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.dashboard.png",
+        "sha256": "6969cf6875de86339d6e9fdc472aab1e3f30082b2e92d2ac92ff1c67f59ddd39",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.get-started",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/get-started",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.get-started.png",
+        "sha256": "ad1b3fbdcd0fa910e05450d87e83fb19948d7b90c142f92b12ea548373088f57",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-002",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-A11Y-001"
+      ],
+      "disposition": "redesigned",
+      "change": "orientation hero (h1) + progress ring panel + numbered step cards",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.get-started.png",
+        "sha256": "f33bbb614ef975e6010f9e8118284885ceb6c440b4eb90b0d74db1f7d330c2fe",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.merchant-profile",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/merchant/profile",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.merchant-profile.png",
+        "sha256": "68839939eb04b8a43aada6069af6d4887b19aca148ec61c8574cd8eb1acb6328",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-TOKEN-002",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.merchant-profile.png",
+        "sha256": "2d5e3efd3427ea2d8165e75f59b853b203e660f8bac3a79c1ba56ded1b8bb1e3",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.branches",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/branches",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.branches.png",
+        "sha256": "0690d3d367565b68b4ca5731c631bb240539563c6796bdbfd2e13687224a878d",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.branches.png",
+        "sha256": "96556d0c1eaca9af0b7c26fcf3b9f0cec58b37b8afda5b5750f116220cf6f4b0",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.branch-detail",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/branches/:branchUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.branch-detail.png",
+        "sha256": "e0df240efa5ab908a5aa18d149967a4141b877c698d96d136714e300ca5855fe",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.branch-detail.png",
+        "sha256": "5405e140ec8f3b40259abc006958c33f1566bf906b89f6dd0b7eecfcdbea2293",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.staff",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/staff",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.staff.png",
+        "sha256": "401319c2f16066cbe099f1c44d6fa3d8fee716b11fd2b0869a56c18924aac211",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.staff.png",
+        "sha256": "e6abed3ae2bf48cc29fd4e396de34be4ef36daf798da37366aea4a6ff226ed19",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/subscription",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription.png",
+        "sha256": "d2af5bbb2dc82d3c5daf7eb2a744237d64801a2b4a83a31f948852370355633d",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription.png",
+        "sha256": "66b3674e174903b84ffa90794b4349d72a2457814224fc7065d3772fe5931f8c",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-plan",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/subscription/plan",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-plan.png",
+        "sha256": "0723cab438789121a8aa66d38c0d2893baf5bfd375ec87bf39252fe0c7ccd7f4",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-A11Y-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-plan.png",
+        "sha256": "9aa37714d2d9f56713c580ef8b20b56286195dfce2af14d36fc70e5829379cca",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-invoices",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/subscription/invoices",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-invoices.png",
+        "sha256": "f20735074e3d5ac315144ea54f05ff5a491fc3465e49bd0bc836dbe40da169ac",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-invoices.png",
+        "sha256": "d7481cf9abb3624b231f83737731239f910f7e0b0a2ae7e4bfa9aa77ba8f2836",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.subscription-invoice-detail",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/subscription/invoices/:invoiceUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.subscription-invoice-detail.png",
+        "sha256": "702f283e03f8f1fddd7246514b9f971e30928e68d73be91a8a8b30592242c52d",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.subscription-invoice-detail.png",
+        "sha256": "6a59757fe4b860649da9faccb604b64a4ebf187c8f647f34c7d5613c8789bc25",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.compensation",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/compensation",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.compensation.png",
+        "sha256": "0e2c25a7e1a239af103847375ab87e67ee184a417feb16526129bf5d0f6f5a09",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-017",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "redesigned",
+      "change": "toned owed/paid panels with large per-currency figures; payout-run panel",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.compensation.png",
+        "sha256": "eedac8230a23885d11ee3f92b01a292fa0c0dc0bbd4500732cb7c1fa1670c199",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.compensation-payout-approvals",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/compensation/payout-approvals",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.compensation-payout-approvals.png",
+        "sha256": "6a73e3b255c95f11adcc4f946d3a99c7d1783b18aef2cc3165c58b3994e192e2",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.compensation-payout-approvals.png",
+        "sha256": "4002e796a07d2462f86ea485a5c6c678ef32e41f8e9a75e95be4cd94623fdc28",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.finance-period-reopen-approvals",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/finance/period-reopen-approvals",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.finance-period-reopen-approvals.png",
+        "sha256": "4f23b2c4cbb835fc7e96ca5793e95eac19ae62867b3d89399224a06bbe3a44e3",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.finance-period-reopen-approvals.png",
+        "sha256": "5c0e7518f1c8e0f40333eeb9517cd2fa5b2e01470e622a89c7223d09878355e4",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_administrator.account",
+      "account": "merchant_administrator",
+      "owner_phase": "UI-09",
+      "route": "/account",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_administrator.account.png",
+        "sha256": "58f7df7607a1f3818f2b1d6ffd566736235d20910e1f2a19a9d2701deac5823a",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-004",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "Profile-reference identity hero",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_administrator.account.png",
+        "sha256": "f9723dfb6289f85eaaed71c2db558a83f948de2efbfba4e82f6605bfe7682cad",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.dashboard",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/dashboard",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.dashboard.png",
+        "sha256": "db3172356dab4a4586e3f215e795e11436b6c521a6c9ae7add775d22a75e59df",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-012",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-TOKEN-001",
+        "UI16-CONTENT-002"
+      ],
+      "disposition": "redesigned",
+      "change": "branch-day command hero; today’s flow dominant; revenue + subscription rail; gated reporting",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.dashboard.png",
+        "sha256": "72f03708d59ba852c12586dd37a593b364b0d0457d923abc87db0563d80c201e",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.get-started",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/get-started",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.get-started.png",
+        "sha256": "2c7cfb3ac62da88c572c721edcc3b063d60ccfe8db95d3a6368343fd7dee64ec",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-002",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-A11Y-001"
+      ],
+      "disposition": "redesigned",
+      "change": "orientation hero + checklist composition",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.get-started.png",
+        "sha256": "e6aff72264ec23e18c71d855fefa171e04fb080251f35b326c2c6f887aef601d",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.branch-profile",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/branch/profile",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-profile.png",
+        "sha256": "fc190fca86bf4451694247fe7bf9f533dc34174d3e9e87a7e36adbcf39d732d3",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-profile.png",
+        "sha256": "956e21d07ea07dd561eb2592ac1d9e15b6943fe71fe59e1f199c07732a10a7a6",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.branch-calendar",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/branch/calendar",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-calendar.png",
+        "sha256": "f4048032ed09e5907c5a7fdbade5d5340d7b09ff90ade9c2d24e754d8abbcde1",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-TOKEN-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-calendar.png",
+        "sha256": "46c03d2fecbe7d6d9c78221e25f84a1cd0c1eeb6f4d9bebfc5267f5513752f48",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.branch-day",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/branch/day",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.branch-day.png",
+        "sha256": "eb4d8b22be8e3a77f2215f3b2e1da4a436243fcd1e7386622d934a8a0ce36f1e",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.branch-day.png",
+        "sha256": "7768db6a6d6d1ff61700f0dd6209b52e5b5ee3791cad9e423fa5b049b0213aad",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.services",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/services",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.services.png",
+        "sha256": "947d38b53ebe60d4288a15c6e5b936b43ba2ea5c955e0bb6c70f678133c5d069",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.services.png",
+        "sha256": "50bee0fe05d28940a07590e48b4e393ef5f813f99ff454e17561f577442a9580",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.staff",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/staff",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.staff.png",
+        "sha256": "a19fd4e8fa1f3653f588794d57fa68d229b27fddf453a16b491581a8c2727a69",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.staff.png",
+        "sha256": "d779ff651a67123551ff9fce228eb55cfc90b7e8bd72c5ebdb7acbd6beffd41d",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.operations-queue",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/operations/queue",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.operations-queue.png",
+        "sha256": "0a79d6df5c15f7372c81f1fa473199c3fb3c89ebcd5e520e943ca208539cf75a",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.operations-queue.png",
+        "sha256": "878a894c0b2f47814a586bec8f40ae4a4ef4bb5b6f22e8f47156232642af624d",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.operations-appointments",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/operations/appointments",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.operations-appointments.png",
+        "sha256": "ae1dea91214dee57c55c7fcffd41990563409c5e5a75abd19c1d5e0c75db6097",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.operations-appointments.png",
+        "sha256": "88e6a24b72b9470cf0f0a15c876f168f96fd66c01a0994e9fa6b2cb05cef57b8",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.finance-invoices",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/finance/invoices",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-invoices.png",
+        "sha256": "3c0a1c0335aa1027f56205210b2aa8d189f5a6ebf56edc90d467bd5fc6b29ffa",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-invoices.png",
+        "sha256": "9b15cf03c03d4731f84a3e0675e0bbe7d5a84bad246aaec8aa621daf1ea6ef70",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.finance-payments",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/finance/payments",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-payments.png",
+        "sha256": "7c3ba704d98dd5ce8a3b9429143d0efa24ea4e6fdf7941bab74e0e7ffa838f04",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-payments.png",
+        "sha256": "daa7f7389023788e086b3e441181160c2e459505aef7d552e1b5e35f3ef474b5",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.finance-receipts",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/finance/receipts",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.finance-receipts.png",
+        "sha256": "393f7d330c209e4f649d0b872a62241b6b84104ade7e63d15cf838ee23e80fc6",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.finance-receipts.png",
+        "sha256": "5ceac4944dff436e495721c1211a3155fe40a9f9ebe748668b40b9e6e274ab5f",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.cash-up",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/cash-up",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.cash-up.png",
+        "sha256": "5a8861e0e5c1034895595c32cf43a405118fa0b04482568c1a752a1b9c400a5b",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-CONTENT-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.cash-up.png",
+        "sha256": "1bc3292a0752710571b738090e3758b088af5b2c1f1c4085b94b865ee3a10b41",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.audit",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/audit",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.audit.png",
+        "sha256": "b4460da8386d96d11793badeefbbf22b28e2cf52669840f15061f1756a645c09",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003",
+        "UI16-TOKEN-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.audit.png",
+        "sha256": "49d70c6dcb57f0970a007ee557d37c76b0c7cf348f9d6bd7eb9c94caa1f8ab2c",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_branch.account",
+      "account": "merchant_branch",
+      "owner_phase": "UI-10",
+      "route": "/account",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_branch.account.png",
+        "sha256": "078cd765a52f5d72182b43ef9ec0005dffca15c8a2652ca0631d82304aea1330",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-004",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "Profile-reference identity hero",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_branch.account.png",
+        "sha256": "ba79cc923e9b2b5d3e3d0ee56f20a3ce58775774378f5001f25e8afcc2933113",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.dashboard",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/dashboard",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.dashboard.png",
+        "sha256": "057cd7e86cdc732ac4bbe4d27d80cc71eb76fc47a378340f74fc4edd8e3ccf4f",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-013",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "redesigned",
+      "change": "workforce hero; act-next task panel beside payout handoff; toned readiness-gap tiles",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.dashboard.png",
+        "sha256": "e058a62b5aa5820567604ab08bbc6d02fca12079cf3c4e43ededdc0512cfc19e",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.get-started",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/get-started",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.get-started.png",
+        "sha256": "2e2cdac92e8a734dbc9bc7743000b319f41c2a72ea7ad9a237d3f95fc4f2ddf2",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-002",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-A11Y-001"
+      ],
+      "disposition": "redesigned",
+      "change": "orientation hero + checklist composition",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.get-started.png",
+        "sha256": "dd905335eff067c0e50284d3a4a5c6e1dc13f3f8d821bd52da471f7595bdf2b5",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/staff",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff.png",
+        "sha256": "3850794565fec59cb2de069c0c7a06bfedd34360c9fe2ce6850d8656cde8a0fc",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff.png",
+        "sha256": "cb5d2990df4fcf1422b7ffd442e5561b190dccf8e4f8353e447cce6b34f4743d",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-invite",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/staff/invite",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-invite.png",
+        "sha256": "a69e5219b9577337a7800ff76eba16c2fca117fa2e2de6bad7bcaec8e1e32de2",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-invite.png",
+        "sha256": "becea522c669eb1345c78727a3ec52e80258c30eefa997b15efa7589181e1d77",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/staff/:staffUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-detail.png",
+        "sha256": "20b9644f32cb7c74065939b8406e46839ab00f36445f581fbd576ac595857835",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-detail.png",
+        "sha256": "d9d496738b749d5bdb798820028be4b85ba574041c5e9756618dc42652579949",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.staff-detail-lifecycle",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/staff/:staffUlid/lifecycle",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.staff-detail-lifecycle.png",
+        "sha256": "0195b5c12419413aca1f6783265750996826f26edee053d3da22f0deab0bd5c3",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.staff-detail-lifecycle.png",
+        "sha256": "e6a076fce033927db96972487c172d509e5e3e2830008884d429424c19650519",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.eligibility",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/eligibility",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.eligibility.png",
+        "sha256": "3c48c736b465adb34d3f2b85fabf9ca4ea59940fd6f3abef266928a3de41398a",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.eligibility.png",
+        "sha256": "361efb2301b31542d61854ee96ed4bcde8a0d8331d55feee70ce5b36b7e617fd",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.availability",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/availability",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.availability.png",
+        "sha256": "e1d7f9c6324c83f26bc88e9f844f01146b77904b7017599a6e43e9ff85d37691",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.availability.png",
+        "sha256": "281311355310f089b01db7025e8d458dfd2a01a62d728f4a37c69cda1722ec7d",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/compensation",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation.png",
+        "sha256": "ee85bb4d97ea29c0ccace5185c4a2c86154fbf42532361da33642405c1700d7e",
+        "score": 17
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-A11Y-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation.png",
+        "sha256": "7e4b83c494ef2445cdb204f9226c4943b1303316a95ab10679b4665f5a01c607",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-detail",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/compensation/:staffUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-detail.png",
+        "sha256": "aa5ddb88f0eb326ba462c3b8c8b5c8ff72a5ad95a956ce793906d7546a761f47",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-detail.png",
+        "sha256": "467ffac7b57eb9709ad2646a65ee08716224029b85257e1c4fe3a1d62224b1df",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-setup",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/compensation/:staffUlid/setup",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-setup.png",
+        "sha256": "1bebffc4983e087acb975780c5f285d57bdc01c5defc4efaa5cc878ec28f7c04",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-setup.png",
+        "sha256": "ac79e3b2cd6f37fd68b6d0c669212c33d8e288d497eceb6f41bf8692a5a809d9",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.compensation-history",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/compensation/:staffUlid/history",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.compensation-history.png",
+        "sha256": "a666dfee4cdf7fbd8b2ce8fbc838e1e34d19b253dd6160407b5fc0c52a7f0d5b",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-TOKEN-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.compensation-history.png",
+        "sha256": "eeb6a348d0c8745ec0b7d3812af6a4eda89902a8af439807e13d313e94a33a94",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.payouts",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/payouts",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.payouts.png",
+        "sha256": "9031565b55c215c61ad4f33ce074596329bb2898a039d8548de0065dd5cbf09b",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.payouts.png",
+        "sha256": "52204faafe1b55ab605fea98bb31987597c11c53850ee4cd829719e569a222e1",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.audit",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/audit",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.audit.png",
+        "sha256": "2f01fbd7f93f077f37ae716ea57e068fc70f09b8aee44e63029ac0b3436139fb",
+        "score": 18
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001",
+        "UI16-CONTENT-001",
+        "UI16-FIX-001",
+        "UI16-TOKEN-002"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.audit.png",
+        "sha256": "e6583fac0018161269ed86976af0db0b2f364a5863b7e5c8583b0a771908daef",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_human_resource.account",
+      "account": "merchant_human_resource",
+      "owner_phase": "UI-11",
+      "route": "/account",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_human_resource.account.png",
+        "sha256": "789b860032f7e9ccd3a7034b0a92d9d3f16c0e03805bdc588d8bf31e03f9b007",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-004",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "Profile-reference identity hero",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_human_resource.account.png",
+        "sha256": "d57507782596b07f1f961e0ff6a0bd2708c661b98457d67ff8c50f183fe860a1",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.dashboard",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/dashboard",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.dashboard.png",
+        "sha256": "c1910454b86f540ed0f0e376dd0256142ed9aef26a5e9973207064df3490ef79",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-014",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "redesigned",
+      "change": "checker hero; priority queue dominant beside close controls; money-position ledger band",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.dashboard.png",
+        "sha256": "243ab60b9a46190f4ef4d6058b2aa63cd30de68b8278a57f275d91315244427e",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.get-started",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/get-started",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.get-started.png",
+        "sha256": "09682a52934339179b32efd0b55b53a85e661fe3309efae9d53935091f69d4cf",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-002",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-A11Y-001"
+      ],
+      "disposition": "redesigned",
+      "change": "orientation hero + checklist composition",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.get-started.png",
+        "sha256": "b6d17adbd7123dfaf433fdff75528f511c746a083622117e7931db9d9e7b5aac",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.tasks",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/tasks",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.tasks.png",
+        "sha256": "450d7fbdf2e39e7f1590a85fae44079ec7c808d6ce1c717a74165a15e2077428",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.tasks.png",
+        "sha256": "c9c8a51c856c70428865652596e0fa637083eb20ffb2b5e302ef8473b4f0dcc6",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payments-validations",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payments/validations",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-validations.png",
+        "sha256": "0d49606d13abfa1511c68f9e8635a3e2b25c74f6efef1dbe9318114eea6fc1f8",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-validations.png",
+        "sha256": "1a2a40d9de2055c753489499829a5cc17a7ceae46f4d6b55a90fc10751351e35",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payments-validation-detail",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payments/validations/:groupUlid",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-validation-detail.png",
+        "sha256": "5a0ac6380d2873bfcc612854ac9633c9249a394f5f64d8d35f1e97dc206987a4",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-validation-detail.png",
+        "sha256": "d462eaa05acfb306ac04bb9823089d8aae55095845c61df7d3e602cd7ea57b0c",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payments-duplicates",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payments/duplicates",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-duplicates.png",
+        "sha256": "4fe87c82e4bbaa6e2992c6111304d0ff9788ea9d0577460cd45c5b5e252fad6c",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-duplicates.png",
+        "sha256": "8cb7da18dd3a21876d3b69c17cd72751f0feefb39d41a2cdef41492ad94c8e1d",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.invoices",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/invoices",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.invoices.png",
+        "sha256": "ed88e977219f452f9e5394feffd61514c4a2bf8b933e880d2e5382270d3ab88c",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.invoices.png",
+        "sha256": "ebbad613ba8622988aab3a12e1f735e49355c83759edcb270a55a582f74fcdb6",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payments",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payments",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments.png",
+        "sha256": "5903f39dc4895f3b74c0814ef8bdbea770af25bdf0e62c97556198df5e77c5be",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments.png",
+        "sha256": "08d6cd60fbefe35aea092054826c32cda805702a1aae057f2d0f294aee03a72e",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payments-partial-split",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payments/partial-split",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payments-partial-split.png",
+        "sha256": "bc3bd772bfc547cb9be014b3bd4d013fda86cd91e6e59095adb290697dde6cb2",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payments-partial-split.png",
+        "sha256": "36be03bc47d4f4d1d5dd05a859a40a0f27defcad47f40028c43cd4b8d6ffe8ca",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.receipts",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/receipts",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.receipts.png",
+        "sha256": "bd90ce1c9cc8ff08a6cc709b660d72ac2011566ecfbed518062521b13948f2f6",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.receipts.png",
+        "sha256": "edc8d64ce5d9f7184776c3b30f29f09ddf0eccc2e5166703afa81a2a4e898c5d",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.disputes",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/disputes",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.disputes.png",
+        "sha256": "ca4193799e8d92798ac30386a1d5197540ccdd903622e2923bc59ffe16c8f026",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.disputes.png",
+        "sha256": "fef71db070c224a2aa61c6e4db65c16b0dd77bff9e0d67bf2a06a46a742ed0ea",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.refunds",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/refunds",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.refunds.png",
+        "sha256": "5bcf95f937a6a9656e073ad943632827b8e0f9816522ea64584a8861d4ede87b",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.refunds.png",
+        "sha256": "acfecca73b8209715ec56152ec6207cced920dec1816efa70460ae4ae80e71c6",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.cash-up",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/cash-up",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.cash-up.png",
+        "sha256": "961ba1959b7ada52d2f0465f45cb670b99a7da4311a60562f3874583d593bead",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.cash-up.png",
+        "sha256": "c3f8b07d7b05873b775438eecdb209f2a18a64ca52cbc52cb4e3645def4e92ef",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.periods",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/periods",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.periods.png",
+        "sha256": "aba5203935a32614092242c893cf90ae19dc006f66649b3faa537ce2e7509c6d",
+        "score": 20
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.periods.png",
+        "sha256": "ee09c04c58a6807981fc4e5aee4c8f81112dd328979692fa36779106f953b7aa",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.payouts",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/payouts",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.payouts.png",
+        "sha256": "d2d01fab76385b0c3225b4794be9d5bee84a36a3420dc496519bb75f2086a388",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.payouts.png",
+        "sha256": "034b26994681b6208e7037babcf7aabec5b51f724d57dfa7f818728ae2e9d88f",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.compensation-liabilities",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/compensation/liabilities",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.compensation-liabilities.png",
+        "sha256": "84a9b3c8a184b30fe4583c64655d340f7075c458f0169ba3f5fd295d8572d9f8",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.compensation-liabilities.png",
+        "sha256": "059caedf136841f79018d6dd48fd3c43c6a2fd1c1a786e01f5eb2cb2c2b700fe",
+        "score": 27
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.compensation-queries",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/compensation/queries",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.compensation-queries.png",
+        "sha256": "5035d449709e20c9a9deaff0a6e3a46fc97262334cb4863329cdc1518d58e13f",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.compensation-queries.png",
+        "sha256": "bee56663e73b0cfa686cdde621851f090b8ed380a4f60b83619d64bc3a2c5b51",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.exports",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/exports",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.exports.png",
+        "sha256": "233d050e3c449ee34e88e6acde7545067a8fd501a06a55ccf80a1679747ad0f3",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-RESP-001"
+      ],
+      "disposition": "converged_shared_primitives",
+      "change": "tonal SvPageHeader, icon navigation, raised tables/filters, token fixes, defect fixes",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.exports.png",
+        "sha256": "10f629f8e213d073b33414d16efa2d491d42caf217a07f19667669653c5f2653",
+        "score": 28
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.audit",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/audit",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.audit.png",
+        "sha256": "405d91fc13808f417e63deae8a04daf40470f6c770a65809215b0b3b75718b92",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-015",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "tonal header + time-led AuditEventCard evidence records",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.audit.png",
+        "sha256": "4feceb957f942a4bc65787555e872e71900fd11b62e387fc03f8af92921c431e",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    },
+    {
+      "contract_key": "merchant_finance.settings",
+      "account": "merchant_finance",
+      "owner_phase": "UI-12",
+      "route": "/settings",
+      "before": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/before/merchant_finance.settings.png",
+        "sha256": "d20c352759c824ff33e906e8eb1611eafa8b06d58bbcca73e56c022ffbb4e60f",
+        "score": 19
+      },
+      "root_causes": [
+        "UI16-VIS-001",
+        "UI16-FOOTER-001",
+        "UI16-LAYOUT-001",
+        "UI16-VIS-003",
+        "UI16-VIS-004",
+        "UI16-NAV-001",
+        "UI16-NAV-003",
+        "UI16-CONTENT-003"
+      ],
+      "disposition": "redesigned",
+      "change": "Profile-reference identity hero",
+      "after": {
+        "evidence": "docs/frontend/audits/ui-16/screenshots/after/merchant_finance.settings.png",
+        "sha256": "6859cbbd57adbd523763d0113454a2e8ea7794adad251feb460d16b1c1a548d3",
+        "score": 30
+      },
+      "final_status": "meets_ui16_bar"
+    }
+  ]
+}

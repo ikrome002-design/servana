@@ -50,6 +50,8 @@ import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { SvIconChevronRight } from '@/design-system/icons';
 import { useCan } from '@/composables/useCan';
 import { usePlatformAuditStore, type PlatformAuditEvent } from '@/stores/platformAuditStore';
+import { severityPresentation } from '@/utils/auditPresentation';
+import { formatDateTime } from '@/utils/dates';
 
 const store = usePlatformAuditStore();
 const { can } = useCan();
@@ -88,7 +90,7 @@ const columns: SvColumn<PlatformAuditEvent>[] = [
   { key: 'action', label: 'Action', priority: 'primary', value: (row) => row.action },
   { key: 'severity', label: 'Severity', priority: 'secondary', value: (row) => row.severity },
   { key: 'actor', label: 'Actor', priority: 'secondary', value: (row) => row.actor ?? '—' },
-  { key: 'created_at', label: 'Occurred', priority: 'secondary', value: (row) => row.created_at ?? '—' },
+  { key: 'created_at', label: 'Occurred', priority: 'secondary', value: (row) => (row.created_at ? formatDateTime(row.created_at) : '—') },
   { key: 'subject_type', label: 'Subject', priority: 'detail', value: (row) => row.subject_type ?? '—' },
   { key: 'correlation_id', label: 'Correlation', priority: 'detail', value: (row) => row.correlation_id ?? '—' },
 ];
@@ -226,7 +228,7 @@ onMounted(() => {
         >
           <template #cell:severity="{ row }">
             <SvStatusBadge
-              :label="row.severity"
+              :label="severityPresentation(row.severity).label"
               :tone="severityTone(row.severity)"
               size="sm"
               sr-prefix="Severity:"
@@ -258,7 +260,7 @@ onMounted(() => {
         >
           <template #cell:severity="{ row }">
             <SvStatusBadge
-              :label="row.severity"
+              :label="severityPresentation(row.severity).label"
               :tone="severityTone(row.severity)"
               size="sm"
               sr-prefix="Severity:"
@@ -319,7 +321,7 @@ onMounted(() => {
         </p>
 
         <template v-else-if="store.current">
-          <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+          <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
             <div>
               <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
                 Severity
@@ -416,7 +418,7 @@ onMounted(() => {
               <div
                 v-for="[key, value] in remainingContext"
                 :key="key"
-                class="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]"
+                class="grid grid-cols-1 gap-1 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]"
               >
                 <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
                   {{ key }}

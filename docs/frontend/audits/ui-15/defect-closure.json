@@ -320,5 +320,30 @@
   },
   "observations_not_defects": [
     "UI15-INT-RES-001 — daily full-chain verification results are not persisted (integrity-truth-matrix.json; owner Phase 25 §71 / product owner)"
-  ]
+  ],
+  "post_merge_reconciliation": {
+    "reconciled_on": "phase-ui-16-responsive-accessibility-theme-visual-regression",
+    "date": "2026-10-12",
+    "pr": 66,
+    "merged_at": "2026-10-11T18:23:30Z",
+    "head": "0ae694b8b8fc37e36ad7296eff9fdfec09cbb002",
+    "merge": "088a6cd764534ac5a4e44d1ce8c1e72cebfd480b",
+    "tree": "73bd2171145a82059b5580a605527000db077d3c",
+    "ci_run": 38160619788,
+    "ci_jobs_success": [
+      "Backend",
+      "Frontend",
+      "Docker",
+      "Security",
+      "E2E"
+    ],
+    "note": "Original per-closure \"lifecycle\" values are preserved as recorded at handoff. Every closure recorded local_complete is now verified_complete through the merged, exact-head-CI-proven PR #66; no closure was open or blocked.",
+    "counts_after_merge": {
+      "open": 0,
+      "blocked": 0,
+      "local_complete": 0,
+      "verified_complete": 16,
+      "total": 16
+    }
+  }
 }

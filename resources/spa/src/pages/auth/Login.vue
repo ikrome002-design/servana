@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
@@ -7,10 +8,15 @@ import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { accountContextResult } from '@/host/accountHostContext';
 
 const router = useRouter();
 const auth = useAuthStore();
 const notifications = useNotificationStore();
+const canSelfRegister = computed(() => {
+  const result = accountContextResult();
+  return result.ok && result.context.selfRegistration;
+});
 
 const form = useForm<{ email: string }>({ email: '' });
 
@@ -81,7 +87,10 @@ const submit = form.handleSubmit(async ({ email }) => {
       </SvButton>
     </form>
 
-    <p class="mt-4 text-sm text-text-muted">
+    <p
+      v-if="canSelfRegister"
+      class="mt-4 text-sm text-text-muted"
+    >
       New to Servana?
       <RouterLink
         :to="{ name: 'auth.register' }"

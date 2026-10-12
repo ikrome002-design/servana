@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import HeaderGroupNavigation from '@/components/navigation/HeaderGroupNavigation.vue';
 import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
 import SvNotificationsControl from '@/components/ui/SvNotificationsControl.vue';
 import SvProfileControl from '@/components/ui/SvProfileControl.vue';
 import { SvIconClose, SvIconMenu } from '@/design-system/icons';
+import { accountTone, PAGE_TONE_KEY } from '@/design-system/pageTone';
 import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
+import { contractForAccount } from '@/navigation/navigationRegistry.generated';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useFinanceWorkspaceStore } from '@/stores/financeWorkspaceStore';
@@ -55,6 +57,7 @@ const hrWorkspace = useHrWorkspaceStore();
 const personnelEarnings = usePersonnelEarningsStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
+provide(PAGE_TONE_KEY, computed(() => accountTone(props.identity)));
 const placement = computed(() => entry.value.navPlacement);
 const contextLabel = computed(() => {
   if (props.identity === 'merchant_branch') return branchExperience.overview?.branch.name ?? merchant.name;
@@ -108,6 +111,12 @@ const navigationNodes = computed(() =>
 const pageTitle = computed(() => {
   const fromTree = flattenNavigation(navigationNodes.value).find((n) => n.routeName === route.name);
   if (fromTree) return fromTree.label;
+
+  // UI16-NAV-004: a detail route (merchant, invoice, staff record) is a contract page that is
+  // deliberately not a navigation link, so the header used to fall back to the ACCOUNT name
+  // ("Super Administrator") on it. The canonical contract still names the page.
+  const fromContract = contractForAccount(props.identity).find((page) => page.routeName === route.name);
+  if (fromContract) return fromContract.label;
 
   return entry.value.label;
 });
@@ -188,11 +197,11 @@ const isHeaderNav = computed(() => placement.value === 'header');
     </a>
 
     <header
-      class="border-b border-border px-4 py-3 md:px-6"
-      :class="isHeaderNav ? 'bg-brand-deep text-white' : 'bg-surface'"
+      class="sv-shell-header border-b border-border"
+      :class="isHeaderNav ? 'sv-shell-header--platform bg-brand-deep text-white' : 'bg-surface'"
     >
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
+      <div class="flex items-center justify-between gap-3 px-4 py-3 md:px-6">
+        <div class="flex min-w-0 items-center gap-3">
           <!-- Sidebar roles: mobile drawer trigger (hidden on desktop). -->
           <button
             v-if="!isHeaderNav"
@@ -216,27 +225,21 @@ const isHeaderNav = computed(() => placement.value === 'header');
             class="h-8 w-auto"
           >
           <span
-            class="text-sm font-medium"
-            :class="isHeaderNav ? 'opacity-90' : 'text-text-muted'"
+            class="hidden h-6 w-px shrink-0 md:block"
+            :class="isHeaderNav ? 'bg-white/20' : 'bg-sv-border'"
+            aria-hidden="true"
+          />
+          <span
+            class="truncate text-sm font-semibold"
+            :class="isHeaderNav ? 'text-white' : 'text-sv-text-heading'"
           >{{ pageTitle }}</span>
-        </div>
-
-        <!--
-          Super Admin: primary navigation in the header, from tablet up (ADR-018). Grouped
-          disclosures with a CSS-declared overflow — never a desktop left rail.
-        -->
-        <div
-          v-if="isHeaderNav"
-          class="hidden min-w-0 flex-1 justify-center md:flex"
-        >
-          <HeaderGroupNavigation :nodes="navigationNodes" />
         </div>
 
         <div class="flex items-center gap-1">
           <!-- Merchant/branch context for sidebar roles. -->
           <span
             v-if="!isHeaderNav && contextLabel"
-            class="mr-2 hidden text-sm text-text-muted sm:inline"
+            class="mr-2 hidden max-w-[16rem] truncate rounded-pill border border-sv-border bg-sv-surface-subtle px-3 py-1 text-xs font-medium text-sv-text-secondary md:inline"
             :data-testid="identity === 'merchant_branch' || identity === 'merchant_human_resource' || identity === 'merchant_finance' || identity === 'merchant_front_office' ? 'branch-context' : 'merchant-context'"
           >{{ contextLabel }}</span>
 
@@ -276,13 +279,35 @@ const isHeaderNav = computed(() => placement.value === 'header');
           </button>
         </div>
       </div>
+
+      <!--
+        Super Admin: primary navigation in the header, from tablet up (ADR-018). Grouped
+        disclosures with a CSS-declared overflow — never a desktop left rail.
+
+        UI16-NAV-002: the eight groups used to share the title bar with the logo, page title and
+        profile, so at 1440px they wrapped onto a second, ragged row under the brand. They now own a
+        full-width strip of the same header — still the header, still primary navigation — so the
+        groups read as one row at every desktop width the strip can hold.
+      -->
+      <div
+        v-if="isHeaderNav"
+        class="sv-shell-header__strip hidden px-4 py-1.5 md:block md:px-6"
+      >
+        <HeaderGroupNavigation :nodes="navigationNodes" />
+      </div>
     </header>
 
     <div class="flex flex-1">
-      <!-- Sidebar roles: desktop persistent primary navigation. -->
+      <!--
+        Sidebar roles: desktop persistent primary navigation.
+
+        UI16-NAV-003: the sidebar used to grow with the page, so on a long page the navigation
+        scrolled away and on a short one it ran under the fixed footer. It is now pinned beside the
+        content and scrolls INTERNALLY within the space the footer leaves free.
+      -->
       <div
         v-if="!isHeaderNav"
-        class="hidden w-64 shrink-0 border-r border-border bg-surface p-3 lg:block"
+        class="sv-shell-sidebar hidden w-64 shrink-0 border-r border-border bg-surface px-3 py-4 lg:block"
         data-testid="sidebar-primary-nav"
       >
         <HeaderGroupNavigation
@@ -403,3 +428,42 @@ const isHeaderNav = computed(() => placement.value === 'header');
     </Teleport>
   </div>
 </template>
+
+<style scoped>
+/*
+ * UI16-A11Y-002: on the Deep Earth Brown platform header the shared ghost icon button kept its
+ * light-surface Charcoal glyph (#1F2933 on #4A2208, about 1.3:1 — WCAG 1.4.11 needs 3:1), so the
+ * notifications control was effectively invisible on all seventeen Super Administrator pages.
+ * The header owns its surface, so it sets the glyph colour for controls placed on it.
+ */
+.sv-shell-header--platform :deep([data-testid='sv-notifications-trigger']) {
+  /* `white`, like the header's own `text-white`: the brown header is the same in BOTH themes,
+     whereas `--sv-color-text-inverse` flips to Charcoal in dark mode. */
+  color: white;
+}
+.sv-shell-header--platform :deep([data-testid='sv-notifications-trigger']:hover) {
+  background-color: color-mix(in srgb, white 12%, transparent);
+}
+
+/* UI16-NAV-002: the platform navigation strip is a quieter band of the same header. */
+.sv-shell-header__strip {
+  border-block-start: var(--sv-border-width-hairline) solid color-mix(in srgb, white 12%, transparent);
+  background: color-mix(in srgb, black 14%, transparent);
+}
+
+/*
+ * UI16-NAV-003: the desktop sidebar stays beside the content and scrolls internally within the
+ * space the fixed footer leaves free (ADR-024 — one footer token, so the two cannot disagree).
+ */
+@media (min-width: 1025px) {
+  .sv-shell-sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    align-self: flex-start;
+    max-block-size: calc(100dvh - var(--sv-footer-height-desktop) - var(--sv-safe-area-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+}
+</style>

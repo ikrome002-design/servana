@@ -5,6 +5,7 @@ import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { formatMoney } from '@/utils/money';
+import { formatDateTime } from '@/utils/dates';
 
 const props = defineProps<{ kind: 'invoices' | 'payments' }>();
 const store = useBranchExperienceStore();
@@ -64,7 +65,7 @@ watch(() => props.kind, load);
                 {{ kind === 'invoices' ? ('invoice_number' in row && row.invoice_number ? row.invoice_number : 'Draft invoice') : ('invoice' in row ? row.invoice?.invoice_number ?? 'Payment record' : 'Payment record') }}
               </p>
               <p class="mt-1 text-xs text-text-muted">
-                {{ row.created_at ? new Date(row.created_at).toLocaleString() : 'Date unavailable' }}
+                {{ row.created_at ? formatDateTime(row.created_at) : 'Date unavailable' }}
               </p>
             </div>
             <div>

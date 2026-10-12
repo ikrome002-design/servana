@@ -12,6 +12,7 @@ import {
 } from '@/stores/availabilityStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import type { BranchPersonnelOption } from '@/types/models';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 // Branch Manager READ-ONLY personnel schedule (Plan §80 Phase 15B). The Branch
 // Manager has branch-scoped visibility (`branch.dashboard.view`) into personnel
@@ -90,14 +91,16 @@ watch(
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Personnel schedule
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      View personnel availability for your branch. Times are in
-      <span class="font-medium">Africa/Nairobi</span>. Schedules are managed by HR.
-    </p>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="Personnel schedule"
+      eyebrow="Branch operations"
+    >
+      <template #description>
+        View personnel availability for your branch. Times are in
+        <span class="font-medium">Africa/Nairobi</span>. Schedules are managed by HR.
+      </template>
+    </SvPageHeader>
 
     <SvCard
       v-if="!canView"

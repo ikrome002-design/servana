@@ -11,6 +11,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useRefundStore } from '@/stores/refundStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import { PAYMENT_METHODS } from '@/stores/paymentStore';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 
 /**
  * External refund list (Plan §44; Phase 18B). Servana NEVER moves funds; a refund
@@ -74,32 +75,34 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        External refunds
-      </h1>
-      <div class="flex flex-wrap items-center gap-2">
-        <SvSelect
-          id="refund-status-filter"
-          v-model="store.filterStatus"
-          label="Filter"
-          :options="statusOptions"
-          class="w-full sm:w-56"
-          @update:model-value="() => store.fetchRefunds()"
-        />
-        <SvButton
-          v-if="canCreate"
-          data-testid="refund-request-open"
-          @click="requesting = true"
-        >
-          Request refund
-        </SvButton>
-      </div>
-    </div>
+  <section class="mx-auto max-w-6xl">
+    <SvPageHeader
+      title="External refunds"
+      eyebrow="Merchant-Client Finance"
+      description="Refunds paid to clients outside Servana, recorded and approved here. Servana does not move money."
+    >
+      <template #actions>
+        <div class="flex flex-wrap items-center gap-2">
+          <SvSelect
+            id="refund-status-filter"
+            v-model="store.filterStatus"
+            label="Filter"
+            :options="statusOptions"
+            class="w-full md:w-56"
+            @update:model-value="() => store.fetchRefunds()"
+          />
+          <SvButton
+            v-if="canCreate"
+            data-testid="refund-request-open"
+            @click="requesting = true"
+          >
+            Request refund
+          </SvButton>
+        </div>
+      </template>
+    </SvPageHeader>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load refunds."
       empty-message="No refunds match this filter."

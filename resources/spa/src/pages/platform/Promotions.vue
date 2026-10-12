@@ -6,6 +6,7 @@ import SvEmptyState from '@/components/ui/SvEmptyState.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
+import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import {
@@ -19,6 +20,7 @@ import {
   type FreePeriodOffer,
   type FreePeriodOfferPayload,
 } from '@/stores/freePeriodOfferStore';
+import { statusLabel } from '@/utils/statusLabel';
 
 // Phase 20C — the consolidated Super-Administrator promotions surface (Plan §27.1, §53). Two
 // sections: Promotional discounts and Free-period offers. Each is gated by its resolved manage
@@ -201,6 +203,19 @@ async function confirmReason(): Promise<void> {
   } finally {
     submitting.value = false;
   }
+}
+
+/** The scope's label from the same option list the form offers; an unknown token is shown in words. */
+function scopeLabel(scope: string): string {
+  return scopeOptions.find((option) => option.value === scope)?.label ?? statusLabel(scope);
+}
+
+/** Badge tone for a lifecycle status. Decoration only: the status is always rendered as text. */
+function offerTone(status: string): SvStatusTone {
+  if (status === 'active') return 'success';
+  if (status === 'paused' || status === 'draft' || status === 'scheduled') return 'warning';
+  if (status === 'cancelled' || status === 'expired') return 'neutral';
+  return 'info';
 }
 
 function promotionActions(p: PromotionalDiscount): Action[] {
@@ -401,17 +416,32 @@ onMounted(() => {
           >
             <SvCard>
               <div class="promotions__item">
-                <div>
-                  <h3 class="promotions__item-title">
-                    {{ p.name }}
-                  </h3>
-                  <p class="promotions__meta">
-                    {{ describeValue(p) }} · scope {{ p.target_scope }} · status
-                    <strong>{{ p.status }}</strong>
-                  </p>
-                  <p class="promotions__meta">
-                    Effective {{ p.effective_from }}<span v-if="p.effective_to"> – {{ p.effective_to }}</span>
-                  </p>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="promotions__item-title">
+                      {{ p.name }}
+                    </h3>
+                    <SvStatusBadge
+                      size="sm"
+                      :label="statusLabel(p.status)"
+                      :tone="offerTone(p.status)"
+                    />
+                  </div>
+                  <!-- UI16-CONTENT-001: labelled facts instead of "KES … · scope token · status token". -->
+                  <dl class="promotions__facts">
+                    <div>
+                      <dt>Discount</dt>
+                      <dd>{{ describeValue(p) }}</dd>
+                    </div>
+                    <div>
+                      <dt>Target</dt>
+                      <dd>{{ scopeLabel(p.target_scope) }}</dd>
+                    </div>
+                    <div>
+                      <dt>Effective</dt>
+                      <dd>{{ p.effective_from }}<span v-if="p.effective_to"> – {{ p.effective_to }}</span><span v-else> onward</span></dd>
+                    </div>
+                  </dl>
                 </div>
                 <div class="promotions__actions">
                   <SvButton
@@ -420,7 +450,7 @@ onMounted(() => {
                     variant="secondary"
                     @click="openReason('promotion', action, p.id)"
                   >
-                    {{ action }}
+                    {{ statusLabel(action) }}
                   </SvButton>
                 </div>
               </div>
@@ -534,16 +564,31 @@ onMounted(() => {
           >
             <SvCard>
               <div class="promotions__item">
-                <div>
-                  <h3 class="promotions__item-title">
-                    {{ o.name }}
-                  </h3>
-                  <p class="promotions__meta">
-                    {{ o.free_period_days }} days · scope {{ o.target_scope }} · status <strong>{{ o.status }}</strong>
-                  </p>
-                  <p class="promotions__meta">
-                    Effective {{ o.effective_from }}<span v-if="o.effective_to"> – {{ o.effective_to }}</span>
-                  </p>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="promotions__item-title">
+                      {{ o.name }}
+                    </h3>
+                    <SvStatusBadge
+                      size="sm"
+                      :label="statusLabel(o.status)"
+                      :tone="offerTone(o.status)"
+                    />
+                  </div>
+                  <dl class="promotions__facts">
+                    <div>
+                      <dt>Free period</dt>
+                      <dd>{{ o.free_period_days }} days</dd>
+                    </div>
+                    <div>
+                      <dt>Target</dt>
+                      <dd>{{ scopeLabel(o.target_scope) }}</dd>
+                    </div>
+                    <div>
+                      <dt>Effective</dt>
+                      <dd>{{ o.effective_from }}<span v-if="o.effective_to"> – {{ o.effective_to }}</span><span v-else> onward</span></dd>
+                    </div>
+                  </dl>
                 </div>
                 <div class="promotions__actions">
                   <SvButton
@@ -552,7 +597,7 @@ onMounted(() => {
                     variant="secondary"
                     @click="openReason('offer', action, o.id)"
                   >
-                    {{ action }}
+                    {{ statusLabel(action) }}
                   </SvButton>
                 </div>
               </div>
@@ -649,7 +694,32 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 .promotions__item-title {
+  font-family: var(--sv-font-family-display, 'Manrope', sans-serif);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--sv-color-text-heading);
+}
+/* UI16-CONTENT-001: three labelled facts in a quiet tinted strip, wrapping on narrow screens. */
+.promotions__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--sv-radius-control);
+  background: var(--sv-color-surface-subtle);
+}
+.promotions__facts dt {
+  font-size: 0.6875rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sv-color-text-muted);
+}
+.promotions__facts dd {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--sv-color-text-primary);
 }
 .promotions__meta {
   color: var(--sv-color-text-muted);
@@ -659,6 +729,7 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 .promotions__modal-actions {
   display: flex;
