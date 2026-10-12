@@ -70,6 +70,12 @@ bringing active baselines to 122 while retaining the original 106 unchanged. Thr
 missing-expectation runs and two artifact-capture fixes are preserved in proof. Final full-suite CI,
 governance and normal merge remain pending at this source checkpoint.
 
+Full-suite adjudication found two retry-only quality failures despite green jobs. Active navigation
+now switches its paired theme colours without an inaccessible interpolated midpoint; a frame-sampled
+contrast regression includes a negative control. UI08's geometry assertion waits for fonts/layout
+while preserving zero overflow tolerance. Nine focused repetitions passed; baseline images are
+unchanged and a new final-head full CI run remains mandatory.
+
 ### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — verified_complete; PR #66 merged
 
 Reconciled once on the UI-16 branch (2026-10-12): normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`

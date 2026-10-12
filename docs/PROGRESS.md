@@ -234,6 +234,15 @@ expectations (16 auth cases passed; full E2E not run). These failures are preser
 **Next gate:** new exact-final-head five-job CI, strict visual comparisons and complete E2E, then
 truthful zero-review governance if still permitted, ordinary merge with equal tree and clean main.
 
+Run `38281066223` passed all five jobs on `32c4c73…`, but full E2E had 2,104 clean passes and two
+retry-only successes. Codex withheld merge: the active nav interpolated valid theme endpoints
+through a serious 2.79 contrast midpoint, and UI08 measured geometry before fonts/layout settled.
+Only nav colour transitions and the readiness assertion changed; a 40-frame two-direction contrast
+regression with a failing perturbation control was added. Both reported cases plus that check
+passed three local repetitions (9/9, no retries); all 122 baseline bytes remain unchanged.
+Detailed before/after records: proof and `codex-nav-contrast-checkpoint.json`. A new exact-final-head
+five-job/full-E2E result is required; the green-but-retried run is retained, not reused for merge.
+
 ### Phase UI-15 — Audit experience — verified complete
 
 Live reconciliation on the UI-16 branch (2026-10-12, read-only `git`/`gh`): PR #66 is `MERGED` at

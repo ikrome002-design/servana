@@ -249,6 +249,51 @@ test.describe('UI-16 theme — light first paint and explicit persistence', () =
       .map((el) => `${el.tagName.toLowerCase()}.${el.className?.toString().slice(0, 50)}`));
     expect(animated, `long motion under prefers-reduced-motion:\n${animated.join('\n')}`).toEqual([]);
   });
+
+  test('active navigation stays AA through both theme transitions', async ({ page }) => {
+    const entry = dashboards.find((p) => p.account === 'merchant_administrator')!;
+    await openLive(page, entry);
+    await page.evaluate(() => document.fonts.ready);
+    const ratios = await page.evaluate(async () => {
+      const row = document.querySelector<HTMLElement>('.sv-shell-sidebar .sv-nav-entry--active')!;
+      const toggle = document.querySelector<HTMLButtonElement>('[data-testid="theme-toggle"]')!;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      const context = canvas.getContext('2d')!;
+      const luminance = (color: string): number => {
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = color;
+        context.fillRect(0, 0, 1, 1);
+        const values = Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3).map((value) => {
+          const channel = value / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return values[0]! * 0.2126 + values[1]! * 0.7152 + values[2]! * 0.0722;
+      };
+      const sampleTransitions = async (): Promise<number[]> => {
+        const samples: number[] = [];
+        for (let change = 0; change < 2; change += 1) {
+          toggle.click();
+          for (let frame = 0; frame < 20; frame += 1) {
+            const style = getComputedStyle(row);
+            const foreground = luminance(style.color);
+            const background = luminance(style.backgroundColor);
+            samples.push((Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05));
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+          }
+        }
+        return samples;
+      };
+      const actual = await sampleTransitions();
+      // Negative control: restoring the old interpolation must reproduce a low-contrast midpoint.
+      row.style.transition = 'background-color 160ms linear, color 160ms linear';
+      const perturbed = await sampleTransitions();
+      return { actual, perturbed };
+    });
+    expect(ratios.actual).toHaveLength(40);
+    expect(Math.min(...ratios.actual), 'navigation foreground/background must never cross through a low-contrast midpoint').toBeGreaterThanOrEqual(4.5);
+    expect(Math.min(...ratios.perturbed), 'the control must detect the old low-contrast interpolation').toBeLessThan(4.5);
+  });
 });
 
 test.describe('UI-16 gates — 28 contract rows stay inert', () => {

@@ -488,7 +488,7 @@ onBeforeUnmount(() => {
             <RouterLink
               v-if="!item.disabled && item.routeName"
               :to="{ name: item.routeName }"
-              class="sv-nav-entry sv-focus-ring flex min-h-sv-touch items-center gap-3 rounded-control px-2 py-1.5 text-sm leading-5 text-sv-text-secondary transition-colors duration-sv-fast hover:bg-sv-surface-subtle hover:text-sv-text"
+              class="sv-nav-entry sv-focus-ring flex min-h-sv-touch items-center gap-3 rounded-control px-2 py-1.5 text-sm leading-5 text-sv-text-secondary hover:bg-sv-surface-subtle hover:text-sv-text"
               :class="isActive(item) ? 'sv-nav-entry--active font-semibold text-sv-text-heading' : ''"
               :aria-current="isActive(item) ? 'page' : undefined"
               :data-testid="`nav-stacked-link-${item.key}`"
@@ -528,9 +528,9 @@ onBeforeUnmount(() => {
 .sv-nav-entry__icon {
   color: var(--sv-color-text-muted);
   background: transparent;
-  transition: background-color var(--sv-motion-duration-fast) var(--sv-motion-ease-standard),
-    color var(--sv-motion-duration-fast) var(--sv-motion-ease-standard);
 }
+/* Theme pairs must switch atomically: interpolating opposite foreground/background colours
+   creates a low-contrast midpoint even when both endpoint token pairs pass AA. */
 .sv-nav-entry:hover .sv-nav-entry__icon {
   background: var(--sv-color-surface-raised);
   color: var(--sv-color-text-heading);

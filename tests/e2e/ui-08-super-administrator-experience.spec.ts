@@ -448,14 +448,11 @@ test.describe('Responsive matrix', () => {
       for (const entry of IMPLEMENTED_PAGES) {
         await open(page, entry.path);
         await expect(page.getByTestId(entry.testid)).toBeVisible();
-        const overflow = await page.evaluate(() => ({
-          scroll: document.documentElement.scrollWidth,
-          client: document.documentElement.clientWidth,
-        }));
-        expect(
-          overflow.scroll,
-          `${entry.screen} overflows at ${width}px (${overflow.scroll} > ${overflow.client})`,
-        ).toBeLessThanOrEqual(overflow.client);
+        await page.evaluate(() => document.fonts.ready);
+        await expect.poll(
+          () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+          { message: `${entry.screen} overflows at ${width}px after fonts/layout settle` },
+        ).toBeLessThanOrEqual(0);
       }
     });
   }
