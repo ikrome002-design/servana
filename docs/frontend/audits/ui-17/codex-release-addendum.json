@@ -52,6 +52,13 @@
       "size": null,
       "sha256": null,
       "reason": "This Codex delta register; self-hash captured externally"
+    },
+    {
+      "path": ".gitleaksignore",
+      "status": "M",
+      "size": 4826,
+      "sha256": "1e810d83b4d844496860a49b0b0c516a98761fae105e1142e1a36e6f1700780c",
+      "reason": "Verified generated public integrity digest at exact immutable implementation commit; existing scanner policy"
     }
   ],
   "defects": [
@@ -117,5 +124,13 @@
     "npm_audit": "0 vulnerabilities",
     "composer": "strict validate PASS; locked audit no advisories",
     "staged_scan": "Exactly one remaining non-secret finding: public SHA-256(tokens.json) on generated line 13; scanned actual index blobs"
+  },
+  "implementation_commit": "241670556c88aad70efc9c3a0480825c47f5c24e",
+  "gitleaks": {
+    "actual_fingerprint": "241670556c88aad70efc9c3a0480825c47f5c24e:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13",
+    "verified_source_digest": "7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b",
+    "history_scan_before": "1 introducing commit; exactly 1 verified non-secret finding",
+    "policy": "single exact commit:path:rule:line; no scanner configuration or workflow relaxation",
+    "normal_merge_required_reason": "preserve introducing commit identity for verified digest fingerprint"
   }
 }
