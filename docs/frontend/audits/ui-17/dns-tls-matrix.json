@@ -1,0 +1,368 @@
+{
+  "generated_by": "scripts/ui17-dns-tls-probe.mjs",
+  "run_at": "2026-10-12T22:28:36.798Z",
+  "apex": "servana.ke",
+  "public_resolvers": {
+    "cloudflare": "1.1.1.1",
+    "google": "8.8.8.8"
+  },
+  "parent_delegation": {
+    "asked": "ns.anycast.kenic.or.ke",
+    "nameservers": [
+      "ns1.a2hosting.com",
+      "ns2.a2hosting.com",
+      "ns3.a2hosting.com",
+      "ns4.a2hosting.com"
+    ]
+  },
+  "delegated_nameservers": [
+    {
+      "nameserver": "ns1.a2hosting.com",
+      "address": "13.248.158.180",
+      "rcode": "REFUSED",
+      "authoritative": false,
+      "answers_for_zone": false,
+      "error": null
+    },
+    {
+      "nameserver": "ns2.a2hosting.com",
+      "address": "75.2.118.134",
+      "rcode": "REFUSED",
+      "authoritative": false,
+      "answers_for_zone": false,
+      "error": null
+    },
+    {
+      "nameserver": "ns3.a2hosting.com",
+      "address": "76.223.26.245",
+      "rcode": "REFUSED",
+      "authoritative": false,
+      "answers_for_zone": false,
+      "error": null
+    },
+    {
+      "nameserver": "ns4.a2hosting.com",
+      "address": "99.83.147.209",
+      "rcode": "REFUSED",
+      "authoritative": false,
+      "answers_for_zone": false,
+      "error": null
+    }
+  ],
+  "lame_delegation": true,
+  "hosts": [
+    {
+      "account_key": "merchant_administrator",
+      "host": "servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "super_administrator",
+      "host": "citrus.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_branch",
+      "host": "branch.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_finance",
+      "host": "finance.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_front_office",
+      "host": "office.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    },
+    {
+      "account_key": "merchant_audit",
+      "host": "audit.servana.ke",
+      "resolvers": {
+        "cloudflare": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        },
+        "google": {
+          "a": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "aaaa": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          },
+          "cname": {
+            "ok": false,
+            "error": "ESERVFAIL"
+          }
+        }
+      },
+      "resolves": false,
+      "tls": {
+        "skipped": "host does not resolve — no TLS endpoint to test"
+      },
+      "healthy": false
+    }
+  ],
+  "all_hosts_healthy": false
+}

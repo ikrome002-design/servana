@@ -1,0 +1,51 @@
+/*
+ * Metric-compatible fallback faces for the brand fonts (Phase UI-17, UI17-PERF-002).
+ *
+ * Inter (UI) and Manrope (page titles) load with `font-display: swap`, so text first paints in a
+ * system face and re-flows when the brand face arrives. Measured on the built landing pages, that
+ * swap WAS the layout shift: footer links widened 4–10 px and wrapped, hero copy grew a line and
+ * pushed the call to action 48 px down (CLS up to 0.17 against the 0.1 budget).
+ *
+ * These faces re-shape the local Arial family (Arial / Helvetica / metric-identical Liberation Sans)
+ * to Inter's and Manrope's real metrics, so the fallback occupies the same box and the swap no
+ * longer moves anything. They are FALLBACKS ONLY: the token stacks list the brand face first, and
+ * no glyph of the brand fonts is substituted once they load (Brand Identity typography unchanged).
+ *
+ * Derivation (docs/frontend/audits/ui-17/performance-baseline-and-budget.json → font_fallbacks):
+ *   ascent/descent/line-gap overrides = the font's typo metrics (USE_TYPO_METRICS is set in both
+ *   files) read from the shipped @fontsource WOFF tables, divided by size-adjust;
+ *   size-adjust = measured advance width of the brand face over Arial on the eight landing-copy
+ *   sources in Chromium, per weight band.
+ * Platforms without any of the listed local faces (e.g. Android) skip these and fall back to the
+ * unadjusted system face, exactly as before.
+ */
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('ArialMT'), local('Helvetica'), local('Liberation Sans');
+  font-weight: 100 549;
+  size-adjust: 106.85%;
+  ascent-override: 90.66%;
+  descent-override: 22.57%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'), local('Liberation Sans Bold');
+  font-weight: 550 900;
+  size-adjust: 101.27%;
+  ascent-override: 95.66%;
+  descent-override: 23.82%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Manrope Fallback';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Helvetica Bold'), local('Liberation Sans Bold');
+  font-weight: 100 900;
+  size-adjust: 102.07%;
+  ascent-override: 104.44%;
+  descent-override: 29.39%;
+  line-gap-override: 0%;
+}

@@ -1,0 +1,640 @@
+{
+  "generated_by": "scripts/ui17-web-vitals.mjs",
+  "label": "before-n-1-1e8bd5f-fast4g",
+  "origin": "127.0.0.1:8171",
+  "hosts": "production",
+  "chromium": "151.0.7922.34",
+  "method": {
+    "throttling": "DevTools-applied (Network.emulateNetworkConditions + Emulation.setCPUThrottlingRate), not Lighthouse simulation",
+    "profiles": {
+      "mobile-slow-4g": {
+        "viewport": {
+          "width": 360,
+          "height": 780
+        },
+        "deviceScaleFactor": 2,
+        "isMobile": true,
+        "hasTouch": true,
+        "network": {
+          "latency": 150,
+          "downloadThroughput": 209715.2,
+          "uploadThroughput": 96000
+        },
+        "cpuSlowdown": 4
+      },
+      "mobile-fast-4g": {
+        "viewport": {
+          "width": 360,
+          "height": 780
+        },
+        "deviceScaleFactor": 2,
+        "isMobile": true,
+        "hasTouch": true,
+        "network": {
+          "latency": 60,
+          "downloadThroughput": 1179648,
+          "uploadThroughput": 196608
+        },
+        "cpuSlowdown": 4
+      },
+      "desktop-cable": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "network": {
+          "latency": 28,
+          "downloadThroughput": 655360,
+          "uploadThroughput": 131072
+        },
+        "cpuSlowdown": 1
+      }
+    },
+    "cold": "fresh browser context per sample (empty HTTP cache, empty storage)",
+    "warm": "second navigation in the same context (HTTP cache primed)",
+    "p75": "nearest-rank 75th percentile of the N LAB samples — not field p75",
+    "cls": "largest session window (1 s gap, 5 s cap), shifts after recent input excluded",
+    "inp": "lab_surrogate: max Event Timing duration of a scripted theme-toggle click; authentic INP requires field data"
+  },
+  "results": [
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_administrator",
+      "host": "servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 112,
+          "p75_lab": 114
+        },
+        "fcp_ms": {
+          "median": 1724,
+          "p75_lab": 1736
+        },
+        "lcp_ms": {
+          "median": 2464,
+          "p75_lab": 2480,
+          "min": 2340,
+          "max": 2736
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 120,
+          "max": 232
+        },
+        "lcp_elements": [
+          {
+            "tag": "p",
+            "src": null,
+            "text": "Servana gives you one secure dashboard to manage clients, br"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 803770,
+          "decoded": 791843,
+          "js_transfer": 358524,
+          "css_transfer": 92882,
+          "img_transfer": 246915,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+            "transfer": 34392,
+            "decoded": 34092
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+            "transfer": 49653,
+            "decoded": 49353
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 932,
+        "cls": 0,
+        "transfer": 3701,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "super_administrator",
+      "host": "citrus.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 39,
+          "p75_lab": 44
+        },
+        "fcp_ms": {
+          "median": 1716,
+          "p75_lab": 1760
+        },
+        "lcp_ms": {
+          "median": 2420,
+          "p75_lab": 2596,
+          "min": 2340,
+          "max": 2616
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 120,
+          "max": 136
+        },
+        "lcp_elements": [
+          {
+            "tag": "h1",
+            "src": null,
+            "text": "Run your service-business platform with clarity and control."
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 830328,
+          "decoded": 818415,
+          "js_transfer": 357112,
+          "css_transfer": 92882,
+          "img_transfer": 274899,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+            "transfer": 50252,
+            "decoded": 49952
+          },
+          {
+            "path": "/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+            "transfer": 61777,
+            "decoded": 61477
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 952,
+        "cls": 0,
+        "transfer": 3687,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_branch",
+      "host": "branch.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 30,
+          "p75_lab": 33
+        },
+        "fcp_ms": {
+          "median": 1752,
+          "p75_lab": 1816
+        },
+        "lcp_ms": {
+          "median": 2556,
+          "p75_lab": 2672,
+          "min": 2444,
+          "max": 2828
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 112,
+          "max": 128
+        },
+        "lcp_elements": [
+          {
+            "tag": "p",
+            "src": null,
+            "text": "Servana helps each branch manage daily service activity from"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 796961,
+          "decoded": 785056,
+          "js_transfer": 360267,
+          "css_transfer": 92882,
+          "img_transfer": 238385,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+            "transfer": 36260,
+            "decoded": 35960
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+            "transfer": 39255,
+            "decoded": 38955
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 1032,
+        "cls": 0,
+        "transfer": 3679,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_finance",
+      "host": "finance.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 31,
+          "p75_lab": 42
+        },
+        "fcp_ms": {
+          "median": 1772,
+          "p75_lab": 1808
+        },
+        "lcp_ms": {
+          "median": 2576,
+          "p75_lab": 2612,
+          "min": 2424,
+          "max": 2676
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 96,
+          "max": 120
+        },
+        "lcp_elements": [
+          {
+            "tag": "p",
+            "src": null,
+            "text": "With Servana, you get one calm, secure place to review invoi"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 816827,
+          "decoded": 804924,
+          "js_transfer": 359862,
+          "css_transfer": 92882,
+          "img_transfer": 258658,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+            "transfer": 43844,
+            "decoded": 43544
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+            "transfer": 51944,
+            "decoded": 51644
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 1048,
+        "cls": 0,
+        "transfer": 3677,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_human_resource",
+      "host": "hr.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 30,
+          "p75_lab": 35
+        },
+        "fcp_ms": {
+          "median": 1796,
+          "p75_lab": 1804
+        },
+        "lcp_ms": {
+          "median": 2636,
+          "p75_lab": 2644,
+          "min": 2548,
+          "max": 2856
+        },
+        "cls": {
+          "median": 0.0187,
+          "p75_lab": 0.0187,
+          "max": 0.0187
+        },
+        "inp_surrogate_ms": {
+          "median": 112,
+          "max": 128
+        },
+        "lcp_elements": [
+          {
+            "tag": "p",
+            "src": null,
+            "text": "Your team is the heart of your service business. Servana hel"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 799379,
+          "decoded": 787450,
+          "js_transfer": 358267,
+          "css_transfer": 92882,
+          "img_transfer": 242779,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+            "transfer": 34150,
+            "decoded": 33850
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+            "transfer": 45759,
+            "decoded": 45459
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 944,
+        "cls": 0,
+        "transfer": 3703,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_front_office",
+      "host": "office.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 45,
+          "p75_lab": 91
+        },
+        "fcp_ms": {
+          "median": 1816,
+          "p75_lab": 1832
+        },
+        "lcp_ms": {
+          "median": 2680,
+          "p75_lab": 2748,
+          "min": 2580,
+          "max": 2972
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 120,
+          "max": 144
+        },
+        "lcp_elements": [
+          {
+            "tag": "p",
+            "src": null,
+            "text": "Servana helps your front desk handle walk-ins, appointments,"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 791030,
+          "decoded": 779097,
+          "js_transfer": 358445,
+          "css_transfer": 92882,
+          "img_transfer": 234248,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+            "transfer": 35391,
+            "decoded": 35091
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+            "transfer": 35987,
+            "decoded": 35687
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 1244,
+        "cls": 0,
+        "transfer": 3707,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_personnel",
+      "host": "staff.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 63,
+          "p75_lab": 2316
+        },
+        "fcp_ms": {
+          "median": 1752,
+          "p75_lab": 5768
+        },
+        "lcp_ms": {
+          "median": 2716,
+          "p75_lab": 6772,
+          "min": 2424,
+          "max": 9664
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 128,
+          "max": 168
+        },
+        "lcp_elements": [
+          {
+            "tag": "h1",
+            "src": null,
+            "text": "Know your clients. Track your work. See your commissions cle"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 793987,
+          "decoded": 782075,
+          "js_transfer": 361115,
+          "css_transfer": 92882,
+          "img_transfer": 234556,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+            "transfer": 31979,
+            "decoded": 31679
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+            "transfer": 39707,
+            "decoded": 39407
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 1048,
+        "cls": 0,
+        "transfer": 3686,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "account_key": "merchant_audit",
+      "host": "audit.servana.ke",
+      "samples": 5,
+      "cold": {
+        "ttfb_ms": {
+          "median": 28,
+          "p75_lab": 29
+        },
+        "fcp_ms": {
+          "median": 1780,
+          "p75_lab": 1812
+        },
+        "lcp_ms": {
+          "median": 2548,
+          "p75_lab": 2556,
+          "min": 2444,
+          "max": 2576
+        },
+        "cls": {
+          "median": 0.0168,
+          "p75_lab": 0.0168,
+          "max": 0.0168
+        },
+        "inp_surrogate_ms": {
+          "median": 120,
+          "max": 136
+        },
+        "lcp_elements": [
+          {
+            "tag": "h1",
+            "src": null,
+            "text": "See what happened. Understand why it happened. Stay in contr"
+          }
+        ],
+        "totals_first_sample": {
+          "requests": 31,
+          "transfer": 813463,
+          "decoded": 801575,
+          "js_transfer": 359535,
+          "css_transfer": 92882,
+          "img_transfer": 255636,
+          "font_transfer": 101748
+        },
+        "images_first_sample": [
+          {
+            "path": "/assets/brand/Logo.png",
+            "transfer": 162870,
+            "decoded": 162570
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+            "transfer": 38006,
+            "decoded": 37706
+          },
+          {
+            "path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+            "transfer": 54760,
+            "decoded": 54460
+          }
+        ]
+      },
+      "warm": {
+        "lcp_ms": 1132,
+        "cls": 0,
+        "transfer": 3662,
+        "requests": 31
+      },
+      "light_first_paint": true,
+      "errors": []
+    }
+  ]
+}

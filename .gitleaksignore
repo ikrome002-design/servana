@@ -74,3 +74,8 @@ e6afe832fa9b45c4f452bcd43e19338ac87bfd9a:resources/spa/src/design-system/tokens.
 # Exact implementation-commit fingerprint; no scanner rule/path/entropy change.
 # Digest: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
 45d518f5ccf82649f94b58184835bc1d7bff6c40:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
+
+# UI-17: independently verified SHA-256(tokens.json), a public integrity digest.
+# Exact introducing-commit fingerprint; no scanner rule/path/entropy change.
+# Digest: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
+241670556c88aad70efc9c3a0480825c47f5c24e:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13

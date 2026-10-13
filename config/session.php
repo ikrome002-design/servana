@@ -171,7 +171,15 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    /*
+    | Phase UI-17 (UI17-SEC-004): Secure BY DEFAULT in production. Left unset, `null` made the flag
+    | follow Request::isSecure() — and behind the Servana edge that is derived from nginx's own
+    | `$scheme`, which is `http` whenever TLS terminates at a load balancer in front of it. A
+    | production deployment that forgot SESSION_SECURE_COOKIE therefore issued session and XSRF
+    | cookies a browser would send over plain HTTP. An explicit SESSION_SECURE_COOKIE still wins
+    | (local HTTP development sets it to false in .env.example).
+    */
+    'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production'),
 
     /*
     |--------------------------------------------------------------------------

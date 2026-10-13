@@ -1,0 +1,412 @@
+{
+  "schema": "servana.ui17.defect-closure/v1",
+  "phase": "UI-17",
+  "manifesto": "Observed problem | Evidence | Affected files | Root cause | Why this is root cause | Correct fix | Files changed | Tests | Command | Result | Proof | Remaining risk",
+  "status_vocabulary": [
+    "local_complete",
+    "open",
+    "blocked_external",
+    "routed"
+  ],
+  "defects": [
+    {
+      "id": "UI17-SEC-001",
+      "severity": "critical",
+      "observed_problem": "Every Magic Link click and every context handoff wrote its raw one-time token into the edge access log.",
+      "evidence": "N-1 image pair (1e8bd5f): GET /auth/verify and /auth/switch, each with a synthetic canary value in ?token=, → `docker logs` showed both full request lines including the canary.",
+      "affected_files": [
+        "docker/nginx/default.conf"
+      ],
+      "root_cause": "No access_log/log_format was defined, so the base image's `main` format applied; it logs \"$request\" (path + query string) and \"$http_referer\".",
+      "why_root_cause": "Tokens travel only in the query string (MagicLoginLinkNotification: /auth/verify?token=<raw>; ContextSwitchController reads ?token). The app never logs them; only the edge's request-line logging captured them.",
+      "correct_fix": "An http-level `servana_edge` JSON log format that records the path captured from $request_uri WITHOUT its query string, no referer, plus host/status/timings/request_id; every server block uses it.",
+      "files_changed": [
+        "docker/nginx/default.conf",
+        "scripts/ui17-edge-security-contract.mjs"
+      ],
+      "tests": [
+        "scripts/ui17-edge-security-contract.mjs (format has no $request/$request_uri/$args/$http_referer/$http_cookie; all 3 server blocks use it)",
+        "negative controls request-line-logged-again, stock-log-format-on-a-server",
+        "scripts/ui17-release-rehearsal.mjs phase access_log_credential_check",
+        "CI Docker step 'Security — the edge access log holds no credential (UI-17)'"
+      ],
+      "command": "node scripts/ui17-edge-security-contract.mjs && node scripts/ui17-negative-controls.mjs",
+      "result": "contract OK; controls fire; rehearsal: candidate edge log contains no synthetic token while the previous edge does",
+      "proof": "staging-rehearsal.json → phases.access_log_credential_check",
+      "remaining_risk": "Logs written by any OTHER proxy/load balancer Phase 25 adds must use an equivalent format (runbook §2 P9).",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-002",
+      "severity": "high",
+      "observed_problem": "The context-handoff redirect sets `Referrer-Policy: no-referrer`, but the edge appended `strict-origin-when-cross-origin`, so a browser resolving the combined header applied the weaker policy (last valid token).",
+      "evidence": "Edge config: server-level `add_header Referrer-Policy \"strict-origin-when-cross-origin\" always;` with the FastCGI response already carrying the header; add_header appends rather than replaces.",
+      "affected_files": [
+        "docker/nginx/default.conf"
+      ],
+      "root_cause": "nginx add_header semantics: upstream headers pass through and add_header adds another instance.",
+      "why_root_cause": "The application chooses the strict policy only on token-bearing responses; the duplicate is created solely by the edge directive.",
+      "correct_fix": "map $upstream_http_referrer_policy → the edge default only when the application set none (empty value suppresses the header).",
+      "files_changed": [
+        "docker/nginx/default.conf"
+      ],
+      "tests": [
+        "edge contract (no literal edge Referrer-Policy; map required)",
+        "negative control literal-referrer-policy-appended",
+        "scripts/ui17-edge-smoke.mjs: handoff response carries exactly ['no-referrer'] on all 8 hosts; shell carries exactly one policy"
+      ],
+      "command": "node scripts/ui17-edge-smoke.mjs --origin <rehearsal lb>",
+      "result": "see security-host-matrix.json",
+      "proof": "security-host-matrix.json",
+      "remaining_risk": "none known",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-003",
+      "severity": "high",
+      "observed_problem": "Any website could read anonymous /api/v1 responses from a visitor's browser; every preflight was approved.",
+      "evidence": "N-1: OPTIONS /api/v1/me with Origin https://attacker.example → 204 Access-Control-Allow-Origin: *; GET → 401 with Access-Control-Allow-Origin: *.",
+      "affected_files": [
+        "config/cors.php (absent)"
+      ],
+      "root_cause": "No config/cors.php, so Laravel's framework default (paths api/*, allowed_origins ['*']) applied.",
+      "why_root_cause": "HandleCors reads config('cors'); the vendor default is the wildcard.",
+      "correct_fix": "config/cors.php with an EMPTY approved origin set: every account host calls its own same-origin API, no host calls another host's API, partners are server-to-server.",
+      "files_changed": [
+        "config/cors.php"
+      ],
+      "tests": [
+        "tests/Feature/Security/Ui17BrowserEdgeSecurityTest.php (4 foreign origins × preflight and response, csrf-cookie, config pin)",
+        "edge smoke CORS checks on 8 hosts"
+      ],
+      "command": "docker exec servana-app-1 php artisan test tests/Feature/Security/Ui17BrowserEdgeSecurityTest.php",
+      "result": "passed (see test-matrix.json)",
+      "proof": "test-matrix.json, security-host-matrix.json",
+      "remaining_risk": "Adding a cross-origin consumer later needs its own authorization.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-004",
+      "severity": "high",
+      "observed_problem": "With SESSION_SECURE_COOKIE unset, production session and XSRF cookies were not Secure.",
+      "evidence": "config/session.php `secure => env('SESSION_SECURE_COOKIE')` → null → Symfony falls back to Request::isSecure(); behind the edge that derives from nginx $scheme (http whenever TLS terminates upstream). N-1 rehearsal: Set-Cookie without `secure`.",
+      "affected_files": [
+        "config/session.php",
+        "docker/php.Dockerfile"
+      ],
+      "root_cause": "A fail-open default that depended on topology.",
+      "why_root_cause": "No other code sets the Secure attribute.",
+      "correct_fix": "Default `secure` to true when APP_ENV=production; explicit env still wins; the prod image also pins SESSION_SECURE_COOKIE=true.",
+      "files_changed": [
+        "config/session.php",
+        "docker/php.Dockerfile"
+      ],
+      "tests": [
+        "Ui17BrowserEdgeSecurityTest (production default, explicit override both ways, local default)",
+        "candidate image probe: Set-Cookie … secure; httponly; samesite=lax"
+      ],
+      "command": "curl -D - -H 'Host: finance.servana.ke' http://127.0.0.1:8172/",
+      "result": "both cookies `secure`; session `httponly`; `samesite=lax`; no Domain attribute",
+      "proof": "security-host-matrix.json",
+      "remaining_risk": "Local HTTP rehearsals now need SESSION_SECURE_COOKIE=false explicitly to sign in over plain HTTP.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-005",
+      "severity": "critical",
+      "observed_problem": "A production image started without a mounted .env rendered full stack-trace error pages (SQLSTATE, framework paths).",
+      "evidence": "N-1 image, DB-less: GET /auth/switch?token=<synthetic> → 500, 953,111-byte debug page containing SQLSTATE/Illuminate; container .env = copied .env.example with APP_DEBUG=true.",
+      "affected_files": [
+        "docker/php.Dockerfile",
+        "docker/php/entrypoint.sh (unchanged — Phase 25)"
+      ],
+      "root_cause": "The shared entrypoint copies .env.example when no .env exists; its development values (APP_DEBUG=true, SESSION_SECURE_COOKIE=false) applied in the prod image because the prod stage pinned only APP_ENV.",
+      "why_root_cause": "Dotenv never overrides process env; APP_ENV stayed production, everything else came from .env.example.",
+      "correct_fix": "Pin APP_DEBUG=false and SESSION_SECURE_COOKIE=true as prod-stage ENV (fail closed; an orchestrator can still override). Replacing the .env.example fallback and per-container APP_KEY with a secrets store remains Phase 25.",
+      "files_changed": [
+        "docker/php.Dockerfile",
+        "tests/Feature/Security/Ui17BrowserEdgeSecurityTest.php"
+      ],
+      "tests": [
+        "Ui17BrowserEdgeSecurityTest 'pins fail-closed debug and cookie defaults into the production image only'",
+        "candidate probe: same request → 500 generic 6,665-byte page, 0 stack-trace markers"
+      ],
+      "command": "curl -H 'Host: finance.servana.ke' 'http://127.0.0.1:8172/auth/switch?token=…'",
+      "result": "no stack trace",
+      "proof": "security-host-matrix.json; staging-rehearsal.json",
+      "remaining_risk": "Per-container APP_KEY generation (sessions not shared across replicas) — Phase 25 (UI17-OBS-ENTRYPOINT).",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-006",
+      "severity": "high",
+      "observed_problem": "No Content-Security-Policy, Permissions-Policy or HSTS was sent by any host (UI/UX plan §18.6 requires CSP and HSTS).",
+      "evidence": "N-1 shell response headers: only nosniff, X-Frame-Options, Referrer-Policy.",
+      "affected_files": [
+        "docker/nginx/default.conf"
+      ],
+      "root_cause": "The edge comment deferred 'a stricter CSP' to Phase 23, which never added one.",
+      "why_root_cause": "No other layer sets these headers.",
+      "correct_fix": "Strict CSP (self only; the single inline theme script by SHA-256; blob: images for the Merchant Profile logo preview; frame-ancestors/object-src/base-uri none), Permissions-Policy denying unused powerful features, HSTS emitted only over HTTPS and staged at max-age=0 until production TLS is validated.",
+      "files_changed": [
+        "docker/nginx/default.conf",
+        "scripts/ui17-edge-security-contract.mjs",
+        "tests/Feature/Hosts/Ui17ShellCriticalPathTest.php",
+        "tests/e2e-origin/ui17-edge-security-performance.spec.ts"
+      ],
+      "tests": [
+        "edge contract + 6 edge negative controls",
+        "Pest: rendered Blade script hash == CSP hash",
+        "origin browser gate: 0 securitypolicyviolation on /, /login, /faq, /legal/privacy-policy × 8 hosts, light and dark; explicit dark still applies before paint"
+      ],
+      "command": "SERVANA_ORIGIN=127.0.0.1:8172 npx playwright test -c playwright.origin.config.ts",
+      "result": "40/40 passed on the candidate; the UI-17 spec fails 16/24 on N-1 (negative control)",
+      "proof": "test-matrix.json",
+      "remaining_risk": "Authenticated pages cannot be reached by the anonymous origin gate; a static sweep found only the blob: logo preview (allowed) — first authenticated production use should watch the browser console. HSTS stays staged until runbook §8.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-SEC-007",
+      "severity": "medium",
+      "observed_problem": "Found by UI-17's own browser gate: with the new CSP, four small font subsets were refused ('Loading the font data:font/woff2… violates font-src').",
+      "evidence": "First candidate (cand-a3c45d2fb773) console; built CSS contained 4 url(data:font/…) entries.",
+      "affected_files": [
+        "vite.config.ts"
+      ],
+      "root_cause": "Vite inlines assets under 4 KiB as data: URIs; four @fontsource subset files fell under the limit.",
+      "why_root_cause": "No other data: usage exists in the CSS.",
+      "correct_fix": "build.assetsInlineLimit returns false for font files, so they are emitted as fingerprinted files; font-src stays 'self'.",
+      "files_changed": [
+        "vite.config.ts",
+        "scripts/ui17-bundle-budget.mjs",
+        "scripts/ui17-edge-security-contract.mjs",
+        "scripts/ui17-negative-controls.mjs"
+      ],
+      "tests": [
+        "bundle gate fails on any data: font in emitted CSS (proven against the defective build)",
+        "edge contract pins font-src 'self'",
+        "negative controls font-inlined-as-data-uri, data-fonts-allowed"
+      ],
+      "command": "node scripts/ui17-bundle-budget.mjs",
+      "result": "fails on the old build (4 inlined fonts), passes after; initial CSS 22.4 → 14.7 KiB gzip",
+      "proof": "bundle-chunk-report.json",
+      "remaining_risk": "none known",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-001",
+      "severity": "high",
+      "observed_problem": "Every fingerprinted chunk crossed the wire uncompressed.",
+      "evidence": "N-1: GET entry js with Accept-Encoding: gzip, br → 120,731 bytes, no Content-Encoding; nginx.conf `#gzip on;`.",
+      "affected_files": [
+        "docker/nginx/default.conf"
+      ],
+      "root_cause": "The base image ships gzip commented out and the Servana config never enabled it.",
+      "why_root_cause": "No CDN or other layer exists in front of the edge.",
+      "correct_fix": "gzip (level 6, the budget method) for css/js/svg/webmanifest ≥1 KiB, enabled only inside the static-asset locations; HTML and API JSON left uncompressed (BREACH precondition).",
+      "files_changed": [
+        "docker/nginx/default.conf"
+      ],
+      "tests": [
+        "edge contract (gzip in exactly 3 asset locations, not http-level, no application/json)",
+        "negative control gzip-at-http-level",
+        "edge smoke: entry js/css gzip + Vary on 8 hosts",
+        "origin gate: every chunk ≥1 KiB gzip"
+      ],
+      "command": "node scripts/ui17-edge-smoke.mjs",
+      "result": "landing transfer 785 → 473 KiB (servana.ke, mobile, first sample)",
+      "proof": "web-vitals-before.json vs web-vitals-after.json; performance-baseline-and-budget.json",
+      "remaining_risk": "Brotli would save a further ~12% but needs a module the stock image lacks; a CDN can add it (Phase 25).",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-002",
+      "severity": "high",
+      "observed_problem": "Landing CLS up to 0.174 (budget 0.1) on mobile and 0.121 on desktop; LCP re-painted ~5 s.",
+      "evidence": "layout-shift-attribution-before.json: one shift at ~5.0 s per host — footer links widened 4–10 px and wrapped, hero copy grew a line and moved the CTA 48 px; fonts loadingdone at ~5.7 s.",
+      "affected_files": [
+        "resources/spa/src/design-system/tokens.json",
+        "tailwind.config.ts",
+        "resources/spa/src/style.css",
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php"
+      ],
+      "root_cause": "font-display: swap with an unadjusted system fallback, and fonts discovered only after the SPA rendered text.",
+      "why_root_cause": "Every shift source is a text box whose width/height changed at the swap; no image or async-content shift occurred.",
+      "correct_fix": "Metric-compatible 'Inter Fallback'/'Manrope Fallback' faces (overrides derived from the shipped WOFF metrics + measured widths) named in the font tokens; Tailwind font utilities read the tokens; the two hero faces preloaded on `/`.",
+      "files_changed": [
+        "resources/spa/src/styles/font-fallbacks.css",
+        "resources/spa/src/style.css",
+        "resources/spa/src/design-system/tokens.json",
+        "resources/spa/src/design-system/tokens.generated.ts",
+        "resources/spa/src/styles/generated/tokens.css",
+        "tailwind.config.ts",
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php"
+      ],
+      "tests": [
+        "web vitals after (CLS max 0.0016 across 8 hosts × 2 profiles)",
+        "Ui17ShellCriticalPathTest font preload cases",
+        "origin gate font preload CORS + 200",
+        "DesignTokenSchemaTest (families still start with Inter/Manrope)",
+        "tokens:check"
+      ],
+      "command": "node scripts/ui17-web-vitals.mjs --origin 127.0.0.1:8172 --samples 5",
+      "result": "CLS ≤ 0.0016 everywhere",
+      "proof": "web-vitals-after.json",
+      "remaining_risk": "Android has none of the local faces listed; it falls back unadjusted (as before). tokens.generated.ts gets a new SHA-256 source digest that gitleaks flags as generic-api-key — Codex adds the per-commit fingerprint as in UI-04/UI-16.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-003",
+      "severity": "medium",
+      "observed_problem": "The entry chunk's static imports were requested only after the entry downloaded and parsed (+0.75 s on slow 4G); landing chunks one level later still.",
+      "evidence": "Before waterfall: index js 256→1474 ms, then apiClient/runtime-core 1487→2253 ms; landing copy/composition 3731→4046 ms.",
+      "affected_files": [
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php"
+      ],
+      "root_cause": "The Laravel shell names only the entry script; Vite's own index.html would carry modulepreload for its imports.",
+      "why_root_cause": "After the fix every critical chunk starts at ~285 ms in parallel.",
+      "correct_fix": "modulepreload for the entry's static-import closure on every page, plus on `/` the landing page chunk and THIS account's composition + copy, all from the real manifest; unknown keys skipped, never guessed.",
+      "files_changed": [
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php",
+        "tests/Feature/Hosts/Ui17ShellCriticalPathTest.php"
+      ],
+      "tests": [
+        "Ui17ShellCriticalPathTest (closure on 8 hosts × 3 paths; landing hints for own account only; none on /login)",
+        "origin gate: hints resolve 200 in-page; exactly 2 landing hints"
+      ],
+      "command": "docker exec servana-app-1 php artisan test tests/Feature/Hosts/Ui17ShellCriticalPathTest.php",
+      "result": "passed",
+      "proof": "test-matrix.json; after waterfall in performance-baseline-and-budget.json",
+      "remaining_risk": "Authenticated dashboards are not preloaded (§6.5 allows it); not measured on an authenticated origin in UI-17.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-004",
+      "severity": "low",
+      "observed_problem": "GET /api/v1/me was sent twice on every cold load.",
+      "evidence": "Before waterfall: /api/v1/me 2522→2715 and 2535→2889.",
+      "affected_files": [
+        "resources/spa/src/stores/authStore.ts"
+      ],
+      "root_cause": "The router guard awaits bootstrap() while App.vue's mount fallback checks `bootstrapped`, which flips only when the request ends.",
+      "why_root_cause": "Only those two call sites run on a cold load.",
+      "correct_fix": "Concurrent bootstrap() callers share one in-flight request; a later call refetches (onboarding refresh).",
+      "files_changed": [
+        "resources/spa/src/stores/authStore.ts",
+        "resources/spa/src/stores/authStore.spec.ts"
+      ],
+      "tests": [
+        "authStore.spec: concurrent callers → 1 GET; settled → refetch",
+        "origin gate: exactly one GET /api/v1/me per cold load on 8 hosts (fails on N-1)"
+      ],
+      "command": "npx vitest run src/stores/authStore.spec.ts",
+      "result": "14/14",
+      "proof": "test-matrix.json",
+      "remaining_risk": "none known",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-006",
+      "severity": "medium",
+      "observed_problem": "Found by the UI-17 release rehearsal: behind a front nginx load balancer every chunk was served uncompressed again, undoing UI17-PERF-001.",
+      "evidence": "staging-rehearsal (first run): edge smoke through the LB failed `entry js compressed (content-encoding none)` on all 8 hosts, while the same image served gzip to a direct HTTP/1.1 client.",
+      "affected_files": [
+        "docker/nginx/default.conf"
+      ],
+      "root_cause": "nginx proxy_pass speaks HTTP/1.0 to its upstream by default and the edge kept the stock gzip_http_version 1.1, so it refused to compress for the proxied request.",
+      "why_root_cause": "Same image, same Accept-Encoding: direct HTTP/1.1 → gzip; via an HTTP/1.0 hop → none.",
+      "correct_fix": "gzip_http_version 1.0 at the edge, so compression does not depend on how the load balancer in front (Phase 25) is configured. The rehearsal LB is deliberately left at the HTTP/1.0 default to prove the worst case.",
+      "files_changed": [
+        "docker/nginx/default.conf",
+        "scripts/ui17-edge-security-contract.mjs",
+        "scripts/ui17-negative-controls.mjs"
+      ],
+      "tests": [
+        "edge contract requires gzip_http_version 1.0",
+        "negative control gzip-lost-behind-http10-proxy",
+        "rehearsal promote phase: full edge smoke through the HTTP/1.0 LB"
+      ],
+      "command": "node scripts/ui17-release-rehearsal.mjs --previous n-1-1e8bd5f --candidate <final>",
+      "result": "see staging-rehearsal.json",
+      "proof": "staging-rehearsal.json",
+      "remaining_risk": "none known",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-PERF-005",
+      "severity": "medium",
+      "observed_problem": "Landing LCP p75 (lab) misses 2.5 s on the strictest mobile profile even after the fixes.",
+      "evidence": "performance-baseline-and-budget.json: mobile-slow-4g (1.6 Mbit/s, 150 ms RTT, 4x CPU) p75 2,988–3,172 ms on 8/8 hosts after (4,696–5,144 before); mobile-fast-4g (9 Mbit/s, 60 ms, 4x CPU) p75 2,008–2,208 ms — 8/8 PASS after (1/8 before); desktop p75 976–1,240 ms. Logo A/B: no LCP effect (p75 3,108 vs 3,048 ms).",
+      "affected_files": [
+        "(architecture) client-rendered SPA landing; global router guard awaits /me before any route renders"
+      ],
+      "root_cause": "Remaining critical path is bandwidth for ~250 KB of first-render bytes plus JS execution at 4x CPU plus a blocking /me round trip before the public route renders — no single defect remains.",
+      "why_root_cause": "All critical chunks now start in parallel at ~285 ms; no long task after the first render; aborting the logo changes nothing.",
+      "correct_fix": "Not applied — product/architecture decisions: (a) agree the p75 profile (UI/UX plan §22.1 says \"agreed\"): on Fast 4G every host passes; (b) render public routes without awaiting /me (≈ −0.2–0.35 s on slow 4G; changes when the MFA redirect is evaluated on public pages); (c) prerender the public landing HTML server-side (architecture change).",
+      "files_changed": [],
+      "tests": [
+        "web vitals profiles recorded"
+      ],
+      "command": "node scripts/ui17-web-vitals.mjs --profile mobile-fast-4g",
+      "result": "see performance-baseline-and-budget.json",
+      "proof": "performance-baseline-and-budget.json",
+      "remaining_risk": "Budget acceptance (UI/UX plan §28.9 'pass or approved evidence-based exception') needs the product owner's decision D8.",
+      "status": "routed"
+    },
+    {
+      "id": "UI14-RES-001",
+      "severity": "low",
+      "observed_problem": "Unrouted legacy Personnel Earnings.vue kept only for a historical render regression.",
+      "evidence": "No router reference; importers were its own spec and Ui01Render001.spec.ts.",
+      "affected_files": [
+        "resources/spa/src/pages/personnel/Earnings.vue",
+        "resources/spa/src/pages/personnel/Earnings.spec.ts",
+        "resources/spa/src/pages/Ui01Render001.spec.ts",
+        "resources/spa/src/pages/personnel/Ui14PersonnelPages.spec.ts"
+      ],
+      "root_cause": "UI-14 replaced the screen with seven canonical pages but deferred the removal.",
+      "why_root_cause": "n/a — cleanup",
+      "correct_fix": "Retarget the UI-01 render regression to EarningsOverview.vue (what /personnel/earnings renders); carry the own-scope 'no staff selector' assertion to the canonical spec; delete the file and its spec.",
+      "files_changed": [
+        "resources/spa/src/pages/Ui01Render001.spec.ts",
+        "resources/spa/src/pages/personnel/Ui14PersonnelPages.spec.ts",
+        "resources/spa/src/pages/personnel/Earnings.vue (deleted)",
+        "resources/spa/src/pages/personnel/Earnings.spec.ts (deleted)"
+      ],
+      "tests": [
+        "Ui01Render001.spec.ts",
+        "Ui14PersonnelPages.spec.ts",
+        "full Vitest",
+        "build"
+      ],
+      "command": "npx vitest run src/pages/Ui01Render001.spec.ts src/pages/personnel/Ui14PersonnelPages.spec.ts",
+      "result": "passed",
+      "proof": "test-matrix.json",
+      "remaining_risk": "Historical audit JSONs still mention the path as history; they are not rewritten.",
+      "status": "local_complete"
+    },
+    {
+      "id": "UI17-DNS-001",
+      "severity": "critical (production)",
+      "observed_problem": "None of the eight production hosts resolves.",
+      "evidence": "dns-tls-matrix.json: KeNIC delegates servana.ke to ns1–4.a2hosting.com; all four answer REFUSED, non-authoritative; 1.1.1.1 and 8.8.8.8 SERVFAIL for all 8 hosts.",
+      "affected_files": [],
+      "root_cause": "Lame delegation — the zone is not served by the delegated nameservers.",
+      "why_root_cause": "Raw queries to each delegated server return REFUSED.",
+      "correct_fix": "DNS owner serves the zone at the delegated provider or changes the delegation; then certificates (runbook §2 P2–P3).",
+      "files_changed": [],
+      "tests": [
+        "scripts/ui17-dns-tls-probe.mjs"
+      ],
+      "command": "node scripts/ui17-dns-tls-probe.mjs",
+      "result": "0/8 healthy",
+      "proof": "dns-tls-matrix.json",
+      "remaining_risk": "Blocks every live production acceptance item.",
+      "status": "blocked_external"
+    }
+  ]
+}

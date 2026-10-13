@@ -1,0 +1,358 @@
+{
+  "schema": "servana.ui17.security-host-matrix/v1",
+  "phase": "UI-17",
+  "method": "scripts/ui17-edge-smoke.mjs — plain HTTP to an isolated local origin with the account host in the Host header. NOT DNS/TLS evidence (see dns-tls-matrix.json); HSTS is asserted ABSENT over plain HTTP and present only in --live mode.",
+  "topology": "each image pair standalone: nginx edge + php-fpm app + throwaway PostgreSQL 16 (migrated), session/cache array-backed",
+  "before": {
+    "images": "servana-ui17-{nginx,php}:n-1-1e8bd5f",
+    "origin": "http://127.0.0.1:8171/",
+    "checks": 300,
+    "passed": false,
+    "failure_count": 64,
+    "failures": [
+      "servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "servana.ke: Permissions-Policy present",
+      "servana.ke: entry js compressed (content-encoding 'none')",
+      "servana.ke: entry js Vary: Accept-Encoding",
+      "servana.ke: entry css compressed",
+      "servana.ke: no CORS approval for a foreign origin",
+      "servana.ke: API response not readable cross-origin",
+      "servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "citrus.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "citrus.servana.ke: Permissions-Policy present",
+      "citrus.servana.ke: entry js compressed (content-encoding 'none')",
+      "citrus.servana.ke: entry js Vary: Accept-Encoding",
+      "citrus.servana.ke: entry css compressed",
+      "citrus.servana.ke: no CORS approval for a foreign origin",
+      "citrus.servana.ke: API response not readable cross-origin",
+      "citrus.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "branch.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "branch.servana.ke: Permissions-Policy present",
+      "branch.servana.ke: entry js compressed (content-encoding 'none')",
+      "branch.servana.ke: entry js Vary: Accept-Encoding",
+      "branch.servana.ke: entry css compressed",
+      "branch.servana.ke: no CORS approval for a foreign origin",
+      "branch.servana.ke: API response not readable cross-origin",
+      "branch.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "finance.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "finance.servana.ke: Permissions-Policy present",
+      "finance.servana.ke: entry js compressed (content-encoding 'none')",
+      "finance.servana.ke: entry js Vary: Accept-Encoding",
+      "finance.servana.ke: entry css compressed",
+      "finance.servana.ke: no CORS approval for a foreign origin",
+      "finance.servana.ke: API response not readable cross-origin",
+      "finance.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "hr.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "hr.servana.ke: Permissions-Policy present",
+      "hr.servana.ke: entry js compressed (content-encoding 'none')",
+      "hr.servana.ke: entry js Vary: Accept-Encoding",
+      "hr.servana.ke: entry css compressed",
+      "hr.servana.ke: no CORS approval for a foreign origin",
+      "hr.servana.ke: API response not readable cross-origin",
+      "hr.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "office.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "office.servana.ke: Permissions-Policy present",
+      "office.servana.ke: entry js compressed (content-encoding 'none')",
+      "office.servana.ke: entry js Vary: Accept-Encoding",
+      "office.servana.ke: entry css compressed",
+      "office.servana.ke: no CORS approval for a foreign origin",
+      "office.servana.ke: API response not readable cross-origin",
+      "office.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "staff.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "staff.servana.ke: Permissions-Policy present",
+      "staff.servana.ke: entry js compressed (content-encoding 'none')",
+      "staff.servana.ke: entry js Vary: Accept-Encoding",
+      "staff.servana.ke: entry css compressed",
+      "staff.servana.ke: no CORS approval for a foreign origin",
+      "staff.servana.ke: API response not readable cross-origin",
+      "staff.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])",
+      "audit.servana.ke: exactly one CSP equal to the reviewed policy (got 0)",
+      "audit.servana.ke: Permissions-Policy present",
+      "audit.servana.ke: entry js compressed (content-encoding 'none')",
+      "audit.servana.ke: entry js Vary: Accept-Encoding",
+      "audit.servana.ke: entry css compressed",
+      "audit.servana.ke: no CORS approval for a foreign origin",
+      "audit.servana.ke: API response not readable cross-origin",
+      "audit.servana.ke: handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+    ],
+    "hosts": [
+      {
+        "host": "servana.ke",
+        "account_key": "merchant_administrator",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "citrus.servana.ke",
+        "account_key": "super_administrator",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "branch.servana.ke",
+        "account_key": "merchant_branch",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "finance.servana.ke",
+        "account_key": "merchant_finance",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "hr.servana.ke",
+        "account_key": "merchant_human_resource",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "office.servana.ke",
+        "account_key": "merchant_front_office",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "staff.servana.ke",
+        "account_key": "merchant_personnel",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      },
+      {
+        "host": "audit.servana.ke",
+        "account_key": "merchant_audit",
+        "passed": false,
+        "checks": 37,
+        "failed": [
+          "exactly one CSP equal to the reviewed policy (got 0)",
+          "Permissions-Policy present",
+          "entry js compressed (content-encoding 'none')",
+          "entry js Vary: Accept-Encoding",
+          "entry css compressed",
+          "no CORS approval for a foreign origin",
+          "API response not readable cross-origin",
+          "handoff keeps exactly 'no-referrer' (got [\"no-referrer\",\"strict-origin-when-cross-origin\"])"
+        ]
+      }
+    ],
+    "unknown_host_denials": [
+      {
+        "host": "attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "evil-servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "servana.ke.attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "unknown.servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      }
+    ]
+  },
+  "after": {
+    "images": "servana-ui17-{nginx,php}:cand-226d50f1d73d",
+    "origin": "http://127.0.0.1:8172/",
+    "checks": 300,
+    "passed": true,
+    "failure_count": 0,
+    "hosts": [
+      {
+        "host": "servana.ke",
+        "account_key": "merchant_administrator",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "citrus.servana.ke",
+        "account_key": "super_administrator",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "branch.servana.ke",
+        "account_key": "merchant_branch",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "finance.servana.ke",
+        "account_key": "merchant_finance",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "hr.servana.ke",
+        "account_key": "merchant_human_resource",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "office.servana.ke",
+        "account_key": "merchant_front_office",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "staff.servana.ke",
+        "account_key": "merchant_personnel",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      },
+      {
+        "host": "audit.servana.ke",
+        "account_key": "merchant_audit",
+        "passed": true,
+        "checks": 37,
+        "failed": []
+      }
+    ],
+    "unknown_host_denials": [
+      {
+        "host": "attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "evil-servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "servana.ke.attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "unknown.servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      }
+    ],
+    "sample_headers": {
+      "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+      "hsts": null,
+      "cache_control": "must-revalidate, no-cache, private"
+    },
+    "entry": {
+      "path": "/spa-assets/index-2QkFPLjT.js",
+      "status": 200,
+      "encoding": "gzip",
+      "wire_bytes": 34330
+    }
+  },
+  "after_behind_http10_front_proxy": {
+    "source": "staging-rehearsal.json → phases.promote_green.edge_smoke",
+    "checks": 300,
+    "failures": []
+  },
+  "access_log_credential": {
+    "before_edge_lines_with_synthetic_token": 8,
+    "after_edge_lines_with_synthetic_token": 0,
+    "method": "docker logs <edge> | grep UI17SYNTHETICCANARY after the smoke (8 hosts × /auth/switch?token=<synthetic>)"
+  },
+  "cookies_after": {
+    "secure": true,
+    "http_only_session": true,
+    "same_site": "lax",
+    "domain_attribute": "absent (host-only per account host)",
+    "evidence": "Set-Cookie on the candidate shell response"
+  },
+  "observations": [
+    "First after-run issued within ~3 s of the edge starting saw transient null/connection results on 4 checks while php-fpm and OPcache preload warmed up; the re-run 30 s later passed 300/300. Production must gate traffic on readiness (/health/deep) before registration (Plan §76; runbook §2).",
+    "Behind a front proxy WITHOUT its own host allowlist, unknown hosts surfaced as 502 (the edge closes the connection); the rehearsal LB now allowlists the eight hosts (runbook §2 P4a)."
+  ]
+}

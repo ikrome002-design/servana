@@ -1,0 +1,1641 @@
+{
+  "generated_by": "scripts/ui17-release-rehearsal.mjs",
+  "scope": "isolated local Docker rehearsal of image-slot canary/promotion/rollback mechanics — NOT production, NOT DNS/TLS evidence, NOT Phase 25 database/worker/backup rollback",
+  "started_at": "2026-10-13T00:36:54.764Z",
+  "docker_server": "29.8.2",
+  "port": 8170,
+  "phases": {
+    "blue_live": {
+      "ok": true,
+      "entry": "/spa-assets/index-Dts3d5_0.js",
+      "hosts": [
+        {
+          "host": "servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "citrus.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "branch.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "finance.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "hr.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "office.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "staff.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "audit.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        }
+      ]
+    },
+    "canary": {
+      "mode": "canary",
+      "canary_percent": 10,
+      "requests": 200,
+      "blue": 175,
+      "green": 25,
+      "shell_errors": 0,
+      "asset_errors": 0,
+      "green_share": 0.125,
+      "blue_entries": [
+        "/spa-assets/index-Dts3d5_0.js"
+      ],
+      "green_entries": [
+        "/spa-assets/index-2QkFPLjT.js"
+      ],
+      "ok": true
+    },
+    "canary_negative_control_no_asset_fallback": {
+      "mode": "canary-no-asset-fallback",
+      "canary_percent": 10,
+      "requests": 200,
+      "blue": 182,
+      "green": 18,
+      "shell_errors": 0,
+      "asset_errors": 37,
+      "green_share": 0.09,
+      "blue_entries": [
+        "/spa-assets/index-Dts3d5_0.js"
+      ],
+      "green_entries": [
+        "/spa-assets/index-2QkFPLjT.js"
+      ],
+      "expected": "asset_errors > 0 — proves hashed-asset skew is real and the fallback is what removes it",
+      "ok": true
+    },
+    "promote_green": {
+      "ok": true,
+      "entry": "/spa-assets/index-2QkFPLjT.js",
+      "hosts": [
+        {
+          "host": "servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "citrus.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "branch.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "finance.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "hr.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "office.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "staff.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        },
+        {
+          "host": "audit.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-2QkFPLjT.js",
+          "asset_status": 200,
+          "slot": "green"
+        }
+      ],
+      "edge_smoke": {
+        "exit": 0,
+        "checks": 300,
+        "failures": []
+      }
+    },
+    "rollback": {
+      "ok": true,
+      "seconds_to_all_hosts_previous_release": 6.47,
+      "timing_note": "includes the 20-response propagation confirmation (~5 s at a 250 ms poll), so it is an upper bound on the switch itself",
+      "entry": "/spa-assets/index-Dts3d5_0.js",
+      "hosts": [
+        {
+          "host": "servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "citrus.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "branch.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "finance.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "hr.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "office.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "staff.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        },
+        {
+          "host": "audit.servana.ke",
+          "status": 200,
+          "entry": "/spa-assets/index-Dts3d5_0.js",
+          "asset_status": 200,
+          "slot": "blue"
+        }
+      ],
+      "candidate_asset_still_served_after_rollback": 200,
+      "note": "The candidate slot is kept running (drained of HTML traffic) so clients holding candidate HTML still resolve its hashed chunks; it is removed only after the drain window."
+    },
+    "access_log_credential_check": {
+      "ok": true,
+      "candidate_edge_lines_inspected": 198,
+      "candidate_edge_contains_synthetic_token": false,
+      "previous_edge_contains_synthetic_token": false,
+      "note": "The smoke (which sends the synthetic token) runs only against the promoted candidate slot, so the previous edge never received it here; the previous release logging the raw token is proven separately against the N-1 image (security-host-matrix.json → before).",
+      "sample_candidate_line": "{\"time\":\"2026-10-13T00:45:02+00:00\",\"host\":\"servana.ke\",\"method\":\"GET\",\"path\":\"/auth/switch\",\"protocol\":\"HTTP/1.0\",\"status\":302,\"bytes\":414,\"request_time\":1.203,\"upstream_time\":\"1.202\",\"request_id\":\"4ac6759e2ed83f193327349f8c6d66c9\",\"remote_addr\":\"172.21.0.4\",\"user_agent\":\"\"}"
+    }
+  },
+  "images": {
+    "blue": {
+      "nginx": {
+        "ref": "servana-ui17-nginx:n-1-1e8bd5f",
+        "id": "sha256:923dbfebcdba746c9db89a663882c74941431decd80fc7428fca65a5d0e4d6ac"
+      },
+      "php": {
+        "ref": "servana-ui17-php:n-1-1e8bd5f",
+        "id": "sha256:e16d70e4c6d66bf23f5c54921dabc11f3b2465f6caebd64a9d16b23aadc65454"
+      },
+      "tag": "n-1-1e8bd5f"
+    },
+    "green": {
+      "nginx": {
+        "ref": "servana-ui17-nginx:cand-226d50f1d73d",
+        "id": "sha256:60abc78078bd9f0d63dece90896552370f2cd9774246466602a76671ce0080ee"
+      },
+      "php": {
+        "ref": "servana-ui17-php:cand-226d50f1d73d",
+        "id": "sha256:ffd9f050f5f538d67f59d84b0a401235f8ad768f421ec2819b1bc908e0ca787a"
+      },
+      "tag": "cand-226d50f1d73d"
+    }
+  },
+  "edge_smoke_report": {
+    "generated_by": "scripts/ui17-edge-smoke.mjs",
+    "mode": "origin override (plain HTTP, Host header) — not TLS evidence",
+    "origin": "http://127.0.0.1:8170/",
+    "domain": "servana.ke",
+    "synthetic_token": "UI17SYNTHETICCANARY0000000000000000000000",
+    "run_at": "2026-10-13T00:45:06.556Z",
+    "accounts": [
+      {
+        "account_key": "merchant_administrator",
+        "host": "servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "super_administrator",
+        "host": "citrus.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_branch",
+        "host": "branch.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_finance",
+        "host": "finance.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "host": "hr.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_front_office",
+        "host": "office.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_personnel",
+        "host": "staff.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      },
+      {
+        "account_key": "merchant_audit",
+        "host": "audit.servana.ke",
+        "checks": [
+          {
+            "ok": true,
+            "message": "GET / → 200"
+          },
+          {
+            "ok": true,
+            "message": "shell resolves its own account context"
+          },
+          {
+            "ok": true,
+            "message": "shell revalidates (cache-control 'must-revalidate, no-cache, private')"
+          },
+          {
+            "ok": true,
+            "message": "exactly one CSP equal to the reviewed policy (got 1)"
+          },
+          {
+            "ok": true,
+            "message": "X-Frame-Options DENY"
+          },
+          {
+            "ok": true,
+            "message": "nosniff"
+          },
+          {
+            "ok": true,
+            "message": "one Referrer-Policy on the shell"
+          },
+          {
+            "ok": true,
+            "message": "Permissions-Policy present"
+          },
+          {
+            "ok": true,
+            "message": "no HSTS over plain HTTP"
+          },
+          {
+            "ok": true,
+            "message": "no X-Powered-By"
+          },
+          {
+            "ok": true,
+            "message": "shell names a fingerprinted entry script and stylesheet"
+          },
+          {
+            "ok": true,
+            "message": "entry js → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry js MIME"
+          },
+          {
+            "ok": true,
+            "message": "entry js compressed (content-encoding 'gzip')"
+          },
+          {
+            "ok": true,
+            "message": "entry js immutable"
+          },
+          {
+            "ok": true,
+            "message": "entry js Vary: Accept-Encoding"
+          },
+          {
+            "ok": true,
+            "message": "source map not served (404)"
+          },
+          {
+            "ok": true,
+            "message": "entry css → 200"
+          },
+          {
+            "ok": true,
+            "message": "entry css compressed"
+          },
+          {
+            "ok": true,
+            "message": "/login → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/faq → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/data-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/privacy-policy → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/legal/terms-of-service → 200 in its own account context"
+          },
+          {
+            "ok": true,
+            "message": "/health/host → 200"
+          },
+          {
+            "ok": true,
+            "message": "/spa/.vite/manifest.json withheld (301)"
+          },
+          {
+            "ok": true,
+            "message": "/.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/.git/config withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "/storage/../.env withheld (403)"
+          },
+          {
+            "ok": true,
+            "message": "no CORS approval for a foreign origin"
+          },
+          {
+            "ok": true,
+            "message": "anonymous /api/v1/me → 401"
+          },
+          {
+            "ok": true,
+            "message": "API response not readable cross-origin"
+          },
+          {
+            "ok": true,
+            "message": "error envelope carries no stack trace"
+          },
+          {
+            "ok": true,
+            "message": "forged X-Forwarded-Host changes nothing"
+          },
+          {
+            "ok": true,
+            "message": "synthetic handoff fails closed with a redirect (302)"
+          },
+          {
+            "ok": true,
+            "message": "handoff keeps exactly 'no-referrer' (got [\"no-referrer\"])"
+          },
+          {
+            "ok": true,
+            "message": "handoff is no-store"
+          }
+        ],
+        "headers": {
+          "csp": "default-src 'self'; script-src 'self' 'sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk='; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+          "hsts": null,
+          "cache_control": "must-revalidate, no-cache, private"
+        },
+        "entry": {
+          "path": "/spa-assets/index-2QkFPLjT.js",
+          "status": 200,
+          "encoding": "gzip",
+          "wire_bytes": 34330
+        },
+        "passed": true
+      }
+    ],
+    "unknown_host_denials": [
+      {
+        "host": "attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "evil-servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "servana.ke.attacker.test",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      },
+      {
+        "host": "unknown.servana.ke",
+        "connection_closed": true,
+        "status": null,
+        "passed": true
+      }
+    ],
+    "checks": 300,
+    "passed": true,
+    "failures": []
+  },
+  "finished_at": "2026-10-13T00:45:13.712Z",
+  "passed": true,
+  "teardown": "removed every ui17-rh-* container and network"
+}

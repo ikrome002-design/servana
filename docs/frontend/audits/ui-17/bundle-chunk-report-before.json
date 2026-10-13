@@ -1,0 +1,361 @@
+{
+  "generated_by": "scripts/ui17-bundle-budget.mjs",
+  "budget_file": "config/frontend-performance-budget.json",
+  "method": {
+    "gzip_level": 6,
+    "brotli_quality": 11,
+    "measured_on": "emitted bytes in public/spa (vite build)"
+  },
+  "manifest_entries": 417,
+  "js_chunks": 338,
+  "lazy_route_components": {
+    "declared": 161,
+    "not_lazy": []
+  },
+  "initial_request": {
+    "js_files": [
+      "spa-assets/apiClient-BONMyIWJ.js",
+      "spa-assets/index-Dts3d5_0.js",
+      "spa-assets/runtime-core.esm-bundler-Cn7LheB0.js"
+    ],
+    "css_files": [
+      "spa-assets/index-Db2sWRLN.css"
+    ],
+    "js": {
+      "raw": 239894,
+      "gzip": 79977,
+      "brotli": 70060
+    },
+    "css": {
+      "raw": 92582,
+      "gzip": 22612,
+      "brotli": 19071
+    },
+    "requests": 4,
+    "eager_route_modules": [],
+    "budget": {
+      "max_js_gzip_bytes": 99999999,
+      "max_css_gzip_bytes": 99999999
+    }
+  },
+  "archetypes": [
+    {
+      "id": "public-landing",
+      "kind": "public",
+      "account_key": null,
+      "modules": [
+        "src/pages/public/PublicLandingPage.vue"
+      ],
+      "js": {
+        "raw": 335931,
+        "gzip": 103112,
+        "brotli": 89894
+      },
+      "css": {
+        "raw": 92582,
+        "gzip": 22612,
+        "brotli": 19071
+      },
+      "requests": 18,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "public-login",
+      "kind": "public",
+      "account_key": null,
+      "modules": [
+        "src/layouts/AuthLayout.vue",
+        "src/pages/auth/Login.vue"
+      ],
+      "js": {
+        "raw": 257282,
+        "gzip": 88667,
+        "brotli": 77817
+      },
+      "css": {
+        "raw": 92582,
+        "gzip": 22612,
+        "brotli": 19071
+      },
+      "requests": 14,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.super_administrator",
+      "kind": "account_shell",
+      "account_key": "super_administrator",
+      "modules": [
+        "src/layouts/PlatformAdminLayout.vue",
+        "src/pages/platform/PlatformDashboard.vue"
+      ],
+      "js": {
+        "raw": 499900,
+        "gzip": 135374,
+        "brotli": 117305
+      },
+      "css": {
+        "raw": 96623,
+        "gzip": 24048,
+        "brotli": 20289
+      },
+      "requests": 55,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_administrator",
+      "kind": "account_shell",
+      "account_key": "merchant_administrator",
+      "modules": [
+        "src/layouts/MerchantLayout.vue",
+        "src/pages/merchant/Dashboard.vue"
+      ],
+      "js": {
+        "raw": 493001,
+        "gzip": 132353,
+        "brotli": 114636
+      },
+      "css": {
+        "raw": 94844,
+        "gzip": 23528,
+        "brotli": 19848
+      },
+      "requests": 50,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_branch",
+      "kind": "account_shell",
+      "account_key": "merchant_branch",
+      "modules": [
+        "src/layouts/BranchLayout.vue",
+        "src/pages/branch/BranchDashboard.vue"
+      ],
+      "js": {
+        "raw": 490272,
+        "gzip": 131102,
+        "brotli": 113554
+      },
+      "css": {
+        "raw": 95194,
+        "gzip": 23597,
+        "brotli": 19902
+      },
+      "requests": 48,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_human_resource",
+      "kind": "account_shell",
+      "account_key": "merchant_human_resource",
+      "modules": [
+        "src/layouts/HumanResourceLayout.vue",
+        "src/pages/hr/HrDashboard.vue"
+      ],
+      "js": {
+        "raw": 489365,
+        "gzip": 130549,
+        "brotli": 113114
+      },
+      "css": {
+        "raw": 95812,
+        "gzip": 23715,
+        "brotli": 20013
+      },
+      "requests": 46,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_finance",
+      "kind": "account_shell",
+      "account_key": "merchant_finance",
+      "modules": [
+        "src/layouts/FinanceLayout.vue",
+        "src/pages/finance/FinanceDashboard.vue"
+      ],
+      "js": {
+        "raw": 492785,
+        "gzip": 131075,
+        "brotli": 113499
+      },
+      "css": {
+        "raw": 95029,
+        "gzip": 23571,
+        "brotli": 19876
+      },
+      "requests": 46,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_front_office",
+      "kind": "account_shell",
+      "account_key": "merchant_front_office",
+      "modules": [
+        "src/layouts/FrontOfficeLayout.vue",
+        "src/pages/front-office/FrontOfficeDashboard.vue"
+      ],
+      "js": {
+        "raw": 489841,
+        "gzip": 130683,
+        "brotli": 113185
+      },
+      "css": {
+        "raw": 94652,
+        "gzip": 23369,
+        "brotli": 19717
+      },
+      "requests": 45,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_personnel",
+      "kind": "account_shell",
+      "account_key": "merchant_personnel",
+      "modules": [
+        "src/layouts/PersonnelLayout.vue",
+        "src/pages/personnel/PersonnelDashboard.vue"
+      ],
+      "js": {
+        "raw": 500819,
+        "gzip": 135068,
+        "brotli": 116968
+      },
+      "css": {
+        "raw": 96601,
+        "gzip": 24165,
+        "brotli": 20375
+      },
+      "requests": 54,
+      "foreign_account_modules": []
+    },
+    {
+      "id": "shell.merchant_audit",
+      "kind": "account_shell",
+      "account_key": "merchant_audit",
+      "modules": [
+        "src/layouts/AuditLayout.vue",
+        "src/pages/audit/AuditDashboard.vue"
+      ],
+      "js": {
+        "raw": 533055,
+        "gzip": 148367,
+        "brotli": 128840
+      },
+      "css": {
+        "raw": 97726,
+        "gzip": 24353,
+        "brotli": 20518
+      },
+      "requests": 64,
+      "foreign_account_modules": []
+    }
+  ],
+  "largest_lazy_chunks": [
+    {
+      "key": "src/content/generated/merchant_human_resource/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-CtKqxfqu.js",
+      "raw": 191488,
+      "gzip": 54163,
+      "brotli": 41415
+    },
+    {
+      "key": "src/content/generated/merchant_front_office/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-sT7Rq7xO.js",
+      "raw": 164994,
+      "gzip": 41851,
+      "brotli": 33001
+    },
+    {
+      "key": "src/content/generated/merchant_finance/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-C0V9RKr9.js",
+      "raw": 162599,
+      "gzip": 41505,
+      "brotli": 32953
+    },
+    {
+      "key": "src/content/generated/merchant_finance/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-hc7z_ovd.js",
+      "raw": 146227,
+      "gzip": 39319,
+      "brotli": 31263
+    },
+    {
+      "key": "src/content/generated/merchant_administrator/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-CgHAzLNB.js",
+      "raw": 146059,
+      "gzip": 39295,
+      "brotli": 31082
+    },
+    {
+      "key": "src/content/generated/merchant_branch/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-BKFR0_gm.js",
+      "raw": 144575,
+      "gzip": 38439,
+      "brotli": 30544
+    },
+    {
+      "key": "src/content/generated/merchant_branch/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-coOW0nKd.js",
+      "raw": 149396,
+      "gzip": 38378,
+      "brotli": 30451
+    },
+    {
+      "key": "src/content/generated/merchant_audit/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-DThiQNW6.js",
+      "raw": 143483,
+      "gzip": 37509,
+      "brotli": 29925
+    },
+    {
+      "key": "src/content/generated/merchant_front_office/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-c80mL33A.js",
+      "raw": 138083,
+      "gzip": 37306,
+      "brotli": 29736
+    },
+    {
+      "key": "src/content/generated/merchant_audit/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-Dssr03Nj.js",
+      "raw": 135086,
+      "gzip": 37005,
+      "brotli": 29466
+    },
+    {
+      "key": "src/content/generated/merchant_human_resource/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-ByWB9DOf.js",
+      "raw": 128516,
+      "gzip": 35137,
+      "brotli": 27993
+    },
+    {
+      "key": "src/content/generated/merchant_personnel/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-B8poT49w.js",
+      "raw": 127478,
+      "gzip": 34508,
+      "brotli": 27996
+    },
+    {
+      "key": "src/content/generated/super_administrator/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-BZf-gaR4.js",
+      "raw": 126663,
+      "gzip": 34115,
+      "brotli": 27275
+    },
+    {
+      "key": "src/content/generated/merchant_administrator/data-policy.generated.ts",
+      "file": "spa-assets/data-policy.generated-DHp_qTzO.js",
+      "raw": 127406,
+      "gzip": 33805,
+      "brotli": 27108
+    },
+    {
+      "key": "src/content/generated/merchant_personnel/terms-of-service.generated.ts",
+      "file": "spa-assets/terms-of-service.generated-Dbi8IX2I.js",
+      "raw": 112699,
+      "gzip": 32497,
+      "brotli": 26036
+    }
+  ],
+  "passed": true,
+  "failures": []
+}

@@ -3,7 +3,7 @@
  * Source:     resources/spa/src/design-system/tokens.json
  * Generator:  node scripts/generate-design-tokens.mjs
  * Verify:     node scripts/generate-design-tokens.mjs --check
- * Source SHA-256: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
+ * Source SHA-256: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
  *
  * Servana design tokens (ADR-021). Light is the DEFAULT: the dark block applies only when the
  * root element carries the `dark` class, which is set exclusively from an explicit Servana
@@ -130,9 +130,9 @@
   --sv-safe-area-right: env(safe-area-inset-right, 0px);
 
   /* --- typography --- */
-  --sv-font-family-ui: Inter, ui-sans-serif, system-ui, sans-serif;
-  --sv-font-family-display: Manrope, ui-sans-serif, system-ui, sans-serif;
-  --sv-font-family-numeric: Inter, ui-sans-serif, system-ui, sans-serif;
+  --sv-font-family-ui: Inter, 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --sv-font-family-display: Manrope, 'Manrope Fallback', ui-sans-serif, system-ui, sans-serif;
+  --sv-font-family-numeric: Inter, 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
   --sv-font-size-xs: 0.75rem;
   --sv-line-height-xs: 1rem;
   --sv-font-size-sm: 0.875rem;

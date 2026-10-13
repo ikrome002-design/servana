@@ -77,8 +77,20 @@
         /* storage unavailable — light, which is the default anyway. */
       }
     </script>
+    {{--
+        Critical-path hints (Phase UI-17; UI/UX plan §6.5), all derived server-side from the real Vite
+        manifest by SpaShellController: the hero font faces (landing only) and `modulepreload` for the
+        entry's static imports plus, on `/`, this account's landing chunks. They start fetches the
+        browser would otherwise discover a round trip later; they grant and render nothing.
+    --}}
+    @foreach ($fontPreloads as $font)
+      <link rel="preload" href="{{ $font }}" as="font" type="font/woff2" crossorigin />
+    @endforeach
     @foreach ($entryStyles as $style)
       <link rel="stylesheet" href="{{ $style }}" />
+    @endforeach
+    @foreach ($modulePreloads as $module)
+      <link rel="modulepreload" href="{{ $module }}" />
     @endforeach
   </head>
   <body>

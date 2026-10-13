@@ -152,10 +152,95 @@ while the repository records said the work was complete.
 | UI-13 | Front Office experience (19 pages) | ✅ `verified_complete` | PR [#63](https://github.com/ikrome002-design/servana/pull/63) merged — normal squash `14cfadcb…`, final reviewed head `126756b3…`, equal reviewed/merge tree `9d91b415…`, merged `2026-08-20T13:36:11Z`. Exact-head CI `32371896795` passed Backend/Frontend/Docker/Security/E2E; governance comment `5356633232`; blank/NONE decision and 0 reviews/approvals (**not** independent approval); source branches absent. **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**; all 24 closures promoted. | [ui-13.md](proof/ui-13.md) | Reconciled live exactly once on the UI-14 branch |
 | UI-14 | Personnel experience (20 pages) | ✅ `verified_complete` | PR [#65](https://github.com/ikrome002-design/servana/pull/65) merged — normal squash `20c27dca…` (single parent `43b623c0…`, REM-DEP-003), implementation commit `04b68169…`, final reviewed head `92603fa6…`, equal reviewed/merge tree `93ec8269…`, merged `2026-10-10T22:25:00Z`. Exact-head CI `38089104875` (attempt 1, the only run on the branch) passed Backend/Frontend/Docker/Security/E2E; governance comment `6102827769`; blank/NONE decision, 0 submitted reviews, 0 approvals (**not** independent approval); source branch absent local + remote. **19 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 20**. | [ui-14.md](proof/ui-14.md) | Reconciled live exactly once on the UI-15 branch (2026-10-11) |
 | UI-15 | Audit experience (15 pages) | ✅ `verified_complete` | PR [#66](https://github.com/ikrome002-design/servana/pull/66) merged `2026-10-11` — normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`, final reviewed head `0ae694b8b8fc37e36ad7296eff9fdfec09cbb002`, equal reviewed/merge tree `73bd2171145a82059b5580a605527000db077d3c`. Exact-head CI run `38160619788` passed Backend/Frontend/Docker/Security/E2E; governance comment `6112205584` (actor `ikrome002-design`); blank decision, **0** submitted reviews, **0** approvals (**not** independent approval); source branch `phase-ui-15-audit-experience` absent local + remote. `UI15-SEC-OBS-001` export-domain authorization closed in the merged code (`AuditExportDomainAuthorizationTest`, 30 cases / 125 assertions). **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15**. | [ui-15.md](proof/ui-15.md) | Reconciled live exactly once on the UI-16 branch (2026-10-12) |
-| UI-16 | Responsive, accessibility, theme, visual regression (incl. UI-08…UI-12 visual remediation) | 🟡 `local_complete` — uncommitted handoff to Codex; PR/CI/merge pending | `phase-ui-16-responsive-accessibility-theme-visual-regression` from `088a6cd7…`; **132 implemented / 28 disabled_by_gate / 0 planned / 0 removed = 160** | [ui-16.md](proof/ui-16.md) | Codex Prompt 2 release |
-| UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
+| UI-16 | Responsive, accessibility, theme, visual regression (incl. UI-08…UI-12 visual remediation) | ✅ `verified_complete` | PR [#67](https://github.com/ikrome002-design/servana/pull/67) merged `2026-10-12T19:01:07Z` — **normal merge commit** `1e8bd5f744a65329ced22c0275b728929aae5245` (parents `088a6cd7…` then final reviewed head `43526c48650ef9559cafe8d1df451b055c0eec2d`), reviewed tree == merge tree `25780c741e02f18fa4e030057636428c77840815`. Exact-head CI `38288846434` five jobs SUCCESS (E2E: archetype step 24 passed, full suite **2,107 passed**, no failed/flaky line in the job log). Governance comment `6130701107`; `reviewDecision` blank, **0** reviews / **0** approvals (**not** independent approval); source branch absent local + remote. **132 implemented / 28 disabled_by_gate / 0 planned / 0 removed = 160**. The 122 active baselines are agent-accepted release files, **not** product-owner approval. | [ui-16.md](proof/ui-16.md) | Reconciled live exactly once on the UI-17 branch (2026-10-13) |
+| UI-17 | Performance, security, production deployment, closeout | 🟡 `local_complete` — uncommitted handoff to Codex (base `1e8bd5f7…`); live production acceptance `blocked_external` (DNS lame delegation, no deployment platform) | `phase-ui-17-performance-security-production-closeout` | [ui-17.md](proof/ui-17.md) | Codex code-release recovery authorized; live production DNS/TLS/canary blocked externally (see the UI-17 section) |
 
-### Phase UI-16 — Responsive, accessibility, theme and visual regression — local_complete (uncommitted handoff)
+### Phase UI-17 — Performance, security, production deployment and closeout — local_complete (uncommitted handoff)
+
+```text
+phase_id: UI-17
+branch: phase-ui-17-performance-security-production-closeout
+base SHA: 1e8bd5f744a65329ced22c0275b728929aae5245 (UI-16 PR #67 normal merge; verified live 2026-10-13, reconciled below)
+lifecycle: local_complete — NOT verified_complete (no PR, no CI, no merge); production acceptance blocked_external
+next_agent: Codex code-release recovery — authorized GitHub closeout; no production rollout
+github_code_release_status: pending_commit_PR_CI (external production prerequisites do not block code release)
+production_deployment_status: blocked_external
+full_phase_acceptance: not_verified_complete
+```
+
+Proof: [ui-17.md](proof/ui-17.md) · evidence: `docs/frontend/audits/ui-17/` · resume pointer:
+`docs/frontend/audits/ui-17/implementation-checklist.md` · handoff: `claude-to-codex-handoff.{md,json}`.
+**Claude Code staged nothing, committed nothing, pushed nothing, opened no PR, ran no hosted CI and
+changed no production system.**
+
+**Contract unchanged:** 160 = 132 implemented + 28 disabled_by_gate + 0 + 0; OpenAPI 307 / 358;
+permissions 169 / 134 / 35; no route, API, policy, migration, content, legal text or image changed.
+
+**Work completed (2026-10-13):**
+- Edge/browser security (all proven on the built images, before → after): strict CSP pinned to the
+  theme script's SHA-256, Permissions-Policy, HSTS over HTTPS only (staged `max-age=0`); credential-free
+  access log (raw Magic Link/handoff tokens were being logged — UI17-SEC-001, critical); no weaker
+  Referrer-Policy appended over the handoff's `no-referrer` (SEC-002); strict same-origin CORS (SEC-003);
+  Secure cookies by default in production (SEC-004); fail-closed prod image — no stack traces (SEC-005,
+  critical); no `data:` fonts (SEC-007). Eight-host edge smoke: **64 failures → 300/300**.
+- Performance: edge gzip incl. behind an HTTP/1.0 proxy (PERF-001/006); metric-compatible font
+  fallbacks (PERF-002); manifest-derived modulepreload + hero font preload (PERF-003); one `/me` per
+  load (PERF-004). Landing CLS 0.174 → 0.0016; LCP p75 (lab) desktop 1.68–1.88 → 0.98–1.24 s, Fast 4G
+  2.48–6.77 → 2.01–2.21 s (8/8 pass), slow 4G 4.70–5.14 → 2.99–3.17 s (routed, PERF-005); transfer
+  ~785 → ~470 KiB; initial CSS 22.1 → 14.7 KiB gzip. Reviewed budgets frozen from the baseline and
+  enforced in CI with 18 negative controls.
+- Release mechanics rehearsed in isolation with the real image pairs (N-1 `1e8bd5f` vs candidate):
+  canary 12.5 % with 0 errors, asset-skew negative control (37 404s without fallback), promotion with
+  the full smoke through an HTTP/1.0 front proxy, rollback to N-1 in ≤ 6.47 s with candidate assets still
+  served. Runbook, release-receipt schema (observed values only), monitoring/alert map, owner package.
+- UI14-RES-001 closed: legacy Personnel `Earnings.vue` removed; UI-01 render regression retargeted.
+- Tests: backend **3,074 passed / 14 skipped / 0 failed** (PostgreSQL, parallel); Vitest 1,465/1,465
+  (runs 2–3; run 1 had 2 failures in one file during Docker teardown, not reproduced); Pint, Larastan
+  L8, 18 generator/contract checks, npm/composer audits clean; origin browser gate **40/40** on the final
+  candidate; full Playwright (Vite preview origin, whole product) **2,107 passed / 0 failed / 0 flaky** (1.4 h, `--update-snapshots=none`; the 122 UI-16 baselines untouched). The run's known rewrite of predecessor evidence (386 tracked files) was restored file by file and its 85 new untracked UI-01 screenshots were removed after proving them untracked.
+
+**Work skipped (and why):** live production deploy, canary, rollback, DNS/TLS validation, production
+screenshots and alert delivery — no resolvable DNS, no certificates, no deployment pipeline,
+environments, registry, secrets store or alert transport exist (and an uncommitted branch must never
+be deployed). Client RUM telemetry — would add an `/api/v1` route (contract frozen) or a third-party SDK
+with credentials. Logo derivative — changes the approved single-source logo contract. Non-blocking
+`/me` on public routes / prerendered landing — product/architecture decisions (PERF-005).
+
+**Pending / future owners:**
+
+| Item | Owner | Entry condition | Gate | Blocker class |
+|---|---|---|---|---|
+| Merge UI-17 (stage manifest paths, `tokens.generated.ts:13` gitleaks fingerprint, five jobs) | Codex Prompt 2 | handoff manifest matches | — | release |
+| DNS for `servana.ke` (lame delegation) + TLS for 8 hosts | DNS owner → Phase 25 | zone served by the delegated NS | external | infrastructure |
+| Production topology, registry, secrets, LB allowlist, readiness gating, alert transport, HSTS ramp | Phase 25 | own authorization | runbook §2 P1–P10 | infrastructure |
+| Production canary / rollback / screenshots / receipt | Codex post-merge + Phase 25 | P1–P10 green | external | infrastructure |
+| D1 baselines/redesigns · D3 logo · D6 HSTS preload · D7 E2E required check · D8 agreed p75 profile | product owner | review package | — | acceptance |
+| Manual screen-reader pass | product owner / a11y reviewer | checklist in review package | — | acceptance |
+| REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 · REM-RE-002 | existing owners (pre-Phase-25) | unchanged | — | — |
+| REM-EXP-001 · 20D-W · 21R-B · 21N · 28 gated pages | after External Gate W | Gate W opens | **closed** | external authorization |
+
+**Next exact action:** Codex recovery — use the authenticated handoff and `codex-release-addendum.json`; verify `claude-to-codex-handoff.json` byte-for-byte, stage
+exactly its paths, commit, open the UI-17 PR, run the five exact-head jobs, govern and merge; then the
+owner decisions above. Do not start Phase 25 or Gate-W work from this branch.
+
+### Phase UI-16 — Responsive, accessibility, theme and visual regression — verified complete
+
+**Post-merge reconciliation (2026-10-13, on the UI-17 branch; read-only `git`/`gh`, performed once).**
+PR #67 is `MERGED` (`2026-10-12T19:01:07Z`, base `main`) by a **normal merge commit**
+`1e8bd5f744a65329ced22c0275b728929aae5245`: first parent `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`
+(UI-15 squash, the previous `main`), second parent = final reviewed head
+`43526c48650ef9559cafe8d1df451b055c0eec2d`; head tree = merge tree
+`25780c741e02f18fa4e030057636428c77840815`. Run `38288846434` on that exact head: Backend, Frontend,
+E2E, Security, Docker all `success`; the E2E job log shows the archetype step **24 passed** and the full
+suite **2,107 passed (43.7 m)** with no failed or flaky summary line. Governance comment `6130701107`
+(actor `ikrome002-design`); `reviewDecision` blank, **0** submitted reviews, **0** approvals — no
+independent approval exists. No `phase-ui-16-*` branch remains locally or on origin. `main` = `origin/main`
+= `1e8bd5f…`, ahead/behind `0 0`, clean; `git fsck --full` exit 0 (dangling objects only). The 20 UI-16
+defects and inherited closures are promoted to `verified_complete` by this merge
+(`docs/frontend/audits/ui-16/defect-closure.json` → `post_merge_reconciliation`). Still open and **not**
+closed by the merge: product-owner acceptance of the 24 redesigns and the 122 active baselines (they are
+agent-accepted release files); a manual screen-reader pass — both carried into UI-17's review package.
+The record below is the pre-merge history, preserved unchanged.
 
 Branch `phase-ui-16-responsive-accessibility-theme-visual-regression` from verified base
 `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b` (UI-15 PR #66, reconciled once below). **Claude Code made no

@@ -96,6 +96,13 @@ RUN npm run build
 FROM base AS prod
 
 ENV APP_ENV=production
+# Phase UI-17 (UI17-SEC-005): fail CLOSED when no runtime .env is mounted. The shared entrypoint
+# falls back to copying .env.example, whose local-development values (APP_DEBUG=true,
+# SESSION_SECURE_COOKIE=false) then rendered full stack traces and issued non-Secure cookies from a
+# production image. Process environment beats .env (Dotenv never overwrites it), so these are safe
+# defaults an orchestrator may still override explicitly — never silent development behaviour.
+ENV APP_DEBUG=false
+ENV SESSION_SECURE_COOKIE=true
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
 # Phase 24 (PH24-OPCACHE-001): the image is immutable and validate_timestamps is 0, so preloading
 # the application + framework class files at pool start is safe and removes their parse cost from
