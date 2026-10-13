@@ -6,6 +6,35 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase UI-17 — Performance, security, production deployment and closeout (`phase-ui-17-performance-security-production-closeout`) — local_complete; GitHub code release pending; production blocked_external
+
+Base `1e8bd5f7…` (UI-16 PR #67). **Nothing is deployed**: `servana.ke` is a lame delegation (0 of 8 hosts
+resolve) and no deployment pipeline exists; live production acceptance is deferred to Phase 25 with a
+runbook, a release-receipt schema and a rehearsed mechanism. No route, API, permission, policy,
+migration, page count, content or legal text changed.
+
+- **Edge security** (`docker/nginx/default.conf`): strict CSP pinned to the SHA-256 of the one inline
+  theme script; Permissions-Policy; HSTS only over HTTPS, staged at `max-age=0`; the access log no
+  longer records query strings or referers, so Magic Link and handoff tokens are no longer logged
+  (UI17-SEC-001); the edge no longer appends a weaker Referrer-Policy over the handoff's
+  `no-referrer` (UI17-SEC-002).
+- **Application browser security**: strict same-origin CORS (`config/cors.php`, UI17-SEC-003); session
+  cookies Secure by default in production (UI17-SEC-004); the production image pins
+  `APP_DEBUG=false` / `SESSION_SECURE_COOKIE=true`, so a missing `.env` no longer exposes stack traces
+  (UI17-SEC-005).
+- **Performance**: gzip for static assets, including behind an HTTP/1.0 proxy (UI17-PERF-001/006);
+  metric-compatible `Inter Fallback`/`Manrope Fallback` faces in the font tokens, and Tailwind font
+  utilities read the tokens (UI17-PERF-002); the shell preloads the entry's imports, this account's
+  landing chunks and the two hero fonts from the real manifest (UI17-PERF-003); one `/api/v1/me` per
+  load (UI17-PERF-004); fonts are never inlined as `data:` (UI17-SEC-007). Landing CLS 0.174 → 0.0016;
+  LCP p75 (lab) desktop 1.68–1.88 → 0.98–1.24 s, Fast 4G 2.48–6.77 → 2.01–2.21 s; slow 4G
+  4.70–5.14 → 2.99–3.17 s (routed, UI17-PERF-005).
+- **Gates**: reviewed compressed budgets (`config/frontend-performance-budget.json`) with a bundle
+  analyser, an edge-policy contract and 18 negative controls in CI's Frontend job; an eight-host
+  edge smoke, an access-log credential check and a throwaway PostgreSQL in CI's Docker job; a UI-17
+  production-origin browser spec.
+- **Cleanup**: the unrouted legacy Personnel `Earnings.vue` is removed (UI14-RES-001).
+
 ### REM-DEP-003 — dependency security remediation (verified_complete; PR #64 merged)
 
 Final head `cddb878227932cf71f5210726c7223a2c2d1f08b`; exact-head CI `37863919256` all five jobs success; normal squash `43b623c0e484c0ead76cca8c9d02ad41694c700e`; reviewed/merge trees equal. Subsequent paragraphs preserve pre-merge implementation and failed-run history.
@@ -37,7 +66,9 @@ decodes CSS Color 4 instead of silently treating it as black. Thirty focused
 browser checks pass with transparent/matching-text negative controls; replacement
 exact-head five-job CI remains mandatory.
 
-### Phase UI-16 — Responsive, accessibility, theme and visual regression (`phase-ui-16-responsive-accessibility-theme-visual-regression`) — local_complete; uncommitted handoff
+### Phase UI-16 — Responsive, accessibility, theme and visual regression (`phase-ui-16-responsive-accessibility-theme-visual-regression`) — verified_complete; PR #67 merged
+
+Reconciled once on the UI-17 branch (2026-10-13): normal merge commit `1e8bd5f744a65329ced22c0275b728929aae5245` (parents `088a6cd7…`, final reviewed head `43526c48650ef9559cafe8d1df451b055c0eec2d`), equal tree `25780c74…`, exact-head CI `38288846434` five jobs success (E2E 2,107 passed), governance comment `6130701107`, 0 reviews/approvals. The 122 baselines are agent-accepted, not product-owner approved. The paragraphs below are the pre-merge record, unchanged.
 
 Release-wide responsive, accessibility, theme and visual-regression acceptance, plus the mandatory
 visual remediation of the 82 older UI-08 … UI-12 pages to the UI-13/14/15 bar. The 160-page contract
@@ -5351,3 +5382,11 @@ The earlier local stop and two CI fixture failures remain historical evidence. L
 The accepted 48 host checks remain historical proof of unchanged routing/account-context/assets/unauthenticated refusal only; they do not establish new authorization. Current production PHP/nginx CI builds and configured host smoke passed independently. Existing 64 captures / 14 pages scored 28–30 and the six-reference design are unchanged.
 
 **Release lifecycle:** security closeout verified; final proof-commit five-job exact-head CI, governance, normal squash merge and cleanup still pending at this committed checkpoint. No completed E2E result on this head or GitHub merge is invented. Final actual CI/merge/tree/branch evidence belongs to the PR governance and final report; the next authorized UI-16 branch reconciles UI-15 to verified_complete. UI-16 (including mandatory UI-08–UI-12 visual revision), UI-17, Phase 25 and Gate-W-dependent phases remain unstarted.
+
+### UI-17 Codex release-scope clarification (2026-10-13)
+
+GitHub code publication/CI/protected merge is authorized independently of production prerequisites.
+Original Claude handoff remains frozen; release deltas and resume pointer:
+`docs/frontend/audits/ui-17/codex-release-addendum.json`. This pre-merge record claims no hosted
+CI result, merge, live deployment or owner visual approval. Production runbook P1–P10 and D1–D8
+remain separately required; full UI-17 acceptance is not verified_complete.

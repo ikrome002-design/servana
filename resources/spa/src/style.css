@@ -3,6 +3,8 @@
    raw brand values exist ONLY in the token source, and `DesignTokenSourceGuardTest` fails the
    build if one reappears here. */
 @import './styles/generated/tokens.css';
+/* Metric-compatible fallbacks named by the font-family tokens (Phase UI-17, UI17-PERF-002). */
+@import './styles/font-fallbacks.css';
 
 /* REM-DEP-003: v4's supported PostCSS integration loads the existing token consumer.
    Source detection is explicit so another worktree cannot contribute utility candidates. */

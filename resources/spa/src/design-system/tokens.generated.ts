@@ -3,14 +3,14 @@
 // Source:     resources/spa/src/design-system/tokens.json
 // Generator:  node scripts/generate-design-tokens.mjs
 // Verify:     node scripts/generate-design-tokens.mjs --check
-// Source SHA-256: 99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b
+// Source SHA-256: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
 //
 // Typed access to the Servana design tokens (ADR-021). Components should consume the CSS custom
 // properties (via Tailwind's semantic aliases) rather than these constants; these exist so tests,
 // contrast guards and the design-system fixture can reason about token VALUES deterministically.
 
 export const DESIGN_TOKEN_SCHEMA_VERSION = '1.0.0';
-export const DESIGN_TOKEN_SOURCE_SHA256 = '99122a20352dec0a48d6b6d9ae57f455c02630b4790d6c1222b0ca2d925e715b';
+export const DESIGN_TOKEN_SOURCE_SHA256 = '7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b';
 
 export type ThemeName = 'light' | 'dark';
 

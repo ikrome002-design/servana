@@ -1,0 +1,72 @@
+{
+  "$comment": "Phase UI-17 reviewed frontend budget (UI/UX plan §6.5, §22.1, §22.4). Enforced by scripts/ui17-bundle-budget.mjs in CI. Caps were FROZEN from the pre-optimisation baseline (main 1e8bd5f7, 2026-10-13) before any UI-17 change was measured, never tuned to a post-change result. Raising a cap is a reviewed change with evidence; see docs/frontend/audits/ui-17/performance-baseline-and-budget.json.",
+  "method": {
+    "gzip_level": 6,
+    "brotli_quality": 11,
+    "measured_on": "emitted bytes in public/spa (vite build); gzip level 6 = the edge's gzip_comp_level, i.e. the bytes nginx actually sends",
+    "initial_request": "the entry chunk plus its static-import closure and CSS — what the Laravel shell names",
+    "critical_path": "initial request plus the static closure of the archetype's route modules (layout + home page) — what a cold visit must fetch before the page can render"
+  },
+  "rationale": {
+    "initial_request_js": "Baseline 79,977 B. Cap 102,400 B (100 KiB) = +28% headroom: room for ordinary growth, but a single eagerly imported page, chart or editor library breaks it.",
+    "initial_request_css": "Baseline 22,612 B. Cap 30,720 B (30 KiB).",
+    "critical_path_js": "Cap 170,000 B — the widely used mobile critical-path JS reference (~170 KB compressed for a usable first load on a mid-range phone over 4G). Baseline worst case is the Audit shell at 148,367 B (13% headroom); every archetype must stay under it.",
+    "critical_path_css": "Baseline worst case 24,353 B (Audit shell). Cap 30,720 B.",
+    "critical_path_requests": "Baseline worst case 64 (Audit shell). Cap 80: catches a module-graph explosion, leaves room for one more shared component split.",
+    "lazy_route_chunk": "Largest route chunk at baseline 9,247 B (public landing). Cap 24,576 B (24 KiB): a page that grows 2.6x, or two pages merged into one chunk, is a review event.",
+    "lazy_content_chunk": "Generated legal/FAQ/landing content is verbatim text (never paraphrased, UI/UX plan §17.2). Largest at baseline 54,163 B (HR Data Policy). Cap 65,536 B."
+  },
+  "budgets": {
+    "initial_request": { "max_js_gzip_bytes": 102400, "max_css_gzip_bytes": 30720 },
+    "critical_path": { "max_js_gzip_bytes": 170000, "max_css_gzip_bytes": 30720, "max_requests": 80 },
+    "lazy_chunk": {
+      "max_route_gzip_bytes": 24576,
+      "max_content_gzip_bytes": 65536,
+      "content_prefixes": ["src/content/generated/"]
+    }
+  },
+  "runtime_targets": {
+    "$comment": "Lab targets measured by scripts/ui17-web-vitals.mjs on the BUILT image origin. Lab p75 is nearest-rank over N lab samples, never field p75.",
+    "landing_lcp_ms": 2500,
+    "cls": 0.1,
+    "inp_ms": 200,
+    "inp_classification": "lab_surrogate until field data exists"
+  },
+  "route_files": [
+    "resources/spa/src/router/index.ts",
+    "resources/spa/src/router/routes/audit.ts",
+    "resources/spa/src/router/routes/auth.ts",
+    "resources/spa/src/router/routes/branch.ts",
+    "resources/spa/src/router/routes/finance.ts",
+    "resources/spa/src/router/routes/frontOffice.ts",
+    "resources/spa/src/router/routes/hr.ts",
+    "resources/spa/src/router/routes/merchant.ts",
+    "resources/spa/src/router/routes/personnel.ts",
+    "resources/spa/src/router/routes/platform.ts",
+    "resources/spa/src/router/routes/public.ts",
+    "resources/spa/src/router/routes/search.ts"
+  ],
+  "lazy_only_prefixes": ["resources/spa/src/pages/", "resources/spa/src/layouts/", "resources/spa/src/content/generated/super_administrator/", "resources/spa/src/content/generated/merchant_"],
+  "account_ownership": {
+    "super_administrator": ["resources/spa/src/pages/platform/", "resources/spa/src/layouts/PlatformAdminLayout.vue", "resources/spa/src/content/generated/super_administrator/"],
+    "merchant_administrator": ["resources/spa/src/pages/merchant/", "resources/spa/src/layouts/MerchantLayout.vue", "resources/spa/src/content/generated/merchant_administrator/"],
+    "merchant_branch": ["resources/spa/src/pages/branch/", "resources/spa/src/layouts/BranchLayout.vue", "resources/spa/src/content/generated/merchant_branch/"],
+    "merchant_human_resource": ["resources/spa/src/pages/hr/", "resources/spa/src/layouts/HumanResourceLayout.vue", "resources/spa/src/content/generated/merchant_human_resource/"],
+    "merchant_finance": ["resources/spa/src/pages/finance/", "resources/spa/src/layouts/FinanceLayout.vue", "resources/spa/src/content/generated/merchant_finance/"],
+    "merchant_front_office": ["resources/spa/src/pages/front-office/", "resources/spa/src/layouts/FrontOfficeLayout.vue", "resources/spa/src/content/generated/merchant_front_office/"],
+    "merchant_personnel": ["resources/spa/src/pages/personnel/", "resources/spa/src/layouts/PersonnelLayout.vue", "resources/spa/src/content/generated/merchant_personnel/"],
+    "merchant_audit": ["resources/spa/src/pages/audit/", "resources/spa/src/layouts/AuditLayout.vue", "resources/spa/src/content/generated/merchant_audit/"]
+  },
+  "archetypes": [
+    { "id": "public-landing", "kind": "public", "modules": ["src/pages/public/PublicLandingPage.vue"] },
+    { "id": "public-login", "kind": "public", "modules": ["src/layouts/AuthLayout.vue", "src/pages/auth/Login.vue"] },
+    { "id": "shell.super_administrator", "kind": "account_shell", "account_key": "super_administrator", "modules": ["src/layouts/PlatformAdminLayout.vue", "src/pages/platform/PlatformDashboard.vue"] },
+    { "id": "shell.merchant_administrator", "kind": "account_shell", "account_key": "merchant_administrator", "modules": ["src/layouts/MerchantLayout.vue", "src/pages/merchant/Dashboard.vue"] },
+    { "id": "shell.merchant_branch", "kind": "account_shell", "account_key": "merchant_branch", "modules": ["src/layouts/BranchLayout.vue", "src/pages/branch/BranchDashboard.vue"] },
+    { "id": "shell.merchant_human_resource", "kind": "account_shell", "account_key": "merchant_human_resource", "modules": ["src/layouts/HumanResourceLayout.vue", "src/pages/hr/HrDashboard.vue"] },
+    { "id": "shell.merchant_finance", "kind": "account_shell", "account_key": "merchant_finance", "modules": ["src/layouts/FinanceLayout.vue", "src/pages/finance/FinanceDashboard.vue"] },
+    { "id": "shell.merchant_front_office", "kind": "account_shell", "account_key": "merchant_front_office", "modules": ["src/layouts/FrontOfficeLayout.vue", "src/pages/front-office/FrontOfficeDashboard.vue"] },
+    { "id": "shell.merchant_personnel", "kind": "account_shell", "account_key": "merchant_personnel", "modules": ["src/layouts/PersonnelLayout.vue", "src/pages/personnel/PersonnelDashboard.vue"] },
+    { "id": "shell.merchant_audit", "kind": "account_shell", "account_key": "merchant_audit", "modules": ["src/layouts/AuditLayout.vue", "src/pages/audit/AuditDashboard.vue"] }
+  ]
+}

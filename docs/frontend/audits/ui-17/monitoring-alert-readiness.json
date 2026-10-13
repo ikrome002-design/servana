@@ -1,0 +1,47 @@
+{
+  "schema": "servana.ui17.monitoring-readiness/v1",
+  "phase": "UI-17",
+  "authority": "UI/UX plan §23 (observability), §18.7 (logging); Development Plan §71 (Phase 25 baseline)",
+  "summary": "UI-17 delivers the UI/edge signal sources and a runnable synthetic monitor; NO collector, alert transport or on-call destination exists in the repository or the GitHub account, so no alert has been delivered to a real destination. That wiring is Phase 25 (Plan §71) plus a product-owner choice of destination.",
+  "discovered_existing": [
+    { "item": "sentry/sentry-laravel ^4.10 (backend exceptions)", "state": "installed; SENTRY_LARAVEL_DSN empty in .env.example → delivery disabled; SENTRY_SEND_DEFAULT_PII=false" },
+    { "item": "Laravel structured JSON logs with redaction + correlation id", "state": "config/logging.php (Plan §22.1)" },
+    { "item": "Health probes /health (liveness), /health/deep (readiness), /health/host (account-host resolution)", "state": "present since Phase 7 / UI-02" },
+    { "item": "Edge access log", "state": "UI-17: credential-free structured JSON (servana_edge format: host, method, path WITHOUT query, status, bytes, request_time, upstream_time, request_id, remote_addr, user_agent)" },
+    { "item": "Browser RUM / web-vitals / frontend error SDK", "state": "none installed" },
+    { "item": "Alert transport (PagerDuty/Opsgenie/email/Slack) and on-call", "state": "none" },
+    { "item": "GitHub Environments / scheduled monitors", "state": "none (0 environments, 0 secrets)" }
+  ],
+  "ui17_signal_sources": [
+    { "signal": "broken host, wrong account context, missing shell/asset, header regression, CORS/CSP/cookie regression, unknown-host acceptance", "source": "scripts/ui17-edge-smoke.mjs --live (non-zero exit = alert)", "runnable_now": "yes against any origin; --live only after DNS/TLS exist" },
+    { "signal": "certificate expiry / chain / SAN mismatch; DNS resolution; lame delegation; HTTP→HTTPS redirect", "source": "scripts/ui17-dns-tls-probe.mjs (non-zero exit = alert; --min-cert-days 21)", "runnable_now": "yes — currently FAILS (lame delegation, 0/8 hosts resolve)" },
+    { "signal": "persistent 5xx, asset 404 after deploy, wrong-host auth anomaly (421 / handoff failure redirects)", "source": "edge access log JSON: status + path + host; Laravel security events for wrong-host Magic Link/handoff", "runnable_now": "log fields present; aggregation/alerting needs a collector (Phase 25)" },
+    { "signal": "LCP/CLS regression (lab)", "source": "scripts/ui17-web-vitals.mjs against the deployed origin, compared with config/frontend-performance-budget.json runtime_targets", "runnable_now": "yes (lab only)" },
+    { "signal": "bundle/asset regression before deploy", "source": "CI Frontend job: ui17-bundle-budget + negative controls", "runnable_now": "yes, in CI" },
+    { "signal": "frontend exception spike, unhandled rejection, theme-init failure, router failure, image failure, field LCP/CLS/INP", "source": "NONE — requires a browser telemetry collector and an ingestion endpoint", "runnable_now": "no" }
+  ],
+  "client_telemetry_contract": {
+    "status": "specified, not implemented",
+    "why_not_implemented": "An ingestion endpoint would add an /api/v1 route (OpenAPI 307/358 and the route inventory are frozen in UI-17) or require a third-party SDK and credentials that do not exist. Both need separate authorization.",
+    "event_families": ["page_load_timing", "web_vital (lcp|cls|inp, classified field)", "js_error", "unhandled_rejection", "asset_404", "image_error", "content_manifest_mismatch", "router_failure", "account_context_mismatch", "magic_link_wrong_host", "context_switch_failure", "theme_init_failure", "api_error_bucket"],
+    "allowed_fields": ["host", "account_key", "route_name (template, never the raw path)", "release_tag", "correlation_id", "status_bucket", "duration_ms_bucket", "browser_family", "viewport_class"],
+    "forbidden_fields": ["query string", "raw URL", "email", "phone", "name", "merchant/client/branch ULIDs", "payment/bank references", "Magic Link or handoff tokens", "cookies", "free text from forms"],
+    "sampling": "≤10% page views; 100% of errors with per-session rate limit",
+    "retention": "≤30 days, aggregated thereafter; honour the published privacy policies (docs/legal/privacy_policy/*)"
+  },
+  "alerts": [
+    { "name": "host-unhealthy", "condition": "edge smoke --live non-zero for 2 consecutive runs (5-min schedule)", "severity": "critical", "runbook": "deployment-canary-rollback-runbook.md §6", "destination": null, "tested": false },
+    { "name": "certificate-expiry", "condition": "dns-tls probe days_remaining < 21 on any host", "severity": "high", "runbook": "runbook §2 P3", "destination": null, "tested": false },
+    { "name": "edge-5xx", "condition": "5xx > 2% over 5 min (critical financial paths > 1%) from edge log", "severity": "critical", "runbook": "runbook §5 step 3", "destination": null, "tested": false },
+    { "name": "asset-404-after-deploy", "condition": "any /spa-assets/* 404 within 2 h of a release", "severity": "high", "runbook": "runbook §5 asset-skew rule", "destination": null, "tested": false },
+    { "name": "lab-web-vitals-regression", "condition": "landing LCP p75(lab) > 2500 ms or CLS > 0.1 on the mobile profile", "severity": "medium", "runbook": "performance-baseline-and-budget.json", "destination": null, "tested": false },
+    { "name": "frontend-exception-spike", "condition": "requires client telemetry (not implemented)", "severity": "high", "runbook": null, "destination": null, "tested": false },
+    { "name": "wrong-host-auth-anomaly", "condition": "421 or handoff/magic-link failure rate above baseline", "severity": "high", "runbook": "UI/UX plan §5", "destination": null, "tested": false }
+  ],
+  "synthetic_alert_test": {
+    "performed": false,
+    "reason": "no alert destination exists (no collector, no transport, no on-call)",
+    "owner": "Phase 25 (Plan §71) with a product-owner decision on the destination",
+    "entry_condition": "a collector + destination are provisioned; then fire one benign synthetic alert and record its receipt time in the release receipt"
+  }
+}

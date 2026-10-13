@@ -185,9 +185,11 @@ export default {
         'sv-exit': sv('motion-ease-exit'),
       },
       fontFamily: {
-        // Inter for product UI, Manrope for page titles (UI/UX plan §9.3).
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Inter for product UI, Manrope for page titles (UI/UX plan §9.3). Read from the font tokens
+        // (Phase UI-17) instead of a second hand-written stack, so the metric-compatible fallbacks
+        // and any future change have exactly one authority: tokens.json.
+        sans: sv('font-family-ui'),
+        display: sv('font-family-display'),
       },
     },
   },

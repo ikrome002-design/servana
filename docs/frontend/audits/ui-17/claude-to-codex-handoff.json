@@ -1,0 +1,733 @@
+{
+  "phase": "UI-17",
+  "branch": "phase-ui-17-performance-security-production-closeout",
+  "base_sha": "1e8bd5f744a65329ced22c0275b728929aae5245",
+  "head_sha": "1e8bd5f744a65329ced22c0275b728929aae5245",
+  "remote_main_sha": "1e8bd5f744a65329ced22c0275b728929aae5245",
+  "ahead_behind": [
+    0,
+    0
+  ],
+  "staged_count": 0,
+  "generated_at": "2026-10-13T03:24:47.852Z",
+  "method": "git status --porcelain=v1 -z --untracked-files=all (NUL-safe); status ?? → A, D → D, else M; size/sha256 from the working-tree bytes; the manifest itself is listed with sha256 null and its digest is reported externally; verify with the same listing and compare path|status|size|sha256",
+  "counts": {
+    "total": 98,
+    "modified": 23,
+    "added": 73,
+    "deleted": 2
+  },
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "status": "M",
+      "size": 27293,
+      "sha256": "e17313090e6eb0f61ec97f118e120b3f7eda974d36b57a3416a7c61b0ed51d0a",
+      "reason": "UI-17 gates wired into existing Frontend and Docker jobs"
+    },
+    {
+      "path": "app/Http/Controllers/SpaShellController.php",
+      "status": "M",
+      "size": 8114,
+      "sha256": "61f96a072fb76b7a8889babe36250c95d81e8d131946cdcf75955318ef895f94",
+      "reason": "shell critical-path preload (UI17-PERF-003/002)"
+    },
+    {
+      "path": "config/cors.php",
+      "status": "A",
+      "size": 1623,
+      "sha256": "67b0f43f8f96c157c10abd4f3227d8bf75b0b1657f4f1d66b5ca4920b2944fae",
+      "reason": "edge/browser security + edge performance (UI17-SEC-*, PERF-001/006)"
+    },
+    {
+      "path": "config/frontend-performance-budget.json",
+      "status": "A",
+      "size": 6782,
+      "sha256": "28ee87fe78eaa58fc6d3205f5e089add5fac726715e5ccc2ef6063f59874f6a9",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "config/session.php",
+      "status": "M",
+      "size": 8481,
+      "sha256": "006ef5067bcf709ea8ac87b412bdabde80e0c001369014fa50debd2313afaecb",
+      "reason": "edge/browser security + edge performance (UI17-SEC-*, PERF-001/006)"
+    },
+    {
+      "path": "docker/nginx/default.conf",
+      "status": "M",
+      "size": 13954,
+      "sha256": "d524fcc19a9ad312e806e6b2742fd3c54f55a56016b8209b4ba0b6710f4d5a86",
+      "reason": "edge/browser security + edge performance (UI17-SEC-*, PERF-001/006)"
+    },
+    {
+      "path": "docker/php.Dockerfile",
+      "status": "M",
+      "size": 5183,
+      "sha256": "c8058520d2f0bb851d1178fea771a8dee298a3e603d9bd6665154c52c5f102b0",
+      "reason": "edge/browser security + edge performance (UI17-SEC-*, PERF-001/006)"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": "M",
+      "size": 403773,
+      "sha256": "2d78cd5f5136fe57c7516926c3328d342e11b8af84054e89e00149fd8c58f24d",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-16/defect-closure.json",
+      "status": "M",
+      "size": 41543,
+      "sha256": "e4821a5e07e8556d6c1ee46dff565d679a6ebe4458176828e87ff0e31de915b7",
+      "reason": "UI-16 post-merge reconciliation (append-only)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/browser-security-negatives.json",
+      "status": "A",
+      "size": 4826,
+      "sha256": "0e79c00ce350fbefc3c3b855d734c4ac15d10c2bd2e2778a85d97bc640cb37ca",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/bundle-chunk-report-before.json",
+      "status": "A",
+      "size": 9218,
+      "sha256": "57661ed56368cbf4d913886796b5056973b3a3817d9b18adfd00439cf941bb0e",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/bundle-chunk-report.json",
+      "status": "A",
+      "size": 9653,
+      "sha256": "2722996b8b67d7ad253aebbc7cf4f50302abf5ec669be1836a2aee82da01519b",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/claude-to-codex-handoff.json",
+      "status": "A",
+      "size": null,
+      "sha256": null,
+      "reason": "this manifest (self-reference: hash recorded externally)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/claude-to-codex-handoff.md",
+      "status": "A",
+      "size": 4547,
+      "sha256": "3630dee7bb7c15676eae7a8f772eb135e3304e9b4da1264160ea595952c1ff6e",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/defect-closure.json",
+      "status": "A",
+      "size": 25618,
+      "sha256": "530cc06da119eccb7d901f93a14026c2cb9a99144fb2c7292df0adb4dc397ce0",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/deployment-canary-rollback-runbook.md",
+      "status": "A",
+      "size": 10849,
+      "sha256": "ff0b1b01e530b848e6c7d19911d29d951847249f9aea73863227bac734c0e95d",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/dns-tls-matrix.json",
+      "status": "A",
+      "size": 8243,
+      "sha256": "956690402d220d6141e08c6a86763141a1a04f22d959c522b6ea29d95f631cf2",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/image-optimization-matrix.json",
+      "status": "A",
+      "size": 15429,
+      "sha256": "5964c2cb02a3af0067bcbc4bab20669dfeab3d9c05ae1f72db77a64776734d67",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/implementation-checklist.md",
+      "status": "A",
+      "size": 3825,
+      "sha256": "8abdcaf8362aaa72dec3dba01db0aab5dfa31f81a549d9b585ffec74bb758ff5",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/layout-shift-attribution-before.json",
+      "status": "A",
+      "size": 23293,
+      "sha256": "3fc0888ed684cd3efae3b16dcc0cb6747d1533013f684bc6198f4fae11acf90f",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/monitoring-alert-readiness.json",
+      "status": "A",
+      "size": 6192,
+      "sha256": "c3f69d67a5255c7def6d7004ae2875af4daa0f04781628bb76efdeb77152dd25",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/performance-baseline-and-budget.json",
+      "status": "A",
+      "size": 39137,
+      "sha256": "cfbf5063df65b518113f01afb63e2497d1b54db8dcf3423454d2c90151bed64c",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/phase-entry-and-deferred-register.json",
+      "status": "A",
+      "size": 8837,
+      "sha256": "ad717ff2287bcbe313c7a9f35ce5213ec7bbe2a58aa0ea47b8c66c702fddc5fd",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/product-owner-review-package.md",
+      "status": "A",
+      "size": 6170,
+      "sha256": "d9d4e95b27636720c658796f6c9fdb0fd2768543b75cef51e7a24f2fcf3c130f",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/release-receipt-template.json",
+      "status": "A",
+      "size": 4416,
+      "sha256": "7df8c154f942252a4f6466608f19986bdbd4d5b92762917a7ebe6f4ae990fd6c",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/index.json",
+      "status": "A",
+      "size": 12391,
+      "sha256": "d6cc5868cf669f601950dad4ee6b7b417ccda031a9791b66b2f7b6cebda29312",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_administrator--landing-desktop-light.png",
+      "status": "A",
+      "size": 451380,
+      "sha256": "81077db4d840ec759be169d5419b66637c83e5e0f855a241d7040aaec8647fc3",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_administrator--landing-mobile-dark.png",
+      "status": "A",
+      "size": 58651,
+      "sha256": "240925cf37701c4e7602b694250cc713a946fcb408aaf855f1c5f6b9acf26b70",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_administrator--landing-mobile-light.png",
+      "status": "A",
+      "size": 58034,
+      "sha256": "c2d94a0e7eb07c124638c77c4bcbc2ad0c7b7c49c25d9167ce0c6154b4983080",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_administrator--login-mobile-light.png",
+      "status": "A",
+      "size": 36455,
+      "sha256": "6b384fecfff588f25be697e569a2c61adf4b1b34925225e925b57e3d6728e6f7",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_audit--landing-desktop-light.png",
+      "status": "A",
+      "size": 366681,
+      "sha256": "3cb099fb9e4ae521c69e20d68af632772b82a01d184f3670a3e031a72431b1b5",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_audit--landing-mobile-dark.png",
+      "status": "A",
+      "size": 66177,
+      "sha256": "46699f25ad858e0fa13289122c272659ac661612353fde239017cfff38baf1db",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_audit--landing-mobile-light.png",
+      "status": "A",
+      "size": 64745,
+      "sha256": "0df57e7e6ab111d989cad1b334de5371d632099194a397fdec952c81b167019c",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_audit--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_branch--landing-desktop-light.png",
+      "status": "A",
+      "size": 443635,
+      "sha256": "fe931b7c6f4f6f32fe3f927e05d8d2c6005091dc17ea34b4cd13e48ce147e54f",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_branch--landing-mobile-dark.png",
+      "status": "A",
+      "size": 69144,
+      "sha256": "1ebebaa74f0fe7e8d08d7dc2b021ff45c0716cea4c26044c04530eaed082eff4",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_branch--landing-mobile-light.png",
+      "status": "A",
+      "size": 68591,
+      "sha256": "b8ac9df960b21e3b3908076a06cd0bfd7785cd1e9909082d6dd5777383679d71",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_branch--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_finance--landing-desktop-light.png",
+      "status": "A",
+      "size": 478608,
+      "sha256": "93c4a556e62fc341e12919ebe3711885b8d0e321707b2c528502612bb920d3c6",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_finance--landing-mobile-dark.png",
+      "status": "A",
+      "size": 66721,
+      "sha256": "89bf59b3122a889dc41351159937ffd7fbc8659b0153944d3a8c8bcd77dcf9a8",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_finance--landing-mobile-light.png",
+      "status": "A",
+      "size": 65325,
+      "sha256": "2cf46c91c9a616207924c94d0d0e9b26a3bbf33927861022b848942190da7639",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_finance--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_front_office--landing-desktop-light.png",
+      "status": "A",
+      "size": 393518,
+      "sha256": "f8732343e1366274bef66b3abfb1fe8279815eeaf68c65bdac6f92b2304ce330",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_front_office--landing-mobile-dark.png",
+      "status": "A",
+      "size": 55092,
+      "sha256": "6143e70b181033f70887edcbd6759a0e2de34d4311e771ef87b2cb4dad6f0b63",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_front_office--landing-mobile-light.png",
+      "status": "A",
+      "size": 54724,
+      "sha256": "f6178d4c431691bf1c3208511f7d8ad311b3514ac59f90545631234d9dc9a226",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_front_office--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_human_resource--landing-desktop-light.png",
+      "status": "A",
+      "size": 347191,
+      "sha256": "3508fd3eb50ae7cbca51a9b77eac37b5516ce512b74be16c278ca00100eb6180",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_human_resource--landing-mobile-dark.png",
+      "status": "A",
+      "size": 59147,
+      "sha256": "0b28c8fb4b3a532067331d6fd9b97d538dda08c3e56ab0ec5ddb782720e74f71",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_human_resource--landing-mobile-light.png",
+      "status": "A",
+      "size": 58070,
+      "sha256": "2df806abdc2f2c61e898eaf07a6d066713b97ceb791225e771fda199363d3e1c",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_human_resource--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_personnel--landing-desktop-light.png",
+      "status": "A",
+      "size": 350010,
+      "sha256": "d81efcd5a4b40a43566bab0a99f2065fd7ceb28893a919384e2f2287ef14ab3b",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_personnel--landing-mobile-dark.png",
+      "status": "A",
+      "size": 68930,
+      "sha256": "92ef49e427f0ce6a0a41de20292426547282dc4cfbecd86df00f910706bb0ab9",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_personnel--landing-mobile-light.png",
+      "status": "A",
+      "size": 68328,
+      "sha256": "7552bb6bfcdc1d24ce16c8a366d46b25a23d1d9a85e87f6647a3a781ec2f93aa",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/merchant_personnel--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/super_administrator--landing-desktop-light.png",
+      "status": "A",
+      "size": 415412,
+      "sha256": "fa745638612f44fe3a52d1e2ccbc7136f860126d736850987ffa7b0c07d00cb8",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/super_administrator--landing-mobile-dark.png",
+      "status": "A",
+      "size": 57802,
+      "sha256": "8bf5a23749ff41dfca7e23f2283903bcd99291a96c5dac30a97d52c8c295c1cf",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/super_administrator--landing-mobile-light.png",
+      "status": "A",
+      "size": 56974,
+      "sha256": "226ff819b39ef8764eebd99d5e91978c0c951bf5719c52752dd35069c3aa9eb8",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/screenshots/local-origin/super_administrator--login-mobile-light.png",
+      "status": "A",
+      "size": 31543,
+      "sha256": "4bccf1118de8d1d7c1cf99a02b2d7e9440e1e41f2fed65f08da311ad4a11c63a",
+      "reason": "UI-17 built-image review screenshots (not production)"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/security-host-matrix.json",
+      "status": "A",
+      "size": 14646,
+      "sha256": "9a804ee3844804ee59b145523cdfa43692449cfffb0ca9dea81e4cc16e99a83a",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/staging-rehearsal.json",
+      "status": "A",
+      "size": 47812,
+      "sha256": "b41b3335e4cbed0f35980e5336afecec9178be03658d7357cdfaf8a50789a8dd",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/test-matrix.json",
+      "status": "A",
+      "size": 7686,
+      "sha256": "ddf25d30569e979fd07f3d8920ef321ce425757e7959986b325d3d62710db57a",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/web-vitals-after-fast4g.json",
+      "status": "A",
+      "size": 16316,
+      "sha256": "36cffdb3e13edc423e99f6e913300d5741ccc6f40a7500f92dd758f0b8fa8764",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/web-vitals-after.json",
+      "status": "A",
+      "size": 32003,
+      "sha256": "dbaa4be4b2e481db1c18c6b30669b222b7425176c50bae8d4217dc2e2d60d5c7",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/web-vitals-before-fast4g.json",
+      "status": "A",
+      "size": 16421,
+      "sha256": "eb422de4767cbcf9bbbf11b6fce34c07e98e71695847b5079a96f3d972793558",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/web-vitals-before.json",
+      "status": "A",
+      "size": 32381,
+      "sha256": "1e381cd57b48a620c9a8ad9a56be6ac8554f0a27d03adfa292a39a4753608bd0",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/workstream-matrix.json",
+      "status": "A",
+      "size": 5628,
+      "sha256": "dc16e0b0b1b594740dee346307f930effc32ff494380d2bb0d6cf077c2aa2237",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "status": "M",
+      "size": 535726,
+      "sha256": "345d487d560c860536263779dfb2aea1f3bac454608bbf84300db7e51751a406",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/proof/ui-16.md",
+      "status": "M",
+      "size": 34839,
+      "sha256": "f2bfc3f2b01dd7d7e01ddfb3383ae2729e599bcb28cc5274a8deef03527ed6c2",
+      "reason": "UI-16 post-merge reconciliation (append-only)"
+    },
+    {
+      "path": "docs/proof/ui-17.md",
+      "status": "A",
+      "size": 12153,
+      "sha256": "f53ca1a8aa4a1537b9d8ab4f6d1d60b133dfb9930b91e3833772e8446ad9c908",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "docs/traceability/servana-requirements.csv",
+      "status": "M",
+      "size": 334524,
+      "sha256": "a6b1695d4f8ec3c47f67c7d5fa05c7edfe8b42ce6c193eea49f2d2843a4edb14",
+      "reason": "UI-17 proof, evidence, PROGRESS/CHANGELOG/traceability"
+    },
+    {
+      "path": "playwright.origin.config.ts",
+      "status": "M",
+      "size": 1352,
+      "sha256": "9ef6b169cae066738a25d1af6823271dea171852a7a772ab1cc8a36c0dd2424f",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "resources/spa/src/design-system/tokens.generated.ts",
+      "status": "M",
+      "size": 12146,
+      "sha256": "2b73f2412be5bcf425712b7994cf3abed7542f02adef1e00317095fdfa35b206",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "resources/spa/src/design-system/tokens.json",
+      "status": "M",
+      "size": 22446,
+      "sha256": "7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Earnings.spec.ts",
+      "status": "D",
+      "size": 0,
+      "sha256": null,
+      "reason": "UI14-RES-001 legacy Earnings.vue removal"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Earnings.vue",
+      "status": "D",
+      "size": 0,
+      "sha256": null,
+      "reason": "UI14-RES-001 legacy Earnings.vue removal"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Ui14PersonnelPages.spec.ts",
+      "status": "M",
+      "size": 10497,
+      "sha256": "67def19b9ea2f46aa0aefad30d5b99026e2f68a4485710472745d68392b5cba8",
+      "reason": "UI14-RES-001 legacy Earnings.vue removal"
+    },
+    {
+      "path": "resources/spa/src/pages/Ui01Render001.spec.ts",
+      "status": "M",
+      "size": 6830,
+      "sha256": "920f0121fb77a3effe5d072bfb6c120c9df69d36b8afe71b29c9e85a42d8966a",
+      "reason": "UI14-RES-001 legacy Earnings.vue removal"
+    },
+    {
+      "path": "resources/spa/src/stores/authStore.spec.ts",
+      "status": "M",
+      "size": 8264,
+      "sha256": "facf991079d5c36890afbfef1e025223ee9ef2a11a944a05da0d3b25eff362b7",
+      "reason": "single session bootstrap (UI17-PERF-004)"
+    },
+    {
+      "path": "resources/spa/src/stores/authStore.ts",
+      "status": "M",
+      "size": 9127,
+      "sha256": "8053affe6605d6e2e4569b591588e481ff227c96541b4f021acec73e09e3d1eb",
+      "reason": "single session bootstrap (UI17-PERF-004)"
+    },
+    {
+      "path": "resources/spa/src/style.css",
+      "status": "M",
+      "size": 4894,
+      "sha256": "c226b3805fb9f9a5754a2e40429c04c54b4f32b38c7f6fcfcb065c8d34f86489",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "resources/spa/src/styles/font-fallbacks.css",
+      "status": "A",
+      "size": 2277,
+      "sha256": "378b8bb2e44652a98e223fba7a4af53360d7849f200ff9a7c83f1df71699dc56",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "resources/spa/src/styles/generated/tokens.css",
+      "status": "M",
+      "size": 8588,
+      "sha256": "c43aea440512a265bdca23a25893f6033add2794ab1f0f36c696344643b7f8d1",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "resources/views/spa.blade.php",
+      "status": "M",
+      "size": 5636,
+      "sha256": "10f885a8a190d8282177f311a82d1ff8b6f17cc9b9e8da7e37f6e5687214ee6a",
+      "reason": "shell critical-path preload (UI17-PERF-003/002)"
+    },
+    {
+      "path": "scripts/ui17-bundle-budget.mjs",
+      "status": "A",
+      "size": 13660,
+      "sha256": "18a584c0a5b0e2fee4522b8886fcfd2f07c459ce11bfde62b322a146d23fd850",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-dns-tls-probe.mjs",
+      "status": "A",
+      "size": 9700,
+      "sha256": "fc084d52a10c3e07d6c9ce96455fbf282ada8ccae295aa1b98fdb1e26aa96935",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-edge-security-contract.mjs",
+      "status": "A",
+      "size": 7615,
+      "sha256": "3f39ae875d605cc7101c31d1f2b65587bfeff6ad284589df969f11520748e1c6",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-edge-smoke.mjs",
+      "status": "A",
+      "size": 12846,
+      "sha256": "ce06c2002292f7cd9aaa8792907718c94148d1f193489db6ea4abe205fa9c10c",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-host-screenshots.mjs",
+      "status": "A",
+      "size": 3969,
+      "sha256": "cef73f85964b68c06ede57037c1686550d8506a8e1ff749ca3c095389e2eac41",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-layout-shift-diagnostics.mjs",
+      "status": "A",
+      "size": 4871,
+      "sha256": "7083976d6b640890623ba63db8054003eadcd0d90c88196ec5058548f38b270b",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-negative-controls.mjs",
+      "status": "A",
+      "size": 10296,
+      "sha256": "9b3d1a039150e87d2b11f259a765eabd886e6e9218281a65629bcdc5595cf36e",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-release-rehearsal.mjs",
+      "status": "A",
+      "size": 17850,
+      "sha256": "a83546ce3f62c70e534acfe94980b52f412e42b7f54f7e07ea03f4fc8ed8670a",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "scripts/ui17-web-vitals.mjs",
+      "status": "A",
+      "size": 13397,
+      "sha256": "2da7b5107e216930636addf5a72a8a371dd763a6542a684a745b8a97311a9627",
+      "reason": "UI-17 budgets, gates, smoke, rehearsal, probes"
+    },
+    {
+      "path": "tailwind.config.ts",
+      "status": "M",
+      "size": 7404,
+      "sha256": "e596afceef55cb48c11a4982d36e674b5890938916d1bf848ef863b87da79ac3",
+      "reason": "metric-compatible font fallbacks via the token authority (UI17-PERF-002)"
+    },
+    {
+      "path": "tests/e2e-origin/ui17-edge-security-performance.spec.ts",
+      "status": "A",
+      "size": 8199,
+      "sha256": "f02206cdeda5bf84a2bc2e4694411ccd559670ef5270517fa0467bc577064f3c",
+      "reason": "UI-17 tests / traceability lifecycle advance"
+    },
+    {
+      "path": "tests/Feature/Hosts/Ui17ShellCriticalPathTest.php",
+      "status": "A",
+      "size": 6139,
+      "sha256": "08cec44f0a67c281179893fe6c4272f8c0be52e2ff215d3fa86b2c3fb91418b3",
+      "reason": "UI-17 tests / traceability lifecycle advance"
+    },
+    {
+      "path": "tests/Feature/Security/Ui17BrowserEdgeSecurityTest.php",
+      "status": "A",
+      "size": 6495,
+      "sha256": "3e6e1d3ec6b24bf6584290505e15ba9148362390b2af84345092f5b8b1f58e97",
+      "reason": "UI-17 tests / traceability lifecycle advance"
+    },
+    {
+      "path": "tests/Feature/Traceability/Phase23TraceabilityTest.php",
+      "status": "M",
+      "size": 27125,
+      "sha256": "a0bb26bbf41fabbd8c21c395a7e096776a126dd285a73b92ee9d3757b204fdb5",
+      "reason": "UI-17 tests / traceability lifecycle advance"
+    },
+    {
+      "path": "vite.config.ts",
+      "status": "M",
+      "size": 7481,
+      "sha256": "94bdfdcb3935bf5da4c1fb4cc4615d875e5520b8c2f0be74902559f5d0584a58",
+      "reason": "chunk-module map + no inlined fonts (UI17 bundle analysis, SEC-007)"
+    }
+  ],
+  "test_receipts": [
+    "backend Pest parallel PostgreSQL 16: 3074 passed / 14 skipped / 0 failed",
+    "Vitest: 1465/1465 (runs 2 and 3; run 1 had 2 failures in one file under Docker teardown, not reproduced)",
+    "Playwright whole product: 2107 passed / 0 failed / 0 flaky; 122 baselines untouched",
+    "production-origin gate on final candidate images: 40/40; UI-17 spec vs N-1: 16 failed (negative control)",
+    "edge smoke: N-1 64 failures → final candidate 300/300; rehearsal PASSED",
+    "bundle budget OK; edge contract OK; 18/18 negative controls; 18 generator/contract checks; Pint; Larastan L8; npm audit 0; composer audit none",
+    "gitleaks dir on the change set: 1 known digest false positive (tokens.generated.ts:13)"
+  ],
+  "deferred_or_blocked": [
+    "UI17-DNS-001 blocked_external — servana.ke lame delegation; live DNS/TLS/canary/rollback/screenshots → DNS owner + Phase 25 (SRV-UI17-PROD-001 deferred_future_phase 25)",
+    "UI17-PERF-005 routed — slow-4G landing LCP 2.99–3.17 s; Fast-4G 8/8 pass; product-owner decision D8",
+    "monitoring transport, RUM collector, on-call → Phase 25",
+    "owner decisions D1 (UI-16 baselines/redesigns), D3 (logo derivative), D6 (HSTS preload), D7 (E2E required check); manual screen-reader pass",
+    "Gate W (20D-W, 21R-B, 21N, 28 gated pages), REM-EXP-001, REM-PERM-002, UI07-ENV-001, REM-SMS-002, REM-RE-002 — unchanged owners"
+  ],
+  "production_deployed": false,
+  "github_release_performed": false,
+  "release_authorized_for_codex_after_verification": true,
+  "release_authorization_scope": "PR release only (stage → commit → PR → five exact-head jobs → governance → merge). It does NOT authorize any production deployment, which stays blocked until runbook §2 P1–P10 are green.",
+  "release_conditions": [
+    "manifest verifies byte-for-byte",
+    "add .gitleaksignore per-commit fingerprint for tokens.generated.ts:13 (SHA-256 of tokens.json, non-secret)",
+    "all five exact-head jobs green, including the first hosted run of the new UI-17 Frontend/Docker steps"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "servana.ui17.release-receipt/v1",
+  "instructions": "Copy to docs/frontend/audits/ui-17/release-receipt-<release_tag>.json and fill ONLY with observed values from the actual post-merge deployment. null means not yet observed. Never pre-fill a status as success. A field whose step was not performed stays null and is listed in `not_performed` with a reason.",
+  "release_tag": null,
+  "environment": null,
+  "source": {
+    "repository": "ikrome002-design/servana",
+    "merge_commit": null,
+    "reviewed_head": null,
+    "tree": null,
+    "pull_request": null
+  },
+  "ci": {
+    "run_id": null,
+    "head_sha": null,
+    "jobs": { "Backend": null, "Frontend": null, "Docker": null, "Security": null, "E2E": null }
+  },
+  "images": {
+    "nginx": { "tag": null, "id": null, "digest": null },
+    "app": { "tag": null, "id": null, "digest": null },
+    "rollback_target": { "nginx_digest": null, "app_digest": null, "release_tag": null }
+  },
+  "build": {
+    "vite_manifest_sha256": null,
+    "entry_script": null,
+    "bundle_budget_report": null
+  },
+  "deployment": {
+    "deploy_id": null,
+    "operator": null,
+    "authorization": { "product_owner": null, "github_environment_approval": null },
+    "started_at": null,
+    "finished_at": null
+  },
+  "dns_tls": {
+    "probe_report": null,
+    "hosts": [
+      { "host": "servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "citrus.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "branch.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "finance.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "hr.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "office.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "staff.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null },
+      { "host": "audit.servana.ke", "resolves": null, "tls_issuer": null, "tls_valid_to": null, "days_remaining": null, "http_redirects_to_https": null }
+    ]
+  },
+  "hosts": {
+    "edge_smoke_report": null,
+    "edge_smoke_checks": null,
+    "edge_smoke_failures": null,
+    "origin_browser_gate": { "passed": null, "failed": null, "flaky": null, "report": null }
+  },
+  "headers": {
+    "csp": null,
+    "hsts": null,
+    "x_frame_options": null,
+    "referrer_policy": null,
+    "permissions_policy": null,
+    "cookies": { "secure": null, "http_only": null, "same_site": null, "domain_attribute_absent": null }
+  },
+  "web_vitals_lab": {
+    "report": null,
+    "profile": "mobile-slow-4g and desktop-cable, scripts/ui17-web-vitals.mjs",
+    "landing_lcp_p75_lab_ms_max": null,
+    "cls_max": null,
+    "inp_surrogate_ms_max": null,
+    "field_data": "not available — authentic INP/LCP p75 requires a RUM collector (monitoring-alert-readiness.json)"
+  },
+  "canary": {
+    "steps": [
+      { "weight_percent": 5, "hold_minutes": 15, "started_at": null, "decision": null, "evidence": null },
+      { "weight_percent": 25, "hold_minutes": 30, "started_at": null, "decision": null, "evidence": null },
+      { "weight_percent": 100, "hold_minutes": null, "started_at": null, "decision": null, "evidence": null }
+    ],
+    "asset_skew_fallback_verified": null
+  },
+  "rollback": {
+    "rehearsal_report": "docs/frontend/audits/ui-17/staging-rehearsal.json",
+    "production_rollback_executed": null,
+    "reason": null,
+    "started_at": null,
+    "finished_at": null,
+    "post_rollback_smoke": null
+  },
+  "screenshots": { "index": null, "frames": null },
+  "monitoring": { "synthetic_smoke_schedule": null, "test_alert_received_at": null, "destination": null },
+  "defects": { "open_critical": null, "register": "docs/frontend/audits/ui-17/defect-closure.json" },
+  "sign_offs": { "product_owner": null, "release_engineer": null, "independent_reviewer": null },
+  "not_performed": [],
+  "errors": []
+}

@@ -356,11 +356,39 @@ jobs:
       - name: Contract — UI-07 contract negative controls
         run: npm run nav:negative-controls
 
+      # Phase UI-17: the edge security policy in docker/nginx/default.conf — the CSP pins the hash of
+      # the one inline script (byte-identical in the Laravel shell and the SPA index), grants no
+      # 'unsafe-inline'/'unsafe-eval'/wildcard, every server block logs with the credential-free
+      # format (UI17-SEC-001), the edge never appends a Referrer-Policy over the application's
+      # (UI17-SEC-002), and gzip is confined to static assets. Static, so it fails before any build.
+      - name: Contract — UI-17 edge security policy
+        run: node scripts/ui17-edge-security-contract.mjs
+
       - name: Unit tests — Vitest
         run: npm run test
 
       - name: Build SPA — Vite
         run: npm run build
+
+      # Phase UI-17 (UI/UX plan §6.5, §22.1, §22.4): the reviewed compressed budgets in
+      # config/frontend-performance-budget.json, measured on the bytes this build emitted — every
+      # route component lazy, no account shell bundling another account's code, the initial request
+      # and each account's critical path inside budget, no oversized lazy chunk.
+      - name: Budget — UI-17 bundle analysis and compressed budgets
+        run: node scripts/ui17-bundle-budget.mjs --out test-results/ui17-bundle-report.json
+
+      # And prove the budget gate and the edge contract still FAIL on the defects they exist to catch.
+      - name: Budget — UI-17 negative controls
+        run: node scripts/ui17-negative-controls.mjs
+
+      - name: Upload UI-17 bundle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui17-bundle-report
+          path: test-results/ui17-bundle-report.json
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Dependency audit (npm)
         run: npm audit --audit-level=high
@@ -430,11 +458,22 @@ jobs:
       - name: Start the built images
         run: |
           docker network create servana-ci
+          # Phase UI-17: a throwaway PostgreSQL 16 (CI-only credentials, never a real secret) so the
+          # browser routes that read the database — the context-handoff consumer probed by the UI-17
+          # edge smoke — behave as in a real environment instead of 500ing.
+          docker run -d --name pg --network servana-ci \
+            -e POSTGRES_DB=servana -e POSTGRES_USER=servana -e POSTGRES_PASSWORD=servana \
+            postgres:16-alpine
+          for i in $(seq 1 30); do
+            if docker exec pg pg_isready -U servana -d servana >/dev/null 2>&1; then echo "postgres ready"; break; fi
+            sleep 2
+          done
           # The upstream MUST be named `app` — docker/nginx/default.conf does `fastcgi_pass app:9000`.
-          # Session/cache are forced to array so the smoke needs no database or Redis; the SPA
-          # shell route touches neither.
+          # Session/cache stay array-backed; only the database is real.
           docker run -d --name app --network servana-ci \
             -e SESSION_DRIVER=array -e CACHE_STORE=array -e QUEUE_CONNECTION=sync \
+            -e DB_CONNECTION=pgsql -e DB_HOST=pg -e DB_PORT=5432 -e DB_DATABASE=servana \
+            -e DB_USERNAME=servana -e DB_PASSWORD=servana \
             servana-app:ci-prod
           docker run -d --name edge --network servana-ci -p 8080:8080 servana-nginx:ci
           for i in $(seq 1 40); do
@@ -444,6 +483,7 @@ jobs:
             sleep 2
           done
           curl -fsS -H 'Host: localhost' http://127.0.0.1:8080/health
+          docker exec app php artisan migrate --force --no-interaction
 
       - name: Extract the built SPA manifest for the smoke matrix
         run: |
@@ -481,7 +521,24 @@ jobs:
           PLAYWRIGHT_JUNIT_OUTPUT_FILE: test-results/production-origin.xml
         run: npx playwright test -c playwright.origin.config.ts --reporter=list,junit
 
-      - name: Upload production-origin browser results (UI-16)
+      # Phase UI-17: the eight-host edge security matrix on the built pair — reviewed CSP present once,
+      # framing/nosniff/Permissions-Policy, gzip on fingerprinted chunks, no source maps or private
+      # manifests, no CORS approval for a foreign origin, no stack trace in an error envelope, a
+      # forged X-Forwarded-Host changes nothing, the handoff consumer keeps exactly `no-referrer`,
+      # and unknown hosts are refused. Then the edge access log must not contain the synthetic
+      # credential the smoke sent (UI17-SEC-001).
+      - name: Smoke — UI-17 edge security matrix on the built image
+        run: node scripts/ui17-edge-smoke.mjs --origin http://127.0.0.1:8080 --out test-results/ui17-edge-smoke.json
+
+      - name: Security — the edge access log holds no credential (UI-17)
+        run: |
+          if docker logs edge 2>&1 | grep -q 'UI17SYNTHETICCANARY'; then
+            echo "::error::the edge access log recorded the synthetic credential sent by the UI-17 smoke"
+            exit 1
+          fi
+          docker logs edge 2>&1 | grep -c '"path":"/auth/switch"'
+
+      - name: Upload production-origin browser results (UI-16, UI-17)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -501,7 +558,7 @@ jobs:
       - name: Tear down smoke containers
         if: always()
         run: |
-          docker rm -f edge app || true
+          docker rm -f edge app pg || true
           docker network rm servana-ci || true
 
   security:

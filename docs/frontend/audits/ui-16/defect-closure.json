@@ -766,5 +766,24 @@
       ],
       "status": "local_complete"
     }
-  ]
+  ],
+  "post_merge_reconciliation": {
+    "reconciled_on": "phase-ui-17-performance-security-production-closeout",
+    "date": "2026-10-13",
+    "pr": 67,
+    "merged_at": "2026-10-12T19:01:07Z",
+    "merge_method": "normal merge commit (two parents), not squash",
+    "head": "43526c48650ef9559cafe8d1df451b055c0eec2d",
+    "merge": "1e8bd5f744a65329ced22c0275b728929aae5245",
+    "merge_parents": ["088a6cd764534ac5a4e44d1ce8c1e72cebfd480b", "43526c48650ef9559cafe8d1df451b055c0eec2d"],
+    "tree": "25780c741e02f18fa4e030057636428c77840815",
+    "ci_run": 38288846434,
+    "ci_jobs_success": ["Backend", "Frontend", "Docker", "Security", "E2E"],
+    "e2e_log_summary": { "archetype_step_passed": 24, "full_suite_passed": 2107, "failed_or_flaky_lines": 0 },
+    "governance_comment": 6130701107,
+    "reviews": 0,
+    "approvals": 0,
+    "note": "Original per-record status values are preserved as recorded at handoff. Every defect, visual-debt record and inherited closure recorded local_complete is now verified_complete through the merged, exact-head-CI-proven PR #67. Product-owner acceptance of the 24 redesigns and the 122 active baselines, and a manual screen-reader pass, are NOT closed by the merge; UI-17 carries them in its product-owner review package.",
+    "counts_after_merge": { "open": 0, "blocked": 0, "local_complete": 0, "verified_complete": 36, "total": 36 }
+  }
 }

@@ -112,6 +112,33 @@ describe('authStore', () => {
     expect(auth.bootstrapped).toBe(true);
   });
 
+  it('shares one /me request between concurrent bootstrap callers (UI17-PERF-004)', async () => {
+    // The router guard and App.vue's mount fallback both call bootstrap() during a cold load.
+    let release: (value: { data: { data: BootstrapPayload } }) => void = () => undefined;
+    get.mockReturnValueOnce(new Promise((resolve) => { release = resolve; }));
+    const auth = useAuthStore();
+
+    // Pinia wraps actions, so each call returns its own derived promise; what matters is the wire.
+    const fromGuard = auth.bootstrap();
+    const fromApp = auth.bootstrap();
+    release({ data: { data: bootstrap } });
+    await Promise.all([fromGuard, fromApp]);
+
+    expect(get).toHaveBeenCalledTimes(1);
+    expect(auth.isAuthenticated()).toBe(true);
+  });
+
+  it('fetches /me again once the previous bootstrap has settled', async () => {
+    // The onboarding flow refreshes the session after setup; that must still reach the server.
+    get.mockResolvedValueOnce({ data: { data: bootstrap } }).mockResolvedValueOnce({ data: { data: bootstrap } });
+    const auth = useAuthStore();
+
+    await auth.bootstrap();
+    await auth.bootstrap();
+
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
   it('primes CSRF before requesting a magic link', async () => {
     post.mockResolvedValueOnce({ data: { message: 'ok' } });
     const auth = useAuthStore();

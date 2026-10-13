@@ -48,6 +48,52 @@ function copyLaravelPublicAssets(): Plugin {
   };
 }
 
+/**
+ * Emit `.vite/chunk-modules.json`: which source modules each emitted chunk contains (Phase UI-17).
+ *
+ * The Vite manifest is chunk-level only — a shared chunk such as `_apiClient-*.js` carries no hint
+ * of what was bundled into it — so it cannot prove that the Finance shell ships no Personnel code
+ * (UI/UX plan §6.5, §22.4). Rolldown knows the module list of every chunk at `generateBundle`
+ * time; this records it, repo-relative and sorted, so `scripts/ui17-bundle-budget.mjs` can audit
+ * cross-account imports deterministically. It lands beside the manifest under `public/spa/.vite/`,
+ * which the edge never serves (`/spa/*` is a permanent redirect).
+ */
+function chunkModuleMap(): Plugin {
+  const relative = (id: string): string | null => {
+    const clean = id.split('?')[0]?.replace(/\\/g, '/') ?? '';
+    const root = repoRoot.replace(/\\/g, '/');
+    if (clean.startsWith('\0') || !clean.startsWith(root)) return null;
+
+    return clean.slice(root.length);
+  };
+
+  return {
+    name: 'servana-chunk-module-map',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      const chunks = Object.values(bundle)
+        .filter((output) => output.type === 'chunk')
+        .map((chunk) => ({
+          file: chunk.fileName,
+          is_entry: chunk.isEntry,
+          is_dynamic_entry: chunk.isDynamicEntry,
+          facade: chunk.facadeModuleId === null ? null : relative(chunk.facadeModuleId),
+          modules: chunk.moduleIds
+            .map(relative)
+            .filter((id): id is string => id !== null)
+            .sort(),
+        }))
+        .sort((a, b) => a.file.localeCompare(b.file));
+
+      this.emitFile({
+        type: 'asset',
+        fileName: '.vite/chunk-modules.json',
+        source: `${JSON.stringify({ generated_by: 'vite.config.ts#chunkModuleMap', chunks }, null, 2)}\n`,
+      });
+    },
+  };
+}
+
 // The SPA is a standalone Vite app rooted at resources/spa (Plan §4.1: built by
 // Vite, served by Nginx). It builds to public/spa, which is gitignored.
 //
@@ -63,7 +109,7 @@ function copyLaravelPublicAssets(): Plugin {
 export default defineConfig({
   root: fileURLToPath(new URL('./resources/spa', import.meta.url)),
   base: '/',
-  plugins: [vue(), copyLaravelPublicAssets()],
+  plugins: [vue(), copyLaravelPublicAssets(), chunkModuleMap()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./resources/spa/src', import.meta.url)),
@@ -107,6 +153,11 @@ export default defineConfig({
     assetsDir: 'spa-assets',
     emptyOutDir: true,
     manifest: true,
+    // Phase UI-17: never inline a font file as a `data:` URI. Vite inlines assets under 4 KiB, which
+    // turned four small @fontsource subset files into base64 inside the CSS — and the edge CSP
+    // (`font-src 'self'`) rightly refuses `data:` fonts, so those glyph ranges silently fell back.
+    // Emitting them as fingerprinted files keeps the policy strict; other assets keep the default.
+    assetsInlineLimit: (filePath: string) => (/\.(woff2?|ttf|otf)$/.test(filePath) ? false : undefined),
   },
   test: {
     environment: 'jsdom',

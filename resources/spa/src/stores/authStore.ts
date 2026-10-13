@@ -106,18 +106,32 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = false;
   }
 
+  /**
+   * The bootstrap request currently in flight, shared by concurrent callers (Phase UI-17,
+   * UI17-PERF-004). The router guard awaits `bootstrap()` while App.vue's mount fallback checks
+   * `bootstrapped` — which only flips when the request ENDS — so every cold load sent `/me` twice.
+   * Concurrent callers now share one request; a call made after it settles fetches again, which is
+   * what the onboarding refresh relies on.
+   */
+  let inflight: Promise<void> | null = null;
+
   /** Resolve the current session on app start. 401 is expected (logged out). */
-  async function bootstrap(): Promise<void> {
-    loading.value = true;
-    try {
-      const { data } = await apiClient.get<{ data: BootstrapPayload }>('/me');
-      applyBootstrap(data.data);
-    } catch {
-      clear();
-    } finally {
-      bootstrapped.value = true;
-      loading.value = false;
-    }
+  function bootstrap(): Promise<void> {
+    inflight ??= (async () => {
+      loading.value = true;
+      try {
+        const { data } = await apiClient.get<{ data: BootstrapPayload }>('/me');
+        applyBootstrap(data.data);
+      } catch {
+        clear();
+      } finally {
+        bootstrapped.value = true;
+        loading.value = false;
+        inflight = null;
+      }
+    })();
+
+    return inflight;
   }
 
   /** Request a Magic Link. Always resolves (server returns a uniform 202). */

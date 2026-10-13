@@ -1,0 +1,510 @@
+{
+  "schema": "servana.ui17.image-optimization/v1",
+  "phase": "UI-17",
+  "policy_verified": "UI-05/06 pipeline: AVIF + WebP srcset per curated image with the original as <img> fallback; intrinsic width/height + aspect-ratio; exactly one eager, fetchpriority=high hero per landing page; lazy below the fold; derivatives committed and hash-checked (assets:check). UI-17 changed NO image, derivative or selection.",
+  "browser_proof": "tests/e2e-origin/ui17-edge-security-performance.spec.ts — on 8 hosts at 360 px: one eager image, one high priority, every image has width/height, every fetched image is a generated AVIF/WebP derivative and never wider than max(1024, 2× slot).",
+  "observation_logo": "Logo.png 162,570 B downloaded for a 24–48 px mark on every page (routed to the product owner, UI17-OBS-LOGO); LCP A/B shows no LCP effect.",
+  "note": "image and font bytes per first cold sample are IDENTICAL before and after on every host (they include Logo.png) — UI-17 changed no image or font file; the transfer savings come entirely from compressed JS/CSS.",
+  "rows": [
+    {
+      "profile": "mobile-slow-4g",
+      "host": "servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+          "transfer": 34392
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+          "transfer": 49653
+        }
+      ],
+      "image_bytes_before": 246915,
+      "image_bytes_after": 246915,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana gives you one secure dashboard to manage clients, br"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "citrus.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+          "transfer": 50252
+        },
+        {
+          "path": "/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+          "transfer": 61777
+        }
+      ],
+      "image_bytes_before": 274899,
+      "image_bytes_after": 274899,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Run your service-business platform with clarity and control."
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "branch.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+          "transfer": 36260
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+          "transfer": 39255
+        }
+      ],
+      "image_bytes_before": 238385,
+      "image_bytes_after": 238385,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps each branch manage daily service activity from"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "finance.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+          "transfer": 43844
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+          "transfer": 51944
+        }
+      ],
+      "image_bytes_before": 258658,
+      "image_bytes_after": 258658,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "With Servana, you get one calm, secure place to review invoi"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "hr.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+          "transfer": 34150
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+          "transfer": 45759
+        }
+      ],
+      "image_bytes_before": 242779,
+      "image_bytes_after": 242779,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Your team is the heart of your service business. Servana hel"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "office.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+          "transfer": 35391
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+          "transfer": 35987
+        }
+      ],
+      "image_bytes_before": 234248,
+      "image_bytes_after": 234248,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps your front desk handle walk-ins, appointments,"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "staff.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+          "transfer": 31979
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+          "transfer": 39707
+        }
+      ],
+      "image_bytes_before": 234556,
+      "image_bytes_after": 234556,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Know your clients. Track your work. See your commissions cle"
+        }
+      ]
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "audit.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+          "transfer": 38006
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+          "transfer": 54760
+        }
+      ],
+      "image_bytes_before": 255636,
+      "image_bytes_after": 255636,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "See what happened. Understand why it happened. Stay in contr"
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+          "transfer": 54725
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1440.avif",
+          "transfer": 80446
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/6-w1440.avif",
+          "transfer": 34754
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_administrator/5-w1440.avif",
+          "transfer": 45317
+        }
+      ],
+      "image_bytes_before": 378112,
+      "image_bytes_after": 378112,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "citrus.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+          "transfer": 81057
+        },
+        {
+          "path": "/assets/landing_page_images/generated/super_administrator/3-w1440.avif",
+          "transfer": 98238
+        },
+        {
+          "path": "/assets/landing_page_images/generated/super_administrator/6-w1440.avif",
+          "transfer": 58263
+        }
+      ],
+      "image_bytes_before": 400428,
+      "image_bytes_after": 400428,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "branch.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+          "transfer": 57470
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_branch/3-w1440.avif",
+          "transfer": 62036
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_branch/6-w1440.avif",
+          "transfer": 43948
+        }
+      ],
+      "image_bytes_before": 326324,
+      "image_bytes_after": 326324,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "finance.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+          "transfer": 69527
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_finance/3-w1440.avif",
+          "transfer": 82444
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_finance/4-w1440.avif",
+          "transfer": 55256
+        }
+      ],
+      "image_bytes_before": 370097,
+      "image_bytes_after": 370097,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "hr.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+          "transfer": 54923
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.avif",
+          "transfer": 74604
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.avif",
+          "transfer": 54651
+        }
+      ],
+      "image_bytes_before": 347048,
+      "image_bytes_after": 347048,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "office.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+          "transfer": 55258
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1440.avif",
+          "transfer": 55682
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_front_office/5-w1440.avif",
+          "transfer": 58232
+        }
+      ],
+      "image_bytes_before": 332042,
+      "image_bytes_after": 332042,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "staff.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+          "transfer": 49228
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1440.avif",
+          "transfer": 63584
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_personnel/5-w1440.avif",
+          "transfer": 60147
+        }
+      ],
+      "image_bytes_before": 335829,
+      "image_bytes_after": 335829,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+          "text": null
+        }
+      ]
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "audit.servana.ke",
+      "images_after": [
+        {
+          "path": "/assets/brand/Logo.png",
+          "transfer": 162870
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+          "transfer": 60818
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_audit/3-w1440.avif",
+          "transfer": 85931
+        },
+        {
+          "path": "/assets/landing_page_images/generated/merchant_audit/6-w1440.avif",
+          "transfer": 43930
+        }
+      ],
+      "image_bytes_before": 353549,
+      "image_bytes_after": 353549,
+      "font_bytes_before": 101748,
+      "font_bytes_after": 101748,
+      "lcp_element_after": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+          "text": null
+        }
+      ]
+    }
+  ]
+}

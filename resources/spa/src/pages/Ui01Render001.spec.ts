@@ -88,7 +88,9 @@ const AUDITED = [
   { routes: ['/finance/refunds/{id}'], component: () => import('@/pages/finance/RefundDetail.vue'), field: 'amount' },
   { routes: ['/front-office/payments/record/{id}'], component: () => import('@/pages/payments/RecordPayment.vue'), field: 'balance.amount' },
   { routes: ['/merchant/compensation-summary'], component: () => import('@/pages/merchant/CompensationSummary.vue'), field: 'summary collections' },
-  { routes: ['/personnel/earnings'], component: () => import('@/pages/personnel/Earnings.vue'), field: 'overview.currencies' },
+  // Retargeted in UI-17 (UI14-RES-001): `/personnel/earnings` has rendered the canonical UI-14
+  // EarningsOverview since the legacy consolidated Earnings.vue was unrouted; the legacy file is gone.
+  { routes: ['/personnel/earnings'], component: () => import('@/pages/personnel/EarningsOverview.vue'), field: 'overview.currencies' },
   { routes: ['/merchant/subscription'], component: () => import('@/pages/merchant/SubscriptionDashboard.vue'), field: 'plan.name' },
 ];
 

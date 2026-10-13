@@ -1,0 +1,121 @@
+{
+  "schema": "servana.ui17.codex-release-addendum/v1",
+  "recorded_at": "2026-10-13T05:44:27.989Z",
+  "original_manifest_sha256": "abd468e41105365517986fe6d8ea63841be4e5f79170ae562396eda79e7467d3",
+  "original_entries": 98,
+  "base": "1e8bd5f744a65329ced22c0275b728929aae5245",
+  "release_status": "pending_commit_PR_CI",
+  "production_status": "blocked_external",
+  "full_phase_status": "not_verified_complete",
+  "verified_visual_baselines": 122,
+  "verified_design_references": 6,
+  "scope": "Release governance and evidence only. No route/API/policy/schema/financial/permission/visual changes.",
+  "deltas": [
+    {
+      "path": "docs/PROGRESS.md",
+      "status": "M",
+      "size": 536060,
+      "sha256": "fc76eea2ff158abdfe62812067c5d6bd9f074c2a9d41b3ba5347b774cbf48020",
+      "reason": "Authorized distinction of code-release eligibility and separately blocked production; truthful pre-merge resume checkpoint"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": "M",
+      "size": 404317,
+      "sha256": "792ab834233a294260b50f2b5e1e891e6ec84520b229d4ef194d0ac0ba03c2ab",
+      "reason": "Authorized distinction of code-release eligibility and separately blocked production; truthful pre-merge resume checkpoint"
+    },
+    {
+      "path": "docs/proof/ui-17.md",
+      "status": "A",
+      "size": 14597,
+      "sha256": "8659377a671574aa8ab3d11f22db2a74a756c44d95f601d729211c861f1f6ba2",
+      "reason": "Authorized distinction of code-release eligibility and separately blocked production; truthful pre-merge resume checkpoint"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/implementation-checklist.md",
+      "status": "A",
+      "size": 6269,
+      "sha256": "06e9adfdf827b853e67f4fba28836c1c3fb61dcbad49d4d6adfeb3bddf45545f",
+      "reason": "Authorized distinction of code-release eligibility and separately blocked production; truthful pre-merge resume checkpoint"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/phase-entry-and-deferred-register.json",
+      "status": "A",
+      "size": 10657,
+      "sha256": "197e4658e79435d25ec501ab04a38bfc04c1809ef972c366f2f2605eac9eed1b",
+      "reason": "Authorized distinction of code-release eligibility and separately blocked production; truthful pre-merge resume checkpoint"
+    },
+    {
+      "path": "docs/frontend/audits/ui-17/codex-release-addendum.json",
+      "status": "A",
+      "size": null,
+      "sha256": null,
+      "reason": "This Codex delta register; self-hash captured externally"
+    }
+  ],
+  "defects": [
+    {
+      "id": "UI17-REL-001",
+      "observed_problem": "Prior prompt required pre-commit stop on missing production, preventing authorized independent code release",
+      "evidence": "Previous Codex preflight and user recovery instruction 0.2",
+      "affected_files": [
+        "docs/PROGRESS.md",
+        "docs/CHANGELOG.md",
+        "docs/proof/ui-17.md",
+        "docs/frontend/audits/ui-17/implementation-checklist.md",
+        "docs/frontend/audits/ui-17/phase-entry-and-deferred-register.json"
+      ],
+      "root_cause": "Release governance conflated GitHub code closeout with live deployment acceptance",
+      "why_root_cause": "Code workflow only builds/tests, and production resources are separately owned; owner now explicitly separates tracks",
+      "correct_fix": "Record pending code release and blocked production independently; preserve every actual code/security/CI gate",
+      "files_changed": [
+        "docs/PROGRESS.md",
+        "docs/CHANGELOG.md",
+        "docs/proof/ui-17.md",
+        "docs/frontend/audits/ui-17/implementation-checklist.md",
+        "docs/frontend/audits/ui-17/phase-entry-and-deferred-register.json"
+      ],
+      "tests_added_updated": "No product test changed; 98-path authentication, 122 baseline and 6 reference hashes verified",
+      "test_command": "NUL-safe inventory comparison; git diff --check; hosted five-job CI pending",
+      "test_result": "Handoff and visual/reference hash parity PASS; hosted result pending",
+      "proof_of_resolution": "Pre-merge docs distinguish both milestones; no production/full-phase completion claim",
+      "remaining_risk": "DNS/TLS, runtime credentials, monitor transport, owner decisions and live acceptance remain pending"
+    },
+    {
+      "id": "UI17-REL-002",
+      "observed_problem": "Focused local parallel Vitest run timed out on unchanged Branch cash-up dynamic import",
+      "evidence": "2026-10-13 first run 36/37; Ui01Render001.spec.ts:115; 8492 ms vs 5000 ms; suite imports 12.04 s / aggregated environment 56.27 s",
+      "affected_files": [
+        "resources/spa/src/pages/Ui01Render001.spec.ts",
+        "resources/spa/src/pages/branch/CashUp.vue"
+      ],
+      "root_cause": "Workstation cold-transform/scheduling delay during parallel local workers; exact timeout occurs on dynamic import/render, with unchanged CashUp source",
+      "why_root_cause": "Isolated case completes at 1.83 s; same full 37-case group serial completes at 9.24 s, 37/37; serial imports 1.82 s and environment 2.60 s. No assertion or source fault reproduced; hosted full suite remains decisive",
+      "correct_fix": "Run diagnosis serially; retain source, default timeout and CI parallel execution unchanged",
+      "files_changed": [],
+      "tests_added_updated": "None; original test and all assertions retained",
+      "test_command": "npx vitest run src/pages/Ui01Render001.spec.ts -t 'branch/cash-up' --maxWorkers=1; npx vitest run src/stores/authStore.spec.ts src/pages/Ui01Render001.spec.ts src/pages/personnel/Ui14PersonnelPages.spec.ts --maxWorkers=1",
+      "test_result": "isolated 1/1 PASS (12 selection-excluded cases); complete group 37/37 PASS, 0 skips; initial failure preserved",
+      "proof_of_resolution": "Local serial timing evidence; full hosted Vitest still pending, no failure waived",
+      "remaining_risk": "Hosted source-current full Vitest must pass; cannot infer deterministic release success from retry alone"
+    }
+  ],
+  "next": "Implementation commit then exact generated-digest fingerprint commit; all five final-head CI jobs; governance and normal protected merge. Final observations belong to PR comment.",
+  "design_source_digest": {
+    "algorithm": "SHA-256",
+    "file": "resources/spa/src/design-system/tokens.json",
+    "sha256": "7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b"
+  },
+  "codex_local_checks": {
+    "lint": "PASS; 0 errors / 3 pre-existing compiled-content warnings",
+    "typecheck": "PASS",
+    "affected_vitest": "37/37 PASS serial (9.24 s); first parallel run 36/37, unchanged cash-up dynamic import timed out after 8492 ms against 5000 ms limit; isolated reproduction 1/1 PASS (1.83 s test), no timeout/assertion changes",
+    "contracts": "tokens, edge policy, source inventory, navigation, OpenAPI 307/358 PASS",
+    "bundle": "78.1 KiB initial JS / 14.7 KiB CSS gzip; 161 lazy route components; no cross-account modules; PASS",
+    "negative_controls": "18/18 (includes 2 unchanged baselines) PASS",
+    "npm_audit": "0 vulnerabilities",
+    "composer": "strict validate PASS; locked audit no advisories",
+    "staged_scan": "Exactly one remaining non-secret finding: public SHA-256(tokens.json) on generated line 13; scanned actual index blobs"
+  }
+}

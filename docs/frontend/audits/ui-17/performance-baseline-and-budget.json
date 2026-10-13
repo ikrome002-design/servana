@@ -1,0 +1,1610 @@
+{
+  "schema": "servana.ui17.performance/v1",
+  "phase": "UI-17",
+  "provenance": {
+    "before": {
+      "images": "servana-ui17-{nginx,php}:n-1-1e8bd5f (git archive of main 1e8bd5f7)",
+      "nginx_id": "sha256:923dbfebcdba746c9db89a663882c74941431decd80fc7428fca65a5d0e4d6ac",
+      "php_id": "sha256:e16d70e4c6d66bf23f5c54921dabc11f3b2465f6caebd64a9d16b23aadc65454",
+      "origin": "127.0.0.1:8171 isolated network ui17-n1, DB-less (as CI smoke)"
+    },
+    "after": {
+      "images": "servana-ui17-{nginx,php}:cand-81d296d08c45 (export of the UI-17 working-tree file set, 4,854 files, fingerprint 81d296d0…)",
+      "nginx_id": "sha256:4dd649bbc28ec1c96040c841dd570265ba93579e9d505aa37031552927b5b021",
+      "php_id": "sha256:01db65e0e4fbd50a61a3e32da98ac38afb93acbd6d9f9c7d36b14faf1f840fdc",
+      "origin": "127.0.0.1:8172 isolated network ui17-cand, DB-less (identical topology)"
+    },
+    "chromium": "151.0.7922.34",
+    "node": "v24.15.0 (host); images build with node:20-alpine",
+    "vite": "8.1.5",
+    "playwright": "@playwright/test ^1.60",
+    "host_os": "Windows 10 Pro 19045, Docker Desktop 29.8.2 (WSL2)",
+    "note": "Lab values under DevTools-APPLIED throttling on a developer machine; not field data, not Lighthouse simulation. Concurrent CPU-heavy work was avoided during every measurement run."
+  },
+  "method": {
+    "throttling": "DevTools-applied (Network.emulateNetworkConditions + Emulation.setCPUThrottlingRate), not Lighthouse simulation",
+    "profiles": {
+      "mobile-slow-4g": {
+        "viewport": {
+          "width": 360,
+          "height": 780
+        },
+        "deviceScaleFactor": 2,
+        "isMobile": true,
+        "hasTouch": true,
+        "network": {
+          "latency": 150,
+          "downloadThroughput": 209715.2,
+          "uploadThroughput": 96000
+        },
+        "cpuSlowdown": 4
+      },
+      "desktop-cable": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "network": {
+          "latency": 28,
+          "downloadThroughput": 655360,
+          "uploadThroughput": 131072
+        },
+        "cpuSlowdown": 1
+      }
+    },
+    "cold": "fresh browser context per sample (empty HTTP cache, empty storage)",
+    "warm": "second navigation in the same context (HTTP cache primed)",
+    "p75": "nearest-rank 75th percentile of the N LAB samples — not field p75",
+    "cls": "largest session window (1 s gap, 5 s cap), shifts after recent input excluded",
+    "inp": "lab_surrogate: max Event Timing duration of a scripted theme-toggle click; authentic INP requires field data"
+  },
+  "targets": {
+    "$comment": "Lab targets measured by scripts/ui17-web-vitals.mjs on the BUILT image origin. Lab p75 is nearest-rank over N lab samples, never field p75.",
+    "landing_lcp_ms": 2500,
+    "cls": 0.1,
+    "inp_ms": 200,
+    "inp_classification": "lab_surrogate until field data exists"
+  },
+  "summary": {
+    "mobile-slow-4g": {
+      "lcp_p75_lab_ms_before": [
+        4696,
+        5144
+      ],
+      "lcp_p75_lab_ms_after": [
+        2988,
+        3172
+      ],
+      "hosts_passing_lcp_after": 0,
+      "hosts_passing_lcp_before": 0,
+      "cls_max_before": 0.1744,
+      "cls_max_after": 0.0016,
+      "inp_surrogate_max_before": 312,
+      "inp_surrogate_max_after": 224,
+      "transfer_kib_before": [
+        772,
+        811
+      ],
+      "transfer_kib_after": [
+        461,
+        500
+      ],
+      "errors_after": 0
+    },
+    "mobile-fast-4g": {
+      "lcp_p75_lab_ms_before": [
+        2480,
+        6772
+      ],
+      "lcp_p75_lab_ms_after": [
+        2008,
+        2208
+      ],
+      "hosts_passing_lcp_after": 8,
+      "hosts_passing_lcp_before": 1,
+      "cls_max_before": 0.0187,
+      "cls_max_after": 0.0016,
+      "inp_surrogate_max_before": 232,
+      "inp_surrogate_max_after": 144,
+      "transfer_kib_before": [
+        772,
+        811
+      ],
+      "transfer_kib_after": [
+        461,
+        500
+      ],
+      "errors_after": 0
+    },
+    "desktop-cable": {
+      "lcp_p75_lab_ms_before": [
+        1676,
+        1880
+      ],
+      "lcp_p75_lab_ms_after": [
+        976,
+        1240
+      ],
+      "hosts_passing_lcp_after": 8,
+      "hosts_passing_lcp_before": 8,
+      "cls_max_before": 0.1211,
+      "cls_max_after": 0.0004,
+      "inp_surrogate_max_before": 64,
+      "inp_surrogate_max_after": 80,
+      "transfer_kib_before": [
+        864,
+        933
+      ],
+      "transfer_kib_after": [
+        551,
+        622
+      ],
+      "errors_after": 0
+    }
+  },
+  "per_host": [
+    {
+      "profile": "mobile-slow-4g",
+      "host": "servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 5144,
+        "after": 3112,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 5000,
+        "after": 3080
+      },
+      "cls_max": {
+        "before": 0.153,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 312,
+        "after": 224,
+        "target": 200,
+        "after_passes": false,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 37,
+        "after": 34
+      },
+      "transfer_kib_first_sample": {
+        "before": 785,
+        "after": 473
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana gives you one secure dashboard to manage clients, br"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "citrus.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 5048,
+        "after": 3004,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 4828,
+        "after": 2988
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 112,
+        "after": 144,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 56,
+        "after": 35
+      },
+      "transfer_kib_first_sample": {
+        "before": 811,
+        "after": 500
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 349,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Run your service-business platform with clarity and control."
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "branch.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 4696,
+        "after": 3060,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 4684,
+        "after": 2948
+      },
+      "cls_max": {
+        "before": 0.1744,
+        "after": 0.0016,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 112,
+        "after": 136,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 34,
+        "after": 32
+      },
+      "transfer_kib_first_sample": {
+        "before": 778,
+        "after": 465
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 352,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps each branch manage daily service activity from"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "finance.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 4960,
+        "after": 3148,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 4876,
+        "after": 2932
+      },
+      "cls_max": {
+        "before": 0.0895,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 184,
+        "after": 120,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 40,
+        "after": 29
+      },
+      "transfer_kib_first_sample": {
+        "before": 798,
+        "after": 485
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "With Servana, you get one calm, secure place to review invoi"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "hr.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 4852,
+        "after": 3104,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 4820,
+        "after": 3068
+      },
+      "cls_max": {
+        "before": 0.0187,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 120,
+        "after": 144,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 35,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 781,
+        "after": 469
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Your team is the heart of your service business. Servana hel"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "office.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 4984,
+        "after": 3024,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 4840,
+        "after": 2996
+      },
+      "cls_max": {
+        "before": 0.1386,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 120,
+        "after": 120,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 29,
+        "after": 30
+      },
+      "transfer_kib_first_sample": {
+        "before": 772,
+        "after": 461
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps your front desk handle walk-ins, appointments,"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "staff.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 5084,
+        "after": 2988,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 5040,
+        "after": 2980
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 160,
+        "after": 136,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 34,
+        "after": 32
+      },
+      "transfer_kib_first_sample": {
+        "before": 775,
+        "after": 461
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 353,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Know your clients. Track your work. See your commissions cle"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-slow-4g",
+      "host": "audit.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 5140,
+        "after": 3172,
+        "target": 2500,
+        "after_passes": false
+      },
+      "lcp_median_ms": {
+        "before": 5048,
+        "after": 3036
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 136,
+        "after": 160,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 44,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 794,
+        "after": 482
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "See what happened. Understand why it happened. Stay in contr"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2480,
+        "after": 2028,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2464,
+        "after": 2008
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 232,
+        "after": 128,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 112,
+        "after": 30
+      },
+      "transfer_kib_first_sample": {
+        "before": 785,
+        "after": 473
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana gives you one secure dashboard to manage clients, br"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "citrus.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2596,
+        "after": 2108,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2420,
+        "after": 1904
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 136,
+        "after": 112,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 39,
+        "after": 32
+      },
+      "transfer_kib_first_sample": {
+        "before": 811,
+        "after": 500
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 349,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Run your service-business platform with clarity and control."
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "branch.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2672,
+        "after": 2008,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2556,
+        "after": 1852
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0.0016,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 128,
+        "after": 120,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 30,
+        "after": 38
+      },
+      "transfer_kib_first_sample": {
+        "before": 778,
+        "after": 465
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 352,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps each branch manage daily service activity from"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "finance.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2612,
+        "after": 2056,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2576,
+        "after": 2004
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 120,
+        "after": 128,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 31,
+        "after": 28
+      },
+      "transfer_kib_first_sample": {
+        "before": 798,
+        "after": 485
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "With Servana, you get one calm, secure place to review invoi"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "hr.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2644,
+        "after": 2208,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2636,
+        "after": 2200
+      },
+      "cls_max": {
+        "before": 0.0187,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 128,
+        "after": 144,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 30,
+        "after": 32
+      },
+      "transfer_kib_first_sample": {
+        "before": 781,
+        "after": 469
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Your team is the heart of your service business. Servana hel"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "office.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2748,
+        "after": 2072,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2680,
+        "after": 2060
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 144,
+        "after": 128,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 45,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 772,
+        "after": 461
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "p",
+          "src": null,
+          "text": "Servana helps your front desk handle walk-ins, appointments,"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "staff.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 6772,
+        "after": 2160,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2716,
+        "after": 2048
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 168,
+        "after": 144,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 63,
+        "after": 33
+      },
+      "transfer_kib_first_sample": {
+        "before": 775,
+        "after": 461
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 353,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "Know your clients. Track your work. See your commissions cle"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "mobile-fast-4g",
+      "host": "audit.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 2556,
+        "after": 2020,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 2548,
+        "after": 1832
+      },
+      "cls_max": {
+        "before": 0.0168,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 136,
+        "after": 144,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 28,
+        "after": 34
+      },
+      "transfer_kib_first_sample": {
+        "before": 794,
+        "after": 482
+      },
+      "requests_first_sample": {
+        "before": 31,
+        "after": 30
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "h1",
+          "src": null,
+          "text": "See what happened. Understand why it happened. Stay in contr"
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1720,
+        "after": 1016,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1664,
+        "after": 1012
+      },
+      "cls_max": {
+        "before": 0.0236,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 64,
+        "after": 48,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 27,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 913,
+        "after": 601
+      },
+      "requests_first_sample": {
+        "before": 33,
+        "after": 32
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "citrus.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1880,
+        "after": 1240,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1876,
+        "after": 1240
+      },
+      "cls_max": {
+        "before": 0.0007,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 56,
+        "after": 80,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 28,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 933,
+        "after": 622
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 349,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "branch.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1716,
+        "after": 1048,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1716,
+        "after": 1012
+      },
+      "cls_max": {
+        "before": 0.1013,
+        "after": 0.0004,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 64,
+        "after": 80,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 27,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 864,
+        "after": 551
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 352,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "finance.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1808,
+        "after": 1160,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1792,
+        "after": 1140
+      },
+      "cls_max": {
+        "before": 0.1211,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 64,
+        "after": 56,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 28,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 907,
+        "after": 594
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "hr.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1684,
+        "after": 996,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1640,
+        "after": 992
+      },
+      "cls_max": {
+        "before": 0.0006,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 64,
+        "after": 72,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 27,
+        "after": 28
+      },
+      "transfer_kib_first_sample": {
+        "before": 882,
+        "after": 571
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "office.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1752,
+        "after": 1024,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1732,
+        "after": 1024
+      },
+      "cls_max": {
+        "before": 0.0225,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 64,
+        "after": 80,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 29,
+        "after": 29
+      },
+      "transfer_kib_first_sample": {
+        "before": 868,
+        "after": 556
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 350,
+        "after": 112
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "staff.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1676,
+        "after": 976,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1664,
+        "after": 976
+      },
+      "cls_max": {
+        "before": 0.0007,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 56,
+        "after": 56,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 28,
+        "after": 27
+      },
+      "transfer_kib_first_sample": {
+        "before": 874,
+        "after": 560
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 353,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    },
+    {
+      "profile": "desktop-cable",
+      "host": "audit.servana.ke",
+      "lcp_p75_lab_ms": {
+        "before": 1740,
+        "after": 1080,
+        "target": 2500,
+        "after_passes": true
+      },
+      "lcp_median_ms": {
+        "before": 1728,
+        "after": 1056
+      },
+      "cls_max": {
+        "before": 0.103,
+        "after": 0,
+        "target": 0.1,
+        "after_passes": true
+      },
+      "inp_surrogate_max_ms": {
+        "before": 48,
+        "after": 64,
+        "target": 200,
+        "after_passes": true,
+        "classification": "lab_surrogate"
+      },
+      "ttfb_median_ms": {
+        "before": 27,
+        "after": 28
+      },
+      "transfer_kib_first_sample": {
+        "before": 890,
+        "after": 577
+      },
+      "requests_first_sample": {
+        "before": 32,
+        "after": 31
+      },
+      "js_transfer_kib": {
+        "before": 351,
+        "after": 113
+      },
+      "lcp_element": [
+        {
+          "tag": "img",
+          "src": "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+          "text": null
+        }
+      ],
+      "errors_after": 0,
+      "light_first_paint_after": true
+    }
+  ],
+  "bundle": {
+    "before": {
+      "initial_js_gzip": 79977,
+      "initial_css_gzip": 22612,
+      "archetypes": [
+        {
+          "id": "public-landing",
+          "js_gzip": 103112,
+          "css_gzip": 22612,
+          "requests": 18
+        },
+        {
+          "id": "public-login",
+          "js_gzip": 88667,
+          "css_gzip": 22612,
+          "requests": 14
+        },
+        {
+          "id": "shell.super_administrator",
+          "js_gzip": 135374,
+          "css_gzip": 24048,
+          "requests": 55
+        },
+        {
+          "id": "shell.merchant_administrator",
+          "js_gzip": 132353,
+          "css_gzip": 23528,
+          "requests": 50
+        },
+        {
+          "id": "shell.merchant_branch",
+          "js_gzip": 131102,
+          "css_gzip": 23597,
+          "requests": 48
+        },
+        {
+          "id": "shell.merchant_human_resource",
+          "js_gzip": 130549,
+          "css_gzip": 23715,
+          "requests": 46
+        },
+        {
+          "id": "shell.merchant_finance",
+          "js_gzip": 131075,
+          "css_gzip": 23571,
+          "requests": 46
+        },
+        {
+          "id": "shell.merchant_front_office",
+          "js_gzip": 130683,
+          "css_gzip": 23369,
+          "requests": 45
+        },
+        {
+          "id": "shell.merchant_personnel",
+          "js_gzip": 135068,
+          "css_gzip": 24165,
+          "requests": 54
+        },
+        {
+          "id": "shell.merchant_audit",
+          "js_gzip": 148367,
+          "css_gzip": 24353,
+          "requests": 64
+        }
+      ]
+    },
+    "after": {
+      "initial_js_gzip": 79982,
+      "initial_css_gzip": 15074,
+      "archetypes": [
+        {
+          "id": "public-landing",
+          "js_gzip": 103133,
+          "css_gzip": 15074,
+          "requests": 18
+        },
+        {
+          "id": "public-login",
+          "js_gzip": 88689,
+          "css_gzip": 15074,
+          "requests": 14
+        },
+        {
+          "id": "shell.super_administrator",
+          "js_gzip": 135410,
+          "css_gzip": 16510,
+          "requests": 55
+        },
+        {
+          "id": "shell.merchant_administrator",
+          "js_gzip": 132389,
+          "css_gzip": 15990,
+          "requests": 50
+        },
+        {
+          "id": "shell.merchant_branch",
+          "js_gzip": 131134,
+          "css_gzip": 16059,
+          "requests": 48
+        },
+        {
+          "id": "shell.merchant_human_resource",
+          "js_gzip": 130582,
+          "css_gzip": 16177,
+          "requests": 46
+        },
+        {
+          "id": "shell.merchant_finance",
+          "js_gzip": 131107,
+          "css_gzip": 16033,
+          "requests": 46
+        },
+        {
+          "id": "shell.merchant_front_office",
+          "js_gzip": 130715,
+          "css_gzip": 15831,
+          "requests": 45
+        },
+        {
+          "id": "shell.merchant_personnel",
+          "js_gzip": 135094,
+          "css_gzip": 16627,
+          "requests": 54
+        },
+        {
+          "id": "shell.merchant_audit",
+          "js_gzip": 148399,
+          "css_gzip": 16815,
+          "requests": 64
+        }
+      ],
+      "inlined_fonts": [],
+      "route_components_lazy": 161,
+      "cross_account_modules": 0
+    },
+    "budgets": {
+      "initial_request": {
+        "max_js_gzip_bytes": 102400,
+        "max_css_gzip_bytes": 30720
+      },
+      "critical_path": {
+        "max_js_gzip_bytes": 170000,
+        "max_css_gzip_bytes": 30720,
+        "max_requests": 80
+      },
+      "lazy_chunk": {
+        "max_route_gzip_bytes": 24576,
+        "max_content_gzip_bytes": 65536,
+        "content_prefixes": [
+          "src/content/generated/"
+        ]
+      }
+    },
+    "observation_navigation_registry": "navigationRegistry.generated (14.8 KB gzip / 152 KB raw) carries all 160 page contracts into every shell — data, not code; every shell is within budget; reshaping the UI-07 generator is not justified by a failing budget (recorded, not changed)."
+  },
+  "font_fallbacks": {
+    "method": "typo metrics (USE_TYPO_METRICS set) from the shipped @fontsource WOFF tables; size-adjust = measured advance width of the brand face over Arial on the eight landing-copy sources, Chromium canvas",
+    "inter_400_vs_arial": {
+      "size_adjust": "106.85%",
+      "ascent": "90.66%",
+      "descent": "22.57%",
+      "line_gap": "0%",
+      "upm": 2048,
+      "typo": [
+        1984,
+        -494,
+        0
+      ]
+    },
+    "inter_600_vs_arial_bold": {
+      "size_adjust": "101.27%",
+      "ascent": "95.66%",
+      "descent": "23.82%",
+      "line_gap": "0%"
+    },
+    "manrope_800_vs_arial_bold": {
+      "size_adjust": "102.07%",
+      "ascent": "104.44%",
+      "descent": "29.39%",
+      "line_gap": "0%",
+      "upm": 2000,
+      "typo": [
+        2132,
+        -600,
+        0
+      ]
+    }
+  },
+  "waterfall_evidence": {
+    "before_servana_ke_mobile": "entry js 256→1474 ms (raw 120.7 KB); entry imports discovered 1487→2253; /api/v1/me ×2 (2522, 2535); landing chunk 2918→3617; copy+composition 3731→4046; fonts 3762→5542; shift + LCP repaint ~4974 ms",
+    "after_servana_ke_mobile": "fonts, CSS, entry, imports and landing chunks all start at ~280–288 ms in parallel; entry done 1559; /api/v1/me once 1864→2046; LCP (hero paragraph) ~2.7–3.1 s; no long task after the first render task",
+    "logo_ab_slow4g": {
+      "with_logo": {
+        "median": 2972,
+        "p75": 3108
+      },
+      "logo_aborted": {
+        "median": 3032,
+        "p75": 3048
+      },
+      "n": 12,
+      "conclusion": "the 162 KB Logo.png download does not move LCP; it is a transfer-size issue only"
+    }
+  },
+  "verdict": {
+    "cls": "PASS on every host and profile (max 0.0016)",
+    "lcp": "PASS on desktop-cable (p75 976–1,240 ms) and on mobile-fast-4g (p75 2,008–2,208 ms, 8/8); FAIL on mobile-slow-4g (p75 2,988–3,172 ms) — UI17-PERF-005 routed for the product-owner profile decision",
+    "inp": "lab surrogate only: ≤144 ms on mobile-fast-4g and ≤80 ms on desktop; up to 224 ms on mobile-slow-4g; authentic INP needs field data (no RUM collector)",
+    "initial_js_budget": "PASS",
+    "no_fabricated_field_p75": true
+  }
+}

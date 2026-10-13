@@ -1,0 +1,1070 @@
+[
+  {
+    "host": "servana.ke",
+    "total_unwindowed": 0.153,
+    "shifts": [
+      {
+        "t": 4974,
+        "v": 0.153,
+        "input": false,
+        "sources": [
+          {
+            "node": "div.mt-8.flex.flex-col",
+            "prev": [
+              16,
+              573,
+              328,
+              172
+            ],
+            "curr": [
+              16,
+              621,
+              328,
+              159
+            ]
+          },
+          {
+            "node": "div.prose-landing.text-sv-text-secondary",
+            "prev": [
+              16,
+              333,
+              328,
+              144
+            ],
+            "curr": [
+              15,
+              357,
+              329,
+              168
+            ]
+          },
+          {
+            "node": "#text",
+            "prev": [
+              16,
+              334,
+              328,
+              164
+            ],
+            "curr": [
+              15,
+              359,
+              329,
+              164
+            ]
+          },
+          {
+            "node": "div.prose-landing.text-sv-text-secondary",
+            "prev": [
+              16,
+              493,
+              328,
+              48
+            ],
+            "curr": [
+              16,
+              541,
+              328,
+              48
+            ]
+          },
+          {
+            "node": "div.min-w-0.flex-1",
+            "prev": [
+              0,
+              761,
+              360,
+              19
+            ],
+            "curr": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "fonts": [
+      {
+        "t": 5727,
+        "family": "Manrope",
+        "weight": "800"
+      },
+      {
+        "t": 5727,
+        "family": "Inter",
+        "weight": "400"
+      },
+      {
+        "t": 5727,
+        "family": "Manrope",
+        "weight": "700"
+      },
+      {
+        "t": 5727,
+        "family": "Inter",
+        "weight": "500"
+      },
+      {
+        "t": 5727,
+        "family": "Inter",
+        "weight": "600"
+      }
+    ],
+    "resources": [
+      {
+        "name": "/spa-assets/index-Db2sWRLN.css",
+        "start": 253,
+        "end": 1312
+      },
+      {
+        "name": "/spa-assets/index-Dts3d5_0.js",
+        "start": 256,
+        "end": 1474
+      },
+      {
+        "name": "/spa-assets/apiClient-BONMyIWJ.js",
+        "start": 1487,
+        "end": 2214
+      },
+      {
+        "name": "/spa-assets/runtime-core.esm-bundler-Cn7LheB0.js",
+        "start": 1487,
+        "end": 2253
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2522,
+        "end": 2715
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2535,
+        "end": 2889
+      },
+      {
+        "name": "/spa-assets/PublicLandingPage-L49eu-NG.js",
+        "start": 2918,
+        "end": 3273
+      },
+      {
+        "name": "/spa-assets/SvLink-B16lCmrK.js",
+        "start": 2920,
+        "end": 3156
+      },
+      {
+        "name": "/spa-assets/Bars3Icon-BakfHmqS.js",
+        "start": 2922,
+        "end": 3111
+      },
+      {
+        "name": "/spa-assets/ShieldCheckIcon-BfPm5hyC.js",
+        "start": 2922,
+        "end": 3111
+      },
+      {
+        "name": "/spa-assets/SvStateBoundary-DyM4Bazf.js",
+        "start": 2923,
+        "end": 3156
+      },
+      {
+        "name": "/spa-assets/DocumentTextIcon-BTxZ66Cn.js",
+        "start": 2924,
+        "end": 3303
+      },
+      {
+        "name": "/spa-assets/useFocusTrap-Rfp2Qi3Y.js",
+        "start": 2924,
+        "end": 3362
+      },
+      {
+        "name": "/spa-assets/index.generated-RYSWfjXa.js",
+        "start": 2925,
+        "end": 3317
+      },
+      {
+        "name": "/spa-assets/SvFaq-BxktsY24.js",
+        "start": 2926,
+        "end": 3156
+      },
+      {
+        "name": "/spa-assets/ChevronDownIcon-D3AlMVBn.js",
+        "start": 2928,
+        "end": 3347
+      },
+      {
+        "name": "/spa-assets/landingImages.generated-zVNesxRV.js",
+        "start": 2928,
+        "end": 3617
+      },
+      {
+        "name": "/spa-assets/SvLogo-DTH6eqN1.js",
+        "start": 2929,
+        "end": 3457
+      },
+      {
+        "name": "/spa-assets/SvFixedFooter-CYkJtzze.js",
+        "start": 2929,
+        "end": 3473
+      },
+      {
+        "name": "/spa-assets/SvThemeToggle-DbOCMKJK.js",
+        "start": 2930,
+        "end": 3525
+      },
+      {
+        "name": "/assets/brand/Logo.png",
+        "start": 3729,
+        "end": 5572
+      },
+      {
+        "name": "/spa-assets/merchantAdministrator-Ck-jK1zE.js",
+        "start": 3731,
+        "end": 3997
+      },
+      {
+        "name": "/spa-assets/landing.generated-CGknVQyV.js",
+        "start": 3731,
+        "end": 4046
+      },
+      {
+        "name": "/spa-assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "start": 3762,
+        "end": 4518
+      },
+      {
+        "name": "/spa-assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "start": 3763,
+        "end": 4408
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+        "start": 4281,
+        "end": 4796
+      },
+      {
+        "name": "/spa-assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "start": 4321,
+        "end": 5542
+      },
+      {
+        "name": "/spa-assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "start": 4323,
+        "end": 5304
+      },
+      {
+        "name": "/spa-assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "start": 4325,
+        "end": 5526
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+        "start": 4817,
+        "end": 5677
+      }
+    ]
+  },
+  {
+    "host": "branch.servana.ke",
+    "total_unwindowed": 0.1744,
+    "shifts": [
+      {
+        "t": 5143,
+        "v": 0.1744,
+        "input": false,
+        "sources": [
+          {
+            "node": "div.mt-5.max-w-sv-readable.text-base",
+            "prev": [
+              15,
+              305,
+              329,
+              368
+            ],
+            "curr": [
+              15,
+              269,
+              329,
+              368
+            ]
+          },
+          {
+            "node": "div.mt-8.flex.flex-col",
+            "prev": [
+              16,
+              705,
+              328,
+              75
+            ],
+            "curr": [
+              16,
+              669,
+              328,
+              111
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-terms-of-service].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              242,
+              689,
+              80,
+              16
+            ],
+            "curr": [
+              16,
+              707,
+              90,
+              16
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-privacy-policy].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              166,
+              689,
+              66,
+              16
+            ],
+            "curr": [
+              177,
+              689,
+              74,
+              16
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-data-policy].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              101,
+              689,
+              55,
+              16
+            ],
+            "curr": [
+              107,
+              689,
+              59,
+              16
+            ]
+          }
+        ]
+      }
+    ],
+    "fonts": [
+      {
+        "t": 5672,
+        "family": "Manrope",
+        "weight": "800"
+      },
+      {
+        "t": 5672,
+        "family": "Inter",
+        "weight": "400"
+      },
+      {
+        "t": 5672,
+        "family": "Manrope",
+        "weight": "700"
+      },
+      {
+        "t": 5672,
+        "family": "Inter",
+        "weight": "500"
+      },
+      {
+        "t": 5672,
+        "family": "Inter",
+        "weight": "600"
+      }
+    ],
+    "resources": [
+      {
+        "name": "/spa-assets/index-Db2sWRLN.css",
+        "start": 244,
+        "end": 1302
+      },
+      {
+        "name": "/spa-assets/index-Dts3d5_0.js",
+        "start": 249,
+        "end": 1436
+      },
+      {
+        "name": "/spa-assets/apiClient-BONMyIWJ.js",
+        "start": 1451,
+        "end": 2176
+      },
+      {
+        "name": "/spa-assets/runtime-core.esm-bundler-Cn7LheB0.js",
+        "start": 1452,
+        "end": 2192
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2487,
+        "end": 2655
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2505,
+        "end": 2823
+      },
+      {
+        "name": "/spa-assets/PublicLandingPage-L49eu-NG.js",
+        "start": 2852,
+        "end": 3211
+      },
+      {
+        "name": "/spa-assets/SvLink-B16lCmrK.js",
+        "start": 2855,
+        "end": 3041
+      },
+      {
+        "name": "/spa-assets/Bars3Icon-BakfHmqS.js",
+        "start": 2856,
+        "end": 3044
+      },
+      {
+        "name": "/spa-assets/ShieldCheckIcon-BfPm5hyC.js",
+        "start": 2858,
+        "end": 3056
+      },
+      {
+        "name": "/spa-assets/SvStateBoundary-DyM4Bazf.js",
+        "start": 2859,
+        "end": 3086
+      },
+      {
+        "name": "/spa-assets/DocumentTextIcon-BTxZ66Cn.js",
+        "start": 2860,
+        "end": 3086
+      },
+      {
+        "name": "/spa-assets/useFocusTrap-Rfp2Qi3Y.js",
+        "start": 2861,
+        "end": 3241
+      },
+      {
+        "name": "/spa-assets/index.generated-RYSWfjXa.js",
+        "start": 2862,
+        "end": 3314
+      },
+      {
+        "name": "/spa-assets/SvFaq-BxktsY24.js",
+        "start": 2863,
+        "end": 3290
+      },
+      {
+        "name": "/spa-assets/ChevronDownIcon-D3AlMVBn.js",
+        "start": 2865,
+        "end": 3381
+      },
+      {
+        "name": "/spa-assets/landingImages.generated-zVNesxRV.js",
+        "start": 2865,
+        "end": 3557
+      },
+      {
+        "name": "/spa-assets/SvLogo-DTH6eqN1.js",
+        "start": 2866,
+        "end": 3290
+      },
+      {
+        "name": "/spa-assets/SvFixedFooter-CYkJtzze.js",
+        "start": 2867,
+        "end": 3459
+      },
+      {
+        "name": "/spa-assets/SvThemeToggle-DbOCMKJK.js",
+        "start": 2868,
+        "end": 3443
+      },
+      {
+        "name": "/assets/brand/Logo.png",
+        "start": 3705,
+        "end": 5161
+      },
+      {
+        "name": "/spa-assets/merchantBranch-DV8uWOIh.js",
+        "start": 3708,
+        "end": 3932
+      },
+      {
+        "name": "/spa-assets/landing.generated-BOtHH8YA.js",
+        "start": 3710,
+        "end": 4051
+      },
+      {
+        "name": "/spa-assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "start": 3732,
+        "end": 4413
+      },
+      {
+        "name": "/spa-assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "start": 3733,
+        "end": 4330
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+        "start": 4309,
+        "end": 4832
+      },
+      {
+        "name": "/spa-assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "start": 4374,
+        "end": 5555
+      },
+      {
+        "name": "/spa-assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "start": 4378,
+        "end": 5411
+      },
+      {
+        "name": "/spa-assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "start": 4386,
+        "end": 5554
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+        "start": 4954,
+        "end": 5638
+      }
+    ]
+  },
+  {
+    "host": "office.servana.ke",
+    "total_unwindowed": 0.1386,
+    "shifts": [
+      {
+        "t": 5347,
+        "v": 0.1386,
+        "input": false,
+        "sources": [
+          {
+            "node": "div.mt-8.flex.flex-col",
+            "prev": [
+              16,
+              485,
+              328,
+              196
+            ],
+            "curr": [
+              16,
+              533,
+              328,
+              196
+            ]
+          },
+          {
+            "node": "div.prose-landing.text-sv-text-secondary",
+            "prev": [
+              16,
+              381,
+              328,
+              72
+            ],
+            "curr": [
+              16,
+              405,
+              328,
+              96
+            ]
+          },
+          {
+            "node": "#text",
+            "prev": [
+              16,
+              382,
+              328,
+              92
+            ],
+            "curr": [
+              16,
+              407,
+              328,
+              92
+            ]
+          },
+          {
+            "node": "div.min-w-0.flex-1",
+            "prev": [
+              0,
+              697,
+              360,
+              83
+            ],
+            "curr": [
+              0,
+              745,
+              360,
+              35
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-terms-of-service].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              242,
+              689,
+              80,
+              16
+            ],
+            "curr": [
+              16,
+              707,
+              90,
+              16
+            ]
+          }
+        ]
+      }
+    ],
+    "fonts": [
+      {
+        "t": 5981,
+        "family": "Manrope",
+        "weight": "800"
+      },
+      {
+        "t": 5981,
+        "family": "Inter",
+        "weight": "400"
+      },
+      {
+        "t": 5981,
+        "family": "Manrope",
+        "weight": "700"
+      },
+      {
+        "t": 5981,
+        "family": "Inter",
+        "weight": "500"
+      },
+      {
+        "t": 5981,
+        "family": "Inter",
+        "weight": "600"
+      }
+    ],
+    "resources": [
+      {
+        "name": "/spa-assets/index-Db2sWRLN.css",
+        "start": 247,
+        "end": 1289
+      },
+      {
+        "name": "/spa-assets/index-Dts3d5_0.js",
+        "start": 249,
+        "end": 1439
+      },
+      {
+        "name": "/spa-assets/apiClient-BONMyIWJ.js",
+        "start": 1451,
+        "end": 2173
+      },
+      {
+        "name": "/spa-assets/runtime-core.esm-bundler-Cn7LheB0.js",
+        "start": 1451,
+        "end": 2204
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2519,
+        "end": 2690
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2535,
+        "end": 2873
+      },
+      {
+        "name": "/spa-assets/PublicLandingPage-L49eu-NG.js",
+        "start": 2891,
+        "end": 3289
+      },
+      {
+        "name": "/spa-assets/SvLink-B16lCmrK.js",
+        "start": 2893,
+        "end": 3111
+      },
+      {
+        "name": "/spa-assets/Bars3Icon-BakfHmqS.js",
+        "start": 2894,
+        "end": 3074
+      },
+      {
+        "name": "/spa-assets/ShieldCheckIcon-BfPm5hyC.js",
+        "start": 2894,
+        "end": 3097
+      },
+      {
+        "name": "/spa-assets/SvStateBoundary-DyM4Bazf.js",
+        "start": 2896,
+        "end": 3140
+      },
+      {
+        "name": "/spa-assets/DocumentTextIcon-BTxZ66Cn.js",
+        "start": 2897,
+        "end": 3097
+      },
+      {
+        "name": "/spa-assets/useFocusTrap-Rfp2Qi3Y.js",
+        "start": 2897,
+        "end": 3304
+      },
+      {
+        "name": "/spa-assets/index.generated-RYSWfjXa.js",
+        "start": 2898,
+        "end": 3334
+      },
+      {
+        "name": "/spa-assets/SvFaq-BxktsY24.js",
+        "start": 2898,
+        "end": 3350
+      },
+      {
+        "name": "/spa-assets/ChevronDownIcon-D3AlMVBn.js",
+        "start": 2898,
+        "end": 3289
+      },
+      {
+        "name": "/spa-assets/landingImages.generated-zVNesxRV.js",
+        "start": 2899,
+        "end": 3705
+      },
+      {
+        "name": "/spa-assets/SvLogo-DTH6eqN1.js",
+        "start": 2900,
+        "end": 3335
+      },
+      {
+        "name": "/spa-assets/SvFixedFooter-CYkJtzze.js",
+        "start": 2901,
+        "end": 3495
+      },
+      {
+        "name": "/spa-assets/SvThemeToggle-DbOCMKJK.js",
+        "start": 2901,
+        "end": 3514
+      },
+      {
+        "name": "/assets/brand/Logo.png",
+        "start": 3843,
+        "end": 5220
+      },
+      {
+        "name": "/spa-assets/merchantFrontOffice-B0b6XLrs.js",
+        "start": 3845,
+        "end": 4060
+      },
+      {
+        "name": "/spa-assets/landing.generated-Chd8z-8U.js",
+        "start": 3845,
+        "end": 4158
+      },
+      {
+        "name": "/spa-assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "start": 3866,
+        "end": 4517
+      },
+      {
+        "name": "/spa-assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "start": 3867,
+        "end": 4424
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+        "start": 4486,
+        "end": 4982
+      },
+      {
+        "name": "/spa-assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "start": 4548,
+        "end": 5824
+      },
+      {
+        "name": "/spa-assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "start": 4550,
+        "end": 5673
+      },
+      {
+        "name": "/spa-assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "start": 4557,
+        "end": 5808
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+        "start": 5219,
+        "end": 5872
+      }
+    ]
+  },
+  {
+    "host": "finance.servana.ke",
+    "total_unwindowed": 0.0168,
+    "shifts": [
+      {
+        "t": 5028,
+        "v": 0.0168,
+        "input": false,
+        "sources": [
+          {
+            "node": "a[data-testid=sv-footer-terms-of-service].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              242,
+              689,
+              80,
+              16
+            ],
+            "curr": [
+              16,
+              707,
+              90,
+              16
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-facebook].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              113,
+              727,
+              47,
+              44
+            ],
+            "curr": [
+              116,
+              727,
+              53,
+              44
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-youtube].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              161,
+              727,
+              44,
+              44
+            ],
+            "curr": [
+              169,
+              727,
+              46,
+              44
+            ]
+          },
+          {
+            "node": "div.inline-flex.items-center.gap-2",
+            "prev": [
+              253,
+              727,
+              44,
+              44
+            ],
+            "curr": [
+              262,
+              727,
+              44,
+              44
+            ]
+          },
+          {
+            "node": "a[data-testid=sv-footer-linkedin].sv-focus-ring.inline-flex.items-center",
+            "prev": [
+              207,
+              727,
+              44,
+              44
+            ],
+            "curr": [
+              216,
+              727,
+              44,
+              44
+            ]
+          }
+        ]
+      }
+    ],
+    "fonts": [
+      {
+        "t": 5864,
+        "family": "Manrope",
+        "weight": "800"
+      },
+      {
+        "t": 5864,
+        "family": "Inter",
+        "weight": "400"
+      },
+      {
+        "t": 5864,
+        "family": "Manrope",
+        "weight": "700"
+      },
+      {
+        "t": 5864,
+        "family": "Inter",
+        "weight": "500"
+      },
+      {
+        "t": 5864,
+        "family": "Inter",
+        "weight": "600"
+      }
+    ],
+    "resources": [
+      {
+        "name": "/spa-assets/index-Db2sWRLN.css",
+        "start": 251,
+        "end": 1316
+      },
+      {
+        "name": "/spa-assets/index-Dts3d5_0.js",
+        "start": 253,
+        "end": 1460
+      },
+      {
+        "name": "/spa-assets/apiClient-BONMyIWJ.js",
+        "start": 1472,
+        "end": 2193
+      },
+      {
+        "name": "/spa-assets/runtime-core.esm-bundler-Cn7LheB0.js",
+        "start": 1472,
+        "end": 2224
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2476,
+        "end": 2670
+      },
+      {
+        "name": "/api/v1/me",
+        "start": 2495,
+        "end": 2842
+      },
+      {
+        "name": "/spa-assets/PublicLandingPage-L49eu-NG.js",
+        "start": 2861,
+        "end": 3288
+      },
+      {
+        "name": "/spa-assets/SvLink-B16lCmrK.js",
+        "start": 2862,
+        "end": 3088
+      },
+      {
+        "name": "/spa-assets/Bars3Icon-BakfHmqS.js",
+        "start": 2862,
+        "end": 3070
+      },
+      {
+        "name": "/spa-assets/ShieldCheckIcon-BfPm5hyC.js",
+        "start": 2863,
+        "end": 3085
+      },
+      {
+        "name": "/spa-assets/SvStateBoundary-DyM4Bazf.js",
+        "start": 2863,
+        "end": 3119
+      },
+      {
+        "name": "/spa-assets/DocumentTextIcon-BTxZ66Cn.js",
+        "start": 2863,
+        "end": 3071
+      },
+      {
+        "name": "/spa-assets/useFocusTrap-Rfp2Qi3Y.js",
+        "start": 2863,
+        "end": 3287
+      },
+      {
+        "name": "/spa-assets/index.generated-RYSWfjXa.js",
+        "start": 2864,
+        "end": 3319
+      },
+      {
+        "name": "/spa-assets/SvFaq-BxktsY24.js",
+        "start": 2864,
+        "end": 3288
+      },
+      {
+        "name": "/spa-assets/ChevronDownIcon-D3AlMVBn.js",
+        "start": 2864,
+        "end": 3259
+      },
+      {
+        "name": "/spa-assets/landingImages.generated-zVNesxRV.js",
+        "start": 2864,
+        "end": 3698
+      },
+      {
+        "name": "/spa-assets/SvLogo-DTH6eqN1.js",
+        "start": 2865,
+        "end": 3445
+      },
+      {
+        "name": "/spa-assets/SvFixedFooter-CYkJtzze.js",
+        "start": 2865,
+        "end": 3478
+      },
+      {
+        "name": "/spa-assets/SvThemeToggle-DbOCMKJK.js",
+        "start": 2865,
+        "end": 3336
+      },
+      {
+        "name": "/assets/brand/Logo.png",
+        "start": 3822,
+        "end": 5452
+      },
+      {
+        "name": "/spa-assets/merchantFinance-CjTOCgqH.js",
+        "start": 3824,
+        "end": 4032
+      },
+      {
+        "name": "/spa-assets/landing.generated-XLIc_JQB.js",
+        "start": 3827,
+        "end": 4217
+      },
+      {
+        "name": "/spa-assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "start": 3843,
+        "end": 4412
+      },
+      {
+        "name": "/spa-assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "start": 3844,
+        "end": 4319
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+        "start": 4494,
+        "end": 5078
+      },
+      {
+        "name": "/spa-assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "start": 4549,
+        "end": 5698
+      },
+      {
+        "name": "/spa-assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "start": 4550,
+        "end": 5531
+      },
+      {
+        "name": "/spa-assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "start": 4554,
+        "end": 5697
+      },
+      {
+        "name": "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+        "start": 5045,
+        "end": 5822
+      }
+    ]
+  }
+]

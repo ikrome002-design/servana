@@ -1,0 +1,38 @@
+{
+  "schema": "servana.ui17.test-matrix/v1",
+  "phase": "UI-17",
+  "environment": "Windows 10 Pro 19045; Docker Desktop 29.8.2 (WSL2); host Node v24.15.0 / npm 11.12.1 (images and CI use Node 20); PHP 8.3 + PostgreSQL 16 in the dev compose app/postgres containers; Chromium from @playwright/test",
+  "source": "working tree of phase-ui-17-performance-security-production-closeout at handoff (see claude-to-codex-handoff.json); final candidate images cand-226d50f1d73d",
+  "runs": [
+    { "suite": "Backend Pest (full, parallel ×4, PostgreSQL 16)", "command": "docker exec servana-app-1 php artisan test --parallel", "result": "3074 passed, 14 skipped, 0 failed (50,124 assertions, 1,979 s)", "exit": 0, "notes": "UI-16 local baseline 3,055/14; +15 Ui17BrowserEdgeSecurityTest, +4 Ui17ShellCriticalPathTest; the 14 skips are pre-existing environment-conditional (e.g. DesignTokenGenerationTest Node-in-PHP-container case, covered by tokens:check)" },
+    { "suite": "Backend focused (UI-17 + affected contracts)", "command": "php artisan test tests/Feature/Hosts/Ui17ShellCriticalPathTest.php tests/Feature/Security/Ui17BrowserEdgeSecurityTest.php tests/Feature/Hosts/AccountHostShellContractTest.php tests/Feature/Traceability tests/Feature/DesignSystem", "result": "122 passed, 1 skipped", "exit": 0 },
+    { "suite": "Traceability contract (after UI-17 rows)", "command": "php artisan test tests/Feature/Traceability", "result": "15 passed", "exit": 0, "notes": "first attempt failed on SRV-UI17-CLEANUP-001 naming a host in the route column; corrected to the component convention" },
+    { "suite": "Pint", "command": "composer pint -- --test", "result": "1,940 files PASS", "exit": 0 },
+    { "suite": "Larastan level 8", "command": "composer stan", "result": "No errors", "exit": 0 },
+    { "suite": "Vitest (full)", "command": "npm run test", "result": "run 1: 2 failed / 1,463 passed in one file, during concurrent Docker container teardown (output not captured); runs 2 and 3: 1,465 / 1,465 passed, 153 files", "exit": "1, 0, 0", "notes": "not reproduced in two clean runs; recorded, not waived — Codex CI is the independent confirmation" },
+    { "suite": "Vitest focused", "command": "npx vitest run src/stores/authStore.spec.ts src/pages/Ui01Render001.spec.ts src/pages/personnel/Ui14PersonnelPages.spec.ts", "result": "37 passed (after removing an unobservable promise-identity assertion)", "exit": 0 },
+    { "suite": "ESLint", "command": "npm run lint", "result": "0 errors, 3 pre-existing vue/no-v-html warnings (compiled, hash-checked content)", "exit": 0 },
+    { "suite": "vue-tsc", "command": "npm run typecheck", "result": "clean", "exit": 0 },
+    { "suite": "Vite build", "command": "npm run build", "result": "built; manifest byte-identical to baseline after adding the chunk-module map (before the UI-17 source changes)", "exit": 0 },
+    { "suite": "Playwright whole product", "command": "npx playwright test --update-snapshots=none --reporter=line,junit", "result": "2,107 passed, 0 failed, 0 flaky (4,954 s)", "exit": 0, "notes": "386 rewritten predecessor evidence files restored individually; 85 run-created untracked UI-01 screenshots removed after proving untracked; 122 baselines untouched" },
+    { "suite": "Production-origin browser gate (UI-16 + UI-17)", "command": "SERVANA_ORIGIN=127.0.0.1:8172 npx playwright test -c playwright.origin.config.ts", "result": "40 passed (final candidate cand-226d50f1d73d, DB-backed); also 40 passed on cand-81d296d08c45", "exit": 0 },
+    { "suite": "Origin gate negative control", "command": "SERVANA_ORIGIN=127.0.0.1:8171 npx playwright test -c playwright.origin.config.ts tests/e2e-origin/ui17-edge-security-performance.spec.ts", "result": "16 failed / 8 passed against N-1 (CSP + bootstrap/hints/compression fail; hero contract already met)", "exit": 1, "expected": "non-zero" },
+    { "suite": "Bundle budget", "command": "node scripts/ui17-bundle-budget.mjs", "result": "OK — initial 78.1 KiB JS + 14.7 KiB CSS gzip; 161 route components lazy; 10 archetypes in budget; 0 cross-account modules; 0 inlined fonts", "exit": 0, "notes": "proven to FAIL on the pre-fix build (4 inlined data: fonts)" },
+    { "suite": "Edge security contract", "command": "node scripts/ui17-edge-security-contract.mjs", "result": "OK", "exit": 0 },
+    { "suite": "UI-17 negative controls", "command": "node scripts/ui17-negative-controls.mjs", "result": "18/18 controls fired + 2 unmutated baselines passed", "exit": 0 },
+    { "suite": "nginx syntax", "command": "docker run … nginx-unprivileged:1.27-alpine nginx -t (with default.conf + account-hosts include)", "result": "syntax ok", "exit": 0 },
+    { "suite": "Edge smoke (8 hosts)", "command": "node scripts/ui17-edge-smoke.mjs --origin http://127.0.0.1:{8171,8172}", "result": "N-1: 64 failures in 8 classes; final candidate: 300/300 (re-run after warm-up; a run 3 s after start had 4 transient warm-up failures)", "exit": "1, 0" },
+    { "suite": "Release rehearsal", "command": "node scripts/ui17-release-rehearsal.mjs --previous n-1-1e8bd5f --candidate cand-226d50f1d73d", "result": "PASSED — blue live; canary 12.5 % (25/200) 0 errors; skew control 37 asset 404s without fallback; promote + 300/300 smoke behind an HTTP/1.0 front proxy; rollback ≤ 6.47 s; candidate log has no synthetic credential", "exit": 0, "notes": "earlier attempts failed on harness defects (reload race, readiness races, LB allowlist) and on a real edge defect (UI17-PERF-006); all preserved in defect-closure.json and the runbook" },
+    { "suite": "DNS/TLS probe", "command": "node scripts/ui17-dns-tls-probe.mjs", "result": "0/8 healthy — lame delegation (4 NS REFUSED)", "exit": 1, "expected": "blocked_external" },
+    { "suite": "Web vitals", "command": "node scripts/ui17-web-vitals.mjs --samples 5 [--profile mobile-fast-4g]", "result": "see performance-baseline-and-budget.json", "exit": 0 },
+    { "suite": "Generators and contracts", "command": "generate-account-hosts --check; tokens:check; content:check; assets:check; ui05-negative-controls; generate-ui06-artifacts --check; nav:check; nav:negative-controls; generate-ui-source-inventory --check; api:contract:check; ui08…ui15:check", "result": "18/18 exit 0 (OpenAPI 307/358; permissions 169/134/35; 160 pages)", "exit": 0 },
+    { "suite": "npm audit", "command": "npm audit --audit-level=high", "result": "found 0 vulnerabilities", "exit": 0 },
+    { "suite": "composer audit / validate", "command": "composer audit --locked; composer validate --strict", "result": "no advisories; valid", "exit": 0 },
+    { "suite": "gitleaks (changed + untracked, staged-equivalent)", "command": "gitleaks 8.30.1 dir <copy of the changed/untracked files: 90 mid-phase, 94 at handoff> --config .gitleaks.toml --redact", "result": "1 finding: resources/spa/src/design-system/tokens.generated.ts:13 generic-api-key — the SHA-256 of tokens.json (verified non-secret, same class as UI-04/UI-16 fingerprints); a second finding (a synthetic canary quoted in evidence text) was removed at the source", "exit": 1, "expected": "Codex adds the per-commit fingerprint <commit>:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13" }
+  ],
+  "ci_pending_for_codex": [
+    "five exact-head jobs (Backend, Frontend, Docker, Security, E2E) on the UI-17 PR",
+    "first hosted execution of: UI-17 edge contract, bundle budget + negative controls (Frontend job); throwaway PostgreSQL + migrations, UI-17 edge smoke and access-log credential check, UI-17 origin spec (Docker job)",
+    "Linux rendering of the UI-16 visual comparisons with the font-token change (fonts are loaded before capture; no pixel change expected)"
+  ]
+}

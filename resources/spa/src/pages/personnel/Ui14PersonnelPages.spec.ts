@@ -122,6 +122,12 @@ describe('UI-14 earnings truthfulness', () => {
     // A browser sum of salary paid + unpaid (KES 56,500.00) would be a second financial authority.
     expect(text).not.toContain('56,500.00');
     expect(text).toContain('Salary plus commission');
+    // Own-scope (UI/UX plan §18.3), carried over from the retired legacy Earnings.vue spec when
+    // UI-17 removed that unrouted screen (UI14-RES-001): the canonical page offers no way to
+    // choose whose earnings are shown.
+    expect(wrapper.find('#staff_profile_ulid').exists()).toBe(false);
+    expect(wrapper.findAll('select').length).toBe(0);
+    expect(get.mock.calls.map(([url]) => String(url)).every((url) => url.startsWith('/personnel/me/'))).toBe(true);
   });
 
   it('prefills an own earnings query from a record link and selects the matching question type', async () => {
