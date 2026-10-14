@@ -151,3 +151,38 @@ and initial concurrent-run axe timeout remain recorded in the release addendum; 
 weakened or silently waived. The actual clipped frame is retained in `codex-defects/`; only
 three populated after frames, their current index and the populated review-sheet column changed.
 Historical UI-16 records and all regression goldens remain untouched by this correction.
+
+### COR-REL-004 — wait for the required Personnel own-state read
+
+First hosted run 38505857221 (head 6f25b07) finished E2E with 2,217 passed,
+1 flaky retry and 83 capture-only skips. Salary’s section is mounted before the awaited
+earnings overview completes; the original immediate request-array assertion therefore races
+the subsequent own-salary GET. An 800ms overview delay reproduced exactly the premature
+false assertion. The assertion now polls for the same exact API request within the unchanged
+default timeout. Browser-error, failed-request and authorization assertions remain intact;
+no Personnel product source, permission or route changed. A delayed-overview regression
+case was added. The Windows repetition attempt is retained honestly: 6 passed / 4 failed
+before the section rendered (status-only page), rather than a clean run. Independent Linux
+repeat evidence: 20 passed / 0 failed / 0 retries (ten original and ten delayed cases; Node 20.19.5, Playwright 1.62.0, private software-rendering config). The earlier default-renderer Linux attempt was 16 passed / 4 failed: launch timeout, session-closed protocol failure and two pre-render readiness failures. No request predicate failed in the corrected runs; original timeouts and CI browser configuration remain unchanged. Final whole-product Linux CI remains mandatory.
+
+Hosted CI’s 83 skips are the capture scope writer plus 82 opt-in page evidence writers
+when COR_CAPTURE is unset. They are not product/security tests and do not replace any
+functional gate. Their owner is the corrective visual evidence harness; entry is an explicit
+COR_CAPTURE evidence-generation run. The local handoff’s different one-skip result remains
+as originally reported, not substituted for the measured hosted count.
+
+### COR-REL-005 — atomic button colors during theme changes
+
+Run 38510382179 at head f745c14 passed its five jobs but E2E retained 2,219 passed /
+1 flaky / 83 capture-only skips. The retry was UI-04 dark contrast, not the salary case.
+The root class switches immediately while SvButton interpolates semantic foreground and
+background tokens independently for 150ms. A controlled 2s transition probe identified the
+Destructive label at ratio 1.14 (#8a9095 over #eb4d4d); the settled theme had zero violations.
+The new browser regression failed on the old bundle with 14 active color transitions.
+Precise product correction: SvButton uses transition-shadow, so foreground/background
+pairs change atomically while shadow feedback remains animated. The existing axe checks
+and thresholds stay intact; failure messages now expose exact node details. The added
+slow-transition regression rejects active button color interpolation and runs full axe.
+No timeout, retry, disabled rule, baseline or permission changed. Ordinary pre-fix dark
+axe repetitions passed 50/50, demonstrating why an isolated retry is not root-cause proof.
+Corrected-source focused result: 26 full UI04 cases + 30 repeated light/dark/slow-transition cases passed; 0 failures / 0 retries. Node20.19.5, Playwright1.62.0, private software-rendering diagnostic config; hosted defaults unchanged..

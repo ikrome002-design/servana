@@ -105,12 +105,35 @@
         "command": "first two-page populated axe run during overlapping local builds",
         "result": "Subscription analyze timed out at 30.7s; HR passed",
         "diagnosis": "Serial corrected-build run completes Subscription axe in 10.6s and HR in 8.6s with no serious/critical findings. No timeout/assertion/CI setting changed."
+      },
+      {
+        "command": "Windows delayed salary repetitions",
+        "result": "6 passed / 4 pre-render readiness failures, 0 retries",
+        "diagnosis": "Failed status-only page before required-request predicate; not represented green"
+      },
+      {
+        "command": "Default local Linux salary repetition",
+        "result": "16 passed / 4 failed: one 180s browser launch timeout, session-closed protocol error, two pre-render readiness failures",
+        "diagnosis": "Local WSL browser startup/renderer issue precedes predicate. Private software-rendering probe and 20 stable repeats succeeded; repository/CI browser configuration unchanged"
+      },
+      {
+        "command": "Private Linux preparation attempts",
+        "result": "No product test ran in outdated dependency-volume / preview-start / missing-inventory / absent-xz failures",
+        "diagnosis": "Resolved by exact package-lock install, explicit preview readiness, required inventory and verified official Node20 gzip archive; no product/CI source change"
+      },
+      {
+        "command": "Theme timing diagnostic",
+        "result": "Initial browser.newPage axe context unsuitable; corrected explicit context reproduced 1.14 ratio during slow transition, settled 0 violations",
+        "diagnosis": "Probe-only setup failure retained; actual new-regression negative independently confirms 14 color transitions"
       }
     ],
     "corrective_browser": "PASS 5 focused cases; two new text-fit guards and two populated axe cases, no skips/retries",
     "corrective_vitest": "PASS 4 SubscriptionDashboard cases, single thread; initial worker-start failure preserved",
-    "corrective_lint": "PASS targeted two pages + corrective browser spec",
-    "corrective_build_typecheck": "PASS Playwright web-server build (vue-tsc + Vite), independent typecheck passed"
+    "corrective_lint": "PASS targeted SvButton + UI04 and UI14 specs; prior page/readability lint also passed",
+    "corrective_build_typecheck": "PASS fresh vue-tsc + Vite after SvButton correction, build 42.46s",
+    "salary_stability": "20 passed / 0 failed / 0 retries; private Linux software renderer, Node20.19.5, Playwright1.62.0",
+    "atomic_color": "26 full UI04 cases + 30 repeated light/dark/slow-transition cases passed; 0 failures / 0 retries. Node20.19.5, Playwright1.62.0, private software-rendering diagnostic config; hosted defaults unchanged.",
+    "corrective_bundle": "PASS UI17 budgets: initial 78.2KiB JS +20.9KiB CSS gzip, 161 lazy route components, 10 archetypes within budget, no cross-account code"
   },
   "deltas": [
     {
@@ -154,24 +177,24 @@
     {
       "path": "docs/PROGRESS.md",
       "status": "M",
-      "bytes": 540884,
-      "sha256": "ad014adf5e9364d212dd5db195d97d885aca5c9bcf93da62098b010fa8d8672d",
+      "bytes": 541796,
+      "sha256": "752f81eb6b4706c8a31d0e301cbf292d5abd869df21e2f3df2e37367a2a771c4",
       "original_handoff_sha256": "2673b2e4fd0ac49fa51d907d16fd228f5286751323ce1faa28d395e33991823e",
       "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
     },
     {
       "path": "docs/CHANGELOG.md",
       "status": "M",
-      "bytes": 408172,
-      "sha256": "624e6052115635a5befeae7698c3d7383404c31fe8e3d648fb8f07273f3964f5",
+      "bytes": 408852,
+      "sha256": "8f1ad7deb4117f62babf649a145ca6c74de919b9fd492f8daa12f71936fe5301",
       "original_handoff_sha256": "83ff2d261ad1918ec7d98fe8eb3c70542bd5f81486e325631c3abde927819d9e",
       "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
     },
     {
       "path": "docs/proof/cor-ui08-ui12-vis-001.md",
       "status": "M",
-      "bytes": 10010,
-      "sha256": "ce7e59a49310263385e3a152d5d40f09a66e09cca46300e8f8f2b920af78cf2b",
+      "bytes": 13147,
+      "sha256": "334066f92043ac5208c7c1a163a44c0b5744c3efe58e6725dc63159a049702c7",
       "original_handoff_sha256": "b14792b5cc38e391dc422fd64a15e3352f4b5ef39e8d8430879256458ccf0896",
       "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
     },
@@ -246,6 +269,30 @@
       "original_handoff_sha256": "3fbcbaf1a63a4b3d00748f77041965cf83c168155dadf4a9a03e3534abae99c1",
       "bytes": 5274,
       "sha256": "639329f6fa464278516c0e068b0f56708ca337e3008861e0db6e431f10a805be"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvButton.vue",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 3904,
+      "sha256": "1921969d471a8f22f2af3bdd44af710471935cfd82e0ed5a5d297c5a60a71309"
+    },
+    {
+      "path": "tests/e2e/ui-04-design-system.spec.ts",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 17319,
+      "sha256": "7aaaf4c58b4c0d51d72f188ec7e6114c83b148f65117a8f12187d8510d3299d8"
+    },
+    {
+      "path": "tests/e2e/ui-14-personnel-experience.spec.ts",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 29713,
+      "sha256": "75a008abad7ab362c2e36790a1b8d520127945da799960f1148360aeb0503caf"
     }
   ],
   "release_strategy": "Normal merge commit if exact introducing-commit token digest fingerprint is required; no squash without supported equivalence",
@@ -343,6 +390,46 @@
       "test_result": "5 passed, 0 failed, 0 retries; includes capture, both affected populated axe cases, both full-width/zoom readability cases. Negative control before fix failed as expected.",
       "proof_of_resolution": "Corrected mobile frame visibly shows complete salary/model/rule/window/reason; three populated frames reviewed and rehashed; only populated column in comparison sheet refreshed",
       "remaining_risk": "Fresh hosted whole-product and Linux regression suite required; owner aesthetic acceptance still pending"
+    },
+    {
+      "id": "COR-REL-004",
+      "observed_problem": "First hosted E2E salary case passes only on retry",
+      "evidence": "Run 38505857221 job 115663084944: salary request-array assertion false before overview completes; 800ms overview delay reproduces exact assertion failure",
+      "affected_files": [
+        "tests/e2e/ui-14-personnel-experience.spec.ts"
+      ],
+      "root_cause": "Section visibility is synchronous, but Salary onMounted awaits earnings overview before own salary read; immediate array inspection races that read",
+      "why_root_cause": "Actual production control flow and deterministic delayed fixture agree with the recorded failing predicate",
+      "correct_fix": "Poll same required API-request predicate within unchanged default timeout; preserve all error and negative authority checks",
+      "files_changed": [
+        "tests/e2e/ui-14-personnel-experience.spec.ts"
+      ],
+      "tests_added_updated": "Delayed applicability overview salary case; all 19 positive own-state assertions observe required asynchronous read",
+      "test_command": "Private Node20 / Playwright1.62 Linux: original salary and delayed overview --repeat-each=10 --retries=0 --update-snapshots=none",
+      "test_result": "20 passed / 0 failed / 0 retries with private software rendering; failed cold/default local attempts retained separately",
+      "proof_of_resolution": "Delayed overview negative fails original immediate assertion; corrected observed request completes in every focused stable repeat",
+      "remaining_risk": "Final default-renderer hosted full-suite CI required"
+    },
+    {
+      "id": "COR-REL-005",
+      "observed_problem": "Second hosted E2E dark axe reports one contrast violation and passes on retry",
+      "evidence": "Run 38510382179 job 115677280807. Controlled slow transition exposes Destructive span at contrast 1.14 (#8a9095 on #eb4d4d); settled theme zero. New regression old-bundle negative sees 14 running color transitions.",
+      "affected_files": [
+        "resources/spa/src/components/ui/SvButton.vue",
+        "tests/e2e/ui-04-design-system.spec.ts"
+      ],
+      "root_cause": "transition-colors interpolates token foreground/background independently during immediate semantic theme switch",
+      "why_root_cause": "Browser reports real active transitions and exact failing node/ratio during the controlled transition, then no violation after it finishes",
+      "correct_fix": "Animate button shadows only; theme color pairs change atomically. No test-rule weakening or readiness-only concealment.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvButton.vue",
+        "tests/e2e/ui-04-design-system.spec.ts"
+      ],
+      "tests_added_updated": "Slow-transition real-browser regression rejects color interpolation and runs full axe; unchanged legacy axe assertions expose exact node diagnostics",
+      "test_command": "Private Linux Node20/Playwright1.62 UI04 full spec then light/dark/atomic contrast --repeat-each=10 --retries=0 --update-snapshots=none",
+      "test_result": "26 full UI04 cases + 30 repeated light/dark/slow-transition cases passed; 0 failures / 0 retries. Node20.19.5, Playwright1.62.0, private software-rendering diagnostic config; hosted defaults unchanged.",
+      "proof_of_resolution": "Old bundle negative detects 14 active color transitions; rebuilt source passes all 56 focused cases, including theme persistence, seven widths, dialog focus, all axe rules and atomic-color regression",
+      "remaining_risk": "Final hosted default-renderer whole-product visual/functional suite required"
     }
   ],
   "original_failed_ci": {
@@ -352,7 +439,7 @@
     "Frontend": "success",
     "Docker": "success",
     "Security": "success",
-    "E2E": "in progress; final observed conclusion recorded in PR governance"
+    "E2E": "success with 2217 passed / 1 flaky salary observer retry / 83 capture-only skips; not accepted as clean"
   },
   "inherited_backend_skips": [
     {
@@ -381,5 +468,12 @@
       "entry": "Historical placeholder; current own-scope tested separately"
     }
   ],
-  "final_allowlist_paths": 654
+  "final_allowlist_paths": 657,
+  "intermediate_ci": {
+    "run": 38510382179,
+    "head": "f745c14998f21b4fe5949c72327fc9e231c02301",
+    "five_job_conclusions": "success",
+    "E2E": "2219 passed / 1 flaky UI04 dark contrast retry / 83 capture-only skips; not accepted as clean",
+    "Backend": "3640 passed / 5 inherited skips / 53025 assertions"
+  }
 }

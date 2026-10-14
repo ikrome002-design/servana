@@ -5429,3 +5429,13 @@ Original Claude handoff remains frozen; release deltas and resume pointer:
 `docs/frontend/audits/ui-17/codex-release-addendum.json`. This pre-merge record claims no hosted
 CI result, merge, live deployment or owner visual approval. Production runbook P1–P10 and D1–D8
 remain separately required; full UI-17 acceptance is not verified_complete.
+
+- COR-UI08-UI12-VIS-001 / COR-REL-004: wait for Personnel own-state API reads within
+  the existing assertion timeout; add delayed-overview salary coverage after a proven
+  hosted retry. No Personnel product/permission/route change. Preserve hosted capture
+  skip counts and failed local attempts in the phase proof; final CI/merge still pending.
+
+- COR-UI08-UI12-VIS-001 / COR-REL-005: preserve button contrast during theme switches
+  by animating shadows instead of independently interpolating semantic text/background
+  colors; add a slow-transition browser regression and exact axe-node diagnostics.
+  The original hosted retry and controlled negative proof remain recorded.

@@ -5383,3 +5383,16 @@ The earlier local stop and two CI fixture failures remain historical evidence. L
 The accepted 48 host checks remain historical proof of unchanged routing/account-context/assets/unauthenticated refusal only; they do not establish new authorization. Current production PHP/nginx CI builds and configured host smoke passed independently. Existing 64 captures / 14 pages scored 28–30 and the six-reference design are unchanged.
 
 **Release lifecycle:** security closeout verified; final proof-commit five-job exact-head CI, governance, normal squash merge and cleanup still pending at this committed checkpoint. No completed E2E result on this head or GitHub merge is invented. Final actual CI/merge/tree/branch evidence belongs to the PR governance and final report; the next authorized UI-16 branch reconciles UI-15 to verified_complete. UI-16 (including mandatory UI-08–UI-12 visual revision), UI-17, Phase 25 and Gate-W-dependent phases remain unstarted.
+
+COR-UI08-UI12-VIS-001 release checkpoint: COR-REL-004 fixes the reproduced Personnel
+request-observer race without changing product behavior or timeouts. First hosted E2E
+was 2,217 passed / 1 flaky / 83 capture-only skips; no clean-first-attempt claim.
+Focused Linux repeat and fresh final-head five-job CI are required. Owner aesthetic
+acceptance remains pending; PR #69 code release has not yet merged. See the single
+phase proof and Codex addendum for all retained failures and skip ownership.
+
+COR-UI08-UI12-VIS-001 / COR-REL-005: second hosted run 38510382179 had one
+dark-contrast retry. Controlled probe proved transient SvButton color interpolation;
+foreground/background pairs now switch atomically with shadow-only animation. A new
+slow-transition browser regression preserves full axe rules. Final exact-head CI remains
+required; aesthetic owner decision and production prerequisites remain pending.
