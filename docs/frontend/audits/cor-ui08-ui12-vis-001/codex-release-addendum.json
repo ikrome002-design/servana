@@ -92,7 +92,9 @@
     "hosted_release": "pending exact-final-head Backend, Frontend, Docker, Security, E2E",
     "api_contract": "PASS 307 paths / 358 operations",
     "edge_security": "PASS current CSP hash; safe logs/referrer/HSTS/gzip",
-    "owned_file_sensitive_scan": "All 652 owned paths scanned as text where applicable; only verified public token digest finding, no credential"
+    "owned_file_sensitive_scan": "All 652 owned paths scanned as text where applicable; only verified public token digest finding, no credential",
+    "security_fingerprint": "135b05db4a3cf8a4dd6b87d60719f84930a9472f:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13",
+    "corrected_gitleaks": "PASS no leaks on implementation range after exact fingerprint"
   },
   "deltas": [
     {
@@ -101,6 +103,13 @@
       "bytes": null,
       "sha256": null,
       "reason": "Independent release verification and exact delta allowlist; self hash external"
+    },
+    {
+      "path": ".gitleaksignore",
+      "status": "M",
+      "bytes": 5291,
+      "sha256": "af98f8cff2ad3b175a9a02d2a254f2ae7a63240b9e7631071f55daa51a0905c9",
+      "reason": "Exact verified introducing-commit fingerprint for public generated token digest"
     }
   ],
   "release_strategy": "Normal merge commit if exact introducing-commit token digest fingerprint is required; no squash without supported equivalence",
@@ -131,6 +140,31 @@
       "item": "Wallet/Reports/Notifications",
       "owner": "20D-W / Phase 21N",
       "entry": "External Gate W opens"
+    }
+  ],
+  "implementation_commit": "135b05db4a3cf8a4dd6b87d60719f84930a9472f",
+  "implementation_tree": "7141902c3d40ddd260db2f27f5505a59a5242a63",
+  "defects": [
+    {
+      "id": "COR-REL-001",
+      "observed_problem": "gitleaks reports generated token source digest as generic-api-key",
+      "evidence": "Owned-directory and implementation-commit scans each report exactly tokens.generated.ts:13",
+      "affected_files": [
+        "resources/spa/src/design-system/tokens.generated.ts",
+        ".gitleaksignore"
+      ],
+      "root_cause": "Entropy matcher classifies a reproducible public SHA256 integrity constant as a credential",
+      "why_root_cause": "SHA256(tokens.json) independently equals the generated constant; it authenticates/authorizes nothing; rule and line match recorded finding",
+      "correct_fix": "One exact immutable implementation-commit fingerprint; regular merge preserves that identity",
+      "files_changed": [
+        ".gitleaksignore",
+        "docs/frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json"
+      ],
+      "tests_added_updated": "No scanner or product test changed",
+      "test_command": "gitleaks git . --log-opts=562ffbbbbc10351a7185e60fda517d51a260f9db..HEAD --redact",
+      "test_result": "PASS corrected implementation-range scan: 1 commit, no leaks; original one-finding scan preserved",
+      "proof_of_resolution": "135b05db4a3cf8a4dd6b87d60719f84930a9472f:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13",
+      "remaining_risk": "Final exact-head Security CI required; normal merge selected to avoid changing introduction identity"
     }
   ]
 }

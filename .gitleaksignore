@@ -79,3 +79,9 @@ e6afe832fa9b45c4f452bcd43e19338ac87bfd9a:resources/spa/src/design-system/tokens.
 # Exact introducing-commit fingerprint; no scanner rule/path/entropy change.
 # Digest: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
 241670556c88aad70efc9c3a0480825c47f5c24e:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
+
+# COR-UI08-UI12-VIS-001: independently reproduced SHA-256(tokens.json), public integrity digest.
+# Source digest: 1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4
+# Exact immutable introducing-commit fingerprint; no rule/path/entropy suppression.
+# Normal merge preserves this commit; product-owner aesthetic approval remains separate.
+135b05db4a3cf8a4dd6b87d60719f84930a9472f:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
