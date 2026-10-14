@@ -16,13 +16,19 @@ import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import PromotionsSection from '@/pages/platform/Promotions.vue';
 import { useCan } from '@/composables/useCan';
+import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.vue';
 
 const { can } = useCan();
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: offer-window cards in the working column; the page's own immutability
+    statement (with its original test hook) in the guidance rail beside them, where it is read
+    BEFORE an offer is changed rather than after.
+  -->
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="sv-r-page"
     data-testid="platform-free-periods-screen"
   >
     <SvPageHeader
@@ -34,16 +40,16 @@ const { can } = useCan();
     <SvPermissionState v-if="!can('platform.free_period_offer.manage')" />
 
     <template v-else>
-      <PromotionsSection only="free-periods" />
-
-      <p
-        class="mt-8 text-xs text-sv-text-muted"
-        data-testid="free-periods-immutability-note"
-      >
-        At most one free-period offer applies at issuance. Editing an offer never recalculates a
-        trial that has already been granted — the merchant keeps the absolute trial-end date they
-        were given.
-      </p>
+      <PlatformRuleWorkspace rule-title="How an offer applies">
+        <PromotionsSection only="free-periods" />
+        <template #rule>
+          <p data-testid="free-periods-immutability-note">
+            At most one free-period offer applies at issuance. Editing an offer never recalculates a
+            trial that has already been granted — the merchant keeps the absolute trial-end date they
+            were given.
+          </p>
+        </template>
+      </PlatformRuleWorkspace>
     </template>
   </div>
 </template>

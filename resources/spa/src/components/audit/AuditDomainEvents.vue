@@ -4,6 +4,8 @@ import AuditEventCard from '@/components/audit/AuditEventCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import { useRefinedExperience } from '@/design-system/experience';
+import { SvIconClock } from '@/design-system/icons';
 import { useAuditEventStore, type AuditDomain } from '@/stores/auditEventStore';
 
 /**
@@ -32,6 +34,8 @@ const props = defineProps<{
 }>();
 
 const store = useAuditEventStore();
+/** COR-UI08-UI12-VIS-001: only the Finance role's refined shell renders the dated stream. */
+const refined = useRefinedExperience();
 
 const severityOptions = [
   { value: '', label: 'All severities' },
@@ -60,7 +64,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — inside the refined experience (the Finance role's own audit view) the
+    events read as a TIME-ANCHORED STREAM: the unchanged UI-15 AuditEventCard on a dated rail, with a
+    rail stating the read boundary (masked, branch-scoped, MFA-gated, read-only). Any other shell
+    keeps the UI-16 list byte for byte.
+  -->
+  <section :class="refined ? 'sv-r-page' : 'mx-auto max-w-6xl'">
     <SvPageHeader
       :title="title"
       eyebrow="Reporting & Audit"
@@ -85,7 +95,61 @@ onMounted(() => {
       </template>
     </SvPageHeader>
 
+    <div
+      v-if="refined"
+      class="sv-r-grid sv-r-split"
+    >
+      <SvStateBoundary
+        class="min-w-0"
+        :state="boundaryState"
+        error-message="We couldn’t load these audit events."
+        :empty-message="emptyMessage"
+        @retry="reload"
+      >
+        <ol class="sv-r-steps">
+          <li
+            v-for="event in store.events"
+            :key="event.id"
+            class="sv-r-step"
+            data-testid="audit-domain-row"
+          >
+            <span
+              aria-hidden="true"
+              class="sv-r-step__marker"
+            ><SvIconClock class="h-4 w-4" /></span>
+            <AuditEventCard
+              :event="event"
+              :to="detailRouteName ? { name: detailRouteName, params: { id: event.id } } : null"
+            />
+          </li>
+        </ol>
+      </SvStateBoundary>
+
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Audit read boundary"
+      >
+        <section class="sv-r-note sv-r-tone-teal">
+          <h2 class="sv-r-note__title">
+            Read-only trail
+          </h2>
+          <p class="sv-r-note__body">
+            Events are append-only and hash-chained on the server. Nothing on this page changes or flags them.
+          </p>
+        </section>
+        <section class="sv-r-note sv-r-tone-neutral">
+          <h2 class="sv-r-note__title">
+            Masked and scoped
+          </h2>
+          <p class="sv-r-note__body">
+            Only events for your assigned branches are returned, with contact details and references masked.
+          </p>
+        </section>
+      </aside>
+    </div>
+
     <SvStateBoundary
+      v-else
       :state="boundaryState"
       error-message="We couldn’t load these audit events."
       :empty-message="emptyMessage"

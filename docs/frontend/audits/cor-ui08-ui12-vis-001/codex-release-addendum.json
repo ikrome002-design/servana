@@ -1,0 +1,479 @@
+{
+  "schema": "servana.cor-ui08-ui12-vis-001.codex-release-addendum/v1",
+  "recorded_at": "2026-10-14T03:13:25.313Z",
+  "phase": "COR-UI08-UI12-VIS-001",
+  "branch": "design/ui08-ui12-reference-grade-redesign",
+  "base": "562ffbbbbc10351a7185e60fda517d51a260f9db",
+  "original_manifest_sha256": "d5b9b99ae7fc9910cf31408ebadbdc046496222c482931f5dc5ae811191fe420",
+  "original_md_sha256": "699865b8cf78d8a10aeef7559f966027d333b553f93243ba8f0707e4dfe6bf34",
+  "original_paths": 651,
+  "authentication": {
+    "status_size_hash_mismatches": 0,
+    "unexpected_paths": 0,
+    "staged_at_entry": 0,
+    "head_equals_base": true,
+    "predecessor_pr": 68,
+    "predecessor_merged_at": "2026-10-13T06:46:56Z"
+  },
+  "scope": {
+    "accounts": 5,
+    "live": 82,
+    "gated": 24,
+    "global_live": 132,
+    "global_gated": 28,
+    "contract_parity_mismatches": 0,
+    "protected_backend_diff": 0
+  },
+  "visual_review": {
+    "reviewer": "Codex agent",
+    "six_reference_images_visually_inspected": true,
+    "before_after_comparisons": 36,
+    "inspected_keys": [
+      "super_administrator.dashboard",
+      "super_administrator.get-started",
+      "merchant_administrator.dashboard",
+      "merchant_administrator.get-started",
+      "merchant_branch.dashboard",
+      "merchant_branch.get-started",
+      "merchant_human_resource.dashboard",
+      "merchant_human_resource.get-started",
+      "merchant_finance.dashboard",
+      "merchant_finance.get-started",
+      "super_administrator.billing-settings",
+      "merchant_administrator.subscription-invoice-detail",
+      "merchant_human_resource.compensation-setup",
+      "merchant_human_resource.compensation-detail",
+      "merchant_finance.cash-up",
+      "merchant_finance.periods",
+      "merchant_administrator.account",
+      "merchant_finance.settings",
+      "merchant_branch.services",
+      "merchant_human_resource.staff",
+      "merchant_finance.payments-validation-detail",
+      "merchant_administrator.setup",
+      "super_administrator.billing-sms",
+      "super_administrator.billing-subscriptions",
+      "merchant_administrator.subscription",
+      "merchant_administrator.branches",
+      "merchant_branch.branch-day",
+      "merchant_branch.cash-up",
+      "merchant_human_resource.availability",
+      "merchant_finance.payments-duplicates",
+      "merchant_finance.payments-validations",
+      "merchant_finance.payouts",
+      "merchant_finance.exports",
+      "super_administrator.account",
+      "merchant_branch.account",
+      "merchant_human_resource.account"
+    ],
+    "all_82_page_ledgers_reviewed": true,
+    "indexed_page_frames_verified": 394,
+    "regression_frames_verified": 116,
+    "hash_mismatches": 0,
+    "decision": "agent_acceptance; product_owner_visual_approval pending",
+    "notes": [
+      "Distinct task composition verified: verdict desk, statement, compensation steps, readiness dimensions, lock timeline, ledger and catalogue.",
+      "Finance dashboard is an evolution of its prior rich composition; not claimed wholly novel.",
+      "Populated synthetic after evidence has no populated-before counterpart.",
+      "Long HR availability form remains a scrollable mobile schedule; no source/style change justified by review.",
+      "Six unchanged light/dark UI13/UI14/UI15 dashboard baselines visually inspected; full hosted suite required to prove current output."
+    ]
+  },
+  "local_checks": {
+    "handoff": "PASS 651 exact paths",
+    "navigation": "PASS 160 current pages",
+    "tokens": "PASS deterministic artifacts and 47 contrast requirements",
+    "diff_check": "PASS",
+    "frame_hashes": "PASS 510",
+    "gitleaks_directory": "one verified generic-api-key false positive at tokens.generated.ts:13",
+    "source_digest": "1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4",
+    "claude_full_windows": "2218 passed / 0 failed / 1 capture-only skipped / 0 flaky; immutable handoff source",
+    "claude_linux": "188 passed / 1 session-closed browser crash; isolated rerun 1 passed; not relabelled green",
+    "hosted_release": "pending exact-final-head Backend, Frontend, Docker, Security, E2E",
+    "api_contract": "PASS 307 paths / 358 operations",
+    "edge_security": "PASS current CSP hash; safe logs/referrer/HSTS/gzip",
+    "owned_file_sensitive_scan": "All 652 owned paths scanned as text where applicable; only verified public token digest finding, no credential",
+    "security_fingerprint": "135b05db4a3cf8a4dd6b87d60719f84930a9472f:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13",
+    "corrected_gitleaks": "PASS no leaks on implementation range after exact fingerprint",
+    "local_environment_history": [
+      {
+        "command": "focused Vitest with default forks",
+        "result": "No tests ran; worker failed to respond within 60s; transform/import/tests all 0ms",
+        "diagnosis": "OS worker-start failure precedes product import; same 4 assertions pass in single thread worker. Hosted default pool remains unchanged."
+      },
+      {
+        "command": "first two-page populated axe run during overlapping local builds",
+        "result": "Subscription analyze timed out at 30.7s; HR passed",
+        "diagnosis": "Serial corrected-build run completes Subscription axe in 10.6s and HR in 8.6s with no serious/critical findings. No timeout/assertion/CI setting changed."
+      },
+      {
+        "command": "Windows delayed salary repetitions",
+        "result": "6 passed / 4 pre-render readiness failures, 0 retries",
+        "diagnosis": "Failed status-only page before required-request predicate; not represented green"
+      },
+      {
+        "command": "Default local Linux salary repetition",
+        "result": "16 passed / 4 failed: one 180s browser launch timeout, session-closed protocol error, two pre-render readiness failures",
+        "diagnosis": "Local WSL browser startup/renderer issue precedes predicate. Private software-rendering probe and 20 stable repeats succeeded; repository/CI browser configuration unchanged"
+      },
+      {
+        "command": "Private Linux preparation attempts",
+        "result": "No product test ran in outdated dependency-volume / preview-start / missing-inventory / absent-xz failures",
+        "diagnosis": "Resolved by exact package-lock install, explicit preview readiness, required inventory and verified official Node20 gzip archive; no product/CI source change"
+      },
+      {
+        "command": "Theme timing diagnostic",
+        "result": "Initial browser.newPage axe context unsuitable; corrected explicit context reproduced 1.14 ratio during slow transition, settled 0 violations",
+        "diagnosis": "Probe-only setup failure retained; actual new-regression negative independently confirms 14 color transitions"
+      }
+    ],
+    "corrective_browser": "PASS 5 focused cases; two new text-fit guards and two populated axe cases, no skips/retries",
+    "corrective_vitest": "PASS 4 SubscriptionDashboard cases, single thread; initial worker-start failure preserved",
+    "corrective_lint": "PASS targeted SvButton + UI04 and UI14 specs; prior page/readability lint also passed",
+    "corrective_build_typecheck": "PASS fresh vue-tsc + Vite after SvButton correction, build 42.46s",
+    "salary_stability": "20 passed / 0 failed / 0 retries; private Linux software renderer, Node20.19.5, Playwright1.62.0",
+    "atomic_color": "26 full UI04 cases + 30 repeated light/dark/slow-transition cases passed; 0 failures / 0 retries. Node20.19.5, Playwright1.62.0, private software-rendering diagnostic config; hosted defaults unchanged.",
+    "corrective_bundle": "PASS UI17 budgets: initial 78.2KiB JS +20.9KiB CSS gzip, 161 lazy route components, 10 archetypes within budget, no cross-account code"
+  },
+  "deltas": [
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json",
+      "status": "A",
+      "bytes": null,
+      "sha256": null,
+      "reason": "Independent release verification and exact delta allowlist; self hash external"
+    },
+    {
+      "path": ".gitleaksignore",
+      "status": "M",
+      "bytes": 5291,
+      "sha256": "af98f8cff2ad3b175a9a02d2a254f2ae7a63240b9e7631071f55daa51a0905c9",
+      "reason": "Exact verified introducing-commit fingerprint for public generated token digest"
+    },
+    {
+      "path": "resources/spa/src/pages/hr/CompensationDetail.vue",
+      "status": "M",
+      "bytes": 9166,
+      "sha256": "2cae6cbcbabcebf3bdb638ee887352122c1903e755fe8a3e5ca4b6b7fc172218",
+      "original_handoff_sha256": "8b53ce83ea7bf27799f22d533fde66695b22de0c694d11a61f39e4b01d1e5b00",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "resources/spa/src/pages/merchant/SubscriptionDashboard.vue",
+      "status": "M",
+      "bytes": 11421,
+      "sha256": "1bab017130e682e779b191251db1a6a522445041b5358a7218ba2fa283c7295a",
+      "original_handoff_sha256": "ffecddbaa556487965a258ce58bac80158ce649e40cfa218f1fedace4786614b",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "tests/e2e/cor-ui08-ui12-visual-regression.spec.ts",
+      "status": "M",
+      "bytes": 9980,
+      "sha256": "8740057d8412012e38ecb1b85ec816bc6ab13e65bf390011cc8d10f56f2af0ba",
+      "original_handoff_sha256": "66d7d25a3eb4bb2f07ab26d42be368822d94f55363e2d6e92f96cb6c26d3b36d",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "status": "M",
+      "bytes": 541796,
+      "sha256": "752f81eb6b4706c8a31d0e301cbf292d5abd869df21e2f3df2e37367a2a771c4",
+      "original_handoff_sha256": "2673b2e4fd0ac49fa51d907d16fd228f5286751323ce1faa28d395e33991823e",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": "M",
+      "bytes": 408852,
+      "sha256": "8f1ad7deb4117f62babf649a145ca6c74de919b9fd492f8daa12f71936fe5301",
+      "original_handoff_sha256": "83ff2d261ad1918ec7d98fe8eb3c70542bd5f81486e325631c3abde927819d9e",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/proof/cor-ui08-ui12-vis-001.md",
+      "status": "M",
+      "bytes": 13147,
+      "sha256": "334066f92043ac5208c7c1a163a44c0b5744c3efe58e6725dc63159a049702c7",
+      "original_handoff_sha256": "b14792b5cc38e391dc422fd64a15e3352f4b5ef39e8d8430879256458ccf0896",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/visual-baseline-index.json",
+      "status": "M",
+      "bytes": 201244,
+      "sha256": "759308ee39edc6e2ea4c044408c6982a7f8b20102f373f619fe6d3463a873010",
+      "original_handoff_sha256": "4e53e6e078d90f6f26a87534dd17a57fec08958c584600ff1860c63e3cc2bfa4",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/index.jsonl",
+      "status": "M",
+      "bytes": 23769,
+      "sha256": "17e57120ac72800c634665e9835ab60d3a907cfe6de8e9802623efc07cb24856",
+      "original_handoff_sha256": "7762b7acf321c80c81ab13f06203e4f65e83ab8ff1c03067a7d960d9d6c238af",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/review/merchant_human_resource.compensation-detail.png",
+      "status": "M",
+      "bytes": 404906,
+      "sha256": "a3bd6c3df976dca6f0c1703d25c8828dfc96468ec10c1166ebe718ee0c3b2407",
+      "original_handoff_sha256": "e295c95bffc233036f214dd3ffcb03e5b7cb124fc463280fb2c2a7e62ef69cf2",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/desktop-light/merchant_human_resource.compensation-detail.png",
+      "status": "M",
+      "bytes": 238848,
+      "sha256": "07c43442e24db895c528d9aed5da78bb369a0b3965a019e00100fb5bdb123043",
+      "original_handoff_sha256": "3124587d6d9b2cde4288f8dd5c932637696ff8c093ed185a19b22a3535d5d48a",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/desktop-dark/merchant_human_resource.compensation-detail.png",
+      "status": "M",
+      "bytes": 235135,
+      "sha256": "5b157ba97a764c3e1e4cf20dcf9b7d026fe8900a729314b81f24711a9f5a9e33",
+      "original_handoff_sha256": "dc054d1504891864abce13d4e1923d34b93a1e13979f9e735f3dc16b442ec476",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/mobile-light/merchant_human_resource.compensation-detail.png",
+      "status": "M",
+      "bytes": 149228,
+      "sha256": "3a937f5156f0268257982b90e2ed77f12edf83296c469b0b01bbd63fe6da0b92",
+      "original_handoff_sha256": "76a543b579530e8d883963b8285b7a59e6d75ad80911d95007cfe4d3a132471e",
+      "reason": "COR-REL-002/003 scoped correction, focused tests or invalidated evidence"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/codex-defects/hr-compensation-detail-mobile-clipped.png",
+      "status": "A",
+      "bytes": 149389,
+      "sha256": "3c301f29c2b064437dbc39efc1e3d5dd5938157f2119f28d08805e9c84c3e7fc",
+      "original_handoff_sha256": null,
+      "reason": "Actual failed mobile evidence, synthetic fixture"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/page-redesign-acceptance.json",
+      "status": "M",
+      "reason": "COR-REL-003 honest page decision and owner review update",
+      "original_handoff_sha256": "e82fe92407dc3bc619428cfdcbee75c4505d0295824a6a0e92b948175a5ec5a0",
+      "bytes": 265573,
+      "sha256": "d054dba77b04a8fa442341f4d4a4592523da507f8c9644637a5fa143fad6e189"
+    },
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/product-owner-visual-review.md",
+      "status": "M",
+      "reason": "COR-REL-003 honest page decision and owner review update",
+      "original_handoff_sha256": "3fbcbaf1a63a4b3d00748f77041965cf83c168155dadf4a9a03e3534abae99c1",
+      "bytes": 5274,
+      "sha256": "639329f6fa464278516c0e068b0f56708ca337e3008861e0db6e431f10a805be"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvButton.vue",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 3904,
+      "sha256": "1921969d471a8f22f2af3bdd44af710471935cfd82e0ed5a5d297c5a60a71309"
+    },
+    {
+      "path": "tests/e2e/ui-04-design-system.spec.ts",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 17319,
+      "sha256": "7aaaf4c58b4c0d51d72f188ec7e6114c83b148f65117a8f12187d8510d3299d8"
+    },
+    {
+      "path": "tests/e2e/ui-14-personnel-experience.spec.ts",
+      "status": "M",
+      "original_handoff_sha256": null,
+      "reason": "COR-REL-004/005 proven request observer or actual transient contrast correction and regression",
+      "bytes": 29713,
+      "sha256": "75a008abad7ab362c2e36790a1b8d520127945da799960f1148360aeb0503caf"
+    }
+  ],
+  "release_strategy": "Normal merge commit if exact introducing-commit token digest fingerprint is required; no squash without supported equivalence",
+  "product_owner_visual_approval": "pending",
+  "production_status": "blocked_external; DNS owner and Phase 25",
+  "deferred": [
+    {
+      "item": "82-page aesthetic acceptance",
+      "owner": "Product owner",
+      "entry": "review before/after package"
+    },
+    {
+      "item": "NVDA/VoiceOver",
+      "owner": "Product owner / assistive-tech QA",
+      "entry": "human-device assessment"
+    },
+    {
+      "item": "DNS/TLS rollout and canary",
+      "owner": "DNS owner / repository owner / Phase 25",
+      "entry": "UI17 P1-P10"
+    },
+    {
+      "item": "UI17 D1-D8",
+      "owner": "Product owner",
+      "entry": "separate explicit decisions"
+    },
+    {
+      "item": "Wallet/Reports/Notifications",
+      "owner": "20D-W / Phase 21N",
+      "entry": "External Gate W opens"
+    }
+  ],
+  "implementation_commit": "135b05db4a3cf8a4dd6b87d60719f84930a9472f",
+  "implementation_tree": "7141902c3d40ddd260db2f27f5505a59a5242a63",
+  "defects": [
+    {
+      "id": "COR-REL-001",
+      "observed_problem": "gitleaks reports generated token source digest as generic-api-key",
+      "evidence": "Owned-directory and implementation-commit scans each report exactly tokens.generated.ts:13",
+      "affected_files": [
+        "resources/spa/src/design-system/tokens.generated.ts",
+        ".gitleaksignore"
+      ],
+      "root_cause": "Entropy matcher classifies a reproducible public SHA256 integrity constant as a credential",
+      "why_root_cause": "SHA256(tokens.json) independently equals the generated constant; it authenticates/authorizes nothing; rule and line match recorded finding",
+      "correct_fix": "One exact immutable implementation-commit fingerprint; regular merge preserves that identity",
+      "files_changed": [
+        ".gitleaksignore",
+        "docs/frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json"
+      ],
+      "tests_added_updated": "No scanner or product test changed",
+      "test_command": "gitleaks git . --log-opts=562ffbbbbc10351a7185e60fda517d51a260f9db..HEAD --redact",
+      "test_result": "PASS corrected implementation-range scan: 1 commit, no leaks; original one-finding scan preserved",
+      "proof_of_resolution": "135b05db4a3cf8a4dd6b87d60719f84930a9472f:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13",
+      "remaining_risk": "Final exact-head Security CI required; normal merge selected to avoid changing introduction identity"
+    },
+    {
+      "id": "COR-REL-002",
+      "observed_problem": "Hosted Backend icon-source guard fails three date separator glyphs",
+      "evidence": "Run 38505857221 head 6f25b07 job 115663084810: 1 failed / 5 skipped / 3639 passed, 53025 assertions. Local reproduction 1 failed / 16 passed.",
+      "affected_files": [
+        "resources/spa/src/pages/hr/CompensationDetail.vue",
+        "resources/spa/src/pages/merchant/SubscriptionDashboard.vue"
+      ],
+      "root_cause": "The line-based positional icon scanner sees a template-string date arrow and two isolated sr-only date arrows as standalone glyphs",
+      "why_root_cause": "Exact same three line findings reproduce locally; other source guard cases pass",
+      "correct_fix": "Use explicit word to for date-range separators; preserve every scanner assertion and negative control",
+      "files_changed": [
+        "resources/spa/src/pages/hr/CompensationDetail.vue",
+        "resources/spa/src/pages/merchant/SubscriptionDashboard.vue"
+      ],
+      "tests_added_updated": "Existing UiIconSourceGuardTest retained",
+      "test_command": "docker compose exec -T app php artisan test tests/Feature/DesignSystem/UiIconSourceGuardTest.php",
+      "test_result": "17 passed / 23 assertions; focused SubscriptionDashboard Vitest 4 passed with one thread worker; typecheck/build and targeted lint pass",
+      "proof_of_resolution": "No arrow remains in the three flagged positions; unchanged guard passes",
+      "remaining_risk": "Fresh final-head five-job CI required"
+    },
+    {
+      "id": "COR-REL-003",
+      "observed_problem": "Populated mobile Compensation Detail clips salary/model values",
+      "evidence": "Actual captured 360px frame preserved at docs/frontend/audits/cor-ui08-ui12-vis-001/codex-defects/hr-compensation-detail-mobile-clipped.png; negative geometry test reports scroll width 82 against client width 26 (expected <=27)",
+      "affected_files": [
+        "resources/spa/src/pages/hr/CompensationDetail.vue",
+        "tests/e2e/cor-ui08-ui12-visual-regression.spec.ts"
+      ],
+      "root_cause": "15rem label column applies below the tablet breakpoint, starving the value column; default empty fixtures do not render the clauses",
+      "why_root_cause": "The populated frame and failing text-fit assertion agree; source grid explicitly reserves 15rem at every width",
+      "correct_fix": "Stack dt/dd below 768px; retain desktop/tablet grid; allow value wrapping and min-width zero",
+      "files_changed": [
+        "resources/spa/src/pages/hr/CompensationDetail.vue",
+        "tests/e2e/cor-ui08-ui12-visual-regression.spec.ts"
+      ],
+      "tests_added_updated": "Two light/dark populated text-fit tests at 360/767/768/1024/1025/1280/1440/640x400, asserting five values fit their panel and viewport",
+      "test_command": "COR_CAPTURE=populated COR_ONLY=merchant_human_resource.compensation-detail npx playwright test capture spec + corrective spec --grep affected pages/readability --update-snapshots=none",
+      "test_result": "5 passed, 0 failed, 0 retries; includes capture, both affected populated axe cases, both full-width/zoom readability cases. Negative control before fix failed as expected.",
+      "proof_of_resolution": "Corrected mobile frame visibly shows complete salary/model/rule/window/reason; three populated frames reviewed and rehashed; only populated column in comparison sheet refreshed",
+      "remaining_risk": "Fresh hosted whole-product and Linux regression suite required; owner aesthetic acceptance still pending"
+    },
+    {
+      "id": "COR-REL-004",
+      "observed_problem": "First hosted E2E salary case passes only on retry",
+      "evidence": "Run 38505857221 job 115663084944: salary request-array assertion false before overview completes; 800ms overview delay reproduces exact assertion failure",
+      "affected_files": [
+        "tests/e2e/ui-14-personnel-experience.spec.ts"
+      ],
+      "root_cause": "Section visibility is synchronous, but Salary onMounted awaits earnings overview before own salary read; immediate array inspection races that read",
+      "why_root_cause": "Actual production control flow and deterministic delayed fixture agree with the recorded failing predicate",
+      "correct_fix": "Poll same required API-request predicate within unchanged default timeout; preserve all error and negative authority checks",
+      "files_changed": [
+        "tests/e2e/ui-14-personnel-experience.spec.ts"
+      ],
+      "tests_added_updated": "Delayed applicability overview salary case; all 19 positive own-state assertions observe required asynchronous read",
+      "test_command": "Private Node20 / Playwright1.62 Linux: original salary and delayed overview --repeat-each=10 --retries=0 --update-snapshots=none",
+      "test_result": "20 passed / 0 failed / 0 retries with private software rendering; failed cold/default local attempts retained separately",
+      "proof_of_resolution": "Delayed overview negative fails original immediate assertion; corrected observed request completes in every focused stable repeat",
+      "remaining_risk": "Final default-renderer hosted full-suite CI required"
+    },
+    {
+      "id": "COR-REL-005",
+      "observed_problem": "Second hosted E2E dark axe reports one contrast violation and passes on retry",
+      "evidence": "Run 38510382179 job 115677280807. Controlled slow transition exposes Destructive span at contrast 1.14 (#8a9095 on #eb4d4d); settled theme zero. New regression old-bundle negative sees 14 running color transitions.",
+      "affected_files": [
+        "resources/spa/src/components/ui/SvButton.vue",
+        "tests/e2e/ui-04-design-system.spec.ts"
+      ],
+      "root_cause": "transition-colors interpolates token foreground/background independently during immediate semantic theme switch",
+      "why_root_cause": "Browser reports real active transitions and exact failing node/ratio during the controlled transition, then no violation after it finishes",
+      "correct_fix": "Animate button shadows only; theme color pairs change atomically. No test-rule weakening or readiness-only concealment.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvButton.vue",
+        "tests/e2e/ui-04-design-system.spec.ts"
+      ],
+      "tests_added_updated": "Slow-transition real-browser regression rejects color interpolation and runs full axe; unchanged legacy axe assertions expose exact node diagnostics",
+      "test_command": "Private Linux Node20/Playwright1.62 UI04 full spec then light/dark/atomic contrast --repeat-each=10 --retries=0 --update-snapshots=none",
+      "test_result": "26 full UI04 cases + 30 repeated light/dark/slow-transition cases passed; 0 failures / 0 retries. Node20.19.5, Playwright1.62.0, private software-rendering diagnostic config; hosted defaults unchanged.",
+      "proof_of_resolution": "Old bundle negative detects 14 active color transitions; rebuilt source passes all 56 focused cases, including theme persistence, seven widths, dialog focus, all axe rules and atomic-color regression",
+      "remaining_risk": "Final hosted default-renderer whole-product visual/functional suite required"
+    }
+  ],
+  "original_failed_ci": {
+    "run": 38505857221,
+    "head": "6f25b07f02ef0afaa5751fc8d6c8d8d11d524f5c",
+    "Backend": "failure",
+    "Frontend": "success",
+    "Docker": "success",
+    "Security": "success",
+    "E2E": "success with 2217 passed / 1 flaky salary observer retry / 83 capture-only skips; not accepted as clean"
+  },
+  "inherited_backend_skips": [
+    {
+      "test": "ApiLatencyBenchmarkTest",
+      "owner": "Phase 24 performance",
+      "entry": "SERVANA_RUN_BENCHMARK=1; wall-clock deliberately non-gated"
+    },
+    {
+      "test": "FutureResourceIsolationTest: foreign invoice",
+      "owner": "Invoicing Phase 17",
+      "entry": "Historical placeholder; current invoice isolation tested separately"
+    },
+    {
+      "test": "FutureResourceIsolationTest: foreign branch payment",
+      "owner": "Payments Phase 18",
+      "entry": "Historical placeholder; current payment scope tested separately"
+    },
+    {
+      "test": "FutureResourceIsolationTest: export scope",
+      "owner": "Exports Phases 18/19",
+      "entry": "Historical placeholder; current export security step tested separately"
+    },
+    {
+      "test": "FutureResourceIsolationTest: foreign personnel queue",
+      "owner": "Personnel Phase 16",
+      "entry": "Historical placeholder; current own-scope tested separately"
+    }
+  ],
+  "final_allowlist_paths": 657,
+  "intermediate_ci": {
+    "run": 38510382179,
+    "head": "f745c14998f21b4fe5949c72327fc9e231c02301",
+    "five_job_conclusions": "success",
+    "E2E": "2219 passed / 1 flaky UI04 dark contrast retry / 83 capture-only skips; not accepted as clean",
+    "Backend": "3640 passed / 5 inherited skips / 53025 assertions"
+  }
+}

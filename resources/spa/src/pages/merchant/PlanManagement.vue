@@ -2,8 +2,9 @@
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import { SvIconChevronRight } from '@/design-system/icons';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
@@ -93,7 +94,13 @@ function resolveError(err: unknown, fallback: string): string {
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-5xl flex-col gap-6">
+  <!--
+    COR-UI08-UI12-VIS-001 — plan changes with a clear before → after hierarchy. The TIMING leads
+    (the cycle boundary the server returned, and the no-proration rule); a scheduled change reads as
+    current plan → target plan on its effective date with its one reversal; then the catalogue,
+    where the current plan is the dark feature card and every other plan offers exactly one action.
+  -->
+  <div class="sv-r-page sv-r-stack">
     <SvPageHeader
       class="!mb-0"
       title="Plan management"
@@ -122,11 +129,11 @@ function resolveError(err: unknown, fallback: string): string {
     >
       <div
         v-if="sub"
-        class="flex flex-col gap-6"
+        class="sv-r-stack"
       >
         <div
           v-if="billingReadOnly"
-          class="rounded-control border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-text"
+          class="sv-r-record sv-r-record--spine sv-r-tone-sun pl-6 text-sm text-text"
           role="status"
         >
           Billing is in read-only mode, so plan changes are paused. You can review plans, but
@@ -135,19 +142,67 @@ function resolveError(err: unknown, fallback: string): string {
 
         <p
           v-if="actionError"
-          class="rounded-control bg-red-50 px-4 py-3 text-sm text-error dark:bg-red-900/20"
+          class="rounded-control bg-sv-error-bg px-4 py-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
         </p>
 
-        <!-- Scheduled change -->
-        <SvCard v-if="scheduled">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <!-- Timing -->
+        <div class="sv-r-record flex flex-wrap items-center gap-4">
+          <span
+            aria-hidden="true"
+            class="sv-r-icon sv-r-icon--lg sv-r-tone-teal"
+          >
+            <component :is="navigationIcon('calendar')" />
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="sv-r-eyebrow">
+              Timing
+            </p>
+            <p class="sv-r-lede mt-1">
+              Your next cycle starts on <strong>{{ sub.current_period_end }}</strong>. A change applies
+              then — you are never charged a mid-cycle proration.
+            </p>
+          </div>
+        </div>
+
+        <!-- Scheduled change: before → after -->
+        <section
+          v-if="scheduled"
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-sun"
+          aria-labelledby="scheduled-change-heading"
+        >
+          <h2
+            id="scheduled-change-heading"
+            class="sv-r-title"
+          >
             Scheduled change
           </h2>
+          <div class="mt-4 grid items-center gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+            <div class="sv-r-panel sv-r-panel--sunken !p-4">
+              <p class="sv-r-eyebrow">
+                Now
+              </p>
+              <p class="sv-r-title mt-1">
+                {{ store.plans.find((plan) => plan.is_current)?.name ?? 'Current plan' }}
+              </p>
+            </div>
+            <SvIconChevronRight
+              aria-hidden="true"
+              class="mx-auto h-6 w-6 rotate-90 text-sv-text-muted md:rotate-0"
+            />
+            <div class="sv-r-panel !p-4 ring-2 ring-sv-brand">
+              <p class="sv-r-eyebrow">
+                From {{ scheduled.effective_at }}
+              </p>
+              <p class="sv-r-title mt-1">
+                {{ scheduled.target_plan.name }}
+              </p>
+            </div>
+          </div>
           <p
-            class="mt-2 text-sm text-text"
+            class="sv-r-lede mt-4"
             data-testid="scheduled-change"
           >
             Changing to <strong>{{ scheduled.target_plan.name }}</strong>
@@ -167,45 +222,51 @@ function resolveError(err: unknown, fallback: string): string {
               Cancel scheduled change
             </SvButton>
           </div>
-        </SvCard>
+        </section>
 
         <!-- Available plans -->
         <section aria-labelledby="plans-heading">
+          <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+            Catalogue
+          </p>
           <h2
             id="plans-heading"
-            class="font-display text-lg font-bold text-heading"
+            class="sv-r-title mt-1"
           >
             Available plans
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
-            Your next cycle starts on <strong>{{ sub.current_period_end }}</strong>. A change applies
-            then — you are never charged a mid-cycle proration.
-          </p>
 
           <ul
             role="list"
-            class="mt-4 grid gap-4 md:grid-cols-2"
+            class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
           >
             <li
               v-for="plan in store.plans"
               :key="plan.id"
             >
-              <SvCard>
+              <article
+                class="flex h-full flex-col"
+                :class="plan.is_current ? 'sv-r-feature' : 'sv-r-record'"
+              >
                 <div class="flex items-start justify-between gap-2">
                   <div>
-                    <h3 class="text-base font-semibold text-heading">
+                    <h3
+                      class="text-base font-semibold"
+                      :class="plan.is_current ? 'sv-r-feature__title' : 'text-heading'"
+                    >
                       {{ plan.name }}
                     </h3>
                     <p
                       v-if="plan.description"
-                      class="mt-1 text-sm text-text-muted"
+                      class="mt-1 text-sm"
+                      :class="plan.is_current ? 'sv-r-feature__hint' : 'text-text-muted'"
                     >
                       {{ plan.description }}
                     </p>
                   </div>
                   <span
                     v-if="plan.is_current"
-                    class="rounded-full bg-cream px-2 py-0.5 text-xs font-semibold text-sv-text-heading"
+                    class="rounded-full bg-sv-accent px-2.5 py-0.5 text-xs font-bold text-sv-text-on-brand"
                     data-testid="current-plan-badge"
                   >
                     Current
@@ -214,21 +275,26 @@ function resolveError(err: unknown, fallback: string): string {
 
                 <p
                   v-if="plan.effective_price"
-                  class="mt-3 text-lg font-bold text-heading"
+                  class="mt-5 font-display text-3xl font-extrabold tracking-tight"
+                  :class="plan.is_current ? 'sv-r-feature__value' : 'text-heading'"
                 >
                   {{ formatMoney(amount(plan.effective_price.amount_minor), plan.effective_price.currency) }}
-                  <span class="text-sm font-normal text-text-muted">/ {{ plan.effective_price.billing_interval }}</span>
+                  <span
+                    class="text-sm font-normal"
+                    :class="plan.is_current ? 'sv-r-feature__hint' : 'text-text-muted'"
+                  >/ {{ plan.effective_price.billing_interval }}</span>
                 </p>
                 <p
                   v-else
-                  class="mt-3 text-sm text-text-muted"
+                  class="mt-5 text-sm"
+                  :class="plan.is_current ? 'sv-r-feature__hint' : 'text-text-muted'"
                 >
                   No price is currently available for your billing interval.
                 </p>
 
                 <div
                   v-if="canMutate && !plan.is_current && plan.effective_price && !scheduled"
-                  class="mt-4"
+                  class="mt-auto pt-5"
                 >
                   <SvButton
                     :loading="submitting"
@@ -238,7 +304,7 @@ function resolveError(err: unknown, fallback: string): string {
                     Schedule for next cycle
                   </SvButton>
                 </div>
-              </SvCard>
+              </article>
             </li>
           </ul>
         </section>

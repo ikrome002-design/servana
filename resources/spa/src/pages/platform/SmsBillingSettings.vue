@@ -21,13 +21,16 @@ import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvDatePicker from '@/components/ui/SvDatePicker.vue';
 import SvDateTime from '@/components/ui/SvDateTime.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
-import SvMetricCard from '@/components/ui/SvMetricCard.vue';
+import SvFeaturePanel from '@/components/refined/SvFeaturePanel.vue';
+import SvKpiCard from '@/components/refined/SvKpiCard.vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvMoney from '@/components/ui/SvMoney.vue';
 import SvMoneyInput from '@/components/ui/SvMoneyInput.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPagination from '@/components/ui/SvPagination.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import SvResponsiveRecordList from '@/components/ui/SvResponsiveRecordList.vue';
+import SvSkeleton from '@/components/ui/SvSkeleton.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
@@ -213,8 +216,16 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — SMS billing as a rule workspace.
+
+    The price IN FORCE leads on the dark feature surface with the scheduled successor beside it;
+    charge reconciliation sits next to that. Below, the two things this page must never let a
+    reader confuse are split by tone: the CHARGE truth (price history and usage totals, warm) and
+    the NOTICE senders see before sending (teal, disclosed and never charged here).
+  -->
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="sms-billing-screen"
   >
     <SvPageHeader
@@ -236,9 +247,12 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-else>
+    <div
+      v-else
+      class="sv-r-stack"
+    >
       <p
-        class="mb-6 text-xs text-sv-text-muted"
+        class="sv-r-muted -mt-2"
         data-testid="sms-last-refreshed"
       >
         Last refreshed
@@ -249,7 +263,6 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
         v-if="store.error"
         severity="error"
         title="We could not load SMS billing settings"
-        class="mb-6"
       >
         <p>{{ store.error }}</p>
         <SvButton
@@ -263,91 +276,140 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
         </SvButton>
       </SvAlert>
 
-      <!-- Current + scheduled rule ------------------------------------------------------- -->
-      <section
-        aria-labelledby="sms-current-heading"
-        class="mb-8"
-      >
-        <h2
-          id="sms-current-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
+      <div class="sv-r-grid sv-r-split-lead">
+        <!-- Current + scheduled rule ------------------------------------------------------- -->
+        <SvFeaturePanel
+          eyebrow="Charge rule"
+          title="Effective and scheduled price"
         >
-          Effective and scheduled price
-        </h2>
-
-        <div class="grid gap-4 md:grid-cols-2">
-          <SvMetricCard
-            label="Effective now"
-            :context="store.settings?.current ? 'In force for every SMS charged today.' : 'No price is in force.'"
-            :loading="dataState === 'loading'"
-            data-testid="sms-current-rule"
-          >
-            <SvMoney
-              v-if="store.settings?.current"
-              :minor-units="store.settings.current.unit_cost_minor"
-              :currency="store.settings.currency"
-              size="lg"
-            />
-            <span
-              v-else
-              class="text-sm text-sv-text-muted"
-            >Not available</span>
-          </SvMetricCard>
-
-          <SvMetricCard
-            label="Scheduled next"
-            :context="store.settings?.next ? 'Takes effect automatically; withdraw it before then if needed.' : 'Nothing is scheduled.'"
-            :loading="dataState === 'loading'"
-            data-testid="sms-next-rule"
-          >
-            <template v-if="store.settings?.next">
-              <SvMoney
-                :minor-units="store.settings.next.unit_cost_minor"
-                :currency="store.settings.currency"
-                size="lg"
-              />
-              <p class="mt-1 text-xs text-sv-text-muted">
-                From <SvDateTime :value="store.settings.next.effective_from" />
+          <div class="mt-6 grid gap-4 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+            <div
+              class="sv-r-feature__cell"
+              data-testid="sms-current-rule"
+            >
+              <p class="sv-r-feature__label">
+                Effective now
               </p>
-              <SvButton
-                v-if="canUpdate"
-                variant="secondary"
-                size="sm"
-                class="mt-3"
-                data-testid="sms-cancel-scheduled"
-                @click="openCancel(store.settings.next)"
+              <p class="sv-r-feature__value sv-r-figure-xl mt-3">
+                <SvSkeleton
+                  v-if="dataState === 'loading'"
+                  shape="text"
+                  :lines="1"
+                  label="Loading the price in force"
+                />
+                <SvMoney
+                  v-else-if="store.settings?.current"
+                  :minor-units="store.settings.current.unit_cost_minor"
+                  :currency="store.settings.currency"
+                  size="lg"
+                />
+                <span
+                  v-else
+                  class="text-base font-medium"
+                >Not available</span>
+              </p>
+              <p class="sv-r-feature__hint mt-3">
+                {{ store.settings?.current ? 'In force for every SMS charged today.' : 'No price is in force.' }}
+              </p>
+            </div>
+            <div
+              class="sv-r-feature__cell"
+              data-testid="sms-next-rule"
+            >
+              <p class="sv-r-feature__label">
+                Scheduled next
+              </p>
+              <template v-if="store.settings?.next">
+                <p class="sv-r-feature__value sv-r-feature__accent mt-3 text-3xl">
+                  <SvMoney
+                    :minor-units="store.settings.next.unit_cost_minor"
+                    :currency="store.settings.currency"
+                    size="lg"
+                  />
+                </p>
+                <p class="sv-r-feature__hint mt-1">
+                  From <SvDateTime :value="store.settings.next.effective_from" />
+                </p>
+                <button
+                  v-if="canUpdate"
+                  type="button"
+                  class="sv-r-feature-action sv-r-feature-action--ghost sv-focus-ring mt-3"
+                  data-testid="sms-cancel-scheduled"
+                  @click="openCancel(store.settings.next)"
+                >
+                  Withdraw scheduled price
+                </button>
+              </template>
+              <p
+                v-else
+                class="sv-r-feature__value mt-3 text-lg"
               >
-                Withdraw scheduled price
-              </SvButton>
-            </template>
-            <span
-              v-else
-              class="text-sm text-sv-text-muted"
-            >None scheduled</span>
-          </SvMetricCard>
-        </div>
+                None scheduled
+              </p>
+              <p class="sv-r-feature__hint mt-3">
+                {{ store.settings?.next ? 'Takes effect automatically; withdraw it before then if needed.' : 'Nothing is scheduled.' }}
+              </p>
+            </div>
+          </div>
+          <p class="sv-r-feature__hint mt-5">
+            Currency is inherited from platform billing settings
+            <template v-if="store.settings">
+              ({{ store.settings.currency }})
+            </template>, which remains
+            the single currency authority.
+          </p>
+        </SvFeaturePanel>
 
-        <p class="mt-3 text-xs text-sv-text-muted">
-          Currency is inherited from platform billing settings
-          <template v-if="store.settings">
-            ({{ store.settings.currency }})
-          </template>, which remains
-          the single currency authority.
-        </p>
-      </section>
-
-      <!-- Version history ---------------------------------------------------------------- -->
-      <section
-        aria-labelledby="sms-history-heading"
-        class="mb-8"
-      >
-        <h2
-          id="sms-history-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
+        <!-- Charge reconciliation ----------------------------------------------------------- -->
+        <SvPanel
+          v-if="store.reconciliation"
+          eyebrow="Measured"
+          title="Charge reconciliation"
+          tone="warm"
         >
-          Price history
-        </h2>
+          <div
+            class="grid gap-3"
+            data-testid="sms-reconciliation"
+          >
+            <SvKpiCard
+              label="Linked to an invoice"
+              hint="SMS charges mapped to a subscription invoice line."
+              tone="green"
+            >
+              <span class="sv-numeric">{{ store.reconciliation.invoice_mapping.linked_count }}</span>
+            </SvKpiCard>
+            <SvKpiCard
+              label="Not yet linked"
+              hint="Recorded usage awaiting its invoice line."
+              tone="sun"
+            >
+              <span class="sv-numeric">{{ store.reconciliation.invoice_mapping.unlinked_count }}</span>
+            </SvKpiCard>
+          </div>
+          <dl class="sv-r-strip mt-3">
+            <div>
+              <dt>Threshold state</dt>
+              <dd data-testid="sms-threshold-state">
+                {{ statusLabel(store.reconciliation.thresholds.warning_state) }}
+              </dd>
+            </div>
+            <div>
+              <dt>Anomaly state</dt>
+              <dd data-testid="sms-anomaly-state">
+                {{ statusLabel(store.reconciliation.thresholds.anomaly_state) }}
+              </dd>
+            </div>
+          </dl>
+        </SvPanel>
+      </div>
 
+      <!-- CHARGE truth: price history ----------------------------------------------------------- -->
+      <SvPanel
+        eyebrow="Charge truth"
+        title="Price history"
+        description="Every SMS price version, newest first. A superseded or withdrawn version stays on the record."
+        tone="warm"
+      >
         <div class="hidden md:block">
           <SvDataTable
             :columns="versionColumns"
@@ -417,192 +479,136 @@ const stateTone = (state: string): 'success' | 'info' | 'neutral' | 'warning' =>
           label="SMS price versions"
           class="mt-4"
         />
-      </section>
+      </SvPanel>
 
-      <!-- Cost-notice preview ------------------------------------------------------------ -->
-      <section
-        aria-labelledby="sms-notice-heading"
-        class="mb-8"
-      >
-        <h2
-          id="sms-notice-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
+      <div class="sv-r-grid sv-r-split-wide">
+        <!-- CHARGE truth: usage -------------------------------------------------------------- -->
+        <SvPanel
+          eyebrow="Charge truth"
+          title="Usage and billing totals"
+          tone="warm"
         >
-          Cost notice preview
-        </h2>
-        <p class="mb-3 max-w-sv-readable text-sm text-sv-text-muted">
-          The exact wording personnel see before sending. It is generated by the server from the
-          effective rule, so what is previewed here is what is shown.
-        </p>
+          <template #description>
+            Message count, recipient count, billable units and amount are four DISTINCT quantities and
+            are never conflated. No recipient list, phone number or message body is available here or
+            anywhere else on this page.
+          </template>
+          <div class="hidden md:block">
+            <SvDataTable
+              :columns="usageColumns"
+              :rows="store.usage"
+              :row-key="(r) => `${r.usage_month}:${r.merchant_id ?? 'none'}`"
+              caption="SMS usage by month and merchant"
+              :state="usageState"
+              empty-message="No SMS usage has been recorded for this period."
+              @retry="refresh"
+            >
+              <template #cell:amount="{ row }">
+                <SvMoney
+                  :minor-units="row.amount_minor"
+                  :currency="row.currency"
+                />
+              </template>
+            </SvDataTable>
+          </div>
 
-        <div class="flex flex-wrap items-end gap-3">
-          <SvTextInput
-            id="sms-preview-recipients"
-            v-model="previewRecipients"
-            label="Recipients"
-            type="number"
-            inputmode="numeric"
-          />
-          <SvTextInput
-            id="sms-preview-segments"
-            v-model="previewSegments"
-            label="Segments per message"
-            type="number"
-            inputmode="numeric"
-          />
+          <div class="md:hidden">
+            <SvResponsiveRecordList
+              :columns="usageColumns"
+              :rows="store.usage"
+              :row-key="(r) => `${r.usage_month}:${r.merchant_id ?? 'none'}`"
+              caption="SMS usage by month and merchant"
+              :state="usageState"
+              empty-message="No SMS usage has been recorded for this period."
+              @retry="refresh"
+            >
+              <template #cell:amount="{ row }">
+                <SvMoney
+                  :minor-units="row.amount_minor"
+                  :currency="row.currency"
+                />
+              </template>
+            </SvResponsiveRecordList>
+          </div>
+        </SvPanel>
+
+        <!-- NOTICE, not charge: the cost-notice preview ---------------------------------------- -->
+        <SvPanel
+          eyebrow="Notice, not a charge"
+          title="Cost notice preview"
+          tone="teal"
+        >
+          <template #description>
+            The exact wording personnel see before sending. It is generated by the server from the
+            effective rule, so what is previewed here is what is shown.
+          </template>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <SvTextInput
+              id="sms-preview-recipients"
+              v-model="previewRecipients"
+              label="Recipients"
+              type="number"
+              inputmode="numeric"
+            />
+            <SvTextInput
+              id="sms-preview-segments"
+              v-model="previewSegments"
+              label="Segments per message"
+              type="number"
+              inputmode="numeric"
+            />
+          </div>
           <SvButton
             variant="secondary"
+            class="mt-3"
             data-testid="sms-preview-notice"
             @click="preview"
           >
             Preview notice
           </SvButton>
-        </div>
 
-        <SvAlert
-          v-if="previewError"
-          severity="error"
-          class="mt-3"
-        >
-          <p>{{ previewError }}</p>
-        </SvAlert>
-
-        <div
-          v-else-if="store.costNotice"
-          class="mt-4 rounded-card border border-sv-border bg-sv-surface-raised p-4"
-          data-testid="sms-cost-notice"
-        >
-          <p class="text-sm text-sv-text">
-            {{ store.costNotice.notice }}
-          </p>
-          <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm md:grid-cols-4">
-            <dt class="text-sv-text-muted">
-              Billable units
-            </dt>
-            <dd class="sv-numeric">
-              {{ store.costNotice.billable_units }}
-            </dd>
-            <dt class="text-sv-text-muted">
-              Amount
-            </dt>
-            <dd>
-              <SvMoney
-                :minor-units="store.costNotice.amount_minor"
-                :currency="store.costNotice.currency"
-              />
-            </dd>
-          </dl>
-          <p class="mt-2 text-xs text-sv-text-muted">
-            Any disclosed tax is shown to the sender for transparency; it is disclosed, never
-            charged here.
-          </p>
-        </div>
-      </section>
-
-      <!-- Usage --------------------------------------------------------------------------- -->
-      <section
-        aria-labelledby="sms-usage-heading"
-        class="mb-8"
-      >
-        <h2
-          id="sms-usage-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
-        >
-          Usage and billing totals
-        </h2>
-        <p class="mb-3 max-w-sv-readable text-sm text-sv-text-muted">
-          Message count, recipient count, billable units and amount are four DISTINCT quantities and
-          are never conflated. No recipient list, phone number or message body is available here or
-          anywhere else on this page.
-        </p>
-
-        <div class="hidden md:block">
-          <SvDataTable
-            :columns="usageColumns"
-            :rows="store.usage"
-            :row-key="(r) => `${r.usage_month}:${r.merchant_id ?? 'none'}`"
-            caption="SMS usage by month and merchant"
-            :state="usageState"
-            empty-message="No SMS usage has been recorded for this period."
-            @retry="refresh"
+          <SvAlert
+            v-if="previewError"
+            severity="error"
+            class="mt-3"
           >
-            <template #cell:amount="{ row }">
-              <SvMoney
-                :minor-units="row.amount_minor"
-                :currency="row.currency"
-              />
-            </template>
-          </SvDataTable>
-        </div>
+            <p>{{ previewError }}</p>
+          </SvAlert>
 
-        <div class="md:hidden">
-          <SvResponsiveRecordList
-            :columns="usageColumns"
-            :rows="store.usage"
-            :row-key="(r) => `${r.usage_month}:${r.merchant_id ?? 'none'}`"
-            caption="SMS usage by month and merchant"
-            :state="usageState"
-            empty-message="No SMS usage has been recorded for this period."
-            @retry="refresh"
+          <div
+            v-else-if="store.costNotice"
+            class="sv-r-note sv-r-tone-teal mt-4"
+            data-testid="sms-cost-notice"
           >
-            <template #cell:amount="{ row }">
-              <SvMoney
-                :minor-units="row.amount_minor"
-                :currency="row.currency"
-              />
-            </template>
-          </SvResponsiveRecordList>
-        </div>
-      </section>
-
-      <!-- Charge reconciliation ----------------------------------------------------------- -->
-      <section
-        v-if="store.reconciliation"
-        aria-labelledby="sms-reconciliation-heading"
-      >
-        <h2
-          id="sms-reconciliation-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
-        >
-          Charge reconciliation
-        </h2>
-
-        <div
-          class="grid gap-4 md:grid-cols-2"
-          data-testid="sms-reconciliation"
-        >
-          <SvMetricCard
-            label="Linked to an invoice"
-            context="SMS charges mapped to a subscription invoice line."
-          >
-            <span class="sv-numeric text-2xl font-bold">{{ store.reconciliation.invoice_mapping.linked_count }}</span>
-          </SvMetricCard>
-          <SvMetricCard
-            label="Not yet linked"
-            context="Recorded usage awaiting its invoice line."
-            :increase-is-positive="false"
-          >
-            <span class="sv-numeric text-2xl font-bold">{{ store.reconciliation.invoice_mapping.unlinked_count }}</span>
-          </SvMetricCard>
-        </div>
-
-        <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-sm md:grid-cols-4">
-          <dt class="text-sv-text-muted">
-            Threshold state
-          </dt>
-          <dd data-testid="sms-threshold-state">
-            {{ statusLabel(store.reconciliation.thresholds.warning_state) }}
-          </dd>
-          <dt class="text-sv-text-muted">
-            Anomaly state
-          </dt>
-          <dd data-testid="sms-anomaly-state">
-            {{ statusLabel(store.reconciliation.thresholds.anomaly_state) }}
-          </dd>
-        </dl>
-      </section>
-    </template>
-
+            <p class="text-sm text-sv-text">
+              {{ store.costNotice.notice }}
+            </p>
+            <dl class="sv-r-strip mt-3">
+              <div>
+                <dt>Billable units</dt>
+                <dd class="sv-numeric">
+                  {{ store.costNotice.billable_units }}
+                </dd>
+              </div>
+              <div>
+                <dt>Amount</dt>
+                <dd>
+                  <SvMoney
+                    :minor-units="store.costNotice.amount_minor"
+                    :currency="store.costNotice.currency"
+                  />
+                </dd>
+              </div>
+            </dl>
+            <p class="mt-2 text-xs text-sv-text-muted">
+              Any disclosed tax is shown to the sender for transparency; it is disclosed, never
+              charged here.
+            </p>
+          </div>
+        </SvPanel>
+      </div>
+    </div>
     <!-- Schedule dialog ------------------------------------------------------------------- -->
     <SvDialog
       :open="scheduleOpen"

@@ -3,7 +3,7 @@
  * Source:     resources/spa/src/design-system/tokens.json
  * Generator:  node scripts/generate-design-tokens.mjs
  * Verify:     node scripts/generate-design-tokens.mjs --check
- * Source SHA-256: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
+ * Source SHA-256: 1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4
  *
  * Servana design tokens (ADR-021). Light is the DEFAULT: the dark block applies only when the
  * root element carries the `dark` class, which is set exclusively from an explicit Servana
@@ -63,6 +63,15 @@
   --sv-color-footer-text: #4B5563;
   --sv-color-footer-border: #E5E7EB;
   --sv-color-growth: #3F7D20;
+  --sv-color-refined-canvas: #F5F3EF;
+  --sv-color-refined-sunken: #FAF9F6;
+  --sv-color-refined-hairline: #E9E5DD;
+  --sv-color-refined-nav-active-bg: #4A2208;
+  --sv-color-refined-nav-active-fg: #FFFFFF;
+  --sv-color-refined-nav-active-icon: #F97316;
+  --sv-color-refined-feature-bg: #4A2208;
+  --sv-color-refined-feature-fg: #FFFFFF;
+  --sv-color-refined-feature-accent: #FBBF24;
 
   /* --- component --- */
   --sv-space-0: 0;
@@ -128,6 +137,13 @@
   --sv-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --sv-safe-area-left: env(safe-area-inset-left, 0px);
   --sv-safe-area-right: env(safe-area-inset-right, 0px);
+  --sv-radius-panel: 1.25rem;
+  --sv-radius-field: 0.75rem;
+  --sv-radius-shell: 1.5rem;
+  --sv-shadow-panel: 0 1px 2px rgb(31 41 51 / 0.04), 0 12px 32px -18px rgb(74 34 8 / 0.18);
+  --sv-shadow-float: 0 2px 6px rgb(31 41 51 / 0.05), 0 24px 48px -24px rgb(74 34 8 / 0.28);
+  --sv-refined-sidebar-width: 17rem;
+  --sv-refined-shell-inset: 0.75rem;
 
   /* --- typography --- */
   --sv-font-family-ui: Inter, 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
@@ -228,4 +244,13 @@
   --sv-color-footer-text: #9CA3AF;
   --sv-color-footer-border: #374151;
   --sv-color-growth: #4ADE80;
+  --sv-color-refined-canvas: #0F151C;
+  --sv-color-refined-sunken: #151D26;
+  --sv-color-refined-hairline: #374151;
+  --sv-color-refined-nav-active-bg: #F97316;
+  --sv-color-refined-nav-active-fg: #4A2208;
+  --sv-color-refined-nav-active-icon: #4A2208;
+  --sv-color-refined-feature-bg: #4A2208;
+  --sv-color-refined-feature-fg: #FFFFFF;
+  --sv-color-refined-feature-accent: #FBBF24;
 }

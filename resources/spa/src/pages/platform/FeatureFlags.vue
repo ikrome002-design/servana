@@ -21,6 +21,7 @@
  * restating the rule as a client-side guess.
  */
 import { computed, onMounted, ref } from 'vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvDateTime from '@/components/ui/SvDateTime.vue';
@@ -34,7 +35,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { usePlatformFeatureFlagStore, type FeatureFlagRow } from '@/stores/platformFeatureFlagStore';
 import { statusLabel } from '@/utils/statusLabel';
-import { SvIconFlag } from '@/design-system/icons';
+import { SvIconClock, SvIconFlag, SvIconWarning } from '@/design-system/icons';
 
 const store = usePlatformFeatureFlagStore();
 const { can } = useCan();
@@ -154,8 +155,14 @@ const stateTone = (state: string | null | undefined): 'success' | 'warning' | 'n
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: rollout, not toggles. Each flag is a card whose rollout is DRAWN from the
+    server's basis points (a labelled meter, not a switch), with its environment and state as
+    facts; the safety rules that bound every flag sit in the rail beside the catalogue, and the
+    append-only change history runs down a timeline under it.
+  -->
   <div
-    class="mx-auto w-full max-w-5xl"
+    class="sv-r-page"
     data-testid="feature-flags-screen"
   >
     <SvPageHeader
@@ -168,7 +175,7 @@ const stateTone = (state: string | null | undefined): 'success' | 'warning' | 'n
 
     <template v-else>
       <p
-        class="mb-4 text-xs text-sv-text-muted"
+        class="sv-r-muted -mt-2 mb-5"
         data-testid="flags-last-refreshed"
       >
         Last refreshed
@@ -200,165 +207,198 @@ const stateTone = (state: string | null | undefined): 'success' | 'warning' | 'n
         label="Loading feature flags"
       />
 
-      <!--
-        The truthful empty state. The catalogue is empty because no flag is allowlisted in code —
-        that is the real reason, and it is stated. No example flag is seeded, no health figure is
-        fabricated, and no "create flag" control is offered, because creating one requires a code
-        change first.
-      -->
-      <template v-else-if="catalogueIsEmpty">
-        <SvEmptyState
-          title="No feature flag is currently allowlisted"
-          description="A flag exists only after it is added to the platform's code allowlist. Nothing is scheduled, active or paused, so there is no rollout to control here yet."
-          data-testid="flags-empty"
-        />
-        <div
-          v-if="store.catalogue"
-          class="mx-auto mt-4 max-w-sv-readable rounded-card border border-sv-border bg-sv-surface-raised p-4 text-sm"
-          data-testid="flags-catalogue-meta"
-        >
-          <dl class="space-y-2">
-            <div class="flex justify-between gap-4">
-              <dt class="text-sv-text-muted">
-                Environment
-              </dt>
-              <dd class="text-sv-text">
-                {{ store.catalogue.environment }}
-              </dd>
-            </div>
-            <div class="flex justify-between gap-4">
-              <dt class="text-sv-text-muted">
-                Allowlisted flags
-              </dt>
-              <dd class="sv-numeric text-sv-text">
-                {{ store.catalogue.catalogue_size }}
-              </dd>
-            </div>
-            <div class="flex justify-between gap-4">
-              <dt class="text-sv-text-muted">
-                Catalogue source
-              </dt>
-              <dd class="min-w-0 break-words text-right text-sv-text">
-                {{ store.catalogue.catalogue_source }}
-              </dd>
-            </div>
-          </dl>
-          <p class="mt-3 text-xs text-sv-text-muted">
-            {{ store.catalogue.note }}
-          </p>
-        </div>
-      </template>
-
-      <!-- Populated catalogue -------------------------------------------------------------- -->
-      <ul
+      <div
         v-else
-        class="space-y-4"
-        data-testid="flags-list"
+        class="sv-r-grid sv-r-split"
       >
-        <li
-          v-for="row in store.flags"
-          :key="flagKeyOf(row)"
-          class="rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
+        <div class="sv-r-stack min-w-0">
+          <!--
+            The truthful empty state. The catalogue is empty because no flag is allowlisted in code —
+            that is the real reason, and it is stated. No example flag is seeded, no health figure is
+            fabricated, and no "create flag" control is offered, because creating one requires a code
+            change first.
+          -->
+          <template v-if="catalogueIsEmpty">
+            <SvEmptyState
+              title="No feature flag is currently allowlisted"
+              description="A flag exists only after it is added to the platform's code allowlist. Nothing is scheduled, active or paused, so there is no rollout to control here yet."
+              data-testid="flags-empty"
+            />
+          </template>
+
+          <!-- Populated catalogue -------------------------------------------------------------- -->
+          <ul
+            v-else
+            class="sv-r-stack-sm"
+            data-testid="flags-list"
+          >
+            <li
+              v-for="row in store.flags"
+              :key="flagKeyOf(row)"
+              class="sv-r-record"
+            >
+              <!-- UI-16 (UI16-VIS-019): the flag key leads as a heading with its facts as labelled chips. -->
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex min-w-0 items-start gap-3">
+                  <span
+                    aria-hidden="true"
+                    class="sv-r-icon sv-r-icon--lg sv-r-tone-warm"
+                  >
+                    <SvIconFlag />
+                  </span>
+                  <div class="min-w-0">
+                    <p class="break-words font-mono text-base font-semibold text-sv-text-heading">
+                      {{ flagKeyOf(row) }}
+                    </p>
+                    <p class="mt-2 flex flex-wrap gap-2">
+                      <span class="sv-r-chip">Environment {{ row.state?.environment ?? 'not configured' }}</span>
+                      <span class="sv-r-chip">Rollout {{ row.state?.rollout_basis_points ?? 0 }} basis points</span>
+                    </p>
+                  </div>
+                </div>
+                <SvStatusBadge
+                  :label="statusLabel(String(row.effective_state ?? row.state?.state ?? 'inactive'))"
+                  :tone="stateTone(String(row.effective_state ?? row.state?.state ?? ''))"
+                  sr-prefix="Rollout state:"
+                />
+              </div>
+
+              <div
+                class="sv-r-meter mt-4"
+                aria-hidden="true"
+              >
+                <span :style="{ width: `${Math.min(100, (row.state?.rollout_basis_points ?? 0) / 100)}%` }" />
+              </div>
+
+              <p class="sv-r-muted mt-3">
+                A flag never grants access. Permissions, entitlements, billing state and external gates
+                are evaluated independently and always win.
+              </p>
+
+              <div
+                v-if="canUpdate"
+                class="mt-4 flex flex-wrap gap-2 border-t border-sv-border pt-4"
+              >
+                <SvButton
+                  variant="secondary"
+                  size="sm"
+                  :data-testid="`flags-history-${flagKeyOf(row)}`"
+                  @click="store.openFlag(flagKeyOf(row))"
+                >
+                  View history
+                </SvButton>
+                <SvButton
+                  variant="secondary"
+                  size="sm"
+                  :data-testid="`flags-change-${flagKeyOf(row)}`"
+                  @click="openChange(flagKeyOf(row))"
+                >
+                  Request a change
+                </SvButton>
+                <SvButton
+                  variant="destructive"
+                  size="sm"
+                  :data-testid="`flags-pause-${flagKeyOf(row)}`"
+                  @click="openPause(flagKeyOf(row))"
+                >
+                  Pause rollout
+                </SvButton>
+              </div>
+            </li>
+          </ul>
+
+          <!-- History -------------------------------------------------------------------------- -->
+          <SvPanel
+            v-if="store.history"
+            eyebrow="Append-only"
+            title="Change history"
+            description="Append-only. A history row is never updated or deleted."
+            tone="teal"
+          >
+            <ol
+              v-if="Array.isArray(store.history)"
+              class="sv-r-steps"
+              data-testid="flags-history"
+            >
+              <li
+                v-for="entry in store.history"
+                :key="String(entry.id)"
+                class="sv-r-step"
+              >
+                <span
+                  aria-hidden="true"
+                  class="sv-r-step__marker"
+                >
+                  <SvIconClock class="h-4 w-4" />
+                </span>
+                <div class="pt-1.5">
+                  <p class="font-semibold text-sv-text">
+                    {{ entry.action }}
+                  </p>
+                  <p class="sv-r-muted">
+                    <SvDateTime :value="entry.created_at" /> · {{ entry.reason ?? 'No reason recorded' }}
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </SvPanel>
+        </div>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Feature-flag safety rules"
         >
-          <!-- UI-16 (UI16-VIS-019): the flag key leads as a heading with its facts as labelled chips. -->
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div class="flex min-w-0 items-start gap-3">
+          <div class="sv-r-note sv-r-tone-alert">
+            <div class="flex items-center gap-3">
               <span
                 aria-hidden="true"
-                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-sv-surface-subtle text-sv-text-heading"
+                class="sv-r-icon sv-r-tone-alert"
               >
-                <SvIconFlag class="h-5 w-5" />
+                <SvIconWarning />
               </span>
-              <div class="min-w-0">
-                <p class="break-words font-mono text-base font-semibold text-sv-text-heading">
-                  {{ flagKeyOf(row) }}
-                </p>
-                <p class="mt-2 flex flex-wrap gap-2 text-xs text-sv-text-secondary">
-                  <span class="rounded-pill border border-sv-border bg-sv-surface-subtle px-2.5 py-0.5">Environment {{ row.state?.environment ?? 'not configured' }}</span>
-                  <span class="rounded-pill border border-sv-border bg-sv-surface-subtle px-2.5 py-0.5">Rollout {{ row.state?.rollout_basis_points ?? 0 }} basis points</span>
-                </p>
-              </div>
+              <p class="sv-r-note__title">
+                Safety rules
+              </p>
             </div>
-            <SvStatusBadge
-              :label="statusLabel(String(row.effective_state ?? row.state?.state ?? 'inactive'))"
-              :tone="stateTone(String(row.effective_state ?? row.state?.state ?? ''))"
-              sr-prefix="Rollout state:"
-            />
+            <ul class="sv-r-note__body list-disc space-y-1 pl-5">
+              <li>A flag can only restrict; it never grants access or bypasses an entitlement.</li>
+              <li>A change is proposed, then approved by a different platform administrator.</li>
+              <li>Pausing a rollout takes effect immediately.</li>
+            </ul>
           </div>
-
-          <p class="mt-3 text-xs text-sv-text-muted">
-            A flag never grants access. Permissions, entitlements, billing state and external gates
-            are evaluated independently and always win.
-          </p>
-
           <div
-            v-if="canUpdate"
-            class="mt-3 flex flex-wrap gap-2"
+            v-if="store.catalogue"
+            class="sv-r-note sv-r-tone-teal"
+            data-testid="flags-catalogue-meta"
           >
-            <SvButton
-              variant="secondary"
-              size="sm"
-              :data-testid="`flags-history-${flagKeyOf(row)}`"
-              @click="store.openFlag(flagKeyOf(row))"
-            >
-              View history
-            </SvButton>
-            <SvButton
-              variant="secondary"
-              size="sm"
-              :data-testid="`flags-change-${flagKeyOf(row)}`"
-              @click="openChange(flagKeyOf(row))"
-            >
-              Request a change
-            </SvButton>
-            <SvButton
-              variant="destructive"
-              size="sm"
-              :data-testid="`flags-pause-${flagKeyOf(row)}`"
-              @click="openPause(flagKeyOf(row))"
-            >
-              Pause rollout
-            </SvButton>
+            <p class="sv-r-note__title">
+              Catalogue
+            </p>
+            <dl class="sv-r-facts mt-1">
+              <div>
+                <dt>Environment</dt>
+                <dd>{{ store.catalogue.environment }}</dd>
+              </div>
+              <div>
+                <dt>Allowlisted flags</dt>
+                <dd class="sv-numeric">
+                  {{ store.catalogue.catalogue_size }}
+                </dd>
+              </div>
+              <div>
+                <dt>Catalogue source</dt>
+                <dd class="break-words">
+                  {{ store.catalogue.catalogue_source }}
+                </dd>
+              </div>
+            </dl>
+            <p class="sv-r-muted mt-3">
+              {{ store.catalogue.note }}
+            </p>
           </div>
-        </li>
-      </ul>
-
-      <!-- History -------------------------------------------------------------------------- -->
-      <section
-        v-if="store.history"
-        aria-labelledby="flags-history-heading"
-        class="mt-8"
-      >
-        <h2
-          id="flags-history-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
-        >
-          Change history
-        </h2>
-        <p class="mb-3 text-sm text-sv-text-muted">
-          Append-only. A history row is never updated or deleted.
-        </p>
-        <ul
-          v-if="Array.isArray(store.history)"
-          class="space-y-2"
-          data-testid="flags-history"
-        >
-          <li
-            v-for="entry in store.history"
-            :key="String(entry.id)"
-            class="rounded-card border border-sv-border p-3 text-sm"
-          >
-            <p class="font-medium text-sv-text">
-              {{ entry.action }}
-            </p>
-            <p class="text-xs text-sv-text-muted">
-              <SvDateTime :value="entry.created_at" /> · {{ entry.reason ?? 'No reason recorded' }}
-            </p>
-          </li>
-        </ul>
-      </section>
+        </aside>
+      </div>
     </template>
-
     <!-- Change request ---------------------------------------------------------------------- -->
     <SvDialog
       :open="changeOpen"

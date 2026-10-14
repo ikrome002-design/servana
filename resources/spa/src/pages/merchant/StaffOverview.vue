@@ -2,7 +2,6 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
@@ -96,8 +95,15 @@ onMounted(() => {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — tenant-wide staff lifecycle oversight. The directory owns the working
+    column as smart people ROWS (initials, identity, account type, branches, last sign-in, sessions,
+    a status chip, the audited lifecycle actions and an expandable history), under a compact filter
+    band; the rail holds the owner's narrow invitation flow and the boundary that Human Resource
+    owns operational staff — so nothing here implies HR access.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="merchant-staff-overview"
   >
     <SvPageHeader
@@ -106,259 +112,278 @@ onMounted(() => {
       description="Tenant-wide access oversight. Human Resource retains operational staff setup, eligibility, availability and compensation ownership."
     />
 
-    <SvCard
-      as="section"
-      class="mt-6"
-    >
-      <h2 class="font-display text-lg font-bold text-heading">
-        Invite an initial branch owner
-      </h2>
-      <p class="mt-1 text-sm text-text-muted">
-        This owner flow permits Branch Manager and Human Resource invitations only. Operational roles are invited by Human Resource.
-      </p>
-      <form
-        class="mt-4 grid gap-4 md:grid-cols-3"
-        @submit.prevent="invite"
-      >
-        <SvTextInput
-          id="owner-invite-email"
-          v-model="inviteEmail"
-          label="Email"
-          type="email"
-          required
-        />
-        <SvSelect
-          id="owner-invite-role"
-          v-model="inviteRole"
-          label="Account type"
-          :options="roleOptions"
-        />
-        <SvSelect
-          id="owner-invite-branch"
-          v-model="inviteBranch"
-          label="Branch"
-          placeholder="Select a branch"
-          :options="branchOptions"
-          required
-        />
-        <div class="md:col-span-3">
-          <SvButton
-            type="submit"
-            :loading="inviting"
-          >
-            Send invitation
-          </SvButton>
+    <div class="sv-r-grid sv-r-split">
+      <div class="sv-r-stack min-w-0">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+              Directory
+            </p>
+            <h2 class="sv-r-title mt-1">
+              Merchant users
+            </h2><p class="sv-r-muted">
+              {{ directory.total }} membership records. Phone numbers and client data are not included.
+            </p>
+          </div>
         </div>
-      </form>
-    </SvCard>
-
-    <div class="mt-6 flex items-end justify-between gap-3">
-      <div>
-        <h2 class="font-display text-lg font-bold text-heading">
-          Merchant users
-        </h2><p class="text-sm text-text-muted">
-          {{ directory.total }} membership records. Phone numbers and client data are not included.
-        </p>
-      </div>
-    </div>
-    <form
-      class="mt-4 grid gap-3 rounded-card border border-border bg-surface p-4 md:grid-cols-2 lg:grid-cols-5"
-      aria-label="Filter merchant users"
-      @submit.prevent="applyFilters()"
-    >
-      <SvTextInput
-        id="staff-search"
-        v-model="filters.search"
-        label="Search name or email"
-      />
-      <SvSelect
-        id="staff-branch-filter"
-        v-model="filters.branch_ulid"
-        label="Branch"
-        :options="[{ value: '', label: 'All branches' }, ...branchOptions]"
-      />
-      <SvSelect
-        id="staff-role-filter"
-        v-model="filters.role"
-        label="Account type"
-        :options="directoryRoleOptions"
-      />
-      <SvSelect
-        id="staff-status-filter"
-        v-model="filters.status"
-        label="Status"
-        :options="statusOptions"
-      />
-      <SvSelect
-        id="staff-sort"
-        v-model="filters.sort"
-        label="Sort"
-        :options="sortOptions"
-      />
-      <div class="flex flex-wrap gap-2 lg:col-span-5">
-        <SvButton type="submit">
-          Apply filters
-        </SvButton><SvButton
-          type="button"
-          variant="secondary"
-          @click="clearFilters"
+        <form
+          class="sv-r-panel sv-r-panel--sunken grid gap-3 md:grid-cols-2 lg:grid-cols-5"
+          aria-label="Filter merchant users"
+          @submit.prevent="applyFilters()"
         >
-          Clear filters
-        </SvButton>
-      </div>
-    </form>
-    <SvStateBoundary
-      class="mt-4"
-      :state="state"
-      :error-message="directory.error ?? undefined"
-      empty-message="No merchant users are available."
-      @retry="directory.fetchRows()"
-    >
-      <ul
-        class="grid gap-4 md:grid-cols-2"
-        aria-label="Merchant staff lifecycle directory"
-      >
-        <li
-          v-for="row in directory.rows"
-          :key="row.id"
-        >
-          <SvCard
-            as="article"
-            class="h-full"
-          >
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div class="min-w-0">
-                <h3 class="break-words font-display font-bold text-heading">
-                  {{ row.display_name }}
-                </h3><p class="break-all text-sm text-text-muted">
-                  {{ row.email }}
-                </p>
-              </div>
-              <span class="rounded-full bg-surface-alt px-2 py-1 text-xs font-semibold text-text">{{ row.status }}</span>
-            </div>
-            <dl class="mt-4 grid gap-2 text-sm">
-              <div>
-                <dt class="inline text-text-muted">
-                  Account:
-                </dt><dd class="inline text-text">
-                  {{ row.role.replaceAll('_', ' ') }}
-                </dd>
-              </div>
-              <div>
-                <dt class="inline text-text-muted">
-                  Branches:
-                </dt><dd class="inline text-text">
-                  {{ row.branches.map((branch) => branch.name).join(', ') || 'Merchant-wide / not assigned' }}
-                </dd>
-              </div>
-              <div>
-                <dt class="inline text-text-muted">
-                  Last sign-in:
-                </dt><dd class="inline text-text">
-                  {{ row.last_login_at?.slice(0, 10) ?? 'Never' }}
-                </dd>
-              </div>
-              <div>
-                <dt class="inline text-text-muted">
-                  Active sessions:
-                </dt><dd class="inline text-text">
-                  {{ row.active_session_count }}
-                </dd>
-              </div>
-            </dl>
-            <div
-              v-if="row.can.manage_lifecycle"
-              class="mt-4 flex flex-wrap gap-2"
-            >
-              <SvButton
-                v-if="row.status === 'active'"
-                size="sm"
-                variant="secondary"
-                :loading="directory.mutating === row.id"
-                @click="confirmStatus(row, 'suspend')"
-              >
-                Suspend access
-              </SvButton>
-              <SvButton
-                v-if="row.status === 'suspended'"
-                size="sm"
-                :loading="directory.mutating === row.id"
-                @click="confirmStatus(row, 'activate')"
-              >
-                Reactivate
-              </SvButton>
-              <SvButton
-                v-if="row.status !== 'deactivated'"
-                size="sm"
-                variant="secondary"
-                :loading="directory.mutating === row.id"
-                @click="confirmStatus(row, 'deactivate')"
-              >
-                Deactivate
-              </SvButton>
-            </div>
-            <button
+          <SvTextInput
+            id="staff-search"
+            v-model="filters.search"
+            label="Search name or email"
+          />
+          <SvSelect
+            id="staff-branch-filter"
+            v-model="filters.branch_ulid"
+            label="Branch"
+            :options="[{ value: '', label: 'All branches' }, ...branchOptions]"
+          />
+          <SvSelect
+            id="staff-role-filter"
+            v-model="filters.role"
+            label="Account type"
+            :options="directoryRoleOptions"
+          />
+          <SvSelect
+            id="staff-status-filter"
+            v-model="filters.status"
+            label="Status"
+            :options="statusOptions"
+          />
+          <SvSelect
+            id="staff-sort"
+            v-model="filters.sort"
+            label="Sort"
+            :options="sortOptions"
+          />
+          <div class="flex flex-wrap gap-2 lg:col-span-5">
+            <SvButton type="submit">
+              Apply filters
+            </SvButton><SvButton
               type="button"
-              class="sv-focus-ring mt-4 min-h-sv-touch rounded-control text-sm font-semibold text-heading underline"
-              @click="expanded = expanded === row.id ? null : row.id"
+              variant="secondary"
+              @click="clearFilters"
             >
-              {{ expanded === row.id ? 'Hide history' : 'View assignment and status history' }}
-            </button>
-            <div
-              v-if="expanded === row.id"
-              class="mt-3 rounded-control bg-surface-alt p-3 text-sm"
+              Clear filters
+            </SvButton>
+          </div>
+        </form>
+        <SvStateBoundary
+          :state="state"
+          :error-message="directory.error ?? undefined"
+          empty-message="No merchant users are available."
+          @retry="directory.fetchRows()"
+        >
+          <ul
+            class="flex flex-col gap-3"
+            aria-label="Merchant staff lifecycle directory"
+          >
+            <li
+              v-for="row in directory.rows"
+              :key="row.id"
             >
-              <h4 class="font-semibold text-heading">
-                Branch assignments
-              </h4>
-              <ul class="mt-1 space-y-1 text-text-muted">
-                <li
-                  v-for="entry in row.assignment_history"
-                  :key="`${entry.branch}-${entry.assigned_at}`"
+              <article class="sv-r-record">
+                <div class="flex flex-wrap items-start gap-4">
+                  <span
+                    aria-hidden="true"
+                    class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sv-surface-warm font-display text-sm font-extrabold text-sv-text-heading"
+                  >{{ row.display_name.slice(0, 2).toUpperCase() }}</span>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="break-words font-display font-bold text-heading">
+                        {{ row.display_name }}
+                      </h3>
+                      <span
+                        class="sv-r-chip sv-r-chip--tone sv-r-chip--dot"
+                        :class="row.status === 'active' ? 'sv-r-tone-green' : row.status === 'suspended' ? 'sv-r-tone-sun' : 'sv-r-tone-neutral'"
+                      >{{ row.status }}</span>
+                    </div>
+                    <p class="break-all text-sm text-text-muted">
+                      {{ row.email }}
+                    </p>
+                  </div>
+                </div>
+                <dl class="sv-r-strip mt-4">
+                  <div>
+                    <dt>Account<span class="sr-only">: </span></dt>
+                    <dd class="capitalize">
+                      {{ row.role.replaceAll('_', ' ') }}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Branches<span class="sr-only">: </span></dt>
+                    <dd>{{ row.branches.map((branch) => branch.name).join(', ') || 'Merchant-wide / not assigned' }}</dd>
+                  </div>
+                  <div>
+                    <dt>Last sign-in<span class="sr-only">: </span></dt>
+                    <dd>{{ row.last_login_at?.slice(0, 10) ?? 'Never' }}</dd>
+                  </div>
+                  <div>
+                    <dt>Active sessions<span class="sr-only">: </span></dt>
+                    <dd>{{ row.active_session_count }}</dd>
+                  </div>
+                </dl>
+                <div class="mt-4 flex flex-wrap items-center gap-2">
+                  <template v-if="row.can.manage_lifecycle">
+                    <SvButton
+                      v-if="row.status === 'active'"
+                      size="sm"
+                      variant="secondary"
+                      :loading="directory.mutating === row.id"
+                      @click="confirmStatus(row, 'suspend')"
+                    >
+                      Suspend access
+                    </SvButton>
+                    <SvButton
+                      v-if="row.status === 'suspended'"
+                      size="sm"
+                      :loading="directory.mutating === row.id"
+                      @click="confirmStatus(row, 'activate')"
+                    >
+                      Reactivate
+                    </SvButton>
+                    <SvButton
+                      v-if="row.status !== 'deactivated'"
+                      size="sm"
+                      variant="secondary"
+                      :loading="directory.mutating === row.id"
+                      @click="confirmStatus(row, 'deactivate')"
+                    >
+                      Deactivate
+                    </SvButton>
+                  </template>
+                  <button
+                    type="button"
+                    class="sv-r-link sv-focus-ring ml-auto rounded-control"
+                    :aria-expanded="expanded === row.id"
+                    @click="expanded = expanded === row.id ? null : row.id"
+                  >
+                    {{ expanded === row.id ? 'Hide history' : 'View assignment and status history' }}
+                  </button>
+                </div>
+                <div
+                  v-if="expanded === row.id"
+                  class="mt-3 grid gap-4 rounded-card bg-sv-surface-subtle p-4 text-sm md:grid-cols-2"
                 >
-                  {{ entry.branch }} · {{ entry.status }}
-                </li><li v-if="row.assignment_history.length === 0">
-                  No assignment history.
-                </li>
-              </ul>
-              <h4 class="mt-3 font-semibold text-heading">
-                Status history
-              </h4>
-              <ul class="mt-1 space-y-1 text-text-muted">
-                <li
-                  v-for="entry in row.status_history"
-                  :key="`${entry.field}-${entry.changed_at}`"
-                >
-                  {{ entry.field.replaceAll('_', ' ') }} · {{ entry.changed_at?.slice(0, 10) ?? 'Recorded' }}
-                </li><li v-if="row.status_history.length === 0">
-                  No lifecycle history.
-                </li>
-              </ul>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
-    <nav
-      v-if="directory.lastPage > 1"
-      class="mt-4 flex items-center justify-between"
-      aria-label="Staff directory pagination"
-    >
-      <SvButton
-        variant="secondary"
-        :disabled="directory.page <= 1"
-        @click="applyFilters(directory.page - 1)"
-      >
-        Previous
-      </SvButton><span class="text-sm text-text-muted">Page {{ directory.page }} of {{ directory.lastPage }}</span><SvButton
-        variant="secondary"
-        :disabled="directory.page >= directory.lastPage"
-        @click="applyFilters(directory.page + 1)"
-      >
-        Next
-      </SvButton>
-    </nav>
+                  <div>
+                    <h4 class="font-semibold text-heading">
+                      Branch assignments
+                    </h4>
+                    <ul class="mt-1 space-y-1 text-text-muted">
+                      <li
+                        v-for="entry in row.assignment_history"
+                        :key="`${entry.branch}-${entry.assigned_at}`"
+                      >
+                        {{ entry.branch }} · {{ entry.status }}
+                      </li><li v-if="row.assignment_history.length === 0">
+                        No assignment history.
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-heading">
+                      Status history
+                    </h4>
+                    <ul class="mt-1 space-y-1 text-text-muted">
+                      <li
+                        v-for="entry in row.status_history"
+                        :key="`${entry.field}-${entry.changed_at}`"
+                      >
+                        {{ entry.field.replaceAll('_', ' ') }} · {{ entry.changed_at?.slice(0, 10) ?? 'Recorded' }}
+                      </li><li v-if="row.status_history.length === 0">
+                        No lifecycle history.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            </li>
+          </ul>
+        </SvStateBoundary>
+        <nav
+          v-if="directory.lastPage > 1"
+          class="flex items-center justify-between"
+          aria-label="Staff directory pagination"
+        >
+          <SvButton
+            variant="secondary"
+            :disabled="directory.page <= 1"
+            @click="applyFilters(directory.page - 1)"
+          >
+            Previous
+          </SvButton><span class="text-sm text-text-muted">Page {{ directory.page }} of {{ directory.lastPage }}</span><SvButton
+            variant="secondary"
+            :disabled="directory.page >= directory.lastPage"
+            @click="applyFilters(directory.page + 1)"
+          >
+            Next
+          </SvButton>
+        </nav>
+      </div>
 
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Owner invitations"
+      >
+        <section class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm">
+          <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+            Owner flow
+          </p>
+          <h2 class="sv-r-title mt-1">
+            Invite an initial branch owner
+          </h2>
+          <p class="sv-r-panel__desc">
+            This owner flow permits Branch Manager and Human Resource invitations only. Operational roles are invited by Human Resource.
+          </p>
+          <form
+            class="mt-4 grid gap-4"
+            @submit.prevent="invite"
+          >
+            <SvTextInput
+              id="owner-invite-email"
+              v-model="inviteEmail"
+              label="Email"
+              type="email"
+              required
+            />
+            <SvSelect
+              id="owner-invite-role"
+              v-model="inviteRole"
+              label="Account type"
+              :options="roleOptions"
+            />
+            <SvSelect
+              id="owner-invite-branch"
+              v-model="inviteBranch"
+              label="Branch"
+              placeholder="Select a branch"
+              :options="branchOptions"
+              required
+            />
+            <div>
+              <SvButton
+                type="submit"
+                :loading="inviting"
+              >
+                Send invitation
+              </SvButton>
+            </div>
+          </form>
+        </section>
+        <div class="sv-r-note sv-r-tone-teal">
+          <p class="sv-r-note__title">
+            Human Resource owns operations
+          </p>
+          <p class="sv-r-note__body">
+            Operational staff setup, eligibility, availability and compensation are managed by Human Resource in each branch, not from this page.
+          </p>
+        </div>
+      </aside>
+    </div>
     <SvDialog
       :open="pendingLifecycle !== null"
       title="Confirm access change"

@@ -191,7 +191,10 @@ test.describe('UI-16 accessibility — every live page, light desktop and dark m
         body: getComputedStyle(document.body).backgroundColor,
         filter: getComputedStyle(document.documentElement).filter,
       }));
-      expect(surface.body, `${entry.contractKey}: dark page surface`).toBe('rgb(17, 24, 39)');
+      // COR-UI08-UI12-VIS-001: the five corrective accounts use the refined dark canvas (night-950
+      // #0F151C); every other surface keeps the standard dark page (#111827). Both are real tokens.
+      const refinedAccount = ['super_administrator', 'merchant_administrator', 'merchant_branch', 'merchant_human_resource', 'merchant_finance'].includes(entry.account);
+      expect(surface.body, `${entry.contractKey}: dark page surface`).toBe(refinedAccount ? 'rgb(15, 21, 28)' : 'rgb(17, 24, 39)');
       expect(surface.filter, `${entry.contractKey}: no inversion filter`).toBe('none');
       await assertAxeClean(page, `${entry.contractKey} (dark, 360)`);
     });
@@ -220,7 +223,11 @@ test.describe('UI-16 theme — light first paint and explicit persistence', () =
       await page.goto(entry.screen.path);
       await expect(page.locator(readyLocator(entry.screen)).first()).toBeVisible({ timeout: 15_000 });
       await expect(page.locator('html')).not.toHaveClass(/\bdark\b/);
-      expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(249, 250, 251)');
+      // COR-UI08-UI12-VIS-001: the five corrective accounts paint the refined LIGHT canvas (linen
+      // #F5F3EF); every other surface keeps the standard light page (#F9FAFB). Both are light — the
+      // assertion still fails on any dark first paint.
+      const refined = ['super_administrator', 'merchant_administrator', 'merchant_branch', 'merchant_human_resource', 'merchant_finance'].includes(entry.account);
+      expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(refined ? 'rgb(245, 243, 239)' : 'rgb(249, 250, 251)');
     });
   }
 

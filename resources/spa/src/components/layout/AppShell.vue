@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, provide, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import HeaderGroupNavigation from '@/components/navigation/HeaderGroupNavigation.vue';
 import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
 import SvNotificationsControl from '@/components/ui/SvNotificationsControl.vue';
 import SvProfileControl from '@/components/ui/SvProfileControl.vue';
 import { SvIconClose, SvIconMenu } from '@/design-system/icons';
+import { applyExperience, EXPERIENCE_KEY, experienceFor } from '@/design-system/experience';
 import { accountTone, PAGE_TONE_KEY } from '@/design-system/pageTone';
 import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
 import { contractForAccount } from '@/navigation/navigationRegistry.generated';
@@ -58,6 +59,18 @@ const personnelEarnings = usePersonnelEarningsStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 provide(PAGE_TONE_KEY, computed(() => accountTone(props.identity)));
+
+/*
+ * COR-UI08-UI12-VIS-001: the five corrective accounts render the refined experience; Front Office,
+ * Personnel and Audit keep the standard one (see `design-system/experience.ts`). Applied during
+ * setup — before the first render — so the shell never paints in the wrong experience first.
+ */
+const experience = computed(() => experienceFor(props.identity));
+const isRefined = computed(() => experience.value === 'refined');
+provide(EXPERIENCE_KEY, experience);
+applyExperience(experience.value);
+watch(experience, (value) => applyExperience(value));
+onBeforeUnmount(() => applyExperience(null));
 const placement = computed(() => entry.value.navPlacement);
 const contextLabel = computed(() => {
   if (props.identity === 'merchant_branch') return branchExperience.overview?.branch.name ?? merchant.name;
@@ -188,7 +201,11 @@ const isHeaderNav = computed(() => placement.value === 'header');
 </script>
 
 <template>
-  <div class="sv-footer-reserve flex min-h-screen flex-col bg-bg text-text">
+  <div
+    class="sv-footer-reserve sv-shell flex min-h-screen flex-col bg-bg text-text"
+    :class="isRefined ? 'sv-shell--refined' : ''"
+    :data-shell-placement="isHeaderNav ? 'header' : 'sidebar'"
+  >
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:ring-primary"
@@ -222,15 +239,29 @@ const isHeaderNav = computed(() => placement.value === 'header');
           <img
             :src="'/assets/brand/Logo.png'"
             alt="Servana by Citrus"
-            class="h-8 w-auto"
+            class="sv-shell-header__logo h-8 w-auto"
           >
           <span
-            class="hidden h-6 w-px shrink-0 md:block"
+            class="sv-shell-header__divider hidden h-6 w-px shrink-0 md:block"
             :class="isHeaderNav ? 'bg-white/20' : 'bg-sv-border'"
             aria-hidden="true"
           />
+          <!--
+            Refined experience: the title reads as a location — account, then page — the way the
+            reference workspaces anchor the top bar. The account segment is chrome, not a heading.
+          -->
           <span
-            class="truncate text-sm font-semibold"
+            v-if="isRefined"
+            class="sv-shell-header__account hidden shrink-0 text-sm font-medium md:inline"
+            aria-hidden="true"
+          >{{ entry.label }}</span>
+          <span
+            v-if="isRefined"
+            class="sv-shell-header__crumb hidden md:inline"
+            aria-hidden="true"
+          >/</span>
+          <span
+            class="sv-shell-header__title truncate text-sm font-semibold"
             :class="isHeaderNav ? 'text-white' : 'text-sv-text-heading'"
           >{{ pageTitle }}</span>
         </div>
@@ -297,7 +328,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
       </div>
     </header>
 
-    <div class="flex flex-1">
+    <div class="sv-shell-body flex flex-1">
       <!--
         Sidebar roles: desktop persistent primary navigation.
 
@@ -310,6 +341,27 @@ const isHeaderNav = computed(() => placement.value === 'header');
         class="sv-shell-sidebar hidden w-64 shrink-0 border-r border-border bg-surface px-3 py-4 lg:block"
         data-testid="sidebar-primary-nav"
       >
+        <!--
+          Refined experience: the floating sidebar carries the brand and the account it serves, so
+          the navigation reads as one product panel rather than a list glued to the window edge.
+          The account label is presentation; it grants nothing.
+        -->
+        <div
+          v-if="isRefined"
+          class="sv-shell-brand"
+          data-testid="sv-shell-brand"
+        >
+          <img
+            :src="'/assets/brand/Logo.png'"
+            alt=""
+            aria-hidden="true"
+            class="sv-shell-brand__logo"
+          >
+          <span class="min-w-0">
+            <span class="sv-shell-brand__name">Servana</span>
+            <span class="sv-shell-brand__account">{{ entry.label }}</span>
+          </span>
+        </div>
         <HeaderGroupNavigation
           :nodes="navigationNodes"
           variant="stacked"
@@ -369,7 +421,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
       <main
         id="main-content"
         tabindex="-1"
-        class="min-w-0 flex-1 p-4 focus:outline-none md:p-6"
+        class="sv-shell-main min-w-0 flex-1 p-4 focus:outline-none md:p-6"
       >
         <slot />
       </main>

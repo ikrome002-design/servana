@@ -48,6 +48,11 @@ async function routerAt(path: string) {
     'finance.receipts',
     'finance.compensation-liabilities',
     'finance.tasks',
+    // COR-UI08-UI12-VIS-001: the redesigned dashboard drills through to these live Finance pages.
+    'finance.cash-up',
+    'finance.periods',
+    'finance.disputes',
+    'finance.refunds',
   ];
   const router = createRouter({
     history: createMemoryHistory(),

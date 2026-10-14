@@ -20,6 +20,7 @@
  */
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvFilterBar from '@/components/ui/SvFilterBar.vue';
@@ -31,6 +32,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { SvIconLocked } from '@/design-system/icons';
 import { usePlatformMerchantStore, type RegistrationMonitorRow } from '@/stores/platformMerchantStore';
 import { merchantDetailLocation } from '@/components/platform/merchants/merchantRoutes';
 import {
@@ -90,8 +92,14 @@ async function goToPage(page: number): Promise<void> {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: a registration DECISION QUEUE. The arrivals ledger (with its filter in
+    the panel header and the server's own total beside the title) owns the working column; the
+    rail states what this page cannot screen and that nothing here activates a merchant — the two
+    facts an operator must hold while triaging.
+  -->
   <div
-    class="mx-auto w-full max-w-5xl"
+    class="sv-r-page"
     data-testid="platform-merchant-registrations-screen"
   >
     <SvPageHeader
@@ -102,151 +110,184 @@ async function goToPage(page: number): Promise<void> {
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-else>
-      <SvFilterBar
-        label="Registration filters"
-        :active-count="activeFilterCount"
-        @clear="clearFilters"
+    <div
+      v-else
+      class="sv-r-grid sv-r-split"
+    >
+      <SvPanel
+        eyebrow="Arrivals"
+        title="Self-registrations"
+        description="Most recent first. Open a merchant to review its governance record."
+        tone="warm"
       >
-        <SvSelect
-          id="registration-status-filter"
-          label="Operational status"
-          :model-value="store.registrationStatus"
-          :options="OPERATIONAL_STATUS_FILTER_OPTIONS"
-          @update:model-value="applyStatus($event)"
+        <template #actions>
+          <span
+            v-if="meta !== null"
+            class="sv-r-chip sv-r-chip--tone sv-r-tone-warm"
+            data-testid="registrations-total"
+          >{{ meta.total }} in this view</span>
+        </template>
+        <SvFilterBar
+          label="Registration filters"
+          :active-count="activeFilterCount"
+          @clear="clearFilters"
+        >
+          <SvSelect
+            id="registration-status-filter"
+            label="Operational status"
+            :model-value="store.registrationStatus"
+            :options="OPERATIONAL_STATUS_FILTER_OPTIONS"
+            @update:model-value="applyStatus($event)"
+          />
+        </SvFilterBar>
+
+        <!-- Desktop and tablet: a semantic table. -->
+        <div class="hidden md:block">
+          <SvDataTable
+            :columns="columns"
+            :rows="store.registrations"
+            :row-key="(row) => row.id"
+            caption="Merchant registrations, most recent first"
+            :state="dataState"
+            :error-message="store.error ?? undefined"
+            empty-message="No merchant registrations to monitor yet. Merchants appear here as soon as they self-register."
+            @retry="load"
+          >
+            <template #cell:name="{ row }">
+              <RouterLink
+                :to="merchantDetailLocation(row.id)"
+                class="font-medium text-sv-text underline underline-offset-2"
+                data-testid="registration-detail-link"
+              >
+                {{ row.name }}
+              </RouterLink>
+            </template>
+            <template #cell:operational_status="{ row }">
+              <SvStatusBadge
+                :label="operationalLabel(row.operational_status)"
+                :tone="operationalTone(row.operational_status)"
+                size="sm"
+                sr-prefix="Operational status:"
+              />
+            </template>
+            <template #cell:billing_status="{ row }">
+              <SvStatusBadge
+                :label="billingLabel(row.billing_status)"
+                :tone="billingTone(row.billing_status)"
+                size="sm"
+                sr-prefix="Billing status:"
+              />
+            </template>
+          </SvDataTable>
+        </div>
+
+        <!-- Mobile: labelled record cards, never a sideways-scrolling table. -->
+        <div class="md:hidden">
+          <SvResponsiveRecordList
+            :columns="columns"
+            :rows="store.registrations"
+            :row-key="(row) => row.id"
+            caption="Merchant registrations, most recent first"
+            :state="dataState"
+            :error-message="store.error ?? undefined"
+            empty-message="No merchant registrations to monitor yet. Merchants appear here as soon as they self-register."
+            @retry="load"
+          >
+            <template #cell:name="{ row }">
+              <RouterLink
+                :to="merchantDetailLocation(row.id)"
+                class="font-medium text-sv-text underline underline-offset-2"
+                data-testid="registration-detail-link"
+              >
+                {{ row.name }}
+              </RouterLink>
+            </template>
+            <template #cell:operational_status="{ row }">
+              <SvStatusBadge
+                :label="operationalLabel(row.operational_status)"
+                :tone="operationalTone(row.operational_status)"
+                size="sm"
+                sr-prefix="Operational status:"
+              />
+            </template>
+            <template #cell:billing_status="{ row }">
+              <SvStatusBadge
+                :label="billingLabel(row.billing_status)"
+                :tone="billingTone(row.billing_status)"
+                size="sm"
+                sr-prefix="Billing status:"
+              />
+            </template>
+          </SvResponsiveRecordList>
+        </div>
+
+        <SvPagination
+          v-if="meta !== null && meta.last_page > 1"
+          class="mt-4"
+          :current-page="meta.current_page"
+          :last-page="meta.last_page"
+          :total="meta.total"
+          label="Registration pages"
+          data-testid="registrations-pagination"
+          @change="goToPage"
         />
-      </SvFilterBar>
+      </SvPanel>
 
-      <!-- Desktop and tablet: a semantic table. -->
-      <div class="hidden md:block">
-        <SvDataTable
-          :columns="columns"
-          :rows="store.registrations"
-          :row-key="(row) => row.id"
-          caption="Merchant registrations, most recent first"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No merchant registrations to monitor yet. Merchants appear here as soon as they self-register."
-          @retry="load"
-        >
-          <template #cell:name="{ row }">
-            <RouterLink
-              :to="merchantDetailLocation(row.id)"
-              class="font-medium text-sv-text underline underline-offset-2"
-              data-testid="registration-detail-link"
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Registration monitoring boundaries"
+      >
+        <div class="sv-r-note sv-r-tone-warm">
+          <div class="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-tone-warm"
             >
-              {{ row.name }}
-            </RouterLink>
-          </template>
-          <template #cell:operational_status="{ row }">
-            <SvStatusBadge
-              :label="operationalLabel(row.operational_status)"
-              :tone="operationalTone(row.operational_status)"
-              size="sm"
-              sr-prefix="Operational status:"
-            />
-          </template>
-          <template #cell:billing_status="{ row }">
-            <SvStatusBadge
-              :label="billingLabel(row.billing_status)"
-              :tone="billingTone(row.billing_status)"
-              size="sm"
-              sr-prefix="Billing status:"
-            />
-          </template>
-        </SvDataTable>
-      </div>
-
-      <!-- Mobile: labelled record cards, never a sideways-scrolling table. -->
-      <div class="md:hidden">
-        <SvResponsiveRecordList
-          :columns="columns"
-          :rows="store.registrations"
-          :row-key="(row) => row.id"
-          caption="Merchant registrations, most recent first"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No merchant registrations to monitor yet. Merchants appear here as soon as they self-register."
-          @retry="load"
-        >
-          <template #cell:name="{ row }">
-            <RouterLink
-              :to="merchantDetailLocation(row.id)"
-              class="font-medium text-sv-text underline underline-offset-2"
-              data-testid="registration-detail-link"
-            >
-              {{ row.name }}
-            </RouterLink>
-          </template>
-          <template #cell:operational_status="{ row }">
-            <SvStatusBadge
-              :label="operationalLabel(row.operational_status)"
-              :tone="operationalTone(row.operational_status)"
-              size="sm"
-              sr-prefix="Operational status:"
-            />
-          </template>
-          <template #cell:billing_status="{ row }">
-            <SvStatusBadge
-              :label="billingLabel(row.billing_status)"
-              :tone="billingTone(row.billing_status)"
-              size="sm"
-              sr-prefix="Billing status:"
-            />
-          </template>
-        </SvResponsiveRecordList>
-      </div>
-
-      <SvPagination
-        v-if="meta !== null && meta.last_page > 1"
-        class="mt-4"
-        :current-page="meta.current_page"
-        :last-page="meta.last_page"
-        :total="meta.total"
-        label="Registration pages"
-        data-testid="registrations-pagination"
-        @change="goToPage"
-      />
-
-      <!--
+              <SvIconLocked />
+            </span>
+            <p class="sv-r-note__title">
+              Observation only
+            </p>
+          </div>
+          <p
+            class="sv-r-note__body"
+            data-testid="registrations-no-activation-note"
+          >
+            There is no approve, activate or create-merchant action here, and none exists in the API.
+            A registration becomes an operating merchant when its owner completes setup.
+          </p>
+        </div>
+        <!--
         Truthful unavailability. Every line names a field or filter the contract asks for and the
         shipped read does not carry, so the gap is visible to the operator instead of being papered
         over with an always-empty risk column.
       -->
-      <SvAlert
-        severity="info"
-        title="Not yet available on this page"
-        class="mt-8"
-        data-testid="registrations-unavailable-evidence"
-      >
-        <ul class="list-disc space-y-1 pl-5">
-          <li>
-            Owner email, plan selection and trial start are not carried by the registration read, so
-            they are not shown rather than guessed.
-          </li>
-          <li>
-            Risk indicators, duplicate-business warnings, velocity, IP and device signals and
-            referral anomalies have no backing field. No registration on this page has been screened
-            for them.
-          </li>
-          <li>
-            Governance notes and escalation are recorded only as the mandatory reason on a
-            suspend, reactivate or deactivate action, on the merchant’s own page.
-          </li>
-          <li>
-            Filtering is by operational status only; date, plan, setup-completion, risk and source
-            filters are not accepted by the shipped read.
-          </li>
-        </ul>
-      </SvAlert>
-
-      <p
-        class="mt-4 text-xs text-sv-text-muted"
-        data-testid="registrations-no-activation-note"
-      >
-        There is no approve, activate or create-merchant action here, and none exists in the API.
-        A registration becomes an operating merchant when its owner completes setup.
-      </p>
-    </template>
+        <SvAlert
+          severity="info"
+          title="Not yet available on this page"
+          data-testid="registrations-unavailable-evidence"
+        >
+          <ul class="list-disc space-y-1 pl-5">
+            <li>
+              Owner email, plan selection and trial start are not carried by the registration read, so
+              they are not shown rather than guessed.
+            </li>
+            <li>
+              Risk indicators, duplicate-business warnings, velocity, IP and device signals and
+              referral anomalies have no backing field. No registration on this page has been screened
+              for them.
+            </li>
+            <li>
+              Governance notes and escalation are recorded only as the mandatory reason on a
+              suspend, reactivate or deactivate action, on the merchant’s own page.
+            </li>
+            <li>
+              Filtering is by operational status only; date, plan, setup-completion, risk and source
+              filters are not accepted by the shipped read.
+            </li>
+          </ul>
+        </SvAlert>
+      </aside>
+    </div>
   </div>
 </template>

@@ -53,7 +53,7 @@ defineEmits<{ click: [event: MouseEvent] }>();
     :disabled="disabled || loading"
     :aria-disabled="disabled || loading"
     :aria-busy="loading || undefined"
-    class="sv-focus-ring inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-colors duration-sv-fast ease-sv-standard disabled:pointer-events-none disabled:border-sv-disabled-border disabled:bg-sv-disabled-bg disabled:text-sv-disabled-fg"
+    class="sv-focus-ring inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-shadow duration-sv-fast ease-sv-standard disabled:pointer-events-none disabled:border-sv-disabled-border disabled:bg-sv-disabled-bg disabled:text-sv-disabled-fg"
     :class="[
       {
         'min-h-sv-touch min-w-sv-touch px-3 text-xs': size === 'sm',

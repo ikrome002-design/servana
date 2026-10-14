@@ -30,8 +30,13 @@ function onSelect(plan: SubscriptionPlan): void {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: a plan CATALOGUE (cards with identity, state and the entitlement entry
+    point) above the selected plan's capability matrix, with the binding rule and the enforcement
+    boundary in the guidance rail.
+  -->
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-plans-screen"
   >
     <SvPageHeader
@@ -45,11 +50,12 @@ function onSelect(plan: SubscriptionPlan): void {
     <template v-else>
       <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
       <PlatformRuleWorkspace>
-        <section
-          aria-label="Subscription plans"
-          class="mb-10"
-        >
-          <SubscriptionPlansSection @select="onSelect" />
+        <section aria-label="Subscription plans">
+          <SubscriptionPlansSection
+            layout="catalogue"
+            :selected-id="selectedPlan?.id ?? null"
+            @select="onSelect"
+          />
         </section>
 
         <section aria-label="Plan entitlements">
@@ -70,6 +76,16 @@ function onSelect(plan: SubscriptionPlan): void {
           <p>
             Removing an entitlement takes effect at the next applicable boundary for merchants already using the capability. Retiring a plan preserves existing subscription history.
           </p>
+        </template>
+        <template #rail>
+          <div class="sv-r-note sv-r-tone-warm">
+            <p class="sv-r-note__title">
+              Enforcement boundary
+            </p>
+            <p class="sv-r-note__body">
+              Entitlements are enforced by the server. Nothing chosen on this page creates a restriction that exists only in the browser.
+            </p>
+          </div>
         </template>
       </PlatformRuleWorkspace>
     </template>

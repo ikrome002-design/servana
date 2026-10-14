@@ -1,0 +1,76 @@
+{
+  "schema": "cor-ui08-ui12-vis-001.reference-inspection.v1",
+  "directory": "C:/Users/nderu/Documents/Development/Product/Template/UI-UX Design Inspiration",
+  "count": 6,
+  "identical_to_ui16_hashes": true,
+  "ui16_record": "docs/frontend/audits/ui-16/design-inspiration-notes.md",
+  "brand_authority": "docs/brand/Servana Brand Identity.md wins on any conflict; no reference colour, logo or copy enters production.",
+  "references": [
+    {
+      "file": "Billings page.webp",
+      "bytes": 38100,
+      "sha256": "8132cc4ae2a268eb5927cea4f30f686c700decb4c072e69cea2785c533be261e",
+      "viewed_in_session": true,
+      "binding_lesson": "Warm airy billing composition: plan emphasis, polished history table, progressive status.",
+      "servana_translation": "Platform rules workspaces, owner subscription/statement, Finance ledgers, exports, refunds and cash-up sheets.",
+      "rejected": "Card entry, payment-method vault, provider actions.",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "file": "Dashboard page.webp",
+      "bytes": 35302,
+      "sha256": "2c88882ff7f7212b5488561b9dfaae6261b4fa1a4ca2612bbc9ef1288a63b236",
+      "viewed_in_session": true,
+      "binding_lesson": "Slim intelligent navigation, asymmetric large surfaces, fine summary stats, confident density, restrained depth.",
+      "servana_translation": "Five role command centres: a dark feature panel leads an asymmetric split; KPI bands, queues and ledgers follow.",
+      "rejected": "Fake balances, charts and transactions; identical KPI grids.",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "file": "Landing page.webp",
+      "bytes": 35458,
+      "sha256": "aeeb688ad065acba4ecf32190de7d6a7ef6c029aa666efaf9896d87930b75fb0",
+      "viewed_in_session": true,
+      "binding_lesson": "Editorial warm hero, confident typography, offset composition.",
+      "servana_translation": "Editorial page headers with wash and eyebrow dot; Get Started orientation headers and principle cards.",
+      "rejected": "Beauty-product mock data; rewriting public landings (untouched).",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "file": "Login page.webp",
+      "bytes": 40390,
+      "sha256": "bffa0c3c5c6ec03cf39df7b616e973dcf19a778dfa8fa6a36deb775d70e100dc",
+      "viewed_in_session": true,
+      "binding_lesson": "Expressive split panel paired with low-friction form.",
+      "servana_translation": "Merchant first-time setup split journey and stepped forms (invite, compensation setup).",
+      "rejected": "Passwords, third-party identity, rebuilding auth (auth untouched).",
+      "width": 1024,
+      "height": 621
+    },
+    {
+      "file": "Notifications page.webp",
+      "bytes": 24344,
+      "sha256": "5ef0a60a382b7b32740ace079f1ea742de2551d80176bc02b8ae4a4247e0d4e2",
+      "viewed_in_session": true,
+      "binding_lesson": "Centred layered modal over a subdued parent; rich list-item anatomy; compact actions.",
+      "servana_translation": "Refined dialog sheet (blurred scrim, hairline, float shadow, warm heading wash), case-file and response-desk list anatomy.",
+      "rejected": "Activating the gated Notifications routes; unread counts.",
+      "width": 1024,
+      "height": 771
+    },
+    {
+      "file": "Profile page.webp",
+      "bytes": 97806,
+      "sha256": "c330f3bf9d8032e43ef0706ec226c5e53956c2996313e9c71b256f6379c42f54",
+      "viewed_in_session": true,
+      "binding_lesson": "Commanding identity header, grouped regions, crisp dividers, selective luminous accents.",
+      "servana_translation": "Dark identity cards with a luminous ring on every account page; staff and merchant identity cards; light-first.",
+      "rejected": "Foreign avatars, invented data, dark-only product, neon palette.",
+      "width": 1024,
+      "height": 1596
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import LegalAcknowledgement from '@/components/legal/LegalAcknowledgement.vue';
 import { getStartedChecklist } from '@/content/getStartedContent';
+import { useRefinedExperience } from '@/design-system/experience';
 import { SvIconCheck, SvIconChevronRight, SvIconLocked } from '@/design-system/icons';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import type { RoleIdentity } from '@/types/roles';
@@ -22,6 +23,8 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ dismiss: [] }>();
 
 const store = useGetStartedStore();
+/** COR-UI08-UI12-VIS-001: the five corrective accounts render the milestone-journey template. */
+const refined = useRefinedExperience();
 const items = computed(() => getStartedChecklist(props.identity));
 const observed = computed(() => new Set(props.observedCompletedIds));
 const isCompleted = (itemId: string): boolean => observed.value.has(itemId)
@@ -36,6 +39,17 @@ const progress = computed(() => {
 const nextItemId = computed(() =>
   items.value.find((item) => !isCompleted(item.id) && (item.kind === 'acknowledge' || (item.kind === 'action' && item.routeName)))?.id ?? null,
 );
+
+/** The state a step is in — one vocabulary for both templates. */
+function stepState(itemId: string, kind: string, routeName: unknown): 'done' | 'next' | 'later' | 'open' {
+  if (isCompleted(itemId)) return 'done';
+  if (itemId === nextItemId.value) return 'next';
+  if (kind === 'action' && !routeName) return 'later';
+  return 'open';
+}
+
+/** The step the progress panel names as next. */
+const nextItem = computed(() => items.value.find((item) => item.id === nextItemId.value) ?? null);
 
 /** SVG ring geometry for the progress dial (decorative; the numbers are rendered as text). */
 const RING_RADIUS = 34;
@@ -66,6 +80,7 @@ function onAcknowledged(): void {
     the legal dialog, and future steps still link nowhere.
   -->
   <section
+    v-if="!refined"
     aria-labelledby="get-started-heading"
     class="grid gap-5 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:items-start"
   >
@@ -232,6 +247,213 @@ function onAcknowledged(): void {
       />
     </SvDialog>
   </section>
+  <!--
+    COR-UI08-UI12-VIS-001 — the milestone journey (Merchant Administrator, Branch, Human Resource,
+    Finance). The progress narrative leads on the dark feature surface: the ring, the server-observed
+    count, the step that is up next with its one action, and "Dismiss for now". The steps then run
+    down a milestone rail whose markers say done / next / later. Same checkboxes, same test hooks,
+    same rules: server-observed items cannot be claimed, the acknowledgement opens the legal
+    dialog, and a later-phase step links nowhere.
+  -->
+  <section
+    v-else
+    aria-labelledby="get-started-heading"
+    class="sv-r-stack"
+  >
+    <div class="sv-r-feature">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center">
+        <div>
+          <h2
+            id="get-started-heading"
+            class="sv-r-feature__title"
+          >
+            Get started
+          </h2>
+          <p class="sv-r-feature__hint mt-1 max-w-md">
+            A guided checklist to set up and take your first actions. Your progress is saved on
+            this device.
+          </p>
+          <div class="mt-5 flex items-center gap-5">
+            <svg
+              viewBox="0 0 80 80"
+              class="h-24 w-24 shrink-0 -rotate-90"
+              aria-hidden="true"
+            >
+              <circle
+                cx="40"
+                cy="40"
+                :r="RING_RADIUS"
+                class="sv-checklist-ring__track--feature"
+                fill="none"
+                stroke-width="8"
+              />
+              <circle
+                cx="40"
+                cy="40"
+                :r="RING_RADIUS"
+                class="sv-checklist-ring__value--feature motion-reduce:transition-none"
+                fill="none"
+                stroke-width="8"
+                stroke-linecap="round"
+                :stroke-dasharray="RING_CIRCUMFERENCE"
+                :stroke-dashoffset="ringOffset"
+              />
+            </svg>
+            <div>
+              <p class="sv-r-feature__eyebrow">
+                Setup progress
+              </p>
+              <p class="sv-r-feature__value sv-r-figure-xl mt-1">
+                {{ progress.percent }}%
+              </p>
+              <p
+                class="sv-r-feature__label mt-1"
+                aria-live="polite"
+              >
+                {{ progress.completed }} of {{ progress.total }} complete
+              </p>
+            </div>
+          </div>
+          <div
+            role="progressbar"
+            :aria-valuenow="progress.percent"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-label="Get-started progress"
+            class="mt-5 h-1.5 w-full max-w-sm overflow-hidden rounded-pill bg-white/15"
+          >
+            <div
+              class="h-full rounded-pill bg-sv-accent transition-all duration-sv-normal motion-reduce:transition-none"
+              :style="{ width: `${progress.percent}%` }"
+            />
+          </div>
+        </div>
+
+        <div class="sv-r-feature__cell">
+          <p class="sv-r-feature__eyebrow">
+            Up next
+          </p>
+          <p
+            v-if="nextItem"
+            class="sv-r-feature__title"
+          >
+            {{ nextItem.label }}
+          </p>
+          <p
+            v-else
+            class="sv-r-feature__title"
+          >
+            Every available step is complete
+          </p>
+          <p
+            v-if="nextItem?.responsibleRole"
+            class="sv-r-feature__hint mt-1"
+          >
+            Next action · {{ nextItem.responsibleRole }}
+          </p>
+          <button
+            type="button"
+            class="sv-r-feature-action sv-r-feature-action--ghost sv-focus-ring mt-4"
+            data-testid="dismiss-get-started"
+            @click="emit('dismiss')"
+          >
+            Dismiss for now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ol class="sv-r-steps">
+      <li
+        v-for="(item, index) in items"
+        :key="item.id"
+        class="sv-r-step sv-checklist-milestone"
+        :class="{
+          'sv-r-step--done': stepState(item.id, item.kind, item.routeName) === 'done',
+          'sv-r-step--current': stepState(item.id, item.kind, item.routeName) === 'next',
+          'sv-r-step--future': stepState(item.id, item.kind, item.routeName) === 'later',
+        }"
+        :data-state="stepState(item.id, item.kind, item.routeName)"
+      >
+        <span
+          aria-hidden="true"
+          class="sv-r-step__marker"
+        >
+          <SvIconCheck
+            v-if="isCompleted(item.id)"
+            class="h-5 w-5"
+          />
+          <SvIconLocked
+            v-else-if="item.kind === 'action' && !item.routeName"
+            class="h-4 w-4"
+          />
+          <template v-else>{{ index + 1 }}</template>
+        </span>
+        <div class="sv-r-record flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <label class="flex min-w-0 flex-1 items-start gap-3 text-sm text-sv-text">
+            <input
+              type="checkbox"
+              class="sr-only"
+              :checked="isCompleted(item.id)"
+              :disabled="item.kind === 'acknowledge' || item.completion === 'server'"
+              :data-testid="`checklist-${item.id}`"
+              @change="toggle(item.id)"
+            >
+            <span class="min-w-0">
+              <span class="block font-semibold leading-6 text-sv-text-heading">{{ item.label }}</span>
+              <span class="mt-1 flex flex-wrap items-center gap-2 text-xs text-sv-text-muted">
+                <span
+                  v-if="item.id === nextItemId"
+                  class="sv-r-chip sv-r-chip--tone sv-r-tone-warm"
+                >Up next</span>
+
+                <span v-if="item.responsibleRole">{{ isCompleted(item.id) ? 'Observed complete' : 'Next action' }} · {{ item.responsibleRole }}</span>
+              </span>
+            </span>
+          </label>
+
+          <RouterLink
+            v-if="item.kind === 'action' && item.routeName"
+            :to="{ name: item.routeName }"
+            class="sv-focus-ring shrink-0 self-start md:self-auto"
+            :class="item.id === nextItemId ? 'sv-r-action' : 'sv-r-action sv-r-action--quiet'"
+          >
+            Open<SvIconChevronRight
+              aria-hidden="true"
+              class="h-4 w-4"
+            />
+          </RouterLink>
+          <button
+            v-else-if="item.kind === 'acknowledge'"
+            type="button"
+            class="sv-r-action sv-r-action--quiet sv-focus-ring shrink-0 self-start disabled:opacity-60 md:self-auto"
+            :disabled="store.isLegalAcknowledged(userId, identity)"
+            data-testid="open-acknowledgement"
+            @click="ackOpen = true"
+          >
+            {{ store.isLegalAcknowledged(userId, identity) ? 'Acknowledged' : 'Review & acknowledge' }}
+          </button>
+          <span
+            v-else
+            class="sv-r-chip shrink-0 self-start uppercase tracking-wide md:self-auto"
+            :title="`Available in ${item.phase}`"
+          >{{ item.phase }}</span>
+        </div>
+      </li>
+    </ol>
+
+    <SvDialog
+      :open="ackOpen"
+      title="Acknowledge your role's terms"
+      description="Please review and accept the documents that govern your account."
+      @close="ackOpen = false"
+    >
+      <LegalAcknowledgement
+        :identity="identity"
+        @acknowledged="onAcknowledged"
+      />
+    </SvDialog>
+  </section>
 </template>
 
 <style scoped>
@@ -241,6 +463,19 @@ function onAcknowledged(): void {
     var(--sv-color-surface-raised);
 }
 .sv-checklist-ring__track { stroke: var(--sv-color-surface-subtle); }
+.sv-checklist-ring__track--feature { stroke: color-mix(in srgb, var(--sv-color-refined-feature-fg) 16%, transparent); }
+.sv-checklist-ring__value--feature {
+  stroke: var(--sv-color-refined-feature-accent);
+  transition: stroke-dashoffset var(--sv-motion-duration-normal) var(--sv-motion-ease-standard);
+}
+.sv-checklist-milestone:has(input:focus-visible) .sv-r-step__marker {
+  outline: var(--sv-focus-ring-width) solid var(--sv-color-focus-ring);
+  outline-offset: var(--sv-focus-ring-offset);
+}
+.sv-checklist-milestone[data-state='next'] .sv-r-record {
+  border-color: color-mix(in srgb, var(--sv-color-brand-primary) 55%, var(--sv-color-refined-hairline));
+  box-shadow: var(--sv-shadow-float);
+}
 .sv-checklist-ring__value {
   stroke: var(--sv-color-brand-primary);
   transition: stroke-dashoffset var(--sv-motion-duration-normal) var(--sv-motion-ease-standard);

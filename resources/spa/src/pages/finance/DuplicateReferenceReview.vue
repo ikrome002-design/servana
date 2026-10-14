@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPagination from '@/components/ui/SvPagination.vue';
@@ -57,8 +56,15 @@ onMounted(load);
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — duplicate references as CASE FILES. Each held match leads with the masked
+    reference, its method, the check time and the amount; the held recording and the matched record
+    then sit side by side with an explicit "matches" connector so the checker compares like with
+    like. The override stays behind the existing step-up dialog; the rail states what an override
+    does and never does. No original reference is ever shown.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="finance-duplicate-review"
   >
     <SvPageHeader
@@ -85,91 +91,116 @@ onMounted(load);
       empty-message="No duplicate references are held for review."
       @retry="load"
     >
-      <div
-        class="space-y-4"
-        aria-label="Duplicate reference reviews"
-      >
-        <SvCard
-          v-for="item in store.duplicates"
-          :key="item.id"
-          as="article"
-          class="border-l-4 border-l-sv-warning-border"
+      <div class="sv-r-grid sv-r-split">
+        <div
+          class="sv-r-stack min-w-0"
+          aria-label="Duplicate reference reviews"
         >
-          <div class="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-sv-warning-fg">
-                Exact normalized-reference match
+          <article
+            v-for="item in store.duplicates"
+            :key="item.id"
+            class="sv-r-panel sv-r-panel--flush"
+          >
+            <header class="flex flex-wrap items-start justify-between gap-4 border-b border-sv-border bg-sv-warning-bg px-6 py-5">
+              <div class="min-w-0">
+                <p class="text-xs font-semibold uppercase tracking-wide text-sv-warning-fg">
+                  Exact normalized-reference match
+                </p>
+                <h2 class="sv-numeric mt-1 font-display text-2xl font-extrabold tracking-wide text-heading">
+                  {{ item.reference_masked ?? 'Masked reference unavailable' }}
+                </h2>
+                <p class="mt-1 text-sm text-text-muted">
+                  {{ methodLabel(item.method) }} · checked {{ formatDateTime(item.checked_at) }}
+                </p>
+              </div>
+              <p class="sv-numeric font-display text-2xl font-extrabold text-heading">
+                {{ item.amount.formatted }}
               </p>
-              <h2 class="mt-1 font-display text-lg font-bold text-heading">
-                {{ item.reference_masked ?? 'Masked reference unavailable' }}
-              </h2>
-              <p class="mt-1 text-sm text-text-muted">
-                {{ methodLabel(item.method) }} · checked {{ formatDateTime(item.checked_at) }}
-              </p>
-            </div>
-            <p class="font-display text-xl font-bold text-heading">
-              {{ item.amount.formatted }}
-            </p>
-          </div>
+            </header>
 
-          <div class="mt-4 grid gap-3 md:grid-cols-2">
-            <div class="rounded-control border border-sv-border bg-surface-alt p-3">
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Held recording
-              </p>
-              <p class="mt-1 font-semibold text-heading">
-                Invoice {{ item.current.invoice_number ?? '—' }}
-              </p>
-              <p class="mt-1 text-sm text-text-muted">
-                {{ item.current.recorded_by }} · {{ statusLabel(item.current.group_status) }}
-              </p>
-            </div>
-            <div class="rounded-control border border-sv-border bg-surface-alt p-3">
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Matched record
-              </p>
-              <template v-if="item.conflict">
-                <p class="mt-1 font-semibold text-heading">
-                  Invoice {{ item.conflict.invoice_number ?? '—' }}
+            <div class="grid items-stretch gap-3 p-5 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+              <section class="sv-r-record">
+                <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-sun">
+                  Held recording
+                </p>
+                <p class="mt-2 font-semibold text-heading">
+                  Invoice {{ item.current.invoice_number ?? '—' }}
                 </p>
                 <p class="mt-1 text-sm text-text-muted">
-                  {{ item.conflict.amount.formatted }} · {{ statusLabel(item.conflict.group_status) }}
+                  {{ item.current.recorded_by }} · {{ statusLabel(item.current.group_status) }}
                 </p>
-              </template>
-              <p
-                v-else
-                class="mt-1 text-sm text-text-muted"
-              >
-                Conflict detail is unavailable in this authorized branch scope.
-              </p>
+              </section>
+              <span
+                class="self-center justify-self-center rounded-pill border border-sv-warning-border bg-sv-warning-bg px-3 py-1 text-xs font-semibold text-sv-warning-fg"
+              >matches</span>
+              <section class="sv-r-record">
+                <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-neutral">
+                  Matched record
+                </p>
+                <template v-if="item.conflict">
+                  <p class="mt-2 font-semibold text-heading">
+                    Invoice {{ item.conflict.invoice_number ?? '—' }}
+                  </p>
+                  <p class="mt-1 text-sm text-text-muted">
+                    {{ item.conflict.amount.formatted }} · {{ statusLabel(item.conflict.group_status) }}
+                  </p>
+                </template>
+                <p
+                  v-else
+                  class="mt-2 text-sm text-text-muted"
+                >
+                  Conflict detail is unavailable in this authorized branch scope.
+                </p>
+              </section>
             </div>
-          </div>
 
-          <div class="mt-4 flex flex-wrap justify-end gap-2">
-            <RouterLink
-              class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-3 py-2 text-sm font-semibold text-heading underline"
-              :to="{ name: 'finance.payments-validation-detail', params: { groupUlid: item.current.group_id } }"
-            >
-              Open validation
-            </RouterLink>
-            <SvButton
-              v-if="item.can_override"
-              variant="secondary"
-              @click="selected = item"
-            >
-              Review override
-            </SvButton>
-          </div>
-        </SvCard>
+            <footer class="flex flex-wrap justify-end gap-2 border-t border-sv-border px-5 py-4">
+              <RouterLink
+                class="sv-r-action sv-r-action--quiet sv-focus-ring"
+                :to="{ name: 'finance.payments-validation-detail', params: { groupUlid: item.current.group_id } }"
+              >
+                Open validation
+              </RouterLink>
+              <SvButton
+                v-if="item.can_override"
+                variant="secondary"
+                @click="selected = item"
+              >
+                Review override
+              </SvButton>
+            </footer>
+          </article>
+
+          <SvPagination
+            v-if="store.duplicateMeta && store.duplicateMeta.last_page > 1"
+            :current-page="store.duplicateMeta.current_page"
+            :last-page="store.duplicateMeta.last_page"
+            @change="(page) => { filters.page = page; load(); }"
+          />
+        </div>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Override rules"
+        >
+          <section class="sv-r-note sv-r-tone-sun">
+            <h2 class="sv-r-note__title">
+              What an override does
+            </h2>
+            <p class="sv-r-note__body">
+              It releases the held group into the validation queue with your reason and a high-severity audit event. A fresh step-up may be requested.
+            </p>
+          </section>
+          <section class="sv-r-note sv-r-tone-neutral">
+            <h2 class="sv-r-note__title">
+              What it never does
+            </h2>
+            <p class="sv-r-note__body">
+              It never edits or reveals the original reference, never validates the payment and never issues a receipt.
+            </p>
+          </section>
+        </aside>
       </div>
-
-      <SvPagination
-        v-if="store.duplicateMeta && store.duplicateMeta.last_page > 1"
-        class="mt-5"
-        :current-page="store.duplicateMeta.current_page"
-        :last-page="store.duplicateMeta.last_page"
-        @change="(page) => { filters.page = page; load(); }"
-      />
     </SvStateBoundary>
 
     <SvDialog

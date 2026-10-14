@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { SvIconLocked } from '@/design-system/icons';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
@@ -95,7 +95,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — financial periods as SEALED RANGES on a timeline. Each lock shows its
+    date range, scope and status beside a lock marker; a locked period carries its reopen trail
+    (requested → owner approval when exceptional → executed with fresh step-up) so the next owner
+    action is unmistakable. Controls and their gates are unchanged.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Financial periods"
       eyebrow="Controls & Close"
@@ -114,69 +120,116 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-sv-error-fg"
+      class="mb-4 rounded-field border border-sv-error-border bg-sv-error-bg px-4 py-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}
     </p>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load financial periods."
       empty-message="No period locks yet."
     >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="lock in store.locks"
-          :key="lock.id"
+      <div class="sv-r-grid sv-r-split">
+        <ol
+          class="sv-r-steps min-w-0"
+          aria-label="Financial period locks"
         >
-          <SvCard
-            as="section"
-            padding="md"
-            data-testid="period-lock-row"
+          <li
+            v-for="lock in store.locks"
+            :key="lock.id"
+            class="sv-r-step"
+            :class="lock.status === 'locked' ? 'sv-r-step--done' : 'sv-r-step--future'"
           >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p class="font-display font-semibold text-heading">
-                  {{ lock.period_start }} → {{ lock.period_end }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  {{ lock.scope === 'merchant' ? 'Merchant-wide' : `Branch: ${lock.branch?.name ?? '—'}` }} · {{ lock.status }}
-                  <span v-if="lock.exception_required"> · exceptional reopen</span>
-                </p>
-                <p
-                  v-if="lock.reopen_requested_at && lock.status === 'locked'"
-                  class="mt-1 text-xs text-text-muted"
+            <span
+              aria-hidden="true"
+              class="sv-r-step__marker"
+            ><SvIconLocked class="h-4 w-4" /></span>
+            <section
+              class="sv-r-record"
+              data-testid="period-lock-row"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="sv-r-eyebrow">
+                    {{ lock.scope === 'merchant' ? 'Merchant-wide' : `Branch: ${lock.branch?.name ?? '—'}` }}
+                  </p>
+                  <h2 class="mt-1 font-display text-lg font-extrabold text-heading">
+                    {{ lock.period_start }} → {{ lock.period_end }}
+                  </h2>
+                  <p class="mt-1 flex flex-wrap items-center gap-2 text-sm text-text-muted">
+                    <span class="inline-flex rounded-pill border border-sv-border bg-surface-alt px-2.5 py-0.5 text-xs font-semibold capitalize text-text">{{ lock.status.replaceAll('_', ' ') }}</span>
+                    <span v-if="lock.exception_required">Exceptional reopen</span>
+                  </p>
+                </div>
+                <div
+                  v-if="canReopen && lock.status === 'locked'"
+                  class="flex flex-wrap gap-2"
                 >
-                  Reopen requested{{ lock.exception_required && !lock.reopen_approved_at ? ' — awaiting Merchant Administrator approval' : '' }}
-                </p>
+                  <SvButton
+                    v-if="!lock.reopen_requested_at"
+                    variant="secondary"
+                    data-testid="period-reopen-request"
+                    @click="reopening = lock"
+                  >
+                    Request reopen
+                  </SvButton>
+                  <SvButton
+                    v-else
+                    data-testid="period-reopen-execute"
+                    :loading="busy"
+                    @click="executeReopen(lock)"
+                  >
+                    Execute reopen
+                  </SvButton>
+                </div>
               </div>
-              <div
-                v-if="canReopen && lock.status === 'locked'"
-                class="flex flex-wrap gap-2"
+              <ol
+                v-if="lock.reopen_requested_at && lock.status === 'locked'"
+                class="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold"
+                aria-label="Reopen trail"
               >
-                <SvButton
-                  v-if="!lock.reopen_requested_at"
-                  variant="secondary"
-                  data-testid="period-reopen-request"
-                  @click="reopening = lock"
+                <li class="rounded-pill border border-sv-success-border bg-sv-success-bg px-2.5 py-1 text-sv-success-fg">
+                  Reopen requested
+                </li>
+                <li
+                  v-if="lock.exception_required"
+                  class="rounded-pill border px-2.5 py-1"
+                  :class="lock.reopen_approved_at ? 'border-sv-success-border bg-sv-success-bg text-sv-success-fg' : 'border-sv-warning-border bg-sv-warning-bg text-sv-warning-fg'"
                 >
-                  Request reopen
-                </SvButton>
-                <SvButton
-                  v-else
-                  data-testid="period-reopen-execute"
-                  :loading="busy"
-                  @click="executeReopen(lock)"
-                >
-                  Execute reopen
-                </SvButton>
-              </div>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
+                  {{ lock.reopen_approved_at ? 'Owner approved' : 'Awaiting Merchant Administrator approval' }}
+                </li>
+                <li class="rounded-pill border border-sv-border bg-surface-alt px-2.5 py-1 text-text-muted">
+                  Execute with fresh step-up
+                </li>
+              </ol>
+            </section>
+          </li>
+        </ol>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Period lock rules"
+        >
+          <section class="sv-r-note sv-r-tone-teal">
+            <h2 class="sv-r-note__title">
+              What a lock does
+            </h2>
+            <p class="sv-r-note__body">
+              Financial changes dated inside a locked period are refused. Reads, receipts, disputes and exports stay available.
+            </p>
+          </section>
+          <section class="sv-r-note sv-r-tone-sun">
+            <h2 class="sv-r-note__title">
+              Reopening
+            </h2>
+            <p class="sv-r-note__body">
+              Every reopen records a reason and needs a fresh step-up. An exceptional lock also needs a distinct Merchant Administrator approval.
+            </p>
+          </section>
+        </aside>
+      </div>
     </SvStateBoundary>
 
     <SvDialog

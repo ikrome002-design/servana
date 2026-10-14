@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPagination from '@/components/ui/SvPagination.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -70,8 +69,14 @@ onMounted(() => {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a time-based EVIDENCE STREAM. Each masked event carries its time as the
+    row's anchor beside the event card (what happened, who, which kind of record, severity, and the
+    masked context one disclosure away); the filters and the boundary — raw review and exports stay
+    with the Audit account — live in the rail. Read-only throughout.
+  -->
   <section
-    class="mx-auto max-w-5xl"
+    class="sv-r-page"
     data-testid="hr-audit-activity"
   >
     <SvPageHeader
@@ -80,122 +85,124 @@ onMounted(() => {
       description="A masked, read-only timeline of staff access, eligibility, availability, compensation configuration and payout-preparation events in your assigned branch."
     />
 
-    <SvCard
-      as="form"
-      class="grid gap-4 md:grid-cols-[1fr_1fr_auto]"
-      aria-label="HR audit filters"
-      @submit.prevent="load(1)"
-    >
-      <SvSelect
-        id="hr-audit-domain"
-        v-model="filters.domain"
-        label="Activity area"
-        :options="domainOptions"
-      />
-      <SvSelect
-        id="hr-audit-severity"
-        v-model="filters.severity"
-        label="Severity"
-        :options="severityOptions"
-      />
-      <div class="flex items-end gap-2">
-        <SvButton type="submit">
-          Apply
-        </SvButton>
-        <SvButton
-          type="button"
-          variant="ghost"
-          @click="reset"
+    <div class="sv-r-grid sv-r-split">
+      <div class="min-w-0">
+        <SvStateBoundary
+          :state="state"
+          :error-message="store.error ?? undefined"
+          empty-message="No HR activity matches these filters."
+          @retry="load(filters.page)"
         >
-          Reset
-        </SvButton>
-      </div>
-    </SvCard>
-
-    <p
-      class="mt-4 rounded-control border border-sv-info-border bg-sv-info-bg px-4 py-3 text-sm text-sv-info-fg"
-      role="note"
-    >
-      Raw cross-module audit review, flagged-event decisions and exports stay with the Audit account. Human Resource cannot export client or payment data here.
-    </p>
-
-    <SvStateBoundary
-      class="mt-5"
-      :state="state"
-      :error-message="store.error ?? undefined"
-      empty-message="No HR activity matches these filters."
-      @retry="load(filters.page)"
-    >
-      <ol
-        class="relative grid gap-3 border-l border-sv-border pl-5"
-        aria-label="HR audit timeline"
-      >
-        <li
-          v-for="event in store.auditEvents"
-          :key="event.id"
-          class="relative"
-        >
-          <span
-            class="absolute -left-[1.63rem] top-5 h-3 w-3 rounded-full border-2 border-sv-surface-raised bg-sv-brand"
-            aria-hidden="true"
-          />
-          <SvCard as="article">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 class="font-display font-bold capitalize text-heading">
-                  {{ humanize(event.action) }}
-                </h2>
-                <p class="mt-1 text-sm text-text-muted">
-                  {{ event.actor ?? 'System' }} · {{ event.subject_type ?? 'HR record' }}
-                </p>
-              </div>
-              <SvStatusBadge
-                :label="severityPresentation(event.severity).label"
-                :tone="tone(event.severity)"
-              />
-            </div>
-            <time
-              class="mt-3 block text-xs text-text-muted"
-              :datetime="event.created_at ?? undefined"
+          <ol
+            class="grid gap-3"
+            aria-label="HR audit timeline"
+          >
+            <li
+              v-for="event in store.auditEvents"
+              :key="event.id"
+              class="grid grid-cols-1 gap-3 md:grid-cols-[7.5rem_minmax(0,1fr)]"
             >
-              {{ event.created_at ? formatDateTime(event.created_at) : 'Time unavailable' }}
-            </time>
-            <details
-              v-if="contextPairs(event).length"
-              class="mt-3 rounded-control bg-surface-alt p-3"
-            >
-              <summary class="sv-focus-ring cursor-pointer rounded-control text-sm font-semibold text-heading">
-                Masked event context
-              </summary>
-              <dl class="mt-3 grid gap-2 md:grid-cols-2">
-                <div
-                  v-for="[label, value] in contextPairs(event)"
-                  :key="label"
-                >
-                  <dt class="text-xs capitalize text-text-muted">
-                    {{ label }}
-                  </dt>
-                  <dd class="break-words text-sm text-text">
-                    {{ value }}
-                  </dd>
+              <time
+                class="sv-r-eyebrow pt-4 md:text-right"
+                :datetime="event.created_at ?? undefined"
+              >
+                {{ event.created_at ? formatDateTime(event.created_at) : 'Time unavailable' }}
+              </time>
+              <article class="sv-r-record sv-r-record--spine sv-r-tone-green pl-6">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 class="font-display font-bold capitalize text-heading">
+                      {{ humanize(event.action) }}
+                    </h2>
+                    <p class="mt-1 text-sm text-text-muted">
+                      {{ event.actor ?? 'System' }} · {{ event.subject_type ?? 'HR record' }}
+                    </p>
+                  </div>
+                  <SvStatusBadge
+                    :label="severityPresentation(event.severity).label"
+                    :tone="tone(event.severity)"
+                  />
                 </div>
-              </dl>
-            </details>
-          </SvCard>
-        </li>
-      </ol>
-    </SvStateBoundary>
+                <details
+                  v-if="contextPairs(event).length"
+                  class="mt-3 rounded-card bg-sv-surface-subtle p-3"
+                >
+                  <summary class="sv-focus-ring cursor-pointer rounded-control text-sm font-semibold text-heading">
+                    Masked event context
+                  </summary>
+                  <dl class="mt-3 grid gap-2 md:grid-cols-2">
+                    <div
+                      v-for="[label, value] in contextPairs(event)"
+                      :key="label"
+                    >
+                      <dt class="text-xs capitalize text-text-muted">
+                        {{ label }}
+                      </dt>
+                      <dd class="break-words text-sm text-text">
+                        {{ value }}
+                      </dd>
+                    </div>
+                  </dl>
+                </details>
+              </article>
+            </li>
+          </ol>
+        </SvStateBoundary>
 
-    <SvPagination
-      v-if="store.auditMeta && store.auditMeta.last_page > 1"
-      class="mt-5"
-      :current-page="store.auditMeta.current_page"
-      :last-page="store.auditMeta.last_page"
-      :per-page="store.auditMeta.per_page"
-      :total="store.auditMeta.total"
-      label="HR audit pages"
-      :disabled="store.loading"
-      @change="load"
-    />
+        <SvPagination
+          v-if="store.auditMeta && store.auditMeta.last_page > 1"
+          class="mt-5"
+          :current-page="store.auditMeta.current_page"
+          :last-page="store.auditMeta.last_page"
+          :per-page="store.auditMeta.per_page"
+          :total="store.auditMeta.total"
+          label="HR audit pages"
+          :disabled="store.loading"
+          @change="load"
+        />
+      </div>
+
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Filters and scope"
+      >
+        <form
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-green grid gap-4"
+          aria-label="HR audit filters"
+          @submit.prevent="load(1)"
+        >
+          <SvSelect
+            id="hr-audit-domain"
+            v-model="filters.domain"
+            label="Activity area"
+            :options="domainOptions"
+          />
+          <SvSelect
+            id="hr-audit-severity"
+            v-model="filters.severity"
+            label="Severity"
+            :options="severityOptions"
+          />
+          <div class="flex items-end gap-2">
+            <SvButton type="submit">
+              Apply
+            </SvButton>
+            <SvButton
+              type="button"
+              variant="ghost"
+              @click="reset"
+            >
+              Reset
+            </SvButton>
+          </div>
+        </form>
+        <p
+          class="sv-r-note sv-r-tone-teal sv-r-note__body"
+          role="note"
+        >
+          Raw cross-module audit review, flagged-event decisions and exports stay with the Audit account. Human Resource cannot export client or payment data here.
+        </p>
+      </aside>
+    </div>
   </section>
 </template>

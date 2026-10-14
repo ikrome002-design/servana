@@ -3,7 +3,6 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
@@ -106,8 +105,14 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a careful, multi-section setup with a live PREVIEW. The form's sections
+    run down a numbered rail (model, terms, window and reason); the rail beside them echoes exactly
+    what has been entered — never a computed amount — states what happens after submission (a
+    separate maker/checker approval), and holds the guarded submit. Same fields, same validation.
+  -->
   <section
-    class="mx-auto max-w-4xl"
+    class="sv-r-page"
     data-testid="hr-compensation-setup"
   >
     <SvPageHeader
@@ -132,158 +137,215 @@ onMounted(async () => {
         </SvAlert>
         <form
           v-else
-          class="grid gap-5"
+          class="sv-r-grid sv-r-split"
           novalidate
           @submit.prevent="submit"
         >
-          <SvCard as="section">
-            <h2 class="font-display text-lg font-bold text-heading">
-              1. Compensation model
-            </h2>
-            <p class="mt-1 text-sm text-text-muted">
-              Choose the shape of declared terms. The database enforces the same model rules.
-            </p>
-            <SvSelect
-              id="compensation-model"
-              v-model="form.compensation_model"
-              class="mt-4"
-              label="Compensation model"
-              :options="[...COMPENSATION_MODELS]"
-              required
-            />
-          </SvCard>
-
-          <SvCard
-            v-if="requiresSalary"
-            as="section"
-          >
-            <h2 class="font-display text-lg font-bold text-heading">
-              2. Salary terms
-            </h2>
-            <div class="mt-4 grid gap-4 md:grid-cols-2">
-              <SvTextInput
-                id="salary-amount"
-                v-model="form.salary_amount_major"
-                label="Salary amount"
-                type="number"
-                inputmode="decimal"
-                required
-                :errors="errors.salary_amount_major ? [errors.salary_amount_major] : []"
-                help="Entered in major units; the server stores integer minor units."
-              />
-              <SvTextInput
-                id="salary-currency"
-                v-model="form.salary_currency"
-                label="Currency"
-                readonly
-              />
-              <SvSelect
-                id="salary-period"
-                v-model="form.salary_period"
-                label="Salary period"
-                :options="[...SALARY_PERIODS]"
-                required
-                :errors="errors.salary_period ? [errors.salary_period] : []"
-              />
-              <SvTextInput
-                id="salary-payout-day"
-                v-model="form.salary_payout_day"
-                label="Payout day (optional)"
-                type="number"
-                inputmode="numeric"
-              />
+          <div class="sv-r-steps min-w-0">
+            <div class="sv-r-step sv-r-step--current">
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >1</span>
+              <section class="sv-r-panel">
+                <h2 class="sv-r-title">
+                  1. Compensation model
+                </h2>
+                <p class="sv-r-panel__desc">
+                  Choose the shape of declared terms. The database enforces the same model rules.
+                </p>
+                <SvSelect
+                  id="compensation-model"
+                  v-model="form.compensation_model"
+                  class="mt-4"
+                  label="Compensation model"
+                  :options="[...COMPENSATION_MODELS]"
+                  required
+                />
+              </section>
             </div>
-          </SvCard>
 
-          <SvCard
-            v-if="requiresRule"
-            as="section"
-          >
-            <h2 class="font-display text-lg font-bold text-heading">
-              2. Commission rule
-            </h2>
-            <SvSelect
-              id="commission-rule"
-              v-model="form.commission_rule_id"
-              class="mt-4"
-              label="Commission rule"
-              :options="ruleOptions"
-              required
-              :errors="errors.commission_rule_id ? [errors.commission_rule_id] : []"
-            />
-            <p
-              v-if="store.rules.length === 0"
-              class="mt-3 text-sm text-text-muted"
+            <div
+              v-if="requiresSalary"
+              class="sv-r-step"
             >
-              No commission rule is available. Create a draft rule from the
-              <RouterLink
-                class="font-semibold text-heading underline"
-                :to="{ name: 'hr.compensation' }"
-              >
-                Compensation List
-              </RouterLink>
-              before using a commission model.
-            </p>
-          </SvCard>
-
-          <SvCard as="section">
-            <h2 class="font-display text-lg font-bold text-heading">
-              {{ requiresSalary || requiresRule ? '3' : '2' }}. Effective window and reason
-            </h2>
-            <div class="mt-4 grid gap-4 md:grid-cols-2">
-              <SvTextInput
-                id="effective-from"
-                v-model="form.effective_from"
-                label="Effective from"
-                type="date"
-                required
-                :errors="errors.effective_from ? [errors.effective_from] : []"
-              />
-              <SvTextInput
-                id="effective-to"
-                v-model="form.effective_to"
-                label="Effective to (optional)"
-                type="date"
-                :errors="errors.effective_to ? [errors.effective_to] : []"
-              />
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >2</span>
+              <section class="sv-r-panel">
+                <h2 class="sv-r-title">
+                  2. Salary terms
+                </h2>
+                <div class="mt-4 grid gap-4 md:grid-cols-2">
+                  <SvTextInput
+                    id="salary-amount"
+                    v-model="form.salary_amount_major"
+                    label="Salary amount"
+                    type="number"
+                    inputmode="decimal"
+                    required
+                    :errors="errors.salary_amount_major ? [errors.salary_amount_major] : []"
+                    help="Entered in major units; the server stores integer minor units."
+                  />
+                  <SvTextInput
+                    id="salary-currency"
+                    v-model="form.salary_currency"
+                    label="Currency"
+                    readonly
+                  />
+                  <SvSelect
+                    id="salary-period"
+                    v-model="form.salary_period"
+                    label="Salary period"
+                    :options="[...SALARY_PERIODS]"
+                    required
+                    :errors="errors.salary_period ? [errors.salary_period] : []"
+                  />
+                  <SvTextInput
+                    id="salary-payout-day"
+                    v-model="form.salary_payout_day"
+                    label="Payout day (optional)"
+                    type="number"
+                    inputmode="numeric"
+                  />
+                </div>
+              </section>
             </div>
-            <SvTextArea
-              id="change-reason"
-              v-model="form.change_reason"
-              class="mt-4"
-              label="Change reason"
-              required
-              :errors="errors.change_reason ? [errors.change_reason] : []"
-            />
-            <SvTextArea
-              id="compensation-notes"
-              v-model="form.notes"
-              class="mt-4"
-              label="Notes (optional)"
-            />
-          </SvCard>
 
-          <SvAlert
-            v-if="error"
-            severity="error"
-            title="Setup not saved"
-          >
-            {{ error }}
-          </SvAlert>
-          <div class="flex flex-wrap justify-end gap-2">
-            <RouterLink
-              class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-border px-4 py-2 text-sm font-semibold text-heading"
-              :to="{ name: 'hr.compensation-detail', params: { staffUlid: member.id } }"
+            <div
+              v-if="requiresRule"
+              class="sv-r-step"
             >
-              Cancel
-            </RouterLink>
-            <SvButton
-              type="submit"
-              :loading="saving"
-            >
-              Create draft
-            </SvButton>
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >2</span>
+              <section class="sv-r-panel">
+                <h2 class="sv-r-title">
+                  2. Commission rule
+                </h2>
+                <SvSelect
+                  id="commission-rule"
+                  v-model="form.commission_rule_id"
+                  class="mt-4"
+                  label="Commission rule"
+                  :options="ruleOptions"
+                  required
+                  :errors="errors.commission_rule_id ? [errors.commission_rule_id] : []"
+                />
+                <p
+                  v-if="store.rules.length === 0"
+                  class="mt-3 text-sm text-text-muted"
+                >
+                  No commission rule is available. Create a draft rule from the
+                  <RouterLink
+                    class="font-semibold text-heading underline"
+                    :to="{ name: 'hr.compensation' }"
+                  >
+                    Compensation List
+                  </RouterLink>
+                  before using a commission model.
+                </p>
+              </section>
+            </div>
+
+            <div class="sv-r-step">
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >{{ requiresSalary || requiresRule ? '3' : '2' }}</span>
+              <section class="sv-r-panel">
+                <h2 class="sv-r-title">
+                  {{ requiresSalary || requiresRule ? '3' : '2' }}. Effective window and reason
+                </h2>
+                <div class="mt-4 grid gap-4 md:grid-cols-2">
+                  <SvTextInput
+                    id="effective-from"
+                    v-model="form.effective_from"
+                    label="Effective from"
+                    type="date"
+                    required
+                    :errors="errors.effective_from ? [errors.effective_from] : []"
+                  />
+                  <SvTextInput
+                    id="effective-to"
+                    v-model="form.effective_to"
+                    label="Effective to (optional)"
+                    type="date"
+                    :errors="errors.effective_to ? [errors.effective_to] : []"
+                  />
+                </div>
+                <SvTextArea
+                  id="change-reason"
+                  v-model="form.change_reason"
+                  class="mt-4"
+                  label="Change reason"
+                  required
+                  :errors="errors.change_reason ? [errors.change_reason] : []"
+                />
+                <SvTextArea
+                  id="compensation-notes"
+                  v-model="form.notes"
+                  class="mt-4"
+                  label="Notes (optional)"
+                />
+              </section>
+            </div>
           </div>
+
+          <aside
+            class="sv-r-stack-sm sv-r-sticky"
+            aria-label="Draft preview and submission"
+          >
+            <div class="sv-r-panel sv-r-panel--tonal sv-r-tone-teal">
+              <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+                Draft preview
+              </p>
+              <dl class="sv-r-facts mt-2">
+                <div>
+                  <dt>Model</dt>
+                  <dd>{{ COMPENSATION_MODELS.find((m) => m.value === form.compensation_model)?.label ?? 'Not chosen' }}</dd>
+                </div>
+                <div v-if="requiresSalary">
+                  <dt>Salary as entered</dt>
+                  <dd>{{ form.salary_amount_major || '—' }} {{ form.salary_currency }} · {{ SALARY_PERIODS.find((p) => p.value === form.salary_period)?.label ?? '—' }}</dd>
+                </div>
+                <div v-if="requiresRule">
+                  <dt>Commission rule</dt>
+                  <dd>{{ ruleOptions.find((r) => r.value === form.commission_rule_id)?.label ?? 'Not chosen' }}</dd>
+                </div>
+                <div>
+                  <dt>Effective</dt>
+                  <dd>{{ form.effective_from || '—' }} → {{ form.effective_to || 'open ended' }}</dd>
+                </div>
+              </dl>
+              <p class="sv-r-muted mt-3">
+                This creates a draft only. You submit it for approval separately, and a different authorised user approves it; nothing takes effect before that.
+              </p>
+            </div>
+            <SvAlert
+              v-if="error"
+              severity="error"
+              title="Setup not saved"
+            >
+              {{ error }}
+            </SvAlert>
+            <div class="flex flex-wrap gap-2">
+              <SvButton
+                type="submit"
+                :loading="saving"
+              >
+                Create draft
+              </SvButton>
+              <RouterLink
+                class="sv-r-action sv-r-action--quiet sv-focus-ring"
+                :to="{ name: 'hr.compensation-detail', params: { staffUlid: member.id } }"
+              >
+                Cancel
+              </RouterLink>
+            </div>
+          </aside>
         </form>
       </template>
     </SvStateBoundary>

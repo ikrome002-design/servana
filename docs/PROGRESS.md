@@ -153,7 +153,49 @@ while the repository records said the work was complete.
 | UI-14 | Personnel experience (20 pages) | ✅ `verified_complete` | PR [#65](https://github.com/ikrome002-design/servana/pull/65) merged — normal squash `20c27dca…` (single parent `43b623c0…`, REM-DEP-003), implementation commit `04b68169…`, final reviewed head `92603fa6…`, equal reviewed/merge tree `93ec8269…`, merged `2026-10-10T22:25:00Z`. Exact-head CI `38089104875` (attempt 1, the only run on the branch) passed Backend/Frontend/Docker/Security/E2E; governance comment `6102827769`; blank/NONE decision, 0 submitted reviews, 0 approvals (**not** independent approval); source branch absent local + remote. **19 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 20**. | [ui-14.md](proof/ui-14.md) | Reconciled live exactly once on the UI-15 branch (2026-10-11) |
 | UI-15 | Audit experience (15 pages) | ✅ `verified_complete` | PR [#66](https://github.com/ikrome002-design/servana/pull/66) merged `2026-10-11` — normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`, final reviewed head `0ae694b8b8fc37e36ad7296eff9fdfec09cbb002`, equal reviewed/merge tree `73bd2171145a82059b5580a605527000db077d3c`. Exact-head CI run `38160619788` passed Backend/Frontend/Docker/Security/E2E; governance comment `6112205584` (actor `ikrome002-design`); blank decision, **0** submitted reviews, **0** approvals (**not** independent approval); source branch `phase-ui-15-audit-experience` absent local + remote. `UI15-SEC-OBS-001` export-domain authorization closed in the merged code (`AuditExportDomainAuthorizationTest`, 30 cases / 125 assertions). **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15**. | [ui-15.md](proof/ui-15.md) | Reconciled live exactly once on the UI-16 branch (2026-10-12) |
 | UI-16 | Responsive, accessibility, theme, visual regression (incl. UI-08…UI-12 visual remediation) | ✅ `verified_complete` | PR [#67](https://github.com/ikrome002-design/servana/pull/67) merged `2026-10-12T19:01:07Z` — **normal merge commit** `1e8bd5f744a65329ced22c0275b728929aae5245` (parents `088a6cd7…` then final reviewed head `43526c48650ef9559cafe8d1df451b055c0eec2d`), reviewed tree == merge tree `25780c741e02f18fa4e030057636428c77840815`. Exact-head CI `38288846434` five jobs SUCCESS (E2E: archetype step 24 passed, full suite **2,107 passed**, no failed/flaky line in the job log). Governance comment `6130701107`; `reviewDecision` blank, **0** reviews / **0** approvals (**not** independent approval); source branch absent local + remote. **132 implemented / 28 disabled_by_gate / 0 planned / 0 removed = 160**. The 122 active baselines are agent-accepted release files, **not** product-owner approval. | [ui-16.md](proof/ui-16.md) | Reconciled live exactly once on the UI-17 branch (2026-10-13) |
-| UI-17 | Performance, security, production deployment, closeout | 🟡 `local_complete` — uncommitted handoff to Codex (base `1e8bd5f7…`); live production acceptance `blocked_external` (DNS lame delegation, no deployment platform) | `phase-ui-17-performance-security-production-closeout` | [ui-17.md](proof/ui-17.md) | Codex code-release recovery authorized; live production DNS/TLS/canary blocked externally (see the UI-17 section) |
+| UI-17 | Performance, security, production deployment, closeout | 🟡 code `merged` (PR [#68](https://github.com/ikrome002-design/servana/pull/68), merge `562ffbbb…`; verified live 2026-10-13 on the COR-UI08-UI12-VIS-001 branch) — **not** `verified_complete`: live production acceptance `blocked_external` (DNS lame delegation, no deployment platform); owner decisions D1–D8 open | `phase-ui-17-performance-security-production-closeout` (deleted) | [ui-17.md](proof/ui-17.md) | See the UI-17 section and its 2026-10-13 merge reconciliation |
+| COR-UI08-UI12-VIS-001 | Corrective reference-grade visual redesign of UI-08 … UI-12 (82 live pages) | 🟡 `local_complete` — uncommitted handoff to Codex (base `562ffbbb…`); **product-owner visual acceptance pending** | `design/ui08-ui12-reference-grade-redesign` | [cor-ui08-ui12-vis-001.md](proof/cor-ui08-ui12-vis-001.md) | Section below |
+
+### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign (UI-08 … UI-12) — local_complete; PR #69 release verification
+
+```text
+phase_id: COR-UI08-UI12-VIS-001 (corrective; not UI-18; does not reopen UI-08…UI-12 functionally)
+branch: design/ui08-ui12-reference-grade-redesign (created from main = origin/main = 562ffbbb…, clean, 0 0)
+base SHA: 562ffbbbbc10351a7185e60fda517d51a260f9db (UI-17 PR #68 merge)
+lifecycle: in_progress → local_complete — NOT verified_complete (no commit, PR, CI or merge)
+product_owner_visual_acceptance: pending (every after frame is agent-reviewed only)
+next_agent: Codex Prompt 2 — verify the handoff manifest, stage exactly its paths, PR + five jobs
+```
+
+**Why:** the product owner rejected the look of the five oldest authenticated experiences
+(dated, flat, generic) despite UI-16's agent scores; this phase is the authorized, material,
+end-to-end visual refresh of all 82 live pages against six binding reference images.
+
+**Delivered (measured):** 82 live pages recomposed (17 / 15 / 15 / 15 / 20); 24 gated pages inert;
+contract 160 = 132 + 28 + 0 + 0; OpenAPI 307 / 358 and permissions 169 / 134 / 35 unchanged; no path
+outside `resources/spa/`, `tests/e2e/`, `docs/`. Scoped `refined` experience on `<html>` for the five
+accounts only (scope guard over eight dashboards). Rubric 29–30 on all 82 (73 at 30, 9 at 29; every
+fidelity-critical dimension 2) — agent judgement, see `page-redesign-acceptance.json`. Evidence:
+82 before + 246 after + 66 populated frames; 20 new corrective baselines and 38 refreshed UI-16
+frames per platform (win32 + linux); 14 defects closed (COR-DEF-001…014). Final-source gates: full
+Playwright **2,218 passed / 0 failed / 1 skipped** (an earlier intermediate run, 2,005 / 131 failed,
+is recorded and not claimed — every failure was fixed at its root as COR-DEF-008…014); UI-16 axe
+132/132; populated axe 82/82; visual 107/107; Vitest 1,465/1,465; lint/typecheck/build, bundle
+budget, edge contract, 15 contract checks, npm + composer audits all clean. Predecessor evidence
+rewritten by the full runs was restored by exact path. Details: the proof and `test-matrix.json`.
+
+**Pending / owners:**
+
+| Item | Owner | Entry condition |
+|---|---|---|
+| Product-owner visual acceptance of the 82 pages | product owner | `product-owner-visual-review.md` |
+| Commit, PR, five exact-head jobs, gitleaks fingerprint for `tokens.generated.ts` digest | Codex Prompt 2 | handoff manifest verified byte-for-byte |
+| UI-17 production DNS/TLS/canary · Phase 25 | DNS owner → Phase 25 | unchanged (`blocked_external`) |
+| UI-17 owner decisions D1–D8 · screen-reader pass | product owner | unchanged |
+| REM-EXP-001 · REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 · REM-RE-002 | existing owners | unchanged |
+| 20D-W · 21R-B · 21N · the 28 gated pages | after External Gate W | Gate W **closed**; not started |
+
+**Codex release checkpoint (2026-10-14):** PR [#69](https://github.com/ikrome002-design/servana/pull/69), implementation `135b05d`, precise public-digest fingerprint `6f25b07`. Independent six-reference/36-comparison review and 510 hashes passed. First hosted Backend failed the three date-glyph source-contract cases (COR-REL-002); date-glyph correction passes the unchanged 17-case guard; COR-REL-003 also fixes populated mobile Compensation Detail clipping, with two new width/theme tests and a 5/5 focused browser run. Fresh exact-head five-job CI remains pending. Code is not merged; owner visual approval remains pending. The handoff lifecycle above records the original entry, not the current Git state. See the [release addendum](frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json).
 
 ### Phase UI-17 — Performance, security, production deployment and closeout — local_complete (uncommitted handoff)
 
@@ -222,6 +264,14 @@ with credentials. Logo derivative — changes the approved single-source logo co
 **Next exact action:** Codex recovery — use the authenticated handoff and `codex-release-addendum.json`; verify `claude-to-codex-handoff.json` byte-for-byte, stage
 exactly its paths, commit, open the UI-17 PR, run the five exact-head jobs, govern and merge; then the
 owner decisions above. Do not start Phase 25 or Gate-W work from this branch.
+
+**Merge reconciliation (2026-10-13, at the start of COR-UI08-UI12-VIS-001; read-only `git`/`gh`, once).**
+PR #68 is merged into `main` as `562ffbbbbc10351a7185e60fda517d51a260f9db` (reviewed head
+`b17474a2bc693861b1e0abd5a381db7081919042`); exact-head CI run `38353563570` Backend, Frontend,
+Docker, Security and E2E all green; no independent review claimed; source branch deleted. The UI-17
+**code** is therefore merged, but the phase stays **not `verified_complete`**: live production
+acceptance remains `blocked_external` (DNS/TLS, Phase 25 infrastructure) and owner decisions D1–D8
+remain open. The UI-17 handoff lines above are historical.
 
 ### Phase UI-16 — Responsive, accessibility, theme and visual regression — verified complete
 
@@ -5333,3 +5383,16 @@ The earlier local stop and two CI fixture failures remain historical evidence. L
 The accepted 48 host checks remain historical proof of unchanged routing/account-context/assets/unauthenticated refusal only; they do not establish new authorization. Current production PHP/nginx CI builds and configured host smoke passed independently. Existing 64 captures / 14 pages scored 28–30 and the six-reference design are unchanged.
 
 **Release lifecycle:** security closeout verified; final proof-commit five-job exact-head CI, governance, normal squash merge and cleanup still pending at this committed checkpoint. No completed E2E result on this head or GitHub merge is invented. Final actual CI/merge/tree/branch evidence belongs to the PR governance and final report; the next authorized UI-16 branch reconciles UI-15 to verified_complete. UI-16 (including mandatory UI-08–UI-12 visual revision), UI-17, Phase 25 and Gate-W-dependent phases remain unstarted.
+
+COR-UI08-UI12-VIS-001 release checkpoint: COR-REL-004 fixes the reproduced Personnel
+request-observer race without changing product behavior or timeouts. First hosted E2E
+was 2,217 passed / 1 flaky / 83 capture-only skips; no clean-first-attempt claim.
+Focused Linux repeat and fresh final-head five-job CI are required. Owner aesthetic
+acceptance remains pending; PR #69 code release has not yet merged. See the single
+phase proof and Codex addendum for all retained failures and skip ownership.
+
+COR-UI08-UI12-VIS-001 / COR-REL-005: second hosted run 38510382179 had one
+dark-contrast retry. Controlled probe proved transient SvButton color interpolation;
+foreground/background pairs now switch atomically with shadow-only animation. A new
+slow-transition browser regression preserves full axe rules. Final exact-head CI remains
+required; aesthetic owner decision and production prerequisites remain pending.

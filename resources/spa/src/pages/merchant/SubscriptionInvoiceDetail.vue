@@ -4,7 +4,6 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -55,129 +54,166 @@ onMounted(() => { void load(); });
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — the invoice as a legible STATEMENT document: an issuer band (Servana's
+    approved logo, the invoice number and status), the billed period, the server's statement lines
+    set right-aligned like a printed invoice, then the document actions the viewer's permission
+    allows and the truthfully-gated M-Pesa payment. The snapshot is immutable and never recomputed.
+  -->
   <section
-    class="mx-auto max-w-4xl"
+    class="sv-r-page"
     data-testid="merchant-subscription-invoice-detail"
   >
-    <nav
-      aria-label="Breadcrumb"
-      class="mb-3 text-sm text-text-muted"
-    >
-      <RouterLink
-        class="sv-focus-ring rounded-control underline"
-        :to="{ name: 'merchant.subscription-invoices' }"
-      >
-        Subscription invoices
-      </RouterLink><span aria-hidden="true"> / </span><span>Invoice detail</span>
-    </nav>
     <SvPageHeader
       :title="invoice?.invoice_number ?? 'Subscription invoice'"
       eyebrow="Subscription & billing"
       description="An immutable merchant-to-Servana invoice snapshot and its authorized billing document."
-    />
+    >
+      <template #breadcrumbs>
+        <nav
+          aria-label="Breadcrumb"
+          class="mb-3 text-sm text-text-muted"
+        >
+          <RouterLink
+            class="sv-focus-ring rounded-control underline"
+            :to="{ name: 'merchant.subscription-invoices' }"
+          >
+            Subscription invoices
+          </RouterLink><span aria-hidden="true"> / </span><span>Invoice detail</span>
+        </nav>
+      </template>
+    </SvPageHeader>
     <SvStateBoundary
-      class="mt-6"
       :state="state"
       :error-message="error ?? undefined"
       empty-message="This invoice is unavailable."
       @retry="load"
     >
-      <SvCard
+      <div
         v-if="invoice"
-        as="article"
+        class="sv-r-grid sv-r-split"
       >
-        <div class="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h2 class="font-display text-lg font-bold text-heading">
-              {{ invoice.invoice_number ?? 'Draft invoice' }}
-            </h2><p class="text-sm text-text-muted">
-              {{ invoice.period_start }} → {{ invoice.period_end }}
+        <article class="sv-r-panel sv-r-panel--flush">
+          <!-- Issuer band -->
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b border-sv-border bg-sv-surface-warm px-6 py-5">
+            <div class="flex items-center gap-3">
+              <img
+                :src="'/assets/brand/Logo.png'"
+                alt=""
+                aria-hidden="true"
+                class="h-11 w-11 rounded-xl bg-white object-contain p-1 shadow-card"
+              >
+              <div>
+                <h2 class="sv-r-title">
+                  {{ invoice.invoice_number ?? 'Draft invoice' }}
+                </h2><p class="text-sm text-text-muted">
+                  {{ invoice.period_start }} → {{ invoice.period_end }}
+                </p>
+              </div>
+            </div><span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-teal">{{ invoice.status }}</span>
+          </div>
+          <!-- Statement lines -->
+          <dl class="px-6 pt-5">
+            <div class="flex items-baseline justify-between gap-4 border-b border-dashed border-sv-border py-3">
+              <dt class="text-sm text-text-muted">
+                Subtotal
+              </dt><dd class="sv-numeric text-sm font-semibold text-text">
+                {{ formatMoney(invoice.subtotal_minor, invoice.currency) }}
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-dashed border-sv-border py-3">
+              <dt class="text-sm text-text-muted">
+                Discount
+              </dt><dd class="sv-numeric text-sm font-semibold text-text">
+                {{ formatMoney(invoice.discount_minor, invoice.currency) }}
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-sv-border py-3">
+              <dt class="text-sm font-semibold text-heading">
+                Total
+              </dt><dd class="sv-numeric font-bold text-heading">
+                {{ formatMoney(invoice.total_minor, invoice.currency) }}
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-4">
+              <dt class="text-sm font-semibold text-heading">
+                Balance
+              </dt><dd class="sv-numeric sv-r-figure-md">
+                {{ formatMoney(invoice.balance_minor, invoice.currency) }}
+              </dd>
+            </div>
+          </dl>
+          <!-- Its own list: a grid nested inside the totals list broke dl > div > dt/dd (axe definition-list). -->
+          <dl class="mx-6 mb-5 grid grid-cols-2 gap-3 rounded-card bg-sv-surface-subtle p-4">
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                Issued
+              </dt><dd class="mt-1 text-text">
+                {{ invoice.issued_at?.slice(0, 10) ?? '—' }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                Due
+              </dt><dd class="mt-1 text-text">
+                {{ invoice.due_at?.slice(0, 10) ?? '—' }}
+              </dd>
+            </div>
+          </dl>
+          <div class="border-t border-sv-border px-6 py-5">
+            <p
+              v-if="invoice.payment_reference_pending"
+              class="rounded-control bg-sv-surface-subtle px-3 py-2 text-sm text-text-muted"
+            >
+              {{ PAYMENT_REFERENCE_PENDING_TEXT }}
             </p>
-          </div><span class="rounded-full bg-surface-alt px-3 py-1 text-sm font-semibold text-text">{{ invoice.status }}</span>
-        </div>
-        <dl class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Subtotal
-            </dt><dd class="mt-1 text-text">
-              {{ formatMoney(invoice.subtotal_minor, invoice.currency) }}
-            </dd>
+            <p
+              v-else-if="invoice.account_reference"
+              class="text-sm text-text"
+            >
+              Account reference: <strong>{{ invoice.account_reference }}</strong>
+            </p>
           </div>
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Discount
-            </dt><dd class="mt-1 text-text">
-              {{ formatMoney(invoice.discount_minor, invoice.currency) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Total
-            </dt><dd class="mt-1 font-bold text-heading">
-              {{ formatMoney(invoice.total_minor, invoice.currency) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Balance
-            </dt><dd class="mt-1 font-bold text-heading">
-              {{ formatMoney(invoice.balance_minor, invoice.currency) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Issued
-            </dt><dd class="mt-1 text-text">
-              {{ invoice.issued_at?.slice(0, 10) ?? '—' }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Due
-            </dt><dd class="mt-1 text-text">
-              {{ invoice.due_at?.slice(0, 10) ?? '—' }}
-            </dd>
-          </div>
-        </dl>
-        <p
-          v-if="invoice.payment_reference_pending"
-          class="mt-6 rounded-control bg-surface-alt px-3 py-2 text-sm text-text-muted"
+        </article>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Invoice document and payment"
         >
-          {{ PAYMENT_REFERENCE_PENDING_TEXT }}
-        </p>
-        <p
-          v-else-if="invoice.account_reference"
-          class="mt-6 text-sm text-text"
-        >
-          Account reference: <strong>{{ invoice.account_reference }}</strong>
-        </p>
-        <div
-          v-if="can('merchant.subscription.invoice.download')"
-          class="mt-6 flex flex-wrap gap-3"
-        >
-          <SvButton
-            :loading="working"
-            :disabled="billingReadOnly"
-            @click="generatePdf"
+          <div
+            v-if="can('merchant.subscription.invoice.download')"
+            class="sv-r-panel"
           >
-            {{ invoice.has_pdf ? 'Regenerate PDF' : 'Generate PDF' }}
-          </SvButton><SvButton
-            v-if="invoice.has_pdf"
-            variant="secondary"
-            :loading="working"
-            @click="download"
+            <p class="sv-r-eyebrow">
+              Billing document
+            </p>
+            <div class="mt-3 flex flex-col gap-2">
+              <SvButton
+                block
+                :loading="working"
+                :disabled="billingReadOnly"
+                @click="generatePdf"
+              >
+                {{ invoice.has_pdf ? 'Regenerate PDF' : 'Generate PDF' }}
+              </SvButton><SvButton
+                v-if="invoice.has_pdf"
+                block
+                variant="secondary"
+                :loading="working"
+                @click="download"
+              >
+                Download PDF
+              </SvButton>
+            </div>
+          </div>
+          <SvAlert
+            severity="info"
+            title="M-Pesa payment is not available"
           >
-            Download PDF
-          </SvButton>
-        </div>
-        <SvAlert
-          severity="info"
-          title="M-Pesa payment is not available"
-          class="mt-6"
-        >
-          External Gate W — Wallet by Citrus collections readiness. This page does not simulate payment initiation, an attempt, or success.
-        </SvAlert>
-      </SvCard>
+            External Gate W — Wallet by Citrus collections readiness. This page does not simulate payment initiation, an attempt, or success.
+          </SvAlert>
+        </aside>
+      </div>
     </SvStateBoundary>
   </section>
 </template>

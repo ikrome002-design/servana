@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
@@ -19,6 +18,7 @@ import {
   COMPENSATION_MODELS,
   PLAN_STATUSES,
   SALARY_PERIODS,
+  describeCommissionRule,
   modelRequiresCommissionRule,
   modelRequiresSalary,
   useCompensationStore,
@@ -128,12 +128,7 @@ function salaryTerms(plan: CompensationPlan): string {
 function ruleTerms(plan: CompensationPlan): string {
   const rule = plan.commission_rule;
   if (!rule) return 'No commission rule';
-  const value =
-    rule.calculation_type === 'percentage'
-      ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%`
-      : money(rule.fixed_amount_minor, rule.currency);
-  const basis = COMMISSION_CALCULATION_BASES.find((b) => b.value === rule.calculation_basis)?.label ?? rule.calculation_basis;
-  return `${value} of ${basis}`;
+  return describeCommissionRule(rule, money);
 }
 
 function preferredFeeCopy(plan: CompensationPlan): string {
@@ -584,46 +579,43 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
   }
   actionError.value = fallback;
 }
+
+/**
+ * Plans grouped by the server's own compensation-model label, in first-seen order; the server's
+ * order is kept within each group. Presentation only — nothing is filtered or recomputed.
+ */
+const plansByModel = computed(() => {
+  const groups = new Map<string, typeof store.plans>();
+  for (const plan of store.plans) {
+    const key = plan.compensation_model_label ?? 'Compensation plan';
+    groups.set(key, [...(groups.get(key) ?? []), plan]);
+  }
+  return [...groups.entries()].map(([model, plans]) => ({ model, plans }));
+});
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — the compensation ROSTER, organised around the model. Plans are grouped
+    by the server's own compensation-model label (order kept within each group); each row leads
+    with the person, then the declared terms, the effective window and the plan's state chips
+    (backdated, awaiting a different approver) with only the actions its capabilities allow.
+    Draft commission rules follow as their own compact list. Declared terms only — no earnings.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="hr-compensation"
   >
     <SvPageHeader
       title="Compensation list"
       eyebrow="Compensation"
       description="Review effective-dated compensation plans and commission rules in your branch. This workspace configures declared terms only."
-    />
-
-    <!-- Async result announcement; focus moves here after a mutation succeeds. -->
-    <p
-      ref="statusRegion"
-      role="status"
-      tabindex="-1"
-      data-testid="comp-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
-      {{ statusMessage }}
-    </p>
-
-    <div
-      v-if="!canView"
-      data-testid="no-permission"
-      class="mt-6"
-    >
-      <SvCard padding="md">
-        <p class="text-sm text-text-muted">
-          You do not have access to compensation configuration.
-        </p>
-      </SvCard>
-    </div>
-
-    <template v-else>
-      <div class="mt-4 flex flex-wrap gap-2">
+      <template
+        v-if="canView && canCreate"
+        #actions
+      >
         <SvButton
-          v-if="canCreate"
           data-testid="open-rule-create"
           variant="secondary"
           @click="openRuleCreate"
@@ -631,15 +623,39 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           New commission rule
         </SvButton>
         <SvButton
-          v-if="canCreate"
           data-testid="open-plan-create"
           @click="openPlanCreate"
         >
           New compensation plan
         </SvButton>
-      </div>
+      </template>
+    </SvPageHeader>
 
-      <div class="mt-4 grid gap-4 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-3">
+    <!-- Async result announcement; focus moves here after a mutation succeeds. -->
+    <p
+      ref="statusRegion"
+      role="status"
+      tabindex="-1"
+      data-testid="comp-status"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    >
+      {{ statusMessage }}
+    </p>
+
+    <div
+      v-if="!canView"
+      data-testid="no-permission"
+      class="mt-2"
+    >
+      <div class="sv-r-panel sv-r-panel--dashed">
+        <p class="text-sm text-text-muted">
+          You do not have access to compensation configuration.
+        </p>
+      </div>
+    </div>
+
+    <template v-else>
+      <div class="sv-r-panel sv-r-panel--sunken mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <SvSelect
           id="comp-status-filter"
           label="Status"
@@ -670,156 +686,180 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         empty-message="No compensation plans match this filter."
         @retry="store.fetchPlans()"
       >
-        <ul
-          class="mt-2 flex flex-col gap-3"
-          aria-label="Compensation plans"
-        >
-          <li
-            v-for="plan in store.plans"
-            :key="plan.id"
-            data-testid="plan-row"
+        <div class="sv-r-stack">
+          <section
+            v-for="group in plansByModel"
+            :key="group.model"
+            :aria-label="group.model"
           >
-            <SvCard padding="sm">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="flex flex-wrap items-center gap-2 font-semibold text-text">
-                    <span class="break-words">{{ plan.staff_display_name ?? 'Staff member' }}</span>
-                    <span
-                      class="rounded-control px-2 py-0.5 text-xs font-medium"
-                      :class="badgeClass(plan.status)"
-                      data-testid="plan-status"
-                    >{{ plan.status_label }}</span>
-                    <span
-                      v-if="plan.is_backdated"
-                      data-testid="plan-backdated"
-                      class="rounded-control bg-warning/15 px-2 py-0.5 text-xs font-medium text-text"
-                    >Backdated</span>
-                    <span
-                      v-if="plan.status === 'pending_approval'"
-                      class="rounded-control bg-cream px-2 py-0.5 text-xs text-sv-text-heading"
-                    >Awaiting a different approver</span>
-                  </p>
-                  <p class="mt-1 text-sm text-text-muted">
-                    {{ plan.compensation_model_label }} · {{ salaryTerms(plan) }} · {{ ruleTerms(plan) }}
-                  </p>
-                  <p class="mt-1 text-xs text-text-muted">
-                    {{ preferredFeeCopy(plan) }}
-                  </p>
-                  <p class="mt-1 text-xs text-text-muted">
-                    Effective from {{ plan.effective_from }}<span v-if="plan.effective_to"> to {{ plan.effective_to }}</span>
-                  </p>
-                  <p class="mt-1 break-all text-xs text-text-muted">
-                    Reference {{ plan.id }}
-                  </p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  <RouterLink
-                    v-if="plan.staff_profile_id"
-                    class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-3 py-2 text-sm font-semibold text-heading underline"
-                    :data-testid="`view-${plan.id}`"
-                    :to="{ name: 'hr.compensation-detail', params: { staffUlid: plan.staff_profile_id } }"
-                  >
-                    View staff terms
-                  </RouterLink>
-                  <SvButton
-                    v-if="canUpdateDraft && plan.capabilities.can_update_draft"
-                    variant="secondary"
-                    :data-testid="`edit-${plan.id}`"
-                    @click="openPlanEdit(plan)"
-                  >
-                    Edit draft
-                  </SvButton>
-                  <SvButton
-                    v-if="canSubmit && plan.capabilities.can_submit"
-                    variant="secondary"
-                    :data-testid="`submit-${plan.id}`"
-                    @click="openConfirm('submit', plan)"
-                  >
-                    Submit
-                  </SvButton>
-                  <SvButton
-                    v-if="canApprove && plan.capabilities.can_approve"
-                    :data-testid="`approve-${plan.id}`"
-                    @click="openConfirm('approve', plan)"
-                  >
-                    Approve
-                  </SvButton>
-                  <SvButton
-                    v-if="canReject && plan.capabilities.can_reject"
-                    variant="secondary"
-                    :data-testid="`reject-${plan.id}`"
-                    @click="openConfirm('reject', plan)"
-                  >
-                    Reject
-                  </SvButton>
-                  <SvButton
-                    v-if="canCancel && plan.capabilities.can_cancel"
-                    variant="destructive"
-                    :data-testid="`cancel-${plan.id}`"
-                    @click="openConfirm('cancel', plan)"
-                  >
-                    Cancel
-                  </SvButton>
-                  <span
-                    v-if="plan.capabilities.is_terminal"
-                    class="self-center text-xs text-text-muted"
-                  >Read-only</span>
-                </div>
-              </div>
-            </SvCard>
-          </li>
-        </ul>
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal mb-3">
+              {{ group.model }} · {{ group.plans.length }}
+            </p>
+            <ul
+              class="flex flex-col gap-3"
+              aria-label="Compensation plans"
+            >
+              <li
+                v-for="plan in group.plans"
+                :key="plan.id"
+                data-testid="plan-row"
+              >
+                <article class="sv-r-record">
+                  <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div class="flex min-w-0 items-start gap-3">
+                      <span
+                        aria-hidden="true"
+                        class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sv-surface-warm font-display text-sm font-extrabold text-sv-text-heading"
+                      >{{ (plan.staff_display_name ?? 'Staff member').slice(0, 2).toUpperCase() }}</span>
+                      <div class="min-w-0">
+                        <p class="flex flex-wrap items-center gap-2 font-semibold text-text">
+                          <span class="break-words font-display text-base font-bold text-heading">{{ plan.staff_display_name ?? 'Staff member' }}</span>
+                          <span
+                            class="rounded-pill px-2.5 py-0.5 text-xs font-semibold"
+                            :class="badgeClass(plan.status)"
+                            data-testid="plan-status"
+                          >{{ plan.status_label }}</span>
+                          <span
+                            v-if="plan.is_backdated"
+                            data-testid="plan-backdated"
+                            class="sv-r-chip sv-r-chip--tone sv-r-tone-sun"
+                          >Backdated</span>
+                          <span
+                            v-if="plan.status === 'pending_approval'"
+                            class="sv-r-chip"
+                          >Awaiting a different approver</span>
+                        </p>
+                        <p class="mt-2 text-sm text-text">
+                          {{ plan.compensation_model_label }} · {{ salaryTerms(plan) }} · {{ ruleTerms(plan) }}
+                        </p>
+                        <p class="mt-1 text-xs text-text-muted">
+                          {{ preferredFeeCopy(plan) }}
+                        </p>
+                        <dl class="sv-r-strip mt-3">
+                          <div>
+                            <dt>Effective</dt>
+                            <dd class="text-sm">
+                              Effective from {{ plan.effective_from }}<span v-if="plan.effective_to"> to {{ plan.effective_to }}</span>
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Reference</dt>
+                            <dd class="break-all text-xs text-text-muted">
+                              Reference {{ plan.id }}
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <RouterLink
+                        v-if="plan.staff_profile_id"
+                        class="sv-r-action sv-r-action--quiet sv-focus-ring"
+                        :data-testid="`view-${plan.id}`"
+                        :to="{ name: 'hr.compensation-detail', params: { staffUlid: plan.staff_profile_id } }"
+                      >
+                        View staff terms
+                      </RouterLink>
+                      <SvButton
+                        v-if="canUpdateDraft && plan.capabilities.can_update_draft"
+                        variant="secondary"
+                        :data-testid="`edit-${plan.id}`"
+                        @click="openPlanEdit(plan)"
+                      >
+                        Edit draft
+                      </SvButton>
+                      <SvButton
+                        v-if="canSubmit && plan.capabilities.can_submit"
+                        variant="secondary"
+                        :data-testid="`submit-${plan.id}`"
+                        @click="openConfirm('submit', plan)"
+                      >
+                        Submit
+                      </SvButton>
+                      <SvButton
+                        v-if="canApprove && plan.capabilities.can_approve"
+                        :data-testid="`approve-${plan.id}`"
+                        @click="openConfirm('approve', plan)"
+                      >
+                        Approve
+                      </SvButton>
+                      <SvButton
+                        v-if="canReject && plan.capabilities.can_reject"
+                        variant="secondary"
+                        :data-testid="`reject-${plan.id}`"
+                        @click="openConfirm('reject', plan)"
+                      >
+                        Reject
+                      </SvButton>
+                      <SvButton
+                        v-if="canCancel && plan.capabilities.can_cancel"
+                        variant="destructive"
+                        :data-testid="`cancel-${plan.id}`"
+                        @click="openConfirm('cancel', plan)"
+                      >
+                        Cancel
+                      </SvButton>
+                      <span
+                        v-if="plan.capabilities.is_terminal"
+                        class="sv-r-chip self-center"
+                      >Read-only</span>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            </ul>
+          </section>
+        </div>
       </SvStateBoundary>
 
       <!-- Draft commission rules available to a plan; editable only while draft (F7). -->
       <section
         v-if="canCreate && store.rules.length > 0"
-        class="mt-8"
+        class="sv-r-panel mt-6"
         aria-labelledby="comp-rules-heading"
       >
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Draft-editable
+        </p>
         <h2
           id="comp-rules-heading"
-          class="font-display text-lg font-bold text-heading"
+          class="sv-r-title mt-1"
         >
           Commission rules
         </h2>
-        <ul class="mt-3 flex flex-col gap-2">
+        <ul class="mt-4 flex flex-col gap-2">
           <li
             v-for="rule in store.rules"
             :key="rule.id"
             data-testid="rule-row"
+            class="sv-r-queue__row"
           >
-            <SvCard padding="sm">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="text-sm text-text">
-                    {{ rule.calculation_type === 'percentage' ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%` : money(rule.fixed_amount_minor, rule.currency) }}
-                    <span class="ml-2 text-text-muted">{{ rule.status_label }} · from {{ rule.effective_from }}</span>
-                  </p>
-                  <!-- Read-only selected-services membership for selected_services rules (§9.1). -->
-                  <p
-                    v-if="rule.applies_to === 'selected_services'"
-                    :data-testid="`rule-selected-services-${rule.id}`"
-                    class="mt-1 break-words text-xs text-text-muted"
-                  >
-                    Selected services: {{ (rule.selected_services ?? []).map((s) => s.name).join(', ') || '—' }}
-                  </p>
-                </div>
-                <SvButton
-                  v-if="canUpdateDraft && rule.is_editable"
-                  variant="ghost"
-                  :data-testid="`edit-rule-${rule.id}`"
-                  @click="openRuleEdit(rule.id)"
-                >
-                  Edit draft
-                </SvButton>
-              </div>
-            </SvCard>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm text-text">
+                <span class="font-display font-extrabold text-heading">{{ rule.calculation_type === 'percentage' ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%` : money(rule.fixed_amount_minor, rule.currency) }}</span>
+                <span class="ml-2 text-text-muted">{{ rule.status_label }} · from {{ rule.effective_from }}</span>
+              </p>
+              <!-- Read-only selected-services membership for selected_services rules (§9.1). -->
+              <p
+                v-if="rule.applies_to === 'selected_services'"
+                :data-testid="`rule-selected-services-${rule.id}`"
+                class="mt-1 break-words text-xs text-text-muted"
+              >
+                Selected services: {{ (rule.selected_services ?? []).map((s) => s.name).join(', ') || '—' }}
+              </p>
+            </div>
+            <SvButton
+              v-if="canUpdateDraft && rule.is_editable"
+              variant="ghost"
+              :data-testid="`edit-rule-${rule.id}`"
+              @click="openRuleEdit(rule.id)"
+            >
+              Edit draft
+            </SvButton>
           </li>
         </ul>
       </section>
     </template>
-
     <!-- ------------------------------------------------------------------ commission-rule draft -->
     <SvDialog
       :open="ruleModalOpen"

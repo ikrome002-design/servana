@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
@@ -11,6 +10,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceDisputeStore } from '@/stores/financeDisputeStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { formatDate } from '@/utils/dates';
 
 /**
  * Finance dispute list (Plan §44; Phase 18B). Finance opens an investigation linked to
@@ -27,6 +27,13 @@ const formError = ref<string | null>(null);
 const form = ref({ invoice: '', payment_record: '', reason: '' });
 
 const canManage = computed(() => permissions.can('finance_dispute.manage'));
+/** COR-UI08-UI12-VIS-001: the loaded disputes placed in their server status lanes (no re-ranking). */
+const lanes = computed(() => [
+  { status: 'open', label: 'Open', tone: 'sv-r-tone-alert' },
+  { status: 'under_review', label: 'Under review', tone: 'sv-r-tone-sun' },
+  { status: 'resolved', label: 'Resolved', tone: 'sv-r-tone-green' },
+  { status: 'rejected', label: 'Rejected', tone: 'sv-r-tone-neutral' },
+].map((lane) => ({ ...lane, items: store.disputes.filter((dispute) => dispute.status === lane.status) })));
 
 const statusOptions = [
   { value: '', label: 'All disputes' },
@@ -70,14 +77,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — disputes as a LIFECYCLE BOARD. The loaded disputes sit in their server
+    status lanes (open → under review → resolved / rejected) so the investigation backlog reads at a
+    glance; each card names the reason, the linked invoice, whether evidence is attached and when it
+    was opened. The disputed source record is never changed by an investigation.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Disputes"
       eyebrow="Merchant-Client Finance"
       description="Disputes raised against recorded payments and receipts, followed from opening to resolution."
     >
       <template #actions>
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-end gap-2">
           <SvSelect
             id="dispute-status-filter"
             v-model="store.filterStatus"
@@ -102,33 +115,54 @@ onMounted(() => {
       error-message="We couldn’t load disputes."
       empty-message="No disputes match this filter."
     >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="dispute in store.disputes"
-          :key="dispute.id"
+      <div class="sv-r-grid-tight md:grid-cols-2 lg:grid-cols-4">
+        <section
+          v-for="lane in lanes"
+          :key="lane.status"
+          class="sv-r-panel sv-r-panel--sunken sv-r-panel--compact min-w-0"
+          :aria-labelledby="`dispute-lane-${lane.status}`"
         >
-          <SvCard
-            as="button"
-            padding="md"
-            class="w-full text-left"
-            data-testid="dispute-row"
-            @click="() => router.push({ name: 'finance.disputes.detail', params: { id: dispute.id } })"
-          >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p class="font-display font-semibold text-heading">
-                  {{ dispute.reason }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  Invoice {{ dispute.invoice?.invoice_number ?? '—' }}
-                  <span v-if="dispute.has_evidence"> · evidence attached</span>
-                </p>
-              </div>
-              <span class="rounded bg-surface-alt px-2 py-0.5 text-xs text-text-muted">{{ dispute.status }}</span>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
+          <div class="flex items-center justify-between gap-2">
+            <h2
+              :id="`dispute-lane-${lane.status}`"
+              class="sv-r-eyebrow sv-r-eyebrow--dot"
+              :class="lane.tone"
+            >
+              {{ lane.label }}
+            </h2>
+            <span class="sv-r-chip">{{ lane.items.length }}</span>
+          </div>
+          <ul class="mt-3 flex flex-col gap-2">
+            <li
+              v-for="dispute in lane.items"
+              :key="dispute.id"
+            >
+              <button
+                type="button"
+                class="sv-r-record sv-r-record--spine sv-focus-ring block w-full text-left"
+                :class="lane.tone"
+                data-testid="dispute-row"
+                @click="() => router.push({ name: 'finance.disputes.detail', params: { id: dispute.id } })"
+              >
+                <span class="block font-display font-bold text-heading">{{ dispute.reason }}</span>
+                <span class="mt-1 block text-sm text-text-muted">
+                  Invoice {{ dispute.invoice?.invoice_number ?? '—' }}<span v-if="dispute.has_evidence"> · evidence attached</span>
+                </span>
+                <span
+                  v-if="dispute.created_at"
+                  class="mt-2 block text-xs text-text-muted"
+                >Opened {{ formatDate(dispute.created_at) }}</span>
+              </button>
+            </li>
+            <li
+              v-if="lane.items.length === 0"
+              class="rounded-field border border-dashed border-sv-border p-3 text-xs text-sv-text-muted"
+            >
+              None in this lane.
+            </li>
+          </ul>
+        </section>
+      </div>
     </SvStateBoundary>
 
     <SvDialog

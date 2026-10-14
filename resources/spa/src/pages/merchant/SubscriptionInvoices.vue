@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -92,7 +91,13 @@ async function download(): Promise<void> {
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-5xl flex-col gap-6">
+  <!--
+    COR-UI08-UI12-VIS-001 — billing history as a density-calibrated LEDGER (the Billings reference's
+    history table): invoice, period, amount and a status pill per row, each row selecting the
+    invoice; the selected invoice opens as a statement card beside it with its document actions.
+    Generation stays blocked in billing read-only; downloading an existing PDF does not.
+  -->
+  <div class="sv-r-page sv-r-stack">
     <SvPageHeader
       class="!mb-0"
       title="Subscription invoices"
@@ -115,103 +120,117 @@ async function download(): Promise<void> {
       empty-message="No subscription invoices have been issued yet."
       @retry="store.fetchInvoices()"
     >
-      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-        <!-- List -->
-        <SvCard>
+      <div class="sv-r-grid lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start">
+        <!-- Ledger -->
+        <section
+          class="sv-r-ledger"
+          aria-labelledby="invoice-ledger-heading"
+        >
+          <div class="sv-r-ledger__head">
+            <h2
+              id="invoice-ledger-heading"
+              class="sv-r-title"
+            >
+              Billing history
+            </h2>
+            <span class="sv-r-chip">{{ store.invoices.length }} on this page</span>
+          </div>
+          <div
+            class="sv-r-ledger__colhead"
+            style="--sv-r-ledger-cols: minmax(0, 1.2fr) minmax(0, 1fr) auto"
+            aria-hidden="true"
+          >
+            <span>Invoice</span><span>Amount</span><span>Status</span>
+          </div>
           <h2 class="sr-only">
             Invoice list
           </h2>
-          <ul
-            role="list"
-            class="flex flex-col divide-y divide-border"
-          >
+          <ul role="list">
             <li
               v-for="invoice in store.invoices"
               :key="invoice.id"
             >
               <button
                 type="button"
-                class="flex w-full items-center justify-between gap-3 px-1 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                :class="{ 'font-semibold text-heading': selected?.id === invoice.id }"
+                class="sv-r-ledger__row sv-focus-ring w-full text-left"
+                :class="{ 'bg-sv-surface-warm': selected?.id === invoice.id }"
+                style="--sv-r-ledger-cols: minmax(0, 1.2fr) minmax(0, 1fr) auto"
                 :aria-current="selected?.id === invoice.id ? 'true' : undefined"
                 :data-testid="`invoice-row-${invoice.id}`"
                 @click="select(invoice)"
               >
-                <span>{{ invoice.invoice_number ?? 'Draft' }}</span>
-                <span class="text-sm text-text-muted">
-                  {{ formatMoney(invoice.total_minor, invoice.currency) }} · {{ invoice.status }}
+                <span class="min-w-0">
+                  <span class="block font-semibold text-sv-text-heading">{{ invoice.invoice_number ?? 'Draft' }}</span>
+                  <span class="block text-xs text-text-muted">{{ invoice.period_start }} → {{ invoice.period_end }}</span>
                 </span>
+                <span class="sv-numeric text-sm font-semibold text-text">{{ formatMoney(invoice.total_minor, invoice.currency) }}</span>
+                <span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-teal justify-self-start">{{ invoice.status }}</span>
               </button>
             </li>
           </ul>
-        </SvCard>
+        </section>
 
-        <!-- Detail -->
-        <SvCard v-if="selected">
+        <!-- Statement -->
+        <section
+          v-if="selected"
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-teal sv-r-sticky"
+          aria-label="Selected invoice"
+        >
           <div class="flex flex-col gap-4">
             <div class="flex items-start justify-between gap-4">
               <div>
+                <p class="sv-r-eyebrow">
+                  Statement
+                </p>
                 <h2
-                  class="font-display text-lg font-bold text-heading"
+                  class="sv-r-title-lg mt-1"
                   data-testid="invoice-number"
                 >
                   {{ selected.invoice_number ?? 'Draft invoice' }}
                 </h2>
-                <p class="text-sm text-text-muted">
+                <p class="sv-r-muted">
                   {{ selected.period_start }} → {{ selected.period_end }}
                 </p>
               </div>
-              <span class="rounded-full bg-surface-alt px-2 py-0.5 text-xs font-semibold text-text">
+              <span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-teal">
                 {{ selected.status }}
               </span>
             </div>
 
-            <dl class="grid gap-3 md:grid-cols-2">
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Subtotal
-                </dt>
-                <dd class="mt-1 text-text">
+            <dl class="sv-r-facts">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Subtotal</dt>
+                <dd class="sv-numeric !mt-0">
                   {{ formatMoney(selected.subtotal_minor, selected.currency) }}
                 </dd>
               </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Discount
-                </dt>
-                <dd class="mt-1 text-text">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Discount</dt>
+                <dd class="sv-numeric !mt-0">
                   {{ formatMoney(selected.discount_minor, selected.currency) }}
                 </dd>
               </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Total
-                </dt>
-                <dd class="mt-1 font-semibold text-heading">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Total</dt>
+                <dd class="sv-numeric !mt-0 text-sv-text-heading">
                   {{ formatMoney(selected.total_minor, selected.currency) }}
                 </dd>
               </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Balance
-                </dt>
-                <dd class="mt-1 text-text">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Balance</dt>
+                <dd class="sv-r-figure-md !mt-0">
                   {{ formatMoney(selected.balance_minor, selected.currency) }}
                 </dd>
               </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Issued
-                </dt>
-                <dd class="mt-1 text-text">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Issued</dt>
+                <dd class="!mt-0">
                   {{ selected.issued_at?.slice(0, 10) ?? '—' }}
                 </dd>
               </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Due
-                </dt>
-                <dd class="mt-1 text-text">
+              <div class="flex items-baseline justify-between gap-3">
+                <dt>Due</dt>
+                <dd class="!mt-0">
                   {{ selected.due_at?.slice(0, 10) ?? '—' }}
                 </dd>
               </div>
@@ -219,7 +238,7 @@ async function download(): Promise<void> {
 
             <p
               v-if="selected.payment_reference_pending"
-              class="rounded-control bg-surface-alt px-3 py-2 text-sm text-text-muted"
+              class="rounded-control bg-sv-surface-subtle px-3 py-2 text-sm text-text-muted"
               data-testid="payment-reference-pending"
             >
               {{ PAYMENT_REFERENCE_PENDING_TEXT }}
@@ -241,11 +260,11 @@ async function download(): Promise<void> {
 
             <div
               v-if="canDownload"
-              class="flex flex-wrap gap-3"
+              class="flex flex-wrap gap-3 border-t border-sv-border pt-4"
             >
               <RouterLink
                 :to="{ name: 'merchant.subscription-invoice-detail', params: { invoiceUlid: selected.id } }"
-                class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-border px-4 py-2 text-sm font-semibold text-heading"
+                class="sv-r-action sv-r-action--quiet sv-focus-ring"
               >
                 Open invoice detail
               </RouterLink>
@@ -277,7 +296,7 @@ async function download(): Promise<void> {
               downloadable.
             </p>
           </div>
-        </SvCard>
+        </section>
       </div>
     </SvStateBoundary>
   </div>

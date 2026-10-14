@@ -24,16 +24,19 @@
  */
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import SvFeaturePanel from '@/components/refined/SvFeaturePanel.vue';
+import SvKpiCard from '@/components/refined/SvKpiCard.vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvDateTime from '@/components/ui/SvDateTime.vue';
 import SvMoney from '@/components/ui/SvMoney.vue';
-import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
 import SvSkeleton from '@/components/ui/SvSkeleton.vue';
-import SvStatTile from '@/components/ui/SvStatTile.vue';
+import SvTonalPageHeader from '@/components/ui/SvTonalPageHeader.vue';
 import { useCan } from '@/composables/useCan';
 import { SvIconChevronRight, SvIconLocked } from '@/design-system/icons';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { usePlatformDashboardStore } from '@/stores/platformDashboardStore';
 
 const store = usePlatformDashboardStore();
@@ -89,20 +92,19 @@ function countOf(map: unknown, key: string): number {
 
 <template>
   <!--
-    Phase UI-16 (UI16-VIS-010): the dashboard used to be six stacked sections of identical
-    full-width single-number boxes — the `sm:grid-cols-*` they relied on never compiled
-    (UI16-RESP-001), so every figure ran edge to edge. It is now one governance narrative: a
-    command hero that states the lifecycle and offers the two places an owner acts, a dominant
-    "waiting for you" queue beside the commercial position, and a supporting band for
-    registrations, audit and the gated integrations. Every figure, definition, time range and
-    drill-through is still the server's; nothing is summed here.
+    COR-UI08-UI12-VIS-001 — the platform command centre.
+
+    Editorial header on the canvas, then ONE dark feature panel carrying the merchant lifecycle
+    (the owner's primary state) beside the commercial position, the governance queue as the
+    dominant "act next" surface, and a supporting band for registrations, audit and the
+    truthfully-gated integrations. Every figure, definition, time range and drill-through is still
+    the server's; nothing is summed here, and a closed gate still shows no figure at all.
   -->
   <div
-    class="mx-auto w-full max-w-7xl"
+    class="sv-r-page"
     data-testid="platform-dashboard-screen"
   >
-    <SvOperationalHero
-      class="mb-6"
+    <SvTonalPageHeader
       eyebrow="Platform governance"
       title="Platform dashboard"
       description="Governance, commercial, registration, risk and audit state across every self-registered merchant."
@@ -112,7 +114,7 @@ function countOf(map: unknown, key: string): number {
         <RouterLink
           v-if="lifecycle?.drill_through"
           :to="{ name: lifecycle.drill_through }"
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-2 rounded-control bg-sv-brand px-4 py-2 text-sm font-semibold text-sv-text-on-brand hover:bg-sv-brand-hover"
+          class="sv-r-action sv-focus-ring"
           data-testid="dashboard-drill-merchants"
         >
           Open the merchant directory
@@ -120,348 +122,296 @@ function countOf(map: unknown, key: string): number {
         <RouterLink
           v-if="commercial?.drill_through"
           :to="{ name: commercial.drill_through }"
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+          class="sv-r-action sv-r-action--quiet sv-focus-ring"
         >
           Open subscription operations
         </RouterLink>
       </template>
-
-      <template v-if="canView">
-        <p
-          class="text-xs text-white/70"
-          data-testid="dashboard-last-refreshed"
-        >
-          Last refreshed
-          <SvDateTime :value="store.lastRefreshed" />
-        </p>
-
-        <SvAlert
-          v-if="store.error"
-          severity="error"
-          title="We could not load the platform dashboard"
-          class="mt-4"
-        >
-          <p>{{ store.error }}</p>
-          <SvButton
-            variant="secondary"
-            size="sm"
-            class="mt-3"
-            data-testid="dashboard-retry"
-            @click="store.load()"
-          >
-            Try again
-          </SvButton>
-        </SvAlert>
-
-        <SvSkeleton
-          v-else-if="store.loading"
-          class="mt-4"
-          shape="text"
-          :lines="3"
-          label="Loading the platform dashboard"
-        />
-
-        <section
-          v-else-if="store.dashboard"
-          aria-labelledby="dash-lifecycle-heading"
-          class="mt-4"
-        >
-          <div class="flex flex-wrap items-baseline justify-between gap-2">
-            <h2
-              id="dash-lifecycle-heading"
-              class="text-xs font-semibold uppercase tracking-[0.16em] text-white/80"
-            >
-              Merchant lifecycle
-            </h2>
-            <p class="text-xs text-white/70">
-              {{ lifecycle?.time_range }}
-            </p>
-          </div>
-          <div
-            class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr_1fr]"
-            data-testid="dashboard-lifecycle"
-          >
-            <div class="rounded-card border border-white/15 bg-white/10 p-4">
-              <p class="text-sm font-medium text-white/80">
-                Total merchants
-              </p>
-              <p class="sv-numeric mt-1 font-display text-4xl font-extrabold leading-none">
-                {{ lifecycle?.total_merchants }}
-              </p>
-              <p class="mt-2 text-xs leading-5 text-white/70">
-                {{ definitionOf(lifecycle, 'total_merchants') }}
-              </p>
-            </div>
-            <div class="rounded-card border border-white/10 bg-white/5 p-4">
-              <p class="text-sm font-medium text-white/80">
-                Active
-              </p>
-              <p class="sv-numeric mt-1 font-display text-3xl font-extrabold leading-none">
-                {{ countOf(lifecycle?.by_operational_status, 'active') }}
-              </p>
-              <p class="mt-2 text-xs leading-5 text-white/70">
-                Operational status only — never merged with billing status.
-              </p>
-            </div>
-            <div class="rounded-card border border-white/10 bg-white/5 p-4">
-              <p class="text-sm font-medium text-white/80">
-                Suspended for billing
-              </p>
-              <p
-                class="sv-numeric mt-1 font-display text-3xl font-extrabold leading-none"
-                data-testid="dashboard-billing-suspended"
-              >
-                {{ lifecycle?.billing_suspended }}
-              </p>
-              <p class="mt-2 text-xs leading-5 text-white/70">
-                A billing suspension is not a policy suspension.
-              </p>
-            </div>
-            <div class="rounded-card border border-white/10 bg-white/5 p-4">
-              <p class="text-sm font-medium text-white/80">
-                Active branches
-              </p>
-              <p class="sv-numeric mt-1 font-display text-3xl font-extrabold leading-none">
-                {{ lifecycle?.active_branches }}
-              </p>
-              <p class="mt-2 text-xs leading-5 text-white/70">
-                {{ definitionOf(lifecycle, 'active_branches') }}
-              </p>
-            </div>
-          </div>
-        </section>
-      </template>
-    </SvOperationalHero>
+      <p
+        v-if="canView"
+        class="sv-r-muted"
+        data-testid="dashboard-last-refreshed"
+      >
+        Last refreshed
+        <SvDateTime :value="store.lastRefreshed" />
+      </p>
+    </SvTonalPageHeader>
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-if="canView && store.dashboard && !store.error && !store.loading">
-      <div class="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
-        <!-- Governance queue: the dominant "act next" surface ------------------------------ -->
-        <section
-          aria-labelledby="dash-tasks-heading"
-          class="sv-dash-panel rounded-card border border-sv-border p-5 shadow-card md:p-6"
+    <template v-else>
+      <SvAlert
+        v-if="store.error"
+        severity="error"
+        title="We could not load the platform dashboard"
+      >
+        <p>{{ store.error }}</p>
+        <SvButton
+          variant="secondary"
+          size="sm"
+          class="mt-3"
+          data-testid="dashboard-retry"
+          @click="store.load()"
         >
-          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
-            Governance queue
-          </p>
-          <h2
-            id="dash-tasks-heading"
-            class="mt-1 font-display text-xl font-extrabold text-sv-text-heading"
-          >
-            Waiting for you
-          </h2>
+          Try again
+        </SvButton>
+      </SvAlert>
 
-          <dl
-            class="mt-5 grid gap-3"
-            data-testid="dashboard-tasks"
+      <SvSkeleton
+        v-else-if="store.loading"
+        shape="text"
+        :lines="3"
+        label="Loading the platform dashboard"
+      />
+
+      <div
+        v-else-if="store.dashboard"
+        class="sv-r-stack"
+      >
+        <!-- Row 1: the lifecycle feature panel beside the commercial position ------------------ -->
+        <div class="sv-r-grid sv-r-split-lead">
+          <SvFeaturePanel
+            eyebrow="Merchant lifecycle"
+            title="Every self-registered merchant"
+          >
+            <div
+              class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:items-end"
+              data-testid="dashboard-lifecycle"
+            >
+              <div>
+                <p class="sv-r-feature__label">
+                  Total merchants
+                </p>
+                <p class="sv-r-feature__value sv-r-figure-xl mt-2">
+                  {{ lifecycle?.total_merchants }}
+                </p>
+                <span
+                  aria-hidden="true"
+                  class="sv-r-feature__rule mt-4 block"
+                />
+                <p class="sv-r-feature__hint mt-3 max-w-xs">
+                  {{ definitionOf(lifecycle, 'total_merchants') }}
+                </p>
+              </div>
+              <div class="grid gap-3 md:grid-cols-3">
+                <div class="sv-r-feature__cell">
+                  <p class="sv-r-feature__label">
+                    Active
+                  </p>
+                  <p class="sv-r-feature__value mt-1 text-3xl">
+                    {{ countOf(lifecycle?.by_operational_status, 'active') }}
+                  </p>
+                  <p class="sv-r-feature__hint mt-2">
+                    Operational status only — never merged with billing status.
+                  </p>
+                </div>
+                <div class="sv-r-feature__cell">
+                  <p class="sv-r-feature__label">
+                    Suspended for billing
+                  </p>
+                  <p
+                    class="sv-r-feature__value sv-r-feature__accent mt-1 text-3xl"
+                    data-testid="dashboard-billing-suspended"
+                  >
+                    {{ lifecycle?.billing_suspended }}
+                  </p>
+                  <p class="sv-r-feature__hint mt-2">
+                    A billing suspension is not a policy suspension.
+                  </p>
+                </div>
+                <div class="sv-r-feature__cell">
+                  <p class="sv-r-feature__label">
+                    Active branches
+                  </p>
+                  <p class="sv-r-feature__value mt-1 text-3xl">
+                    {{ lifecycle?.active_branches }}
+                  </p>
+                  <p class="sv-r-feature__hint mt-2">
+                    {{ definitionOf(lifecycle, 'active_branches') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p class="sv-r-feature__hint mt-6">
+              {{ lifecycle?.time_range }}
+            </p>
+          </SvFeaturePanel>
+
+          <SvPanel
+            eyebrow="Commercial position"
+            title="Commercial and billing"
+            :description="commercial?.time_range"
+            tone="sun"
+            class="flex flex-col"
+          >
+            <div
+              class="flex flex-1 flex-col gap-5"
+              data-testid="dashboard-commercial"
+            >
+              <div>
+                <p class="sv-r-kpi__label">
+                  Outstanding balance
+                </p>
+                <p class="sv-r-figure mt-2">
+                  <SvMoney
+                    :minor-units="commercial?.open_invoice_balance_minor"
+                    size="lg"
+                  />
+                </p>
+                <p class="sv-r-muted mt-2">
+                  {{ definitionOf(commercial, 'open_invoice_balance_minor') }}
+                </p>
+              </div>
+              <dl class="sv-r-strip mt-auto">
+                <div>
+                  <dt>Issued invoices</dt>
+                  <dd class="sv-r-figure-md">
+                    {{ commercial?.issued_invoices }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </SvPanel>
+        </div>
+
+        <!-- Row 2: the governance queue (dominant) beside registration monitoring --------------- -->
+        <div class="sv-r-grid sv-r-split-lead">
+          <SvPanel
+            eyebrow="Governance queue"
+            title="Waiting for you"
+            description="Merchants and invoices that need a platform decision, in the server's own vocabulary."
+            tone="warm"
           >
             <!--
-                Each group keeps DOM order dt → dd (UI08-A11Y-001 / axe definition-list). The count is
-                drawn first with CSS `order`; the server's definition, when it supplies one, is a
-                second `dd` of the same term.
-              -->
-            <div
-              v-for="task in governanceTasks"
-              :key="task.key"
-              class="sv-dash-task flex flex-wrap items-center gap-x-4 gap-y-1 rounded-card border border-sv-border p-4"
+              Each group keeps DOM order dt → dd (UI08-A11Y-001 / axe definition-list). The count is
+              drawn first with CSS `order`; the server's definition, when supplied, is a second `dd`.
+            -->
+            <dl
+              class="sv-r-queue"
+              data-testid="dashboard-tasks"
             >
-              <dt class="order-2 min-w-0 flex-1 text-sm font-semibold text-sv-text-heading">
-                {{ task.label }}
-              </dt>
-              <dd class="sv-dash-task__count sv-numeric order-1 inline-flex h-12 min-w-12 shrink-0 items-center justify-center rounded-control px-3 font-display text-xl font-extrabold">
-                {{ task.value }}
-              </dd>
-              <dd
-                v-if="task.definition"
-                class="order-3 w-full pl-16 text-xs leading-5 text-sv-text-muted"
+              <div
+                v-for="task in governanceTasks"
+                :key="task.key"
+                class="sv-r-queue__row sv-r-tone-warm"
               >
-                {{ task.definition }}
-              </dd>
+                <dt class="sv-r-queue__label order-2">
+                  {{ task.label }}
+                </dt>
+                <dd class="sv-r-queue__count order-1">
+                  {{ task.value }}
+                </dd>
+                <dd
+                  v-if="task.definition"
+                  class="sv-r-queue__detail order-3 w-full pl-[3.75rem]"
+                >
+                  {{ task.definition }}
+                </dd>
+              </div>
+            </dl>
+          </SvPanel>
+
+          <SvPanel
+            eyebrow="Registration monitoring"
+            title="New merchants"
+            :description="registrations?.time_range"
+            tone="teal"
+          >
+            <div
+              class="grid gap-3"
+              data-testid="dashboard-registrations"
+            >
+              <dl class="sv-r-strip">
+                <div>
+                  <dt>Last 7 days</dt>
+                  <dd class="sv-r-figure-md">
+                    {{ registrations?.registered_last_7_days }}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Last 30 days</dt>
+                  <dd class="sv-r-figure-md">
+                    {{ registrations?.registered_last_30_days }}
+                  </dd>
+                </div>
+              </dl>
+              <SvKpiCard
+                label="Awaiting setup completion"
+                :hint="definitionOf(registrations, 'awaiting_setup_completion')"
+                tone="teal"
+                :icon="navigationIcon('registration')"
+              >
+                <span class="sv-numeric">{{ registrations?.awaiting_setup_completion }}</span>
+              </SvKpiCard>
             </div>
-          </dl>
-        </section>
+          </SvPanel>
+        </div>
 
-        <!-- Commercial position --------------------------------------------------------------- -->
-        <section
-          aria-labelledby="dash-commercial-heading"
-          class="sv-dash-commercial rounded-card border border-sv-border p-5 shadow-card md:p-6"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
-            Commercial position
-          </p>
-          <h2
-            id="dash-commercial-heading"
-            class="mt-1 font-display text-xl font-extrabold text-sv-text-heading"
+        <!-- Row 3: audit beside the truthfully-unavailable integrations ------------------------- -->
+        <div class="sv-r-grid sv-r-split-even">
+          <SvPanel
+            eyebrow="Audit activity"
+            title="Immutable platform events"
+            :description="audit?.time_range"
+            tone="teal"
           >
-            Commercial and billing
-          </h2>
-          <p class="mt-0.5 text-xs text-sv-text-muted">
-            {{ commercial?.time_range }}
-          </p>
-
-          <div
-            class="mt-5 flex flex-col gap-4"
-            data-testid="dashboard-commercial"
-          >
-            <div>
-              <p class="text-sm font-medium text-sv-text-muted">
-                Outstanding balance
-              </p>
-              <p class="mt-1">
-                <SvMoney
-                  :minor-units="commercial?.open_invoice_balance_minor"
-                  size="lg"
+            <div
+              class="flex flex-wrap items-end justify-between gap-4"
+              data-testid="dashboard-audit"
+            >
+              <div>
+                <p class="sv-r-kpi__label">
+                  Events in the last 7 days
+                </p>
+                <p class="sv-r-figure mt-1">
+                  {{ audit?.events_last_7_days }}
+                </p>
+                <p class="sv-r-muted mt-1 max-w-sm">
+                  {{ definitionOf(audit, 'events_last_7_days') }}
+                </p>
+              </div>
+              <RouterLink
+                v-if="audit?.drill_through"
+                :to="{ name: audit.drill_through }"
+                class="sv-r-link sv-focus-ring rounded-control"
+              >
+                Open platform audit<SvIconChevronRight
+                  aria-hidden="true"
+                  class="h-4 w-4"
                 />
-              </p>
-              <p class="mt-1 text-xs leading-5 text-sv-text-muted">
-                {{ definitionOf(commercial, 'open_invoice_balance_minor') }}
-              </p>
+              </RouterLink>
             </div>
-            <div class="flex items-center justify-between gap-3 rounded-control bg-sv-surface-subtle px-4 py-3">
-              <p class="text-sm font-medium text-sv-text-secondary">
-                Issued invoices
+          </SvPanel>
+
+          <SvPanel
+            variant="dashed"
+            eyebrow="Integrations"
+            title="Wallet and Refer & Earn health"
+          >
+            <template #actions>
+              <span class="sv-r-chip">
+                <SvIconLocked
+                  aria-hidden="true"
+                  class="h-3.5 w-3.5"
+                />
+                Gated
+              </span>
+            </template>
+            <SvAlert
+              v-if="integrations?.availability === 'disabled_by_gate'"
+              severity="info"
+              title="Integration health is unavailable"
+              data-testid="dashboard-integrations-gated"
+            >
+              <p>{{ integrations.gate_statement }}</p>
+              <p class="mt-2 text-xs">
+                No figure is shown for Wallet health, reconciliation exceptions or Refer &amp; Earn
+                qualification. A zero here would be indistinguishable from a real zero.
               </p>
-              <p class="sv-numeric font-display text-2xl font-extrabold text-sv-text-heading">
-                {{ commercial?.issued_invoices }}
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        <!-- Registration monitoring ------------------------------------------------------------ -->
-        <section
-          aria-labelledby="dash-registrations-heading"
-          class="rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
-        >
-          <h2
-            id="dash-registrations-heading"
-            class="font-display text-lg font-bold text-sv-text-heading"
-          >
-            Registration monitoring
-          </h2>
-          <p class="mt-0.5 text-xs text-sv-text-muted">
-            {{ registrations?.time_range }}
-          </p>
-          <div
-            class="mt-4 grid grid-cols-2 gap-3"
-            data-testid="dashboard-registrations"
-          >
-            <SvStatTile
-              label="Last 7 days"
-              tone="brand"
-            >
-              <span class="sv-numeric">{{ registrations?.registered_last_7_days }}</span>
-            </SvStatTile>
-            <SvStatTile
-              label="Last 30 days"
-              tone="sun"
-            >
-              <span class="sv-numeric">{{ registrations?.registered_last_30_days }}</span>
-            </SvStatTile>
-            <SvStatTile
-              class="col-span-2"
-              label="Awaiting setup completion"
-              tone="teal"
-              :hint="definitionOf(registrations, 'awaiting_setup_completion')"
-            >
-              <span class="sv-numeric">{{ registrations?.awaiting_setup_completion }}</span>
-            </SvStatTile>
-          </div>
-        </section>
-
-        <!-- Audit ----------------------------------------------------------------------------- -->
-        <section
-          aria-labelledby="dash-audit-heading"
-          class="flex flex-col rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
-        >
-          <h2
-            id="dash-audit-heading"
-            class="font-display text-lg font-bold text-sv-text-heading"
-          >
-            Audit activity
-          </h2>
-          <p class="mt-0.5 text-xs text-sv-text-muted">
-            {{ audit?.time_range }}
-          </p>
-          <div
-            class="mt-4"
-            data-testid="dashboard-audit"
-          >
-            <SvStatTile
-              label="Events in the last 7 days"
-              tone="teal"
-              emphasis
-              :hint="definitionOf(audit, 'events_last_7_days')"
-            >
-              <span class="sv-numeric">{{ audit?.events_last_7_days }}</span>
-            </SvStatTile>
-          </div>
-          <RouterLink
-            v-if="audit?.drill_through"
-            :to="{ name: audit.drill_through }"
-            class="sv-focus-ring mt-auto inline-flex min-h-sv-touch items-center gap-1 pt-3 text-sm font-semibold text-sv-link hover:text-sv-link-hover"
-          >
-            Open platform audit<SvIconChevronRight
-              aria-hidden="true"
-              class="h-4 w-4"
-            />
-          </RouterLink>
-        </section>
-
-        <!-- Integrations: truthfully unavailable ---------------------------------------------- -->
-        <section
-          aria-labelledby="dash-integrations-heading"
-          class="rounded-card border border-dashed border-sv-border-strong bg-sv-surface-subtle p-5"
-        >
-          <h2
-            id="dash-integrations-heading"
-            class="flex items-center gap-2 font-display text-lg font-bold text-sv-text-heading"
-          >
-            <SvIconLocked
-              aria-hidden="true"
-              class="h-5 w-5 text-sv-text-muted"
-            />
-            Integrations
-          </h2>
-          <SvAlert
-            v-if="integrations?.availability === 'disabled_by_gate'"
-            severity="info"
-            title="Integration health is unavailable"
-            class="mt-4"
-            data-testid="dashboard-integrations-gated"
-          >
-            <p>{{ integrations.gate_statement }}</p>
-            <p class="mt-2 text-xs">
-              No figure is shown for Wallet health, reconciliation exceptions or Refer &amp; Earn
-              qualification. A zero here would be indistinguishable from a real zero.
-            </p>
-          </SvAlert>
-        </section>
+            </SvAlert>
+          </SvPanel>
+        </div>
       </div>
     </template>
   </div>
 </template>
-
-<style scoped>
-.sv-dash-panel {
-  background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-brand-primary) 10%, transparent), transparent 42%),
-    var(--sv-color-surface-raised);
-}
-.sv-dash-task {
-  background: var(--sv-color-surface-raised);
-  transition: border-color var(--sv-motion-duration-fast) var(--sv-motion-ease-standard);
-}
-.sv-dash-task:hover { border-color: var(--sv-color-border-strong); }
-.sv-dash-task__count {
-  background: color-mix(in srgb, var(--sv-color-brand-primary) 14%, var(--sv-color-surface-raised));
-  color: var(--sv-color-text-heading);
-}
-.sv-dash-commercial {
-  background:
-    linear-gradient(170deg, color-mix(in srgb, var(--sv-color-accent) 16%, var(--sv-color-surface-raised)), var(--sv-color-surface-raised) 60%);
-}
-</style>

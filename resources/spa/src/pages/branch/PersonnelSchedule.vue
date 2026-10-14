@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { apiClient } from '@/services/apiClient';
@@ -91,7 +90,14 @@ watch(
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — branch staffing readiness, read-only. The personnel picker and the
+    ownership boundary (HR manages schedules) sit in a narrow column; the selected person reads as a
+    roster card — initials, name, live state, eligible services as chips — then TODAY's working
+    intervals, breaks and unavailability, and the week as seven day tiles. No control here edits a
+    schedule; mutation stays HR-only and server-enforced.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Personnel schedule"
       eyebrow="Branch operations"
@@ -102,67 +108,81 @@ watch(
       </template>
     </SvPageHeader>
 
-    <SvCard
+    <div
       v-if="!canView"
-      as="div"
-      padding="md"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
       data-testid="no-permission"
     >
       <p class="text-sm text-text-muted">
         You do not have permission to view personnel schedules.
       </p>
-    </SvCard>
+    </div>
 
-    <SvCard
+    <div
       v-else-if="!hasBranch"
-      as="div"
-      padding="md"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
       data-testid="no-branch"
     >
       <p class="text-sm text-text-muted">
         You are not assigned to a branch yet.
       </p>
-    </SvCard>
+    </div>
 
-    <template v-else>
-      <SvCard
-        as="div"
-        padding="md"
-        class="mt-6"
+    <div
+      v-else
+      class="sv-r-grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-start"
+    >
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Choose personnel"
       >
-        <SvSelect
-          id="bm-staff"
-          v-model="selectedStaff"
-          label="Personnel"
-          placeholder="Select personnel"
-          :options="staffOptions"
-        />
-      </SvCard>
+        <div class="sv-r-panel sv-r-panel--tonal sv-r-tone-green">
+          <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green mb-3">
+            Branch roster
+          </p>
+          <SvSelect
+            id="bm-staff"
+            v-model="selectedStaff"
+            label="Personnel"
+            placeholder="Select personnel"
+            :options="staffOptions"
+          />
+        </div>
+        <div class="sv-r-note sv-r-tone-teal">
+          <p class="sv-r-note__title">
+            Managed by Human Resource
+          </p>
+          <p class="sv-r-note__body">
+            Working days, breaks and unavailability are set by Human Resource. This view is read-only.
+          </p>
+        </div>
+      </aside>
 
       <SvStateBoundary
-        class="mt-6"
         :state="boundaryState"
         empty-message="Select a personnel member to view their schedule."
       >
         <div
           v-if="availability.schedule"
-          class="flex flex-col gap-4"
+          class="sv-r-stack"
         >
-          <SvCard
-            as="div"
-            padding="md"
-            class="flex flex-wrap items-center justify-between gap-2"
-          >
-            <div>
-              <p class="text-base font-semibold text-text">
+          <div class="sv-r-record flex flex-wrap items-center gap-4">
+            <span
+              aria-hidden="true"
+              class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-sv-surface-warm font-display text-lg font-extrabold text-sv-text-heading"
+            >{{ availability.schedule.staff.display_name.slice(0, 2).toUpperCase() }}</span>
+            <div class="min-w-0 flex-1">
+              <p class="sv-r-title">
                 {{ availability.schedule.staff.display_name }}
               </p>
-              <p class="text-xs text-text-muted">
+              <p class="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-text-muted">
                 Eligible services:
                 <template v-if="availability.schedule.eligible_services.length > 0">
-                  {{ availability.schedule.eligible_services.map((s) => s.name).join(', ') }}
+                  <span
+                    v-for="service in availability.schedule.eligible_services"
+                    :key="service.name"
+                    class="sv-r-chip"
+                  >{{ service.name }}</span>
                 </template>
                 <template v-else>
                   none
@@ -170,28 +190,28 @@ watch(
               </p>
             </div>
             <span
-              class="rounded-full bg-surface-alt px-3 py-1 text-xs font-semibold text-text"
+              class="sv-r-chip sv-r-chip--tone sv-r-chip--dot !text-sm"
+              :class="availability.schedule.current_state === 'available' ? 'sv-r-tone-green' : availability.schedule.current_state === 'on_break' ? 'sv-r-tone-sun' : 'sv-r-tone-neutral'"
               data-testid="bm-current-state"
               aria-live="polite"
             >
               {{ STATE_LABELS[availability.schedule.current_state] }}
             </span>
-          </SvCard>
+          </div>
 
-          <SvCard
-            as="div"
-            padding="md"
+          <section
+            class="sv-r-panel"
             data-testid="bm-today"
           >
-            <h2 class="font-display text-lg font-semibold text-heading">
+            <h2 class="sv-r-title">
               Today ({{ WEEKDAY_LABELS[todayWeekday] }})
             </h2>
-            <dl class="mt-2 flex flex-col gap-2 text-sm">
-              <div>
-                <dt class="font-medium text-text">
+            <dl class="mt-4 grid gap-3 md:grid-cols-3">
+              <div class="rounded-card bg-sv-success-bg p-4">
+                <dt class="text-xs font-semibold uppercase tracking-wide text-sv-success-fg">
                   Working intervals
                 </dt>
-                <dd class="text-text-muted">
+                <dd class="mt-2 text-sm font-semibold text-text">
                   <template v-if="todayWorking.length > 0">
                     <span
                       v-for="(r, i) in todayWorking"
@@ -203,11 +223,11 @@ watch(
                   </template>
                 </dd>
               </div>
-              <div>
-                <dt class="font-medium text-text">
+              <div class="rounded-card bg-sv-warning-bg p-4">
+                <dt class="text-xs font-semibold uppercase tracking-wide text-sv-warning-fg">
                   Breaks
                 </dt>
-                <dd class="text-text-muted">
+                <dd class="mt-2 text-sm font-semibold text-text">
                   <template v-if="todayBreaks.length > 0">
                     <span
                       v-for="(r, i) in todayBreaks"
@@ -219,11 +239,11 @@ watch(
                   </template>
                 </dd>
               </div>
-              <div>
-                <dt class="font-medium text-text">
+              <div class="rounded-card bg-sv-surface-subtle p-4">
+                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                   Temporary unavailability
                 </dt>
-                <dd class="text-text-muted">
+                <dd class="mt-2 text-sm font-semibold text-text">
                   <template v-if="todayUnavailable.length > 0">
                     <span
                       v-for="(r, i) in todayUnavailable"
@@ -236,22 +256,20 @@ watch(
                 </dd>
               </div>
             </dl>
-          </SvCard>
+          </section>
 
-          <SvCard
-            as="div"
-            padding="md"
-          >
-            <h2 class="font-display text-lg font-semibold text-heading">
+          <section class="sv-r-panel">
+            <h2 class="sv-r-title">
               Weekly schedule
             </h2>
-            <ul class="mt-2 flex flex-col gap-1 text-sm">
+            <ul class="mt-4 grid grid-cols-1 gap-2 md:grid-cols-7">
               <li
                 v-for="(label, weekday) in WEEKDAY_LABELS"
                 :key="weekday"
-                class="flex justify-between"
+                class="flex items-center justify-between gap-2 rounded-card border p-3 text-sm md:flex-col md:items-start"
+                :class="weekday === todayWeekday ? 'border-sv-brand bg-sv-surface-warm' : 'border-sv-border bg-sv-surface-raised'"
               >
-                <span class="font-medium text-text">{{ label }}</span>
+                <span class="font-semibold text-text">{{ label }}</span>
                 <span class="text-text-muted">
                   <template
                     v-for="(r, i) in availability.schedule.recurring.filter((row) => row.weekday === weekday && row.available)"
@@ -267,9 +285,9 @@ watch(
                 </span>
               </li>
             </ul>
-          </SvCard>
+          </section>
         </div>
       </SvStateBoundary>
-    </template>
+    </div>
   </section>
 </template>

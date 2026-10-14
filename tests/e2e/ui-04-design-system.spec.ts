@@ -362,11 +362,31 @@ test.describe('UI-04 accessibility (axe)', () => {
       const blocking = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
 
       expect(
-        blocking.map((v) => `${v.id} (${v.impact}) — ${v.nodes.length} node(s)`),
+        blocking.map((v) => ({
+          id: v.id, impact: v.impact, nodes: v.nodes.map((node) => ({
+            target: node.target, html: node.html, failureSummary: node.failureSummary,
+          })),
+        })),
         `axe violations in ${theme}`,
       ).toEqual([]);
     });
   }
+
+  test('theme switches keep button color pairs atomic during slow transitions', async ({ page }) => {
+    await page.setViewportSize(VIEWPORTS.desktop);
+    await page.goto(FIXTURE_ROUTE);
+    await page.evaluate(async () => { await document.fonts.ready; });
+    await page.addStyleTag({ content: '[data-testid="sv-button"] { transition-duration: 2s !important; }' });
+    await page.getByTestId('theme-toggle').first().click();
+    expect(await renderedTheme(page)).toBe('dark');
+    const colorTransitions = await page.evaluate(() => document.getAnimations().filter((animation) =>
+      animation instanceof CSSTransition && animation.playState === 'running'
+      && ['color', 'background-color', 'border-color'].includes(animation.transitionProperty)
+      && (animation.effect as KeyframeEffect).target?.closest('[data-testid="sv-button"]')).length);
+    expect(colorTransitions, 'button foreground/background pairs must change atomically').toBe(0);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations.filter((violation) => violation.impact === 'serious' || violation.impact === 'critical')).toEqual([]);
+  });
 
   test('the mobile fixture has no serious or critical violation', async ({ page }) => {
     await page.setViewportSize(VIEWPORTS.mobile);

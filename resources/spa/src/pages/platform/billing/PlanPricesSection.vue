@@ -8,6 +8,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useForm } from '@/composables/useForm';
 import { useCan } from '@/composables/useCan';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { BILLING_INTERVALS, usePlanPriceStore, type PlanPrice } from '@/stores/planPriceStore';
 import type { SubscriptionPlan } from '@/stores/subscriptionPlanStore';
@@ -113,20 +114,32 @@ async function confirmCancel(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="prices-heading">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+  <!--
+    COR-UI08-UI12-VIS-001: the price schedule as an effective-date TIMELINE — each price a layered
+    card on a rail whose marker states its lifecycle in text (In force / Scheduled / Superseded),
+    the amount set large, the interval and range beneath. Only a future price offers Cancel; every
+    other row still says Read-only. Same rows, same data, same actions as the table it replaces.
+  -->
+  <section
+    aria-labelledby="prices-heading"
+    class="sv-r-panel"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Price schedule
+        </p>
         <h2
           id="prices-heading"
-          class="font-display text-lg font-bold text-heading"
+          class="sv-r-title mt-1"
         >
           Plan prices
           <span
             v-if="plan"
-            class="ml-2 text-sm font-normal text-text-muted"
+            class="sv-r-chip sv-r-chip--tone sv-r-tone-warm ml-2 align-middle"
           >{{ plan.name }}</span>
         </h2>
-        <p class="mt-1 text-sm text-text-muted">
+        <p class="sv-r-panel__desc">
           Effective-dated prices. Current and historical prices are read-only; only a future
           price can be cancelled.
         </p>
@@ -140,103 +153,68 @@ async function confirmCancel(): Promise<void> {
     </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="store.error ?? undefined"
       :empty-message="plan === null ? 'Select a plan from the Plans tab to manage its prices.' : 'No prices scheduled for this plan.'"
       @retry="plan && store.fetchPrices(plan.id)"
     >
-      <div class="mt-2 overflow-x-auto">
-        <table class="w-full min-w-[560px] text-left text-sm">
-          <caption class="sr-only">
-            Effective-dated prices for {{ plan?.name }}
-          </caption>
-          <thead>
-            <tr class="border-b border-border text-text-muted">
-              <th
-                scope="col"
-                class="py-2 pr-4"
-              >
-                Amount
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-4"
-              >
-                Interval
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-4"
-              >
-                Effective from
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-4"
-              >
-                Effective to
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-4"
-              >
-                Lifecycle
-              </th>
-              <th
-                scope="col"
-                class="py-2"
-              >
-                <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="price in store.prices"
-              :key="price.id"
-              class="border-b border-border/60"
-              data-testid="price-row"
-            >
-              <td class="py-2 pr-4 font-medium text-text">
-                {{ money(price.amount_minor, price.currency) }}
-              </td>
-              <td class="py-2 pr-4">
-                {{ intervalLabel(price.billing_interval) }}
-              </td>
-              <td class="py-2 pr-4">
-                {{ price.effective_from }}
-              </td>
-              <td class="py-2 pr-4">
-                {{ price.effective_to ?? '—' }}
-              </td>
-              <td class="py-2 pr-4">
+      <p class="sr-only">
+        Effective-dated prices for {{ plan?.name }}
+      </p>
+      <ol class="sv-r-steps">
+        <li
+          v-for="price in store.prices"
+          :key="price.id"
+          class="sv-r-step"
+          :class="{ 'sv-r-step--current': price.lifecycle === 'current', 'sv-r-step--future': price.lifecycle === 'future' }"
+          data-testid="price-row"
+        >
+          <span
+            aria-hidden="true"
+            class="sv-r-step__marker"
+          >
+            <component
+              :is="navigationIcon('price')"
+              class="h-4 w-4"
+            />
+          </span>
+          <div
+            class="sv-r-record flex flex-wrap items-center justify-between gap-4"
+            :class="price.lifecycle === 'historical' ? 'opacity-90' : ''"
+          >
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
                 <span
-                  class="rounded-control px-2 py-0.5 text-xs"
+                  class="sv-r-chip sv-r-chip--tone sv-r-chip--dot"
                   :class="{
-                    'bg-primary/15 text-sv-text-heading': price.lifecycle === 'current',
-                    'bg-surface-alt text-text-muted': price.lifecycle === 'historical',
-                    'bg-cream text-sv-text-heading': price.lifecycle === 'future',
+                    'sv-r-tone-warm': price.lifecycle === 'current',
+                    'sv-r-tone-sun': price.lifecycle === 'future',
+                    'sv-r-tone-neutral': price.lifecycle === 'historical',
                   }"
                 >{{ price.lifecycle }}</span>
-              </td>
-              <td class="py-2 text-right">
-                <SvButton
-                  v-if="canManage && price.lifecycle === 'future'"
-                  variant="destructive"
-                  @click="cancelTarget = price"
-                >
-                  Cancel
-                </SvButton>
-                <span
-                  v-else
-                  class="text-xs text-text-muted"
-                >Read-only</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <span class="sv-r-chip">{{ intervalLabel(price.billing_interval) }}</span>
+              </div>
+              <p class="sv-r-figure-md mt-2">
+                {{ money(price.amount_minor, price.currency) }}
+              </p>
+              <p class="sv-r-muted mt-1">
+                From {{ price.effective_from }} · to {{ price.effective_to ?? '—' }}
+              </p>
+            </div>
+            <SvButton
+              v-if="canManage && price.lifecycle === 'future'"
+              variant="destructive"
+              @click="cancelTarget = price"
+            >
+              Cancel
+            </SvButton>
+            <span
+              v-else
+              class="sv-r-chip"
+            >Read-only</span>
+          </div>
+        </li>
+      </ol>
     </SvStateBoundary>
 
     <SvDialog

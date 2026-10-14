@@ -23,6 +23,7 @@
  */
 import { computed, onMounted, watch } from 'vue';
 import { RouterLink } from 'vue-router';
+import SvFeaturePanel from '@/components/refined/SvFeaturePanel.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvDateTime from '@/components/ui/SvDateTime.vue';
@@ -35,6 +36,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import { usePlatformGetStartedStore, type GetStartedStep } from '@/stores/platformGetStartedStore';
 import { SvIconCheck, SvIconLocked } from '@/design-system/icons';
+import { navigationIcon } from '@/navigation/navigationIcons';
 
 const store = usePlatformGetStartedStore();
 const persistence = useGetStartedStore();
@@ -87,7 +89,7 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
 
 <template>
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-get-started-screen"
   >
     <SvPageHeader
@@ -111,18 +113,24 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
 
     <template v-else-if="dismissed">
       <div
-        class="rounded-card border border-sv-border bg-sv-surface-raised p-6 text-center"
+        class="sv-r-panel sv-r-panel--tonal sv-r-tone-sun mx-auto max-w-xl text-center"
         data-testid="get-started-dismissed"
       >
-        <h2 class="font-display text-lg font-bold text-sv-text-heading">
+        <span
+          aria-hidden="true"
+          class="sv-r-icon sv-r-icon--lg sv-r-tone-sun mx-auto"
+        >
+          <component :is="navigationIcon('get-started')" />
+        </span>
+        <h2 class="sv-r-title mt-4">
           The setup guide is hidden
         </h2>
-        <p class="mt-1 text-sm text-sv-text-muted">
+        <p class="sv-r-lede mt-1">
           You hid the setup guide. Your progress is unchanged and you can reopen it at any time.
         </p>
         <SvButton
           variant="primary"
-          class="mt-4"
+          class="mt-5"
           data-testid="get-started-reopen"
           @click="reopen"
         >
@@ -133,7 +141,7 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
 
     <template v-else>
       <p
-        class="mb-4 text-xs text-sv-text-muted"
+        class="sv-r-muted -mt-2 mb-5"
         data-testid="get-started-last-refreshed"
       >
         Progress checked
@@ -166,63 +174,88 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
       />
 
       <!--
-        UI-16 (UI16-VIS-018): the guide was a single column of identical bordered boxes. It now
-        mirrors the merchant checklist — a progress panel that names the next step beside numbered
-        step cards whose marker states done / open / blocked — with the same server-read states,
-        evidence lines and controls.
+        COR-UI08-UI12-VIS-001 — a leadership checklist. The progress NARRATIVE leads on the dark
+        feature surface: the server's complete/total, a meter drawn from those two numbers, the
+        blocked-step caveat, and the next step as the one dominant action. Below, the steps run down
+        a dependency rail; each marker states done / open / blocked, and every card keeps its
+        server evidence line, dependency warning and direct link.
       -->
       <div
         v-else
-        class="grid gap-5 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:items-start"
+        class="sv-r-stack"
       >
-        <!-- Progress ---------------------------------------------------------------------- -->
-        <div
-          class="sv-pgs-progress rounded-card border border-sv-border p-5 shadow-card lg:sticky lg:top-4"
+        <SvFeaturePanel
+          as="div"
+          eyebrow="Setup progress"
           data-testid="get-started-progress"
         >
-          <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-            Setup progress
-          </p>
-          <p class="mt-1 font-display text-3xl font-extrabold leading-none text-sv-text-heading">
-            {{ store.progress.complete }}<span class="text-lg text-sv-text-muted"> / {{ store.progress.total }}</span>
-          </p>
-          <p class="mt-1 text-sm font-medium text-sv-text">
-            {{ store.progress.complete }} of {{ store.progress.total }} steps complete
-          </p>
-          <p
-            v-if="store.progress.blocked > 0"
-            class="mt-1 text-xs text-sv-text-muted"
-          >
-            {{ store.progress.blocked }} step is blocked by an external dependency and is not
-            counted against your progress.
-          </p>
-
-          <SvButton
-            v-if="store.nextStep"
-            variant="primary"
-            class="mt-3"
-            data-testid="get-started-next"
-            @click="$router.push({ name: store.nextStep.routeName as string })"
-          >
-            Open the next step
-          </SvButton>
-        </div>
+          <div class="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-end">
+            <div>
+              <p class="sv-r-feature__value sv-r-figure-xl">
+                {{ store.progress.complete }}<span class="sv-r-feature__hint text-2xl"> / {{ store.progress.total }}</span>
+              </p>
+              <p class="sv-r-feature__label mt-2">
+                {{ store.progress.complete }} of {{ store.progress.total }} steps complete
+              </p>
+              <div
+                class="mt-4 h-2 overflow-hidden rounded-pill bg-white/15"
+                aria-hidden="true"
+              >
+                <span
+                  class="block h-full rounded-pill bg-sv-accent"
+                  :style="{ width: `${store.progress.total > 0 ? (store.progress.complete / store.progress.total) * 100 : 0}%` }"
+                />
+              </div>
+              <p
+                v-if="store.progress.blocked > 0"
+                class="sv-r-feature__hint mt-3"
+              >
+                {{ store.progress.blocked }} step is blocked by an external dependency and is not
+                counted against your progress.
+              </p>
+            </div>
+            <div
+              v-if="store.nextStep"
+              class="sv-r-feature__cell"
+            >
+              <p class="sv-r-feature__eyebrow">
+                Up next
+              </p>
+              <p class="sv-r-feature__title">
+                {{ store.nextStep.order }}. {{ store.nextStep.label }}
+              </p>
+              <button
+                type="button"
+                class="sv-r-feature-action sv-focus-ring mt-4"
+                data-testid="get-started-next"
+                @click="$router.push({ name: store.nextStep.routeName as string })"
+              >
+                Open the next step
+              </button>
+            </div>
+          </div>
+        </SvFeaturePanel>
 
         <!-- Steps -------------------------------------------------------------------------- -->
         <ol
-          class="flex flex-col gap-3"
+          class="sv-r-steps"
           data-testid="get-started-steps"
         >
           <li
             v-for="step in store.steps"
             :key="step.id"
-            class="sv-pgs-step grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 rounded-card border p-4 shadow-card"
+            class="sv-r-step"
+            :class="{
+              'sv-r-step--done': step.state === 'complete',
+              'sv-r-step--current': store.nextStep?.id === step.id,
+              'sv-r-step--future': step.state === 'blocked_by_gate',
+            }"
             :data-state="step.state"
             :data-testid="`get-started-step-${step.id}`"
           >
             <span
               aria-hidden="true"
-              class="sv-pgs-step__marker row-span-4 inline-flex h-9 w-9 items-center justify-center rounded-full font-display text-sm font-extrabold"
+              class="sv-r-step__marker"
             >
               <SvIconCheck
                 v-if="step.state === 'complete'"
@@ -234,65 +267,70 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
               />
               <template v-else>{{ step.order }}</template>
             </span>
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div class="min-w-0">
-                <p class="font-semibold text-sv-text-heading">
-                  {{ step.order }}. {{ step.label }}
-                </p>
-                <p class="mt-1 text-sm text-sv-text-muted">
-                  {{ step.description }}
-                </p>
+            <div
+              class="sv-r-record"
+              :class="step.state === 'blocked_by_gate' ? 'sv-r-record--dashed' : ''"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="sv-r-title">
+                    {{ step.order }}. {{ step.label }}
+                  </p>
+                  <p class="sv-r-lede mt-1">
+                    {{ step.description }}
+                  </p>
+                </div>
+                <SvStatusBadge
+                  :label="badge(step).label"
+                  :tone="badge(step).tone"
+                  sr-prefix="Step status:"
+                />
               </div>
-              <SvStatusBadge
-                :label="badge(step).label"
-                :tone="badge(step).tone"
-                sr-prefix="Step status:"
-              />
-            </div>
 
-            <!-- The evidence. Always shown, so a state is never unexplained. -->
-            <p
-              class="mt-3 text-xs text-sv-text-muted"
-              :data-testid="`get-started-evidence-${step.id}`"
-            >
-              {{ step.evidence }}
-            </p>
-
-            <p
-              v-if="step.dependencyWarning"
-              class="mt-2 text-xs font-medium text-sv-text"
-              :data-testid="`get-started-dependency-${step.id}`"
-            >
-              {{ step.dependencyWarning }}
-            </p>
-
-            <div class="mt-3 flex flex-wrap items-center gap-3">
-              <RouterLink
-                v-if="step.routeName"
-                :to="{ name: step.routeName }"
-                class="sv-focus-ring inline-flex min-h-sv-touch items-center text-sm font-medium text-sv-link"
-                :data-testid="`get-started-open-${step.id}`"
+              <!-- The evidence. Always shown, so a state is never unexplained. -->
+              <p
+                class="mt-3 rounded-control bg-sv-surface-subtle px-3 py-2 text-xs text-sv-text-secondary"
+                :data-testid="`get-started-evidence-${step.id}`"
               >
-                Open
-              </RouterLink>
+                {{ step.evidence }}
+              </p>
 
-              <SvButton
-                v-if="step.manuallyCompletable && step.state !== 'complete'"
-                variant="secondary"
-                size="sm"
-                :data-testid="`get-started-mark-${step.id}`"
-                @click="markReviewed(step)"
+              <p
+                v-if="step.dependencyWarning"
+                class="mt-2 text-xs font-medium text-sv-text"
+                :data-testid="`get-started-dependency-${step.id}`"
               >
-                Mark as reviewed
-              </SvButton>
+                {{ step.dependencyWarning }}
+              </p>
 
-              <span
-                v-if="step.state === 'blocked_by_gate'"
-                class="text-xs font-medium text-sv-text-muted"
-                :data-testid="`get-started-gate-${step.id}`"
-              >
-                Blocked by {{ step.gate }}
-              </span>
+              <div class="mt-3 flex flex-wrap items-center gap-3">
+                <RouterLink
+                  v-if="step.routeName"
+                  :to="{ name: step.routeName }"
+                  class="sv-r-link sv-focus-ring rounded-control"
+                  :data-testid="`get-started-open-${step.id}`"
+                >
+                  Open
+                </RouterLink>
+
+                <SvButton
+                  v-if="step.manuallyCompletable && step.state !== 'complete'"
+                  variant="secondary"
+                  size="sm"
+                  :data-testid="`get-started-mark-${step.id}`"
+                  @click="markReviewed(step)"
+                >
+                  Mark as reviewed
+                </SvButton>
+
+                <span
+                  v-if="step.state === 'blocked_by_gate'"
+                  class="sv-r-chip"
+                  :data-testid="`get-started-gate-${step.id}`"
+                >
+                  Blocked by {{ step.gate }}
+                </span>
+              </div>
             </div>
           </li>
         </ol>
@@ -300,28 +338,3 @@ const badge = (step: GetStartedStep): { label: string; tone: 'success' | 'warnin
     </template>
   </div>
 </template>
-
-<style scoped>
-.sv-pgs-progress {
-  background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-accent) 22%, transparent), transparent 55%),
-    var(--sv-color-surface-raised);
-}
-.sv-pgs-step {
-  border-color: var(--sv-color-border-default);
-  background: var(--sv-color-surface-raised);
-}
-.sv-pgs-step__marker {
-  background: var(--sv-color-surface-subtle);
-  color: var(--sv-color-text-heading);
-}
-.sv-pgs-step[data-state='complete'] { border-color: var(--sv-color-status-success-border); }
-.sv-pgs-step[data-state='complete'] .sv-pgs-step__marker {
-  background: var(--sv-color-growth);
-  color: var(--sv-color-text-inverse);
-}
-.sv-pgs-step[data-state='incomplete'] .sv-pgs-step__marker {
-  background: color-mix(in srgb, var(--sv-color-brand-primary) 18%, var(--sv-color-surface-raised));
-}
-.sv-pgs-step[data-state='blocked_by_gate'] { border-style: dashed; }
-</style>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPagination from '@/components/ui/SvPagination.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -72,8 +71,13 @@ onMounted(() => {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a dense but welcoming PEOPLE DIRECTORY. Filters sit on one sunken band;
+    each person is a directory row — initials, name and title, role, employment and type, a
+    lifecycle badge, and the way into their record. Phone numbers are never shown here.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="hr-staff-roster"
   >
     <SvPageHeader
@@ -83,7 +87,7 @@ onMounted(() => {
     >
       <template #actions>
         <RouterLink
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-primary px-4 py-2 text-sm font-semibold text-brand-deep"
+          class="sv-r-action sv-focus-ring"
           :to="{ name: 'hr.staff-invite' }"
         >
           Invite staff
@@ -91,9 +95,8 @@ onMounted(() => {
       </template>
     </SvPageHeader>
 
-    <SvCard
-      as="form"
-      class="grid gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]"
+    <form
+      class="sv-r-panel sv-r-panel--sunken grid gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]"
       aria-label="Staff filters"
       @submit.prevent="load(1)"
     >
@@ -134,7 +137,7 @@ onMounted(() => {
           Reset
         </SvButton>
       </div>
-    </SvCard>
+    </form>
 
     <SvStateBoundary
       class="mt-5"
@@ -143,31 +146,59 @@ onMounted(() => {
       empty-message="No staff members match these filters."
       @retry="load(filters.page)"
     >
-      <ul
-        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        aria-label="Staff members"
+      <section
+        class="sv-r-ledger"
+        aria-label="Staff directory"
       >
-        <li
-          v-for="member in store.staff"
-          :key="member.id"
+        <div
+          class="sv-r-ledger__colhead"
+          style="--sv-r-ledger-cols: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto"
+          aria-hidden="true"
         >
-          <SvCard
-            as="article"
-            class="h-full border-t-4"
-            :class="member.status === 'active' ? 'border-t-sv-success-border' : 'border-t-sv-warning-border'"
+          <span>Person</span><span>Employment</span><span>Access</span><span />
+        </div>
+        <ul aria-label="Staff members">
+          <li
+            v-for="member in store.staff"
+            :key="member.id"
+            class="sv-r-ledger__row"
+            style="--sv-r-ledger-cols: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto"
           >
-            <div class="flex items-start justify-between gap-3">
+            <article class="flex min-w-0 items-center gap-3">
+              <span
+                aria-hidden="true"
+                class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-sm font-extrabold text-sv-text-heading"
+                :class="member.status === 'active' ? 'bg-sv-success-bg' : 'bg-sv-warning-bg'"
+              >{{ member.display_name.slice(0, 2).toUpperCase() }}</span>
               <div class="min-w-0">
                 <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {{ humanize(member.role) }}
                 </p>
-                <h2 class="mt-1 truncate font-display text-lg font-bold text-heading">
+                <h2 class="truncate font-display text-base font-bold text-heading">
                   {{ member.display_name }}
                 </h2>
-                <p class="mt-1 text-sm text-text-muted">
+                <p class="text-sm text-text-muted">
                   {{ member.role_title ?? 'No role title' }}
                 </p>
               </div>
+            </article>
+            <dl class="grid grid-cols-2 gap-3 text-sm md:block">
+              <div>
+                <dt class="text-xs text-text-muted">
+                  Employment
+                </dt><dd class="capitalize text-text">
+                  {{ humanize(member.employment_status) }}
+                </dd>
+              </div>
+              <div class="md:mt-1">
+                <dt class="text-xs text-text-muted">
+                  Type
+                </dt><dd class="capitalize text-text">
+                  {{ humanize(member.employment_type) }}
+                </dd>
+              </div>
+            </dl>
+            <div>
               <SvStatusBadge
                 data-testid="staff-status"
                 :label="humanize(member.status)"
@@ -176,31 +207,15 @@ onMounted(() => {
                 sr-prefix="Access status:"
               />
             </div>
-            <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <dt class="text-xs text-text-muted">
-                  Employment
-                </dt><dd class="capitalize text-text">
-                  {{ humanize(member.employment_status) }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-xs text-text-muted">
-                  Type
-                </dt><dd class="capitalize text-text">
-                  {{ humanize(member.employment_type) }}
-                </dd>
-              </div>
-            </dl>
             <RouterLink
-              class="mt-4 inline-flex min-h-sv-touch items-center text-sm font-semibold text-heading underline"
+              class="sv-r-action sv-r-action--quiet sv-focus-ring"
               :to="{ name: 'hr.staff-detail', params: { staffUlid: member.id } }"
             >
               View staff detail
             </RouterLink>
-          </SvCard>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </section>
     </SvStateBoundary>
 
     <SvPagination

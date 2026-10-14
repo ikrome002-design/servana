@@ -34,6 +34,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { SvIconSecurity } from '@/design-system/icons';
 import { useAuthStore } from '@/stores/authStore';
 import { statusLabel } from '@/utils/statusLabel';
 import {
@@ -268,8 +269,14 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'neutral'
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: an internal ACCESS ROSTER. The lock-out warning leads as an alert
+    record; the roster ledger and one access card per user (identity, state, warnings, the audited
+    actions that name their target) own the working column with invitations beneath; the rail
+    states the privileges that bound every action here.
+  -->
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-access-screen"
   >
     <SvPageHeader
@@ -291,263 +298,318 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'neutral'
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-else>
-      <p
-        class="mb-4 text-xs text-sv-text-muted"
-        data-testid="access-last-refreshed"
-      >
-        Last refreshed
-        <SvDateTime :value="store.lastRefreshed" />
-      </p>
-
-      <SvAlert
-        v-if="grantingCount <= 1 && !store.loading"
-        severity="warning"
-        title="Only one account currently grants platform access"
-        class="mb-6"
-        data-testid="access-sole-admin-warning"
-      >
-        <p>
-          Suspending, deactivating or denying permissions on the last account that grants access
-          would lock everyone out. The server refuses that change independently of this warning.
-        </p>
-      </SvAlert>
-
-      <SvAlert
-        v-if="store.error"
-        severity="error"
-        title="We could not load internal platform access"
-        class="mb-6"
-      >
-        <p>{{ store.error }}</p>
-        <SvButton
-          variant="secondary"
-          size="sm"
-          class="mt-3"
-          data-testid="access-retry"
-          @click="store.load()"
+    <!--
+      UI08-RESP-001 lesson re-applied: the roster carries nine columns, so it keeps the FULL width;
+      the privilege boundaries read as a band above it rather than a rail beside it.
+    -->
+    <div
+      v-else
+      class="sv-r-stack"
+    >
+      <div class="sv-r-stack min-w-0">
+        <p
+          class="sv-r-muted -mt-2"
+          data-testid="access-last-refreshed"
         >
-          Try again
-        </SvButton>
-      </SvAlert>
-
-      <!-- Roster --------------------------------------------------------------------------- -->
-      <section
-        aria-labelledby="access-roster-heading"
-        class="mb-8"
-      >
-        <h2
-          id="access-roster-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
-        >
-          Platform users
-        </h2>
-        <p class="mb-3 max-w-sv-readable text-sm text-sv-text-muted">
-          Only platform roles appear here. A platform user can never be given a merchant role,
-          merchant membership, branch assignment or staff profile.
+          Last refreshed
+          <SvDateTime :value="store.lastRefreshed" />
         </p>
 
-        <!--
+        <SvAlert
+          v-if="grantingCount <= 1 && !store.loading"
+          severity="warning"
+          title="Only one account currently grants platform access"
+          data-testid="access-sole-admin-warning"
+        >
+          <p>
+            Suspending, deactivating or denying permissions on the last account that grants access
+            would lock everyone out. The server refuses that change independently of this warning.
+          </p>
+        </SvAlert>
+
+        <SvAlert
+          v-if="store.error"
+          severity="error"
+          title="We could not load internal platform access"
+        >
+          <p>{{ store.error }}</p>
+          <SvButton
+            variant="secondary"
+            size="sm"
+            class="mt-3"
+            data-testid="access-retry"
+            @click="store.load()"
+          >
+            Try again
+          </SvButton>
+        </SvAlert>
+
+        <!-- Roster --------------------------------------------------------------------------- -->
+        <section
+          aria-labelledby="access-roster-heading"
+          class="sv-r-panel sv-r-panel--tonal sv-r-panel--compact sv-r-tone-warm"
+        >
+          <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+            Roster
+          </p>
+          <h2
+            id="access-roster-heading"
+            class="sv-r-title mt-1"
+          >
+            Platform users
+          </h2>
+          <p class="sv-r-panel__desc mb-4">
+            Only platform roles appear here. A platform user can never be given a merchant role,
+            merchant membership, branch assignment or staff profile.
+          </p>
+
+          <!--
           UI08-RESP-001: these tables carry six or more columns including masked emails and
           timestamps, and pushed the document past the 768px tablet floor. They render from the
           DESKTOP floor; tablet reads the labelled record cards, which is what the plan asks a
           tablet to do anyway.
         -->
-        <div class="hidden lg:block">
-          <SvDataTable
-            :columns="userColumns"
-            :rows="store.users"
-            :row-key="(r) => r.id"
-            caption="Internal platform users"
-            :state="dataState"
-            empty-message="No platform user has been recorded."
-            @retry="store.load()"
-          >
-            <template #cell:status="{ row }">
-              <SvStatusBadge
-                :label="statusLabel(row.status)"
-                :tone="statusTone(row.status)"
-                sr-prefix="Status:"
-              />
-            </template>
-            <template #cell:last_login_at="{ row }">
-              <SvDateTime :value="row.user.last_login_at" />
-            </template>
-          </SvDataTable>
-        </div>
+          <div class="hidden lg:block">
+            <SvDataTable
+              :columns="userColumns"
+              :rows="store.users"
+              :row-key="(r) => r.id"
+              caption="Internal platform users"
+              :state="dataState"
+              empty-message="No platform user has been recorded."
+              @retry="store.load()"
+            >
+              <template #cell:status="{ row }">
+                <SvStatusBadge
+                  :label="statusLabel(row.status)"
+                  :tone="statusTone(row.status)"
+                  sr-prefix="Status:"
+                />
+              </template>
+              <template #cell:last_login_at="{ row }">
+                <SvDateTime :value="row.user.last_login_at" />
+              </template>
+            </SvDataTable>
+          </div>
 
-        <div class="lg:hidden">
-          <SvResponsiveRecordList
-            :columns="userColumns"
-            :rows="store.users"
-            :row-key="(r) => r.id"
-            caption="Internal platform users"
-            :state="dataState"
-            empty-message="No platform user has been recorded."
-            @retry="store.load()"
-          >
-            <template #cell:status="{ row }">
-              <SvStatusBadge
-                :label="statusLabel(row.status)"
-                :tone="statusTone(row.status)"
-                sr-prefix="Status:"
-              />
-            </template>
-          </SvResponsiveRecordList>
-        </div>
+          <div class="lg:hidden">
+            <SvResponsiveRecordList
+              :columns="userColumns"
+              :rows="store.users"
+              :row-key="(r) => r.id"
+              caption="Internal platform users"
+              :state="dataState"
+              empty-message="No platform user has been recorded."
+              @retry="store.load()"
+            >
+              <template #cell:status="{ row }">
+                <SvStatusBadge
+                  :label="statusLabel(row.status)"
+                  :tone="statusTone(row.status)"
+                  sr-prefix="Status:"
+                />
+              </template>
+            </SvResponsiveRecordList>
+          </div>
 
-        <!-- Per-user governance actions. Rendered as an explicit list so every action names its
+          <!-- Per-user governance actions. Rendered as an explicit list so every action names its
              target, rather than relying on a row the user must first select. -->
-        <ul
-          v-if="canManage && store.users.length > 0"
-          class="mt-4 space-y-3"
-          data-testid="access-actions"
-        >
-          <li
-            v-for="membership in store.users"
-            :key="`actions-${membership.id}`"
-            class="rounded-card border border-sv-border bg-sv-surface-raised p-4"
+          <ul
+            v-if="canManage && store.users.length > 0"
+            class="mt-5 grid gap-3"
+            data-testid="access-actions"
           >
-            <p class="text-sm font-medium text-sv-text">
-              {{ membership.user.name }}
-              <span class="font-normal text-sv-text-muted">({{ membership.user.email }})</span>
-            </p>
-            <p
-              v-if="isSelf(membership)"
-              class="mt-1 text-xs text-sv-text-muted"
-              :data-testid="`access-self-warning-${membership.id}`"
+            <li
+              v-for="membership in store.users"
+              :key="`actions-${membership.id}`"
+              class="sv-r-record"
             >
-              This is your own account. Changing it can remove your own access.
-            </p>
-            <p
-              v-else-if="wouldLockOut(membership)"
-              class="mt-1 text-xs text-sv-text-muted"
-            >
-              This is currently the only account granting platform access.
-            </p>
+              <div class="flex items-start gap-3">
+                <span
+                  aria-hidden="true"
+                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sv-surface-warm font-display text-sm font-extrabold text-sv-text-heading"
+                >{{ membership.user.name.slice(0, 2).toUpperCase() }}</span>
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold text-sv-text">
+                    {{ membership.user.name }}
+                    <span class="font-normal text-sv-text-muted">({{ membership.user.email }})</span>
+                  </p>
+                  <SvStatusBadge
+                    class="mt-1"
+                    size="sm"
+                    :label="statusLabel(membership.status)"
+                    :tone="statusTone(membership.status)"
+                    sr-prefix="Status:"
+                  />
+                </div>
+              </div>
+              <p
+                v-if="isSelf(membership)"
+                class="mt-3 rounded-control bg-sv-warning-bg px-3 py-2 text-xs font-medium text-sv-warning-fg"
+                :data-testid="`access-self-warning-${membership.id}`"
+              >
+                This is your own account. Changing it can remove your own access.
+              </p>
+              <p
+                v-else-if="wouldLockOut(membership)"
+                class="mt-3 rounded-control bg-sv-warning-bg px-3 py-2 text-xs font-medium text-sv-warning-fg"
+              >
+                This is currently the only account granting platform access.
+              </p>
 
-            <div class="mt-3 flex flex-wrap gap-2">
+              <div class="mt-4 flex flex-wrap gap-2 border-t border-sv-border pt-4">
+                <SvButton
+                  variant="secondary"
+                  size="sm"
+                  @click="openOverride(membership)"
+                >
+                  Deny permissions
+                </SvButton>
+                <SvButton
+                  v-if="membership.status === 'active'"
+                  variant="secondary"
+                  size="sm"
+                  @click="startAction({ kind: 'lifecycle', action: 'suspend', membership })"
+                >
+                  Suspend
+                </SvButton>
+                <SvButton
+                  v-if="membership.status === 'suspended'"
+                  variant="secondary"
+                  size="sm"
+                  @click="startAction({ kind: 'lifecycle', action: 'reactivate', membership })"
+                >
+                  Reactivate
+                </SvButton>
+                <SvButton
+                  variant="secondary"
+                  size="sm"
+                  @click="startAction({ kind: 'sessions', membership })"
+                >
+                  Revoke sessions
+                </SvButton>
+                <SvButton
+                  v-if="membership.status !== 'deactivated'"
+                  variant="destructive"
+                  size="sm"
+                  @click="startAction({ kind: 'lifecycle', action: 'deactivate', membership })"
+                >
+                  Deactivate
+                </SvButton>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Invitations ---------------------------------------------------------------------- -->
+        <section
+          aria-labelledby="access-invitations-heading"
+          class="sv-r-panel sv-r-panel--compact"
+        >
+          <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+            Magic Link only
+          </p>
+          <h2
+            id="access-invitations-heading"
+            class="sv-r-title mb-4 mt-1"
+          >
+            Invitations
+          </h2>
+
+          <!--
+          UI08-RESP-001: these tables carry six or more columns including masked emails and
+          timestamps, and pushed the document past the 768px tablet floor. They render from the
+          DESKTOP floor; tablet reads the labelled record cards, which is what the plan asks a
+          tablet to do anyway.
+        -->
+          <div class="hidden lg:block">
+            <SvDataTable
+              :columns="invitationColumns"
+              :rows="store.invitations"
+              :row-key="(r) => r.id"
+              caption="Platform access invitations"
+              :state="invitationState"
+              empty-message="No invitation is outstanding."
+              @retry="store.load()"
+            >
+              <template #cell:status="{ row }">
+                <SvStatusBadge
+                  :label="statusLabel(row.status)"
+                  :tone="statusTone(row.status)"
+                  sr-prefix="Status:"
+                />
+              </template>
+              <template #cell:expires_at="{ row }">
+                <SvDateTime :value="row.expires_at" />
+              </template>
+            </SvDataTable>
+          </div>
+
+          <div class="lg:hidden">
+            <SvResponsiveRecordList
+              :columns="invitationColumns"
+              :rows="store.invitations"
+              :row-key="(r) => r.id"
+              caption="Platform access invitations"
+              :state="invitationState"
+              empty-message="No invitation is outstanding."
+              @retry="store.load()"
+            />
+          </div>
+
+          <ul
+            v-if="canManage"
+            class="mt-4 space-y-2"
+          >
+            <li
+              v-for="invitation in store.invitations.filter((i) => i.redeemable)"
+              :key="`inv-actions-${invitation.id}`"
+              class="sv-r-queue__row text-sm"
+            >
+              <span class="min-w-0 grow break-words">{{ invitation.email }}</span>
               <SvButton
                 variant="secondary"
                 size="sm"
-                @click="openOverride(membership)"
+                @click="store.resendInvitation(invitation.id)"
               >
-                Deny permissions
+                Resend
               </SvButton>
               <SvButton
-                v-if="membership.status === 'active'"
-                variant="secondary"
-                size="sm"
-                @click="startAction({ kind: 'lifecycle', action: 'suspend', membership })"
-              >
-                Suspend
-              </SvButton>
-              <SvButton
-                v-if="membership.status === 'suspended'"
-                variant="secondary"
-                size="sm"
-                @click="startAction({ kind: 'lifecycle', action: 'reactivate', membership })"
-              >
-                Reactivate
-              </SvButton>
-              <SvButton
-                variant="secondary"
-                size="sm"
-                @click="startAction({ kind: 'sessions', membership })"
-              >
-                Revoke sessions
-              </SvButton>
-              <SvButton
-                v-if="membership.status !== 'deactivated'"
                 variant="destructive"
                 size="sm"
-                @click="startAction({ kind: 'lifecycle', action: 'deactivate', membership })"
+                @click="startAction({ kind: 'revoke-invitation', invitation })"
               >
-                Deactivate
+                Revoke
               </SvButton>
-            </div>
-          </li>
-        </ul>
-      </section>
+            </li>
+          </ul>
+        </section>
+      </div>
 
-      <!-- Invitations ---------------------------------------------------------------------- -->
-      <section aria-labelledby="access-invitations-heading">
-        <h2
-          id="access-invitations-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
-        >
-          Invitations
-        </h2>
-
-        <!--
-          UI08-RESP-001: these tables carry six or more columns including masked emails and
-          timestamps, and pushed the document past the 768px tablet floor. They render from the
-          DESKTOP floor; tablet reads the labelled record cards, which is what the plan asks a
-          tablet to do anyway.
-        -->
-        <div class="hidden lg:block">
-          <SvDataTable
-            :columns="invitationColumns"
-            :rows="store.invitations"
-            :row-key="(r) => r.id"
-            caption="Platform access invitations"
-            :state="invitationState"
-            empty-message="No invitation is outstanding."
-            @retry="store.load()"
-          >
-            <template #cell:status="{ row }">
-              <SvStatusBadge
-                :label="statusLabel(row.status)"
-                :tone="statusTone(row.status)"
-                sr-prefix="Status:"
-              />
-            </template>
-            <template #cell:expires_at="{ row }">
-              <SvDateTime :value="row.expires_at" />
-            </template>
-          </SvDataTable>
-        </div>
-
-        <div class="lg:hidden">
-          <SvResponsiveRecordList
-            :columns="invitationColumns"
-            :rows="store.invitations"
-            :row-key="(r) => r.id"
-            caption="Platform access invitations"
-            :state="invitationState"
-            empty-message="No invitation is outstanding."
-            @retry="store.load()"
-          />
-        </div>
-
-        <ul
-          v-if="canManage"
-          class="mt-4 space-y-2"
-        >
-          <li
-            v-for="invitation in store.invitations.filter((i) => i.redeemable)"
-            :key="`inv-actions-${invitation.id}`"
-            class="flex flex-wrap items-center gap-2 rounded-card border border-sv-border bg-sv-surface-raised p-3 text-sm"
-          >
-            <span class="min-w-0 grow break-words">{{ invitation.email }}</span>
-            <SvButton
-              variant="secondary"
-              size="sm"
-              @click="store.resendInvitation(invitation.id)"
+      <aside
+        class="order-first"
+        aria-label="Privilege boundaries"
+      >
+        <div class="sv-r-note sv-r-tone-alert">
+          <div class="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-tone-alert"
             >
-              Resend
-            </SvButton>
-            <SvButton
-              variant="destructive"
-              size="sm"
-              @click="startAction({ kind: 'revoke-invitation', invitation })"
-            >
-              Revoke
-            </SvButton>
-          </li>
-        </ul>
-      </section>
-    </template>
+              <SvIconSecurity />
+            </span>
+            <p class="sv-r-note__title">
+              Sensitive privileges
+            </p>
+          </div>
+          <ul class="sv-r-note__body grid list-disc gap-x-8 gap-y-1 pl-5 lg:grid-cols-3">
+            <li>Every change here requires multi-factor authentication and a fresh step-up.</li>
+            <li>Only platform roles exist on this page; merchant roles are not addressable.</li>
+            <li>Invitation links are single-use and hashed at rest — nobody can read one back.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
 
     <!-- Invite dialog ---------------------------------------------------------------------- -->
     <SvDialog

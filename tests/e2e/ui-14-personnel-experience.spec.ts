@@ -113,13 +113,33 @@ test.describe('all nineteen implemented Personnel pages', () => {
       await page.setViewportSize({ width: 1440, height: 900 });
       const health = await openPersonnel(page, entry);
       await expect(page.getByTestId('public-not-found')).toHaveCount(0);
-      expect(health.requests.some((url) => url.includes(entry.api)), `${entry.screen} never requested ${entry.api}`).toBe(true);
+      await expect.poll(() => health.requests.some((url) => url.includes(entry.api)), {
+        message: `${entry.screen} never requested ${entry.api}`,
+      }).toBe(true);
       expect(health.errors, `${entry.screen} browser errors`).toEqual([]);
       expect(health.failed, `${entry.screen} failed requests`).toEqual([]);
       await settle(page);
       await writeEvidenceScreenshot(page, join(SHOTS, `desktop-light-${entry.screen}.png`), { animations: 'disabled' });
     });
   }
+});
+
+test('salary own read completes after a delayed applicability overview', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const entry = PAGES.find((candidate) => candidate.screen === 'earnings-salary')!;
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await prepare(page, auditScreen(entry));
+  await page.route('**/api/v1/personnel/me/earnings', async (route) => {
+    await new Promise<void>((done) => setTimeout(done, 800));
+    await route.fallback();
+  });
+  await waitForPreview(page);
+  await page.goto(entry.path);
+  await expect(page.locator(entry.ready)).toBeVisible();
+  await expect.poll(() => requests.some((url) => url.includes(entry.api)), {
+    message: 'delayed salary own read',
+  }).toBe(true);
 });
 
 test.describe('Notifications gate and entry safety', () => {

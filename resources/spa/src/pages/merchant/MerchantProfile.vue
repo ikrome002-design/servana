@@ -2,8 +2,8 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import SvFileUpload, { type UploadedFileResource } from '@/components/files/SvFileUpload.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useMerchantProfileStore } from '@/stores/merchantProfileStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePermissionStore } from '@/stores/permissionStore';
@@ -115,7 +115,16 @@ async function save(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-4xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — the merchant identity profile.
+
+    An identity card (the merchant's own approved logo, the read-only business name and country
+    owned by registration and governance, the logo upload and its replacement history) sits beside
+    the editable profile, which is grouped into the three things a client actually meets: how to
+    reach the business, what its receipts say, and where it is. Same fields, ids, validation and
+    permissions as before.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Business profile"
       eyebrow="Merchant"
@@ -126,242 +135,280 @@ async function save(): Promise<void> {
       :state="boundaryState"
       error-message="We could not load your business profile."
     >
-      <SvCard
+      <div
         v-if="store.profile"
-        as="div"
-        padding="lg"
-        class="mt-6"
+        class="sv-r-grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start"
       >
-        <!-- Read-only identity: owned by registration and platform governance, not this screen. -->
-        <dl class="grid gap-3 border-b border-border pb-4 md:grid-cols-2">
-          <div>
-            <dt class="text-xs font-medium uppercase tracking-wide text-sv-text-muted">
-              Business name
-            </dt>
-            <dd class="mt-1 text-sm text-text">
-              {{ store.profile.merchant?.name ?? '—' }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium uppercase tracking-wide text-sv-text-muted">
-              Country
-            </dt>
-            <dd class="mt-1 text-sm text-text">
-              {{ store.profile.country }}
-            </dd>
-          </div>
-        </dl>
-
-        <div class="mt-4 border-b border-border pb-4">
-          <h2 class="text-sm font-semibold text-heading">
-            Logo
-          </h2>
-          <p
-            v-if="!store.profile.logo"
-            class="mt-1 text-sm text-sv-text-muted"
-          >
-            No logo uploaded yet.
-          </p>
-          <p
-            v-else-if="store.profile.logo"
-            class="mt-1 text-sm text-text"
-          >
-            <a
-              v-if="logoHref"
-              :href="logoHref"
-              class="underline text-heading"
-              rel="noopener"
-            >{{ store.profile.logo.filename }}</a>
-            <span v-else>{{ store.profile.logo.filename }}</span>
-          </p>
-          <img
-            v-if="logoPreviewHref || logoHref"
-            :src="logoPreviewHref ?? logoHref ?? undefined"
-            alt="Current merchant logo preview"
-            class="mt-3 h-24 w-24 rounded-card border border-border bg-white object-contain p-2"
-          >
-          <SvFileUpload
-            v-if="canUpdate"
-            class="mt-4"
-            purpose="merchant_logo"
-            label="Upload or replace merchant logo"
-            :uploader="uploadLogo"
-            @uploaded="onLogoUploaded"
-            @rejected="onLogoRejected"
-          />
-          <div
-            v-if="store.profile.logo_history.length > 0"
-            class="mt-4"
-          >
-            <h3 class="text-sm font-semibold text-heading">
-              Replacement history
-            </h3>
-            <ul
-              class="mt-2 space-y-1 text-sm text-text-muted"
-              aria-label="Logo replacement history"
+        <!-- Identity card -------------------------------------------------------------------- -->
+        <aside
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm sv-r-sticky"
+          aria-label="Business identity"
+        >
+          <div class="flex flex-col items-center text-center">
+            <img
+              v-if="logoPreviewHref || logoHref"
+              :src="logoPreviewHref ?? logoHref ?? undefined"
+              alt="Current merchant logo preview"
+              class="h-28 w-28 rounded-3xl border border-sv-border bg-white object-contain p-3 shadow-card"
             >
-              <li
-                v-for="entry in store.profile.logo_history"
-                :key="entry.id"
-              >
-                {{ entry.filename }}<span v-if="entry.available_at"> · {{ formatDate(entry.available_at) }}</span>
-              </li>
-            </ul>
+            <span
+              v-else
+              aria-hidden="true"
+              class="sv-r-icon sv-r-icon--xl sv-r-tone-warm"
+            >
+              <component :is="navigationIcon('merchant')" />
+            </span>
+            <!-- Read-only identity: owned by registration and platform governance, not this screen. -->
+            <dl class="mt-4 w-full">
+              <div>
+                <dt class="sr-only">
+                  Business name
+                </dt>
+                <dd class="sv-r-title-lg break-words">
+                  {{ store.profile.merchant?.name ?? '—' }}
+                </dd>
+              </div>
+              <div class="mt-2 flex justify-center">
+                <dt class="sr-only">
+                  Country
+                </dt>
+                <dd class="sv-r-chip">
+                  {{ store.profile.country }}
+                </dd>
+              </div>
+            </dl>
           </div>
-        </div>
 
+          <div class="mt-6 border-t border-sv-border pt-5">
+            <h2 class="sv-r-eyebrow">
+              Logo
+            </h2>
+            <p
+              v-if="!store.profile.logo"
+              class="sv-r-muted mt-1"
+            >
+              No logo uploaded yet.
+            </p>
+            <p
+              v-else-if="store.profile.logo"
+              class="mt-1 text-sm text-text"
+            >
+              <a
+                v-if="logoHref"
+                :href="logoHref"
+                class="underline text-heading"
+                rel="noopener"
+              >{{ store.profile.logo.filename }}</a>
+              <span v-else>{{ store.profile.logo.filename }}</span>
+            </p>
+            <SvFileUpload
+              v-if="canUpdate"
+              class="mt-4"
+              purpose="merchant_logo"
+              label="Upload or replace merchant logo"
+              :uploader="uploadLogo"
+              @uploaded="onLogoUploaded"
+              @rejected="onLogoRejected"
+            />
+            <div
+              v-if="store.profile.logo_history.length > 0"
+              class="mt-4"
+            >
+              <h3 class="text-sm font-semibold text-heading">
+                Replacement history
+              </h3>
+              <ul
+                class="mt-2 space-y-1 text-sm text-text-muted"
+                aria-label="Logo replacement history"
+              >
+                <li
+                  v-for="entry in store.profile.logo_history"
+                  :key="entry.id"
+                >
+                  {{ entry.filename }}<span v-if="entry.available_at"> · {{ formatDate(entry.available_at) }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Editable profile -------------------------------------------------------------------- -->
         <form
-          class="mt-4 flex flex-col gap-4"
+          class="sv-r-panel flex flex-col gap-6"
           novalidate
           @submit.prevent="save"
         >
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-business-category"
-              class="text-sm font-medium text-text"
-            >Business category</label>
-            <input
-              id="mp-business-category"
-              v-model="form.business_category"
-              type="text"
-              :disabled="!canUpdate"
-              :aria-invalid="errorsFor('business_category').length > 0"
-              :aria-describedby="errorsFor('business_category').length ? 'mp-business-category-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('business_category').length"
-              id="mp-business-category-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('business_category')[0] }}
-            </p>
-          </div>
+          <fieldset class="sv-r-stack-sm">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm mb-3">
+              Business
+            </legend>
+            <div class="flex flex-col gap-1">
+              <label
+                for="mp-business-category"
+                class="text-sm font-medium text-text"
+              >Business category</label>
+              <input
+                id="mp-business-category"
+                v-model="form.business_category"
+                type="text"
+                :disabled="!canUpdate"
+                :aria-invalid="errorsFor('business_category').length > 0"
+                :aria-describedby="errorsFor('business_category').length ? 'mp-business-category-error' : undefined"
+                class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+              >
+              <p
+                v-if="errorsFor('business_category').length"
+                id="mp-business-category-error"
+                class="text-sm text-sv-error-fg"
+              >
+                {{ errorsFor('business_category')[0] }}
+              </p>
+            </div>
+          </fieldset>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-contact-phone"
-              class="text-sm font-medium text-text"
-            >Contact phone</label>
-            <input
-              id="mp-contact-phone"
-              v-model="form.contact_phone"
-              type="tel"
-              :disabled="!canUpdate"
-              :aria-invalid="errorsFor('contact_phone').length > 0"
-              :aria-describedby="errorsFor('contact_phone').length ? 'mp-contact-phone-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('contact_phone').length"
-              id="mp-contact-phone-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('contact_phone')[0] }}
-            </p>
-          </div>
+          <fieldset class="border-t border-sv-border pt-5">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal mb-3">
+              How clients reach you
+            </legend>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="flex flex-col gap-1">
+                <label
+                  for="mp-contact-phone"
+                  class="text-sm font-medium text-text"
+                >Contact phone</label>
+                <input
+                  id="mp-contact-phone"
+                  v-model="form.contact_phone"
+                  type="tel"
+                  :disabled="!canUpdate"
+                  :aria-invalid="errorsFor('contact_phone').length > 0"
+                  :aria-describedby="errorsFor('contact_phone').length ? 'mp-contact-phone-error' : undefined"
+                  class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+                >
+                <p
+                  v-if="errorsFor('contact_phone').length"
+                  id="mp-contact-phone-error"
+                  class="text-sm text-sv-error-fg"
+                >
+                  {{ errorsFor('contact_phone')[0] }}
+                </p>
+              </div>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-contact-email"
-              class="text-sm font-medium text-text"
-            >Contact email</label>
-            <input
-              id="mp-contact-email"
-              v-model="form.contact_email"
-              type="email"
-              :disabled="!canUpdate"
-              :aria-invalid="errorsFor('contact_email').length > 0"
-              :aria-describedby="errorsFor('contact_email').length ? 'mp-contact-email-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('contact_email').length"
-              id="mp-contact-email-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('contact_email')[0] }}
-            </p>
-          </div>
+              <div class="flex flex-col gap-1">
+                <label
+                  for="mp-contact-email"
+                  class="text-sm font-medium text-text"
+                >Contact email</label>
+                <input
+                  id="mp-contact-email"
+                  v-model="form.contact_email"
+                  type="email"
+                  :disabled="!canUpdate"
+                  :aria-invalid="errorsFor('contact_email').length > 0"
+                  :aria-describedby="errorsFor('contact_email').length ? 'mp-contact-email-error' : undefined"
+                  class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+                >
+                <p
+                  v-if="errorsFor('contact_email').length"
+                  id="mp-contact-email-error"
+                  class="text-sm text-sv-error-fg"
+                >
+                  {{ errorsFor('contact_email')[0] }}
+                </p>
+              </div>
+            </div>
+          </fieldset>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-receipt-display-name"
-              class="text-sm font-medium text-text"
-            >Receipt display name</label>
-            <input
-              id="mp-receipt-display-name"
-              v-model="form.receipt_display_name"
-              type="text"
-              :disabled="!canUpdate"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p class="text-xs text-sv-text-muted">
-              Shown on receipts when it differs from the business name.
-            </p>
-          </div>
+          <fieldset class="border-t border-sv-border pt-5">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-sun mb-3">
+              What receipts say
+            </legend>
+            <div class="flex flex-col gap-1">
+              <label
+                for="mp-receipt-display-name"
+                class="text-sm font-medium text-text"
+              >Receipt display name</label>
+              <input
+                id="mp-receipt-display-name"
+                v-model="form.receipt_display_name"
+                type="text"
+                :disabled="!canUpdate"
+                class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+              >
+              <p class="text-xs text-sv-text-muted">
+                Shown on receipts when it differs from the business name.
+              </p>
+            </div>
+          </fieldset>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-address"
-              class="text-sm font-medium text-text"
-            >Address</label>
-            <input
-              id="mp-address"
-              v-model="form.address"
-              type="text"
-              :disabled="!canUpdate"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-          </div>
+          <fieldset class="border-t border-sv-border pt-5">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green mb-3">
+              Where you are
+            </legend>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="flex flex-col gap-1 md:col-span-2">
+                <label
+                  for="mp-address"
+                  class="text-sm font-medium text-text"
+                >Address</label>
+                <input
+                  id="mp-address"
+                  v-model="form.address"
+                  type="text"
+                  :disabled="!canUpdate"
+                  class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+                >
+              </div>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-town"
-              class="text-sm font-medium text-text"
-            >Town</label>
-            <input
-              id="mp-town"
-              v-model="form.town"
-              type="text"
-              :disabled="!canUpdate"
-              :aria-invalid="errorsFor('town').length > 0"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('town').length"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('town')[0] }}
-            </p>
-          </div>
+              <div class="flex flex-col gap-1">
+                <label
+                  for="mp-town"
+                  class="text-sm font-medium text-text"
+                >Town</label>
+                <input
+                  id="mp-town"
+                  v-model="form.town"
+                  type="text"
+                  :disabled="!canUpdate"
+                  :aria-invalid="errorsFor('town').length > 0"
+                  class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+                >
+                <p
+                  v-if="errorsFor('town').length"
+                  class="text-sm text-sv-error-fg"
+                >
+                  {{ errorsFor('town')[0] }}
+                </p>
+              </div>
 
-          <div class="flex flex-col gap-1">
-            <label
-              for="mp-timezone"
-              class="text-sm font-medium text-text"
-            >Timezone</label>
-            <input
-              id="mp-timezone"
-              v-model="form.timezone"
-              type="text"
-              :disabled="!canUpdate"
-              :aria-invalid="errorsFor('timezone').length > 0"
-              :aria-describedby="errorsFor('timezone').length ? 'mp-timezone-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('timezone').length"
-              id="mp-timezone-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('timezone')[0] }}
-            </p>
-          </div>
+              <div class="flex flex-col gap-1">
+                <label
+                  for="mp-timezone"
+                  class="text-sm font-medium text-text"
+                >Timezone</label>
+                <input
+                  id="mp-timezone"
+                  v-model="form.timezone"
+                  type="text"
+                  :disabled="!canUpdate"
+                  :aria-invalid="errorsFor('timezone').length > 0"
+                  :aria-describedby="errorsFor('timezone').length ? 'mp-timezone-error' : undefined"
+                  class="min-h-[44px] w-full rounded-control border border-sv-border-input bg-surface px-3 text-text"
+                >
+                <p
+                  v-if="errorsFor('timezone').length"
+                  id="mp-timezone-error"
+                  class="text-sm text-sv-error-fg"
+                >
+                  {{ errorsFor('timezone')[0] }}
+                </p>
+              </div>
+            </div>
+          </fieldset>
 
           <div
             v-if="canUpdate"
-            class="flex justify-end"
+            class="flex justify-end border-t border-sv-border pt-5"
           >
             <SvButton
               type="submit"
@@ -377,7 +424,7 @@ async function save(): Promise<void> {
             You have view-only access to the business profile.
           </p>
         </form>
-      </SvCard>
+      </div>
     </SvStateBoundary>
   </section>
 </template>

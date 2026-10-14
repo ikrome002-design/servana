@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -10,6 +9,7 @@ import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
 import { useCan } from '@/composables/useCan';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useSubscriptionPlanStore, type SubscriptionPlan } from '@/stores/subscriptionPlanStore';
 
@@ -22,6 +22,18 @@ const notifications = useNotificationStore();
 const { can } = useCan();
 
 const canManage = computed(() => can('platform.plan.manage'));
+
+/*
+ * COR-UI08-UI12-VIS-001: one data path, two compositions. Plans and Entitlements shows the plans
+ * as a CATALOGUE of cards (identity, state, the entitlement entry point); Plan Prices shows them as
+ * a compact SELECTOR that frames the price schedule beside it. `selectedId` only highlights the
+ * plan the page already chose — it selects nothing by itself.
+ */
+const props = withDefaults(defineProps<{
+  layout?: 'catalogue' | 'selector';
+  selectedId?: string | null;
+  selectLabel?: string;
+}>(), { layout: 'catalogue', selectedId: null, selectLabel: 'Prices & entitlements' });
 
 const emit = defineEmits<{ select: [plan: SubscriptionPlan] }>();
 
@@ -128,92 +140,161 @@ async function confirmRetire(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="plans-heading">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+  <section
+    aria-labelledby="plans-heading"
+    class="sv-r-panel"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          {{ props.layout === 'catalogue' ? 'Plan catalogue' : 'Choose a plan' }}
+        </p>
         <h2
           id="plans-heading"
-          class="font-display text-lg font-bold text-heading"
+          class="sv-r-title mt-1"
         >
           Subscription plans
         </h2>
-        <p class="mt-1 text-sm text-text-muted">
+        <p class="sv-r-panel__desc">
           Catalogue metadata only — plans carry no price. Retiring a plan preserves its history.
         </p>
       </div>
-      <SvButton
-        v-if="canManage"
-        @click="openCreate"
-      >
-        New plan
-      </SvButton>
-    </div>
-
-    <div class="mt-4 max-w-xs">
-      <SvSelect
-        id="plan-status-filter"
-        label="Filter by status"
-        :model-value="store.filterStatus"
-        :options="statusOptions"
-        @update:model-value="reloadWithStatus($event)"
-      />
+      <div class="flex flex-wrap items-end gap-3">
+        <div class="w-48">
+          <SvSelect
+            id="plan-status-filter"
+            label="Filter by status"
+            :model-value="store.filterStatus"
+            :options="statusOptions"
+            @update:model-value="reloadWithStatus($event)"
+          />
+        </div>
+        <SvButton
+          v-if="canManage"
+          @click="openCreate"
+        >
+          New plan
+        </SvButton>
+      </div>
     </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="store.error ?? undefined"
       empty-message="No subscription plans yet."
       @retry="store.fetchPlans()"
     >
-      <ul class="mt-2 flex flex-col gap-3">
+      <!-- Catalogue: one card per plan, its identity and state first, its actions in a footer. -->
+      <ul
+        v-if="props.layout === 'catalogue'"
+        class="grid gap-4 md:grid-cols-2"
+      >
         <li
           v-for="plan in store.plans"
           :key="plan.id"
           data-testid="plan-row"
+          class="sv-r-record flex flex-col gap-4"
+          :class="plan.id === props.selectedId ? 'ring-2 ring-sv-brand' : ''"
         >
-          <SvCard padding="sm">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p class="font-semibold text-text">
-                  {{ plan.name }}
-                  <span class="ml-2 rounded-control bg-surface-alt px-2 py-0.5 text-xs text-text-muted">{{ plan.key }}</span>
-                  <span
-                    v-if="plan.status === 'retired'"
-                    class="ml-2 rounded-control bg-cream px-2 py-0.5 text-xs text-sv-text-heading"
-                  >Retired</span>
-                </p>
-                <p
-                  v-if="plan.description"
-                  class="mt-1 text-sm text-text-muted"
-                >
-                  {{ plan.description }}
-                </p>
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <SvButton
-                  variant="secondary"
-                  @click="emit('select', plan)"
-                >
-                  Prices &amp; entitlements
-                </SvButton>
-                <SvButton
-                  v-if="canManage && plan.status === 'active'"
-                  variant="ghost"
-                  @click="openEdit(plan)"
-                >
-                  Edit
-                </SvButton>
-                <SvButton
-                  v-if="canManage && plan.status === 'active'"
-                  variant="destructive"
-                  @click="retireTarget = plan"
-                >
-                  Retire
-                </SvButton>
+          <div class="flex items-start gap-3">
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-icon--lg sv-r-tone-warm"
+            >
+              <component :is="navigationIcon('plan')" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="sv-r-title">
+                {{ plan.name }}
+              </p>
+              <div class="mt-1.5 flex flex-wrap gap-2">
+                <span class="sv-r-chip font-mono">{{ plan.key }}</span>
+                <span
+                  v-if="plan.status === 'retired'"
+                  class="sv-r-chip sv-r-chip--tone sv-r-tone-sun"
+                >Retired</span>
+                <span
+                  v-else
+                  class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-green"
+                >Active</span>
               </div>
             </div>
-          </SvCard>
+          </div>
+          <p
+            v-if="plan.description"
+            class="sv-r-lede"
+          >
+            {{ plan.description }}
+          </p>
+          <div class="mt-auto flex flex-wrap gap-2 border-t border-sv-border pt-4">
+            <SvButton
+              variant="secondary"
+              @click="emit('select', plan)"
+            >
+              {{ props.selectLabel }}
+            </SvButton>
+            <SvButton
+              v-if="canManage && plan.status === 'active'"
+              variant="ghost"
+              @click="openEdit(plan)"
+            >
+              Edit
+            </SvButton>
+            <SvButton
+              v-if="canManage && plan.status === 'active'"
+              variant="destructive"
+              @click="retireTarget = plan"
+            >
+              Retire
+            </SvButton>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Selector: a compact list that frames the schedule beside it. -->
+      <ul
+        v-else
+        class="sv-r-queue"
+      >
+        <li
+          v-for="plan in store.plans"
+          :key="plan.id"
+          data-testid="plan-row"
+          class="sv-r-queue__row sv-r-tone-warm"
+          :class="plan.id === props.selectedId ? 'ring-2 ring-sv-brand' : ''"
+        >
+          <span
+            aria-hidden="true"
+            class="sv-r-icon sv-r-tone-warm"
+          >
+            <component :is="navigationIcon('price')" />
+          </span>
+          <span class="sv-r-queue__label">
+            {{ plan.name }}
+            <span class="sv-r-queue__detail font-mono">{{ plan.key }}<template v-if="plan.status === 'retired'"> · Retired</template></span>
+          </span>
+          <div class="flex flex-wrap gap-2">
+            <SvButton
+              variant="secondary"
+              @click="emit('select', plan)"
+            >
+              {{ props.selectLabel }}
+            </SvButton>
+            <SvButton
+              v-if="canManage && plan.status === 'active'"
+              variant="ghost"
+              @click="openEdit(plan)"
+            >
+              Edit
+            </SvButton>
+            <SvButton
+              v-if="canManage && plan.status === 'active'"
+              variant="destructive"
+              @click="retireTarget = plan"
+            >
+              Retire
+            </SvButton>
+          </div>
         </li>
       </ul>
     </SvStateBoundary>

@@ -6,6 +6,45 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign of UI-08 … UI-12 (`design/ui08-ui12-reference-grade-redesign`) — local_complete; PR #69 release verification; product-owner visual acceptance pending
+
+- Codex release verification (2026-10-14): PR #69 pending protected merge; six references, 36 comparisons and 510 frame hashes verified. COR-REL-002 corrects three date separators to explicit "to" after the hosted icon-source guard failed; original failure retained, guard 17/17 after correction, no rule/test weakening. COR-REL-003 fixes populated mobile compensation values clipped by a 15rem label column; all widths and both themes now have a text-fit regression. Focused browser checks 5/5. Owner aesthetic approval remains pending.
+
+Base `562ffbbb…` (UI-17 PR #68 merge). The product owner rejected the look of the five oldest
+authenticated experiences; all **82 live pages** (17 / 15 / 15 / 15 / 20) are recomposed and the
+**24 gated pages stay inert**. Presentation only: no route, API (307 / 358), permission
+(169 / 134 / 35), store contract, finance arithmetic, migration or legal copy changed; contract
+160 = 132 + 28 unchanged. Front Office, Personnel, Audit, public, legal, FAQ and auth are unchanged.
+
+- **Scoped experience**: `design-system/experience.ts` + `AppShell` mark `<html data-sv-experience="refined">`
+  for the five accounts only; all refinements key off it (`styles/refined-experience.css`), so the other
+  three accounts render byte-identically (scope guard in the new visual spec).
+- **Tokens**: warm `linen` canvas and `night` dark canvas, refined semantic colours, panel/field/shell
+  radii, panel/float shadows; ten new generator-checked contrast requirements.
+- **Shell**: floating sidebar panel with a filled active pill; Super Administrator Deep Earth header
+  capsule with pill groups; editorial page header; translucent footer; refined states, badges, tables,
+  buttons, dialogs (blurred scrim, layered sheet) and toasts; reduced-motion parity.
+- **Composition kit**: `sv-r-*` layout/record/ledger/timeline/feature classes in `@layer components` and
+  `SvPanel`, `SvKpiCard`, `SvFeaturePanel`.
+- **Pages**: every live page recomposed around its contract (command centres, rule workspaces, ledgers,
+  lifecycle boards, verdict desk, case files, statements, contract clauses, timelines, identity cards,
+  stepped forms) — see `docs/frontend/audits/cor-ui08-ui12-vis-001/page-redesign-acceptance.json`.
+- **Fixes found in review**: null export row count no longer shown as `0` (COR-DEF-001); Nairobi-formatted
+  dates on liability adjustments and preferred-fee rules (COR-DEF-002); commission rule described in
+  words via a shared `describeCommissionRule` (COR-DEF-003); cash-up variance wrap (COR-DEF-004).
+- **Fixes found by the full suite** (COR-DEF-008…014): no checker vocabulary for a viewer on payment
+  detail; original "Prices & entitlements" selector label kept; transform-only motion (no mid-fade or
+  theme-transition contrast dips); calendar tiles keep table semantics and every `dl` holds only
+  `dt`/`dd`; Branch financial records stay `<article>`; multi-column compositions and the account grid
+  answer to a `sv-main` content container (1025px with sidebar, 200% zoom) and the desktop top bar may
+  wrap; compact padding on the platform access roster.
+- **Tests**: new `tests/e2e/cor-ui08-ui12-visual-regression.spec.ts` (13 archetypes, 6 dense dark/mobile
+  frames, decision-dialog overlay, eight-account experience scope, negative control) with win32 + linux
+  baselines; populated synthetic overlay `tests/e2e/support/corPopulated.ts`; evidence writer
+  `tests/e2e/cor-ui08-ui12-capture.spec.ts`; 38 UI-16 frames of the five accounts re-baselined per
+  platform (no other account's frame moved); UI-16 negative control repointed to `.sv-r-feature`
+  (COR-DEF-005).
+
 ### Phase UI-17 — Performance, security, production deployment and closeout (`phase-ui-17-performance-security-production-closeout`) — local_complete; GitHub code release pending; production blocked_external
 
 Base `1e8bd5f7…` (UI-16 PR #67). **Nothing is deployed**: `servana.ke` is a lame delegation (0 of 8 hosts
@@ -5390,3 +5429,13 @@ Original Claude handoff remains frozen; release deltas and resume pointer:
 `docs/frontend/audits/ui-17/codex-release-addendum.json`. This pre-merge record claims no hosted
 CI result, merge, live deployment or owner visual approval. Production runbook P1–P10 and D1–D8
 remain separately required; full UI-17 acceptance is not verified_complete.
+
+- COR-UI08-UI12-VIS-001 / COR-REL-004: wait for Personnel own-state API reads within
+  the existing assertion timeout; add delayed-overview salary coverage after a proven
+  hosted retry. No Personnel product/permission/route change. Preserve hosted capture
+  skip counts and failed local attempts in the phase proof; final CI/merge still pending.
+
+- COR-UI08-UI12-VIS-001 / COR-REL-005: preserve button contrast during theme switches
+  by animating shadows instead of independently interpolating semantic text/background
+  colors; add a slow-transition browser regression and exact axe-node diagnostics.
+  The original hosted retry and controlled negative proof remain recorded.

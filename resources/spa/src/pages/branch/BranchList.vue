@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
+import SvKpiCard from '@/components/refined/SvKpiCard.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import { useBranchStore } from '@/stores/branchStore';
 
@@ -22,7 +23,13 @@ const activeBranches = computed(() => branches.branches.filter((branch) => branc
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl p-4 md:p-6">
+  <!--
+    COR-UI08-UI12-VIS-001 — the branch portfolio. Two server-backed portfolio figures lead, then
+    each branch is a card with its identity, operational status and facts; for an owner with the
+    create permission the grid closes on a dashed "add a branch" tile (the Billings reference's
+    add-new affordance) beside the header action. Nothing here operates a branch.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Branches"
       :eyebrow="merchantOwnerView ? 'Merchant footprint' : undefined"
@@ -46,85 +53,97 @@ const activeBranches = computed(() => branches.branches.filter((branch) => branc
 
     <div
       v-if="merchantOwnerView && !branches.loading"
-      class="mb-6 grid gap-3 rounded-card border border-border bg-sv-surface-warm p-4 md:grid-cols-2 md:p-5"
+      class="sv-r-grid sv-r-cols-2 mb-6"
       aria-label="Branch portfolio summary"
     >
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-          Active branches
-        </p>
-        <p class="mt-1 font-display text-2xl font-bold text-heading">
-          {{ activeBranches }}
-        </p>
-      </div>
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-          Portfolio total
-        </p>
-        <p class="mt-1 font-display text-2xl font-bold text-heading">
-          {{ branches.branches.length }}
-        </p>
-      </div>
+      <SvKpiCard
+        label="Active branches"
+        tone="green"
+        :icon="navigationIcon('branch')"
+        hint="Branches currently operating."
+      >
+        {{ activeBranches }}
+      </SvKpiCard>
+      <SvKpiCard
+        label="Portfolio total"
+        tone="warm"
+        :icon="navigationIcon('merchant')"
+        hint="Every branch in your portfolio, in any status."
+      >
+        {{ branches.branches.length }}
+      </SvKpiCard>
     </div>
 
     <p
       v-if="!branches.loading && branches.branches.length === 0"
-      class="mt-6 text-text-muted"
+      class="sv-r-panel sv-r-panel--dashed sv-r-lede mt-6 text-center"
     >
       No branches yet.
     </p>
 
     <ul
-      class="grid grid-cols-1 gap-4 md:grid-cols-2"
+      class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
       aria-label="Branches"
     >
       <li
         v-for="branch in branches.branches"
         :key="branch.id"
       >
-        <SvCard
-          as="article"
-          padding="md"
-        >
-          <div class="flex items-start justify-between gap-4">
-            <h2 class="font-display text-base font-semibold text-heading">
-              {{ branch.name }}
-            </h2>
+        <article class="sv-r-record flex h-full flex-col">
+          <div class="flex items-start gap-3">
             <span
-              class="rounded-full px-2 py-0.5 text-xs font-medium"
-              :class="branch.status === 'active'
-                ? 'bg-sv-success-bg text-sv-success-fg'
-                : 'bg-surface-alt text-text-muted'"
-              data-testid="branch-status"
-            >{{ branch.status }}</span>
+              aria-hidden="true"
+              class="sv-r-icon sv-r-icon--lg"
+              :class="branch.status === 'active' ? 'sv-r-tone-green' : 'sv-r-tone-neutral'"
+            >
+              <component :is="navigationIcon('branch')" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <h2 class="sv-r-title break-words">
+                {{ branch.name }}
+              </h2>
+              <span
+                class="sv-r-chip sv-r-chip--tone sv-r-chip--dot mt-1.5"
+                :class="branch.status === 'active' ? 'sv-r-tone-green' : 'sv-r-tone-neutral'"
+                data-testid="branch-status"
+              >{{ branch.status }}</span>
+            </div>
           </div>
-          <dl class="mt-4 grid grid-cols-2 gap-3 rounded-control bg-surface-alt p-3 text-sm">
+          <dl class="sv-r-strip mt-4">
             <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Branch code
-              </dt>
-              <dd class="mt-1 font-medium text-text">
-                {{ branch.code }}
-              </dd>
+              <dt>Branch code</dt>
+              <dd>{{ branch.code }}</dd>
             </div>
             <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Town
-              </dt>
-              <dd class="mt-1 font-medium text-text">
-                {{ branch.town ?? 'Not set' }}
-              </dd>
+              <dt>Town</dt>
+              <dd>{{ branch.town ?? 'Not set' }}</dd>
             </div>
           </dl>
           <RouterLink
             :to="merchantOwnerView
               ? { name: 'merchant.branch-detail', params: { branchUlid: branch.id } }
               : { name: 'branch.branch-profile' }"
-            class="sv-focus-ring mt-4 inline-flex min-h-sv-touch items-center rounded-control text-sm font-semibold text-heading underline underline-offset-2"
+            class="sv-r-action sv-r-action--quiet sv-focus-ring mt-4 self-start"
           >
             View branch
           </RouterLink>
-        </SvCard>
+        </article>
+      </li>
+      <li v-if="merchantOwnerView && !branches.loading">
+        <PermissionGate permission="branches.create">
+          <RouterLink
+            :to="{ name: 'merchant.branch-create' }"
+            class="sv-focus-ring flex h-full min-h-[12rem] flex-col items-center justify-center gap-3 rounded-card border-2 border-dashed border-sv-border-strong p-6 text-center text-sm font-semibold text-sv-text-heading transition-colors duration-sv-fast hover:bg-sv-surface-raised"
+            data-testid="branch-add-tile"
+          >
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-tone-warm"
+            >+</span>
+            Add a branch
+            <span class="sv-r-muted font-normal">Within your current subscription entitlement.</span>
+          </RouterLink>
+        </PermissionGate>
       </li>
     </ul>
   </section>

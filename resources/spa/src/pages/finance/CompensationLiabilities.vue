@@ -3,7 +3,6 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -17,6 +16,7 @@ import {
   type CompensationAdjustment,
   type LiabilityEntry,
 } from '@/stores/compensationLiabilityStore';
+import { formatDateTime } from '@/utils/dates';
 import { formatMoney } from '@/utils/money';
 import {
   ENTRY_TYPE_FILTER,
@@ -312,12 +312,31 @@ async function verifyStepUp(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — liabilities as a STATEMENT OF WHAT IS OWED. Each currency leads as its
+    own statement card: the combined net liability, then net salary, net commission and adjustments
+    as the three lines that make it up, then the gross/reversal derivation in fine print — every
+    figure Servana's integer-minor-unit value, never summed across currencies. The entries and
+    adjustments ledgers follow, with the filters in a sticky rail. Nothing here is a payout.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Compensation liabilities"
       eyebrow="Compensation Finance"
       description="Salary accrued and commission earned that your business owes staff, plus any manual adjustments. Amounts are shown exactly as Servana calculated them, grouped by currency. This is what is owed — it is not a payout, a settlement, or a record that anyone has been paid."
-    />
+    >
+      <template
+        v-if="!store.forbidden && canView && canAdjust"
+        #actions
+      >
+        <SvButton
+          data-testid="open-adjustment"
+          @click="openCreate()"
+        >
+          Record adjustment
+        </SvButton>
+      </template>
+    </SvPageHeader>
 
     <!-- Async result announcement; focus lands here after a successful adjustment. -->
     <p
@@ -325,7 +344,8 @@ async function verifyStepUp(): Promise<void> {
       role="status"
       tabindex="-1"
       data-testid="liability-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      :class="statusMessage ? 'mb-4' : ''"
     >
       {{ statusMessage }}
     </p>
@@ -334,248 +354,154 @@ async function verifyStepUp(): Promise<void> {
     <div
       v-if="store.forbidden"
       data-testid="liability-forbidden"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
     >
-      <SvCard padding="md">
-        <p class="text-sm text-text-muted">
-          You do not have access to compensation liabilities.
-        </p>
-      </SvCard>
+      <p class="text-sm text-text-muted">
+        You do not have access to compensation liabilities.
+      </p>
     </div>
     <div
       v-else-if="!canView"
       data-testid="liability-no-permission"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
     >
-      <SvCard padding="md">
-        <p class="text-sm text-text-muted">
-          You do not have access to compensation liabilities.
-        </p>
-      </SvCard>
+      <p class="text-sm text-text-muted">
+        You do not have access to compensation liabilities.
+      </p>
     </div>
 
-    <template v-else>
-      <!-- Actions -->
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        <SvButton
-          v-if="canAdjust"
-          data-testid="open-adjustment"
-          @click="openCreate()"
-        >
-          Record adjustment
-        </SvButton>
-      </div>
-
+    <div
+      v-else
+      class="sv-r-stack"
+    >
       <!-- ------------------------------------------------------------------ summary -->
-      <section
-        aria-labelledby="liability-summary-heading"
-        class="mt-6"
-      >
+      <section aria-labelledby="liability-summary-heading">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Owed, not paid
+        </p>
         <h2
           id="liability-summary-heading"
-          class="text-sm font-semibold text-text"
+          class="sv-r-title mb-3 mt-1"
         >
           Liability summary by currency
         </h2>
         <SvStateBoundary
-          class="mt-2"
           :state="summaryState"
           :error-message="store.summaryError ?? undefined"
           empty-message="No compensation liabilities recorded yet."
           @retry="store.fetchSummary()"
         >
-          <div class="mt-2 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            <SvCard
+          <div class="sv-r-grid md:grid-cols-2">
+            <article
               v-for="row in store.summary"
               :key="row.currency"
-              padding="sm"
+              class="sv-r-panel sv-r-panel--flush"
               data-testid="summary-card"
             >
-              <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
-                {{ row.currency }}
-              </p>
-              <p class="mt-1 text-lg font-bold text-text">
-                {{ money(row.combined_net_liability_minor, row.currency) }}
-                <span class="block text-xs font-normal text-text-muted">Combined net liability</span>
-              </p>
-              <dl class="mt-2 space-y-1 text-xs text-text-muted">
-                <div class="flex justify-between gap-2">
-                  <dt>Net salary</dt>
-                  <dd class="text-text">
-                    {{ money(row.net_salary_liability_minor, row.currency) }}
-                  </dd>
-                </div>
-                <div class="flex justify-between gap-2">
-                  <dt>Net commission</dt>
-                  <dd class="text-text">
-                    {{ money(row.net_commission_liability_minor, row.currency) }}
-                  </dd>
-                </div>
-                <div class="flex justify-between gap-2">
-                  <dt>Adjustments</dt>
-                  <dd class="text-text">
-                    {{ money(row.compensation_adjustment_minor, row.currency) }}
-                  </dd>
-                </div>
-                <div class="mt-1 flex justify-between gap-2 border-t border-border pt-1">
+              <div class="sv-r-feature rounded-none">
+                <p class="sv-r-feature__eyebrow">
+                  {{ row.currency }} · combined net liability
+                </p>
+                <p class="sv-r-feature__value sv-numeric mt-2 text-3xl">
+                  {{ money(row.combined_net_liability_minor, row.currency) }}
+                  <span class="sr-only">Combined net liability</span>
+                </p>
+                <dl class="mt-4 grid grid-cols-3 gap-2">
+                  <div class="sv-r-feature__cell">
+                    <dt class="sv-r-feature__hint">
+                      Net salary
+                    </dt>
+                    <dd class="sv-r-feature__value sv-numeric mt-1 text-sm">
+                      {{ money(row.net_salary_liability_minor, row.currency) }}
+                    </dd>
+                  </div>
+                  <div class="sv-r-feature__cell">
+                    <dt class="sv-r-feature__hint">
+                      Net commission
+                    </dt>
+                    <dd class="sv-r-feature__value sv-numeric mt-1 text-sm">
+                      {{ money(row.net_commission_liability_minor, row.currency) }}
+                    </dd>
+                  </div>
+                  <div class="sv-r-feature__cell">
+                    <dt class="sv-r-feature__hint">
+                      Adjustments
+                    </dt>
+                    <dd class="sv-r-feature__value sv-numeric mt-1 text-sm">
+                      {{ money(row.compensation_adjustment_minor, row.currency) }}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <dl class="sv-r-facts sv-r-facts--2 px-5 pb-2 text-sm">
+                <div>
                   <dt>Gross salary accrual</dt>
-                  <dd>{{ money(row.gross_salary_accrual_minor, row.currency) }}</dd>
+                  <dd class="sv-numeric">
+                    {{ money(row.gross_salary_accrual_minor, row.currency) }}
+                  </dd>
                 </div>
-                <div class="flex justify-between gap-2">
+                <div>
                   <dt>Salary reversals</dt>
-                  <dd>{{ money(row.salary_reversal_minor, row.currency) }}</dd>
+                  <dd class="sv-numeric">
+                    {{ money(row.salary_reversal_minor, row.currency) }}
+                  </dd>
                 </div>
-                <div class="flex justify-between gap-2">
+                <div>
                   <dt>Gross earned commission</dt>
-                  <dd>{{ money(row.gross_earned_commission_minor, row.currency) }}</dd>
+                  <dd class="sv-numeric">
+                    {{ money(row.gross_earned_commission_minor, row.currency) }}
+                  </dd>
                 </div>
-                <div class="flex justify-between gap-2">
+                <div>
                   <dt>Commission reversals</dt>
-                  <dd>{{ money(row.commission_reversal_minor, row.currency) }}</dd>
+                  <dd class="sv-numeric">
+                    {{ money(row.commission_reversal_minor, row.currency) }}
+                  </dd>
                 </div>
               </dl>
-            </SvCard>
+            </article>
           </div>
         </SvStateBoundary>
       </section>
 
-      <!-- ------------------------------------------------------------------ filters -->
-      <section
-        aria-labelledby="liability-filters-heading"
-        class="mt-8"
-      >
-        <h2
-          id="liability-filters-heading"
-          class="text-sm font-semibold text-text"
-        >
-          Filters
-          <span
-            v-if="activeFilterCount > 0"
-            class="ml-1 rounded-control bg-surface-alt px-2 py-0.5 text-xs font-medium text-text-muted"
-            data-testid="active-filter-count"
-          >{{ activeFilterCount }} active</span>
-        </h2>
-        <form
-          class="mt-2 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
-          novalidate
-          @submit.prevent="applyFilters"
-        >
-          <SvSelect
-            id="filter-liability-type"
-            label="Liability type"
-            :model-value="store.filters.liability_type"
-            :options="LIABILITY_TYPE_FILTER"
-            @update:model-value="store.filters.liability_type = $event"
-          />
-          <SvSelect
-            id="filter-entry-type"
-            label="Entry type"
-            :model-value="store.filters.entry_type"
-            :options="ENTRY_TYPE_FILTER"
-            @update:model-value="store.filters.entry_type = $event"
-          />
-          <SvSelect
-            id="filter-status"
-            label="Status"
-            :model-value="store.filters.status"
-            :options="LEDGER_STATUS_FILTER"
-            @update:model-value="store.filters.status = $event"
-          />
-          <SvTextInput
-            id="filter-currency"
-            label="Currency"
-            help="3-letter code, e.g. KES"
-            :model-value="store.filters.currency"
-            @update:model-value="store.filters.currency = $event"
-          />
-          <SvTextInput
-            id="filter-staff"
-            label="Staff reference"
-            help="26-character staff reference"
-            :model-value="store.filters.staff_profile_ulid"
-            @update:model-value="store.filters.staff_profile_ulid = $event"
-          />
-          <SvTextInput
-            id="filter-branch"
-            label="Branch reference"
-            help="26-character branch reference"
-            :model-value="store.filters.branch_ulid"
-            @update:model-value="store.filters.branch_ulid = $event"
-          />
-          <SvTextInput
-            id="filter-date-from"
-            label="Date from"
-            type="date"
-            :model-value="store.filters.date_from"
-            @update:model-value="store.filters.date_from = $event"
-          />
-          <SvTextInput
-            id="filter-date-to"
-            label="Date to"
-            type="date"
-            :model-value="store.filters.date_to"
-            @update:model-value="store.filters.date_to = $event"
-          />
-          <div class="flex items-end gap-2 md:col-span-2 lg:col-span-4">
-            <SvButton
-              type="submit"
-              data-testid="apply-filters"
+      <div class="sv-r-grid sv-r-split">
+        <div class="sv-r-stack min-w-0">
+          <!-- ------------------------------------------------------------------ entries -->
+          <section
+            aria-labelledby="liability-entries-heading"
+            class="sv-r-ledger"
+          >
+            <div class="sv-r-ledger__head">
+              <h2
+                id="liability-entries-heading"
+                class="sv-r-title"
+              >
+                Liability entries
+              </h2>
+              <span class="sv-r-chip">Immutable ledger · newest first</span>
+            </div>
+            <SvStateBoundary
+              :state="entriesState"
+              :error-message="store.entriesError ?? undefined"
+              empty-message="No liability entries match these filters."
+              @retry="store.fetchEntries()"
             >
-              Apply filters
-            </SvButton>
-            <SvButton
-              type="button"
-              variant="secondary"
-              data-testid="clear-filters"
-              @click="clearFilters"
-            >
-              Clear
-            </SvButton>
-          </div>
-        </form>
-      </section>
-
-      <!-- ------------------------------------------------------------------ entries -->
-      <section
-        aria-labelledby="liability-entries-heading"
-        class="mt-8"
-      >
-        <h2
-          id="liability-entries-heading"
-          class="text-sm font-semibold text-text"
-        >
-          Liability entries
-        </h2>
-        <SvStateBoundary
-          class="mt-2"
-          :state="entriesState"
-          :error-message="store.entriesError ?? undefined"
-          empty-message="No liability entries match these filters."
-          @retry="store.fetchEntries()"
-        >
-          <ul class="mt-2 flex flex-col gap-3">
-            <li
-              v-for="entry in store.entries"
-              :key="entry.id"
-              data-testid="liability-entry-row"
-            >
-              <SvCard padding="sm">
-                <div class="flex flex-wrap items-start justify-between gap-3">
+              <ul>
+                <li
+                  v-for="entry in store.entries"
+                  :key="entry.id"
+                  data-testid="liability-entry-row"
+                  class="sv-r-ledger__row flex flex-wrap items-start justify-between gap-3"
+                >
                   <div class="min-w-0">
-                    <p class="font-semibold text-text">
+                    <p class="sv-numeric font-display text-base font-extrabold text-heading">
                       {{ money(entry.amount_minor, entry.currency) }}
-                      <span class="ml-1 text-xs font-normal text-text-muted">({{ amountDirection(entry.amount_minor) }})</span>
+                      <span class="ml-1 font-sans text-xs font-normal text-text-muted">({{ amountDirection(entry.amount_minor) }})</span>
                     </p>
                     <p class="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                      <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">
-                        {{ liabilityTypeLabel(entry.liability_type) }}
-                      </span>
-                      <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">
-                        {{ entryTypeLabel(entry.entry_type) }}
-                      </span>
-                      <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">
-                        {{ ledgerStatusLabel(entry.status) }}
-                      </span>
+                      <span class="sv-r-chip">{{ liabilityTypeLabel(entry.liability_type) }}</span>
+                      <span class="sv-r-chip">{{ entryTypeLabel(entry.entry_type) }}</span>
+                      <span class="sv-r-chip">{{ ledgerStatusLabel(entry.status) }}</span>
                     </p>
                     <p class="mt-1 break-words text-xs text-text-muted">
                       {{ entry.staff_display_name ?? 'Staff member' }}
@@ -590,76 +516,73 @@ async function verifyStepUp(): Promise<void> {
                   >
                     Details
                   </SvButton>
-                </div>
-              </SvCard>
-            </li>
-          </ul>
+                </li>
+              </ul>
 
-          <nav
-            v-if="store.entriesMeta.last_page > 1"
-            class="mt-4 flex items-center justify-between"
-            aria-label="Liability entries pagination"
+              <nav
+                v-if="store.entriesMeta.last_page > 1"
+                class="flex items-center justify-between border-t border-sv-border px-5 py-3"
+                aria-label="Liability entries pagination"
+              >
+                <SvButton
+                  variant="secondary"
+                  :disabled="store.entriesMeta.current_page <= 1"
+                  @click="entriesPage(store.entriesMeta.current_page - 1)"
+                >
+                  Previous
+                </SvButton>
+                <span class="text-sm text-text-muted">
+                  Page {{ store.entriesMeta.current_page }} of {{ store.entriesMeta.last_page }}
+                </span>
+                <SvButton
+                  variant="secondary"
+                  :disabled="store.entriesMeta.current_page >= store.entriesMeta.last_page"
+                  @click="entriesPage(store.entriesMeta.current_page + 1)"
+                >
+                  Next
+                </SvButton>
+              </nav>
+            </SvStateBoundary>
+          </section>
+
+          <!-- ------------------------------------------------------------------ adjustments -->
+          <section
+            aria-labelledby="liability-adjustments-heading"
+            class="sv-r-ledger"
           >
-            <SvButton
-              variant="secondary"
-              :disabled="store.entriesMeta.current_page <= 1"
-              @click="entriesPage(store.entriesMeta.current_page - 1)"
+            <div class="sv-r-ledger__head">
+              <h2
+                id="liability-adjustments-heading"
+                class="sv-r-title"
+              >
+                Compensation adjustments
+              </h2>
+              <span class="sv-r-chip">Signed · reason required</span>
+            </div>
+            <SvStateBoundary
+              :state="adjustmentsState"
+              :error-message="store.adjustmentsError ?? undefined"
+              empty-message="No compensation adjustments recorded yet."
+              @retry="store.fetchAdjustments()"
             >
-              Previous
-            </SvButton>
-            <span class="text-sm text-text-muted">
-              Page {{ store.entriesMeta.current_page }} of {{ store.entriesMeta.last_page }}
-            </span>
-            <SvButton
-              variant="secondary"
-              :disabled="store.entriesMeta.current_page >= store.entriesMeta.last_page"
-              @click="entriesPage(store.entriesMeta.current_page + 1)"
-            >
-              Next
-            </SvButton>
-          </nav>
-        </SvStateBoundary>
-      </section>
-
-      <!-- ------------------------------------------------------------------ adjustments -->
-      <section
-        aria-labelledby="liability-adjustments-heading"
-        class="mt-8"
-      >
-        <h2
-          id="liability-adjustments-heading"
-          class="text-sm font-semibold text-text"
-        >
-          Compensation adjustments
-        </h2>
-        <SvStateBoundary
-          class="mt-2"
-          :state="adjustmentsState"
-          :error-message="store.adjustmentsError ?? undefined"
-          empty-message="No compensation adjustments recorded yet."
-          @retry="store.fetchAdjustments()"
-        >
-          <ul class="mt-2 flex flex-col gap-3">
-            <li
-              v-for="adjustment in store.adjustments"
-              :key="adjustment.id"
-              data-testid="adjustment-row"
-            >
-              <SvCard padding="sm">
-                <div class="flex flex-wrap items-start justify-between gap-3">
+              <ul>
+                <li
+                  v-for="adjustment in store.adjustments"
+                  :key="adjustment.id"
+                  data-testid="adjustment-row"
+                  class="sv-r-ledger__row flex flex-wrap items-start justify-between gap-3"
+                >
                   <div class="min-w-0">
-                    <p class="font-semibold text-text">
+                    <p class="sv-numeric font-display text-base font-extrabold text-heading">
                       {{ money(adjustment.amount_minor, adjustment.currency) }}
-                      <span class="ml-1 text-xs font-normal text-text-muted">({{ amountDirection(adjustment.amount_minor) }})</span>
+                      <span class="ml-1 font-sans text-xs font-normal text-text-muted">({{ amountDirection(adjustment.amount_minor) }})</span>
                     </p>
                     <p class="mt-1 text-xs">
-                      <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">
-                        {{ adjustmentTypeLabel(adjustment.adjustment_type) }}
-                      </span>
+                      <span class="sv-r-chip">{{ adjustmentTypeLabel(adjustment.adjustment_type) }}</span>
                     </p>
                     <p class="mt-1 break-words text-xs text-text-muted">
                       {{ adjustment.staff_display_name ?? 'Staff member' }}
-                      <span v-if="adjustment.created_at"> · {{ adjustment.created_at }}</span>
+                      <span v-if="adjustment.created_at"> · {{ formatDateTime(adjustment.created_at) }}</span>
                     </p>
                     <p class="mt-1 break-words text-sm text-text">
                       {{ adjustment.reason }}
@@ -672,37 +595,135 @@ async function verifyStepUp(): Promise<void> {
                   >
                     Details
                   </SvButton>
-                </div>
-              </SvCard>
-            </li>
-          </ul>
+                </li>
+              </ul>
 
-          <nav
-            v-if="store.adjustmentsMeta.last_page > 1"
-            class="mt-4 flex items-center justify-between"
-            aria-label="Adjustments pagination"
+              <nav
+                v-if="store.adjustmentsMeta.last_page > 1"
+                class="flex items-center justify-between border-t border-sv-border px-5 py-3"
+                aria-label="Adjustments pagination"
+              >
+                <SvButton
+                  variant="secondary"
+                  :disabled="store.adjustmentsMeta.current_page <= 1"
+                  @click="adjustmentsPage(store.adjustmentsMeta.current_page - 1)"
+                >
+                  Previous
+                </SvButton>
+                <span class="text-sm text-text-muted">
+                  Page {{ store.adjustmentsMeta.current_page }} of {{ store.adjustmentsMeta.last_page }}
+                </span>
+                <SvButton
+                  variant="secondary"
+                  :disabled="store.adjustmentsMeta.current_page >= store.adjustmentsMeta.last_page"
+                  @click="adjustmentsPage(store.adjustmentsMeta.current_page + 1)"
+                >
+                  Next
+                </SvButton>
+              </nav>
+            </SvStateBoundary>
+          </section>
+        </div>
+
+        <!-- ------------------------------------------------------------------ filters -->
+        <aside
+          class="sv-r-sticky"
+          aria-labelledby="liability-filters-heading"
+        >
+          <form
+            class="sv-r-panel flex flex-col gap-3"
+            novalidate
+            @submit.prevent="applyFilters"
           >
-            <SvButton
-              variant="secondary"
-              :disabled="store.adjustmentsMeta.current_page <= 1"
-              @click="adjustmentsPage(store.adjustmentsMeta.current_page - 1)"
+            <h2
+              id="liability-filters-heading"
+              class="sv-r-eyebrow flex items-center gap-2"
             >
-              Previous
-            </SvButton>
-            <span class="text-sm text-text-muted">
-              Page {{ store.adjustmentsMeta.current_page }} of {{ store.adjustmentsMeta.last_page }}
-            </span>
-            <SvButton
-              variant="secondary"
-              :disabled="store.adjustmentsMeta.current_page >= store.adjustmentsMeta.last_page"
-              @click="adjustmentsPage(store.adjustmentsMeta.current_page + 1)"
-            >
-              Next
-            </SvButton>
-          </nav>
-        </SvStateBoundary>
-      </section>
-    </template>
+              Filters
+              <span
+                v-if="activeFilterCount > 0"
+                class="sv-r-chip normal-case tracking-normal"
+                data-testid="active-filter-count"
+              >{{ activeFilterCount }} active</span>
+            </h2>
+            <SvSelect
+              id="filter-liability-type"
+              label="Liability type"
+              :model-value="store.filters.liability_type"
+              :options="LIABILITY_TYPE_FILTER"
+              @update:model-value="store.filters.liability_type = $event"
+            />
+            <SvSelect
+              id="filter-entry-type"
+              label="Entry type"
+              :model-value="store.filters.entry_type"
+              :options="ENTRY_TYPE_FILTER"
+              @update:model-value="store.filters.entry_type = $event"
+            />
+            <SvSelect
+              id="filter-status"
+              label="Status"
+              :model-value="store.filters.status"
+              :options="LEDGER_STATUS_FILTER"
+              @update:model-value="store.filters.status = $event"
+            />
+            <SvTextInput
+              id="filter-currency"
+              label="Currency"
+              help="3-letter code, e.g. KES"
+              :model-value="store.filters.currency"
+              @update:model-value="store.filters.currency = $event"
+            />
+            <SvTextInput
+              id="filter-staff"
+              label="Staff reference"
+              help="26-character staff reference"
+              :model-value="store.filters.staff_profile_ulid"
+              @update:model-value="store.filters.staff_profile_ulid = $event"
+            />
+            <SvTextInput
+              id="filter-branch"
+              label="Branch reference"
+              help="26-character branch reference"
+              :model-value="store.filters.branch_ulid"
+              @update:model-value="store.filters.branch_ulid = $event"
+            />
+            <div class="grid grid-cols-2 gap-2">
+              <SvTextInput
+                id="filter-date-from"
+                label="Date from"
+                type="date"
+                :model-value="store.filters.date_from"
+                @update:model-value="store.filters.date_from = $event"
+              />
+              <SvTextInput
+                id="filter-date-to"
+                label="Date to"
+                type="date"
+                :model-value="store.filters.date_to"
+                @update:model-value="store.filters.date_to = $event"
+              />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <SvButton
+                type="submit"
+                data-testid="apply-filters"
+              >
+                Apply filters
+              </SvButton>
+              <SvButton
+                type="button"
+                variant="secondary"
+                data-testid="clear-filters"
+                @click="clearFilters"
+              >
+                Clear
+              </SvButton>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </div>
 
     <!-- ------------------------------------------------------------------ entry detail modal -->
     <SvDialog

@@ -2,7 +2,6 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchCalendarStore } from '@/stores/branchCalendarStore';
@@ -144,10 +143,20 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
     notifications.addToast({ type: 'error', message: 'Could not update the calendar exception.' });
   }
 }
+
+/** Month abbreviations for the calendar tiles, read from the ISO date string (no time-zone shift). */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-4xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — the operating calendar as dated TILES. Each exception is a calendar
+    tile (day and month set large, the exception type, and a timing cue: closed all day, or the
+    special opening window) so the schedule reads at a glance; the add-exception form sits in the
+    rail, first in the DOM so it stays the page's primary form, and the inline editor keeps the
+    row identity (date and type) read-only. Weekly hours still apply wherever no tile exists.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Branch calendar"
       eyebrow="Branch setup"
@@ -157,367 +166,338 @@ async function saveEdit(exception: BranchCalendarException): Promise<void> {
     <p
       v-if="conflictMessage"
       role="alert"
-      class="mt-4 rounded-control border border-sv-error-border bg-red-50 p-3 text-sm text-sv-error-fg dark:bg-red-900/20"
+      class="mb-4 rounded-control border border-sv-error-border bg-sv-error-bg p-3 text-sm text-sv-error-fg"
     >
       {{ conflictMessage }}
     </p>
 
-    <SvCard
-      v-if="canManage"
-      as="div"
-      padding="lg"
-      class="mt-6"
-    >
-      <h2 class="text-sm font-semibold text-heading">
-        Add an exception
-      </h2>
-      <form
-        class="mt-3 flex flex-col gap-4"
-        novalidate
-        @submit.prevent="create"
+    <div class="sv-r-grid sv-r-split">
+      <aside
+        v-if="canManage"
+        class="sv-r-panel sv-r-panel--tonal sv-r-tone-green sv-r-sticky lg:order-last"
+        aria-label="Add an exception"
       >
-        <div class="flex flex-col gap-1">
-          <label
-            for="bc-date"
-            class="text-sm font-medium text-text"
-          >Date</label>
-          <input
-            id="bc-date"
-            v-model="form.date"
-            type="date"
-            required
-            :aria-invalid="errorsFor('date').length > 0"
-            :aria-describedby="errorsFor('date').length ? 'bc-date-error' : undefined"
-            class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-          >
-          <p
-            v-if="errorsFor('date').length"
-            id="bc-date-error"
-            class="text-sm text-sv-error-fg"
-          >
-            {{ errorsFor('date')[0] }}
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label
-            for="bc-type"
-            class="text-sm font-medium text-text"
-          >Type</label>
-          <select
-            id="bc-type"
-            v-model="form.type"
-            :aria-invalid="errorsFor('type').length > 0"
-            :aria-describedby="errorsFor('type').length ? 'bc-type-error' : undefined"
-            class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-          >
-            <option
-              v-for="(label, value) in TYPE_LABELS"
-              :key="value"
-              :value="value"
-            >
-              {{ label }}
-            </option>
-          </select>
-          <p
-            v-if="errorsFor('type').length"
-            id="bc-type-error"
-            class="text-sm text-sv-error-fg"
-          >
-            {{ errorsFor('type')[0] }}
-          </p>
-        </div>
-
-        <div
-          v-if="needsWindow"
-          class="flex flex-wrap gap-4"
-        >
-          <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
-            <label
-              for="bc-opens-at"
-              class="text-sm font-medium text-text"
-            >Opens at</label>
-            <input
-              id="bc-opens-at"
-              v-model="form.opens_at"
-              type="time"
-              :aria-invalid="errorsFor('opens_at').length > 0"
-              :aria-describedby="errorsFor('opens_at').length ? 'bc-opens-at-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('opens_at').length"
-              id="bc-opens-at-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('opens_at')[0] }}
-            </p>
-          </div>
-          <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
-            <label
-              for="bc-closes-at"
-              class="text-sm font-medium text-text"
-            >Closes at</label>
-            <input
-              id="bc-closes-at"
-              v-model="form.closes_at"
-              type="time"
-              :aria-invalid="errorsFor('closes_at').length > 0"
-              :aria-describedby="errorsFor('closes_at').length ? 'bc-closes-at-error' : undefined"
-              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-            >
-            <p
-              v-if="errorsFor('closes_at').length"
-              id="bc-closes-at-error"
-              class="text-sm text-sv-error-fg"
-            >
-              {{ errorsFor('closes_at')[0] }}
-            </p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label
-            for="bc-reason"
-            class="text-sm font-medium text-text"
-          >Reason (optional)</label>
-          <input
-            id="bc-reason"
-            v-model="form.reason"
-            type="text"
-            :aria-invalid="errorsFor('reason').length > 0"
-            class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
-          >
-          <p
-            v-if="errorsFor('reason').length"
-            class="text-sm text-sv-error-fg"
-          >
-            {{ errorsFor('reason')[0] }}
-          </p>
-        </div>
-
-        <div class="flex justify-end">
-          <SvButton
-            type="submit"
-            :disabled="store.saving"
-          >
-            {{ store.saving ? 'Saving…' : 'Add exception' }}
-          </SvButton>
-        </div>
-      </form>
-    </SvCard>
-
-    <h2 class="mt-8 text-sm font-semibold text-heading">
-      Scheduled exceptions
-      <span
-        v-if="store.range"
-        class="font-normal text-sv-text-muted"
-      >({{ store.range.from }} to {{ store.range.to }})</span>
-    </h2>
-
-    <SvStateBoundary
-      :state="boundaryState"
-      empty-message="No calendar exceptions in this period — the weekly operating hours apply."
-      error-message="We could not load the branch calendar."
-      @retry="load"
-    >
-      <!-- Desktop table; each row becomes a labelled card on mobile (Plan §28). -->
-      <div class="mt-3 overflow-x-auto">
-        <table class="hidden w-full text-left text-sm md:table">
-          <caption class="sr-only">
-            Branch calendar exceptions with their type, hours and reason
-          </caption>
-          <thead>
-            <tr class="border-b border-border text-sv-text-muted">
-              <th
-                scope="col"
-                class="py-2 pr-3 font-medium"
-              >
-                Date
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-3 font-medium"
-              >
-                Type
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-3 font-medium"
-              >
-                Hours
-              </th>
-              <th
-                scope="col"
-                class="py-2 pr-3 font-medium"
-              >
-                Reason
-              </th>
-              <th
-                v-if="canManage"
-                scope="col"
-                class="py-2 font-medium"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="exception in store.exceptions"
-              :key="exception.date"
-              class="border-b border-border"
-            >
-              <td class="py-2 pr-3 text-text">
-                {{ exception.date }}
-              </td>
-              <td class="py-2 pr-3 text-text">
-                {{ TYPE_LABELS[exception.type] }}
-              </td>
-              <td class="py-2 pr-3 text-text">
-                {{ exception.closes_branch ? 'Closed all day' : `${exception.opens_at} – ${exception.closes_at}` }}
-              </td>
-              <td class="py-2 pr-3 text-sv-text-muted">
-                {{ exception.reason ?? '—' }}
-              </td>
-              <td
-                v-if="canManage"
-                class="flex flex-wrap gap-2 py-2"
-              >
-                <SvButton
-                  variant="secondary"
-                  :disabled="store.saving"
-                  @click="startEdit(exception)"
-                >
-                  Edit
-                </SvButton>
-                <SvButton
-                  variant="secondary"
-                  :disabled="store.saving"
-                  @click="remove(exception)"
-                >
-                  Remove
-                </SvButton>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Inline editor: the date and type are the row identity and stay read-only. -->
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green">
+          Override the weekly hours
+        </p>
+        <h2 class="sv-r-title mt-1">
+          Add an exception
+        </h2>
         <form
-          v-for="exception in store.exceptions.filter((e) => e.date === editing)"
-          :key="`edit-${exception.date}`"
-          class="mt-3 flex flex-wrap items-end gap-3 rounded-control border border-primary p-3"
+          class="mt-3 flex flex-col gap-4"
           novalidate
-          @submit.prevent="saveEdit(exception)"
+          @submit.prevent="create"
         >
-          <p class="w-full text-sm font-semibold text-heading">
-            Editing {{ exception.date }} — {{ TYPE_LABELS[exception.type] }}
-          </p>
-          <template v-if="!exception.closes_branch">
+          <div class="flex flex-col gap-1">
+            <label
+              for="bc-date"
+              class="text-sm font-medium text-text"
+            >Date</label>
+            <input
+              id="bc-date"
+              v-model="form.date"
+              type="date"
+              required
+              :aria-invalid="errorsFor('date').length > 0"
+              :aria-describedby="errorsFor('date').length ? 'bc-date-error' : undefined"
+              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
+            >
+            <p
+              v-if="errorsFor('date').length"
+              id="bc-date-error"
+              class="text-sm text-sv-error-fg"
+            >
+              {{ errorsFor('date')[0] }}
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label
+              for="bc-type"
+              class="text-sm font-medium text-text"
+            >Type</label>
+            <select
+              id="bc-type"
+              v-model="form.type"
+              :aria-invalid="errorsFor('type').length > 0"
+              :aria-describedby="errorsFor('type').length ? 'bc-type-error' : undefined"
+              class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
+            >
+              <option
+                v-for="(label, value) in TYPE_LABELS"
+                :key="value"
+                :value="value"
+              >
+                {{ label }}
+              </option>
+            </select>
+            <p
+              v-if="errorsFor('type').length"
+              id="bc-type-error"
+              class="text-sm text-sv-error-fg"
+            >
+              {{ errorsFor('type')[0] }}
+            </p>
+          </div>
+
+          <div
+            v-if="needsWindow"
+            class="flex flex-wrap gap-4"
+          >
             <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
               <label
-                :for="`bc-edit-opens-${exception.date}`"
+                for="bc-opens-at"
                 class="text-sm font-medium text-text"
               >Opens at</label>
               <input
-                :id="`bc-edit-opens-${exception.date}`"
-                v-model="editForm.opens_at"
+                id="bc-opens-at"
+                v-model="form.opens_at"
                 type="time"
+                :aria-invalid="errorsFor('opens_at').length > 0"
+                :aria-describedby="errorsFor('opens_at').length ? 'bc-opens-at-error' : undefined"
                 class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
               >
+              <p
+                v-if="errorsFor('opens_at').length"
+                id="bc-opens-at-error"
+                class="text-sm text-sv-error-fg"
+              >
+                {{ errorsFor('opens_at')[0] }}
+              </p>
             </div>
             <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
               <label
-                :for="`bc-edit-closes-${exception.date}`"
+                for="bc-closes-at"
                 class="text-sm font-medium text-text"
               >Closes at</label>
               <input
-                :id="`bc-edit-closes-${exception.date}`"
-                v-model="editForm.closes_at"
+                id="bc-closes-at"
+                v-model="form.closes_at"
                 type="time"
+                :aria-invalid="errorsFor('closes_at').length > 0"
+                :aria-describedby="errorsFor('closes_at').length ? 'bc-closes-at-error' : undefined"
                 class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
               >
+              <p
+                v-if="errorsFor('closes_at').length"
+                id="bc-closes-at-error"
+                class="text-sm text-sv-error-fg"
+              >
+                {{ errorsFor('closes_at')[0] }}
+              </p>
             </div>
-          </template>
-          <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
+          </div>
+
+          <div class="flex flex-col gap-1">
             <label
-              :for="`bc-edit-reason-${exception.date}`"
+              for="bc-reason"
               class="text-sm font-medium text-text"
-            >Reason</label>
+            >Reason (optional)</label>
             <input
-              :id="`bc-edit-reason-${exception.date}`"
-              v-model="editForm.reason"
+              id="bc-reason"
+              v-model="form.reason"
               type="text"
+              :aria-invalid="errorsFor('reason').length > 0"
               class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
             >
-          </div>
-          <p
-            v-if="errorsFor('closes_at').length || errorsFor('opens_at').length"
-            role="alert"
-            class="w-full text-sm text-sv-error-fg"
-          >
-            {{ errorsFor('closes_at')[0] ?? errorsFor('opens_at')[0] }}
-          </p>
-          <SvButton
-            type="submit"
-            :disabled="store.saving"
-          >
-            Save
-          </SvButton>
-          <SvButton
-            variant="ghost"
-            @click="editing = null"
-          >
-            Cancel
-          </SvButton>
-        </form>
-
-        <ul class="flex flex-col gap-3 md:hidden">
-          <li
-            v-for="exception in store.exceptions"
-            :key="exception.date"
-            class="rounded-control border border-border p-3"
-          >
-            <p class="text-sm font-semibold text-heading">
-              {{ exception.date }} — {{ TYPE_LABELS[exception.type] }}
-            </p>
-            <p class="mt-1 text-sm text-text">
-              <span class="text-sv-text-muted">Hours: </span>
-              {{ exception.closes_branch ? 'Closed all day' : `${exception.opens_at} – ${exception.closes_at}` }}
-            </p>
-            <p class="mt-1 text-sm text-text">
-              <span class="text-sv-text-muted">Reason: </span>{{ exception.reason ?? '—' }}
-            </p>
-            <div
-              v-if="canManage"
-              class="mt-2 flex flex-wrap gap-2"
+            <p
+              v-if="errorsFor('reason').length"
+              class="text-sm text-sv-error-fg"
             >
-              <SvButton
-                variant="secondary"
-                :disabled="store.saving"
-                @click="startEdit(exception)"
-              >
-                Edit
-              </SvButton>
-              <SvButton
-                variant="secondary"
-                :disabled="store.saving"
-                @click="remove(exception)"
-              >
-                Remove
-              </SvButton>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </SvStateBoundary>
+              {{ errorsFor('reason')[0] }}
+            </p>
+          </div>
 
-    <p
-      v-if="!canManage"
-      class="mt-4 text-sm text-sv-text-muted"
-    >
-      You have view-only access to the branch calendar.
-    </p>
+          <div class="flex justify-end">
+            <SvButton
+              type="submit"
+              :disabled="store.saving"
+            >
+              {{ store.saving ? 'Saving…' : 'Add exception' }}
+            </SvButton>
+          </div>
+        </form>
+      </aside>
+
+      <div class="min-w-0">
+        <div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+          <h2 class="sv-r-title">
+            Scheduled exceptions
+            <span
+              v-if="store.range"
+              class="sv-r-chip ml-2 align-middle font-semibold"
+            >({{ store.range.from }} to {{ store.range.to }})</span>
+          </h2>
+        </div>
+
+        <SvStateBoundary
+          :state="boundaryState"
+          empty-message="No calendar exceptions in this period — the weekly operating hours apply."
+          error-message="We could not load the branch calendar."
+          @retry="load"
+        >
+          <div>
+            <!--
+              The tiles keep TABLE semantics (role=table/row/cell, with a visually hidden header
+              row): each exception is one row whose date, type, hours, reason and actions are cells,
+              exactly as the REM-SCR-002B contract reads them. Only generic elements sit between
+              a row and its cells, so ownership holds.
+            -->
+            <div
+              role="table"
+              class="grid gap-3 md:grid-cols-2"
+              aria-label="Branch calendar exceptions with their type, hours and reason"
+            >
+              <div
+                role="row"
+                class="sr-only"
+              >
+                <span role="columnheader">Date</span>
+                <span role="columnheader">Type</span>
+                <span role="columnheader">Hours</span>
+                <span role="columnheader">Reason</span>
+                <span
+                  v-if="canManage"
+                  role="columnheader"
+                >Actions</span>
+              </div>
+              <div
+                v-for="exception in store.exceptions"
+                :key="exception.date"
+                role="row"
+                class="sv-r-record flex gap-4"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex w-16 shrink-0 flex-col items-center justify-center rounded-card py-2"
+                  :class="exception.closes_branch ? 'bg-sv-error-bg text-sv-error-fg' : 'bg-sv-warning-bg text-sv-warning-fg'"
+                >
+                  <span class="font-display text-2xl font-extrabold leading-none">{{ exception.date.slice(8, 10) }}</span>
+                  <span class="mt-1 text-[0.6875rem] font-bold uppercase tracking-wider">{{ MONTHS[Number(exception.date.slice(5, 7)) - 1] }}</span>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-baseline gap-x-1 text-sm font-semibold text-heading">
+                    <span role="cell">{{ exception.date }}</span>
+                    <span aria-hidden="true">—</span>
+                    <span role="cell">{{ TYPE_LABELS[exception.type] }}</span>
+                  </div>
+                  <div class="mt-1">
+                    <span
+                      role="cell"
+                      class="sv-r-chip sv-r-chip--tone sv-r-chip--dot"
+                      :class="exception.closes_branch ? 'sv-r-tone-alert' : 'sv-r-tone-sun'"
+                    >{{ exception.closes_branch ? 'Closed all day' : `${exception.opens_at} – ${exception.closes_at}` }}</span>
+                  </div>
+                  <div
+                    role="cell"
+                    class="mt-2 text-sm text-text"
+                  >
+                    <span class="text-sv-text-muted">Reason: </span>{{ exception.reason ?? '—' }}
+                  </div>
+                  <div
+                    v-if="canManage"
+                    role="cell"
+                    class="mt-3 flex flex-wrap gap-2"
+                  >
+                    <SvButton
+                      variant="secondary"
+                      size="sm"
+                      :disabled="store.saving"
+                      @click="startEdit(exception)"
+                    >
+                      Edit
+                    </SvButton>
+                    <SvButton
+                      variant="secondary"
+                      size="sm"
+                      :disabled="store.saving"
+                      @click="remove(exception)"
+                    >
+                      Remove
+                    </SvButton>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Inline editor: the date and type are the row identity and stay read-only. -->
+            <form
+              v-for="exception in store.exceptions.filter((e) => e.date === editing)"
+              :key="`edit-${exception.date}`"
+              class="mt-3 flex flex-wrap items-end gap-3 rounded-card border-2 border-sv-brand bg-sv-surface-raised p-4"
+              novalidate
+              @submit.prevent="saveEdit(exception)"
+            >
+              <p class="w-full text-sm font-semibold text-heading">
+                Editing {{ exception.date }} — {{ TYPE_LABELS[exception.type] }}
+              </p>
+              <template v-if="!exception.closes_branch">
+                <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
+                  <label
+                    :for="`bc-edit-opens-${exception.date}`"
+                    class="text-sm font-medium text-text"
+                  >Opens at</label>
+                  <input
+                    :id="`bc-edit-opens-${exception.date}`"
+                    v-model="editForm.opens_at"
+                    type="time"
+                    class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
+                  >
+                </div>
+                <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
+                  <label
+                    :for="`bc-edit-closes-${exception.date}`"
+                    class="text-sm font-medium text-text"
+                  >Closes at</label>
+                  <input
+                    :id="`bc-edit-closes-${exception.date}`"
+                    v-model="editForm.closes_at"
+                    type="time"
+                    class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
+                  >
+                </div>
+              </template>
+              <div class="flex min-w-[8rem] flex-1 flex-col gap-1">
+                <label
+                  :for="`bc-edit-reason-${exception.date}`"
+                  class="text-sm font-medium text-text"
+                >Reason</label>
+                <input
+                  :id="`bc-edit-reason-${exception.date}`"
+                  v-model="editForm.reason"
+                  type="text"
+                  class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 text-text"
+                >
+              </div>
+              <p
+                v-if="errorsFor('closes_at').length || errorsFor('opens_at').length"
+                role="alert"
+                class="w-full text-sm text-sv-error-fg"
+              >
+                {{ errorsFor('closes_at')[0] ?? errorsFor('opens_at')[0] }}
+              </p>
+              <SvButton
+                type="submit"
+                :disabled="store.saving"
+              >
+                Save
+              </SvButton>
+              <SvButton
+                variant="ghost"
+                @click="editing = null"
+              >
+                Cancel
+              </SvButton>
+            </form>
+          </div>
+        </SvStateBoundary>
+
+        <p
+          v-if="!canManage"
+          class="mt-4 text-sm text-sv-text-muted"
+        >
+          You have view-only access to the branch calendar.
+        </p>
+      </div>
+    </div>
   </section>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { SvIconLocked } from '@/design-system/icons';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { usePeriodLockStore, type PeriodLockView } from '@/stores/periodLockStore';
 import { usePermissionStore } from '@/stores/permissionStore';
@@ -56,7 +56,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — a deliberately serious approval surface. Each exceptional reopen is a
+    locked-period card on a clay spine: the period set large, its scope, Finance's recorded reason
+    quoted, and the consequence of approving stated beside the one action. The rail restates the
+    separation the server enforces: the approver must differ from the Finance requester, and the
+    owner never creates locks or executes reopens.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Exceptional period-reopen approvals"
       eyebrow="Compensation & Approvals"
@@ -65,54 +72,84 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-sv-error-fg"
+      class="mb-4 rounded-control bg-sv-error-bg px-4 py-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}
     </p>
 
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      error-message="We couldn’t load approvals."
-      empty-message="No exceptional reopens are awaiting your approval."
-    >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="lock in pending"
-          :key="lock.id"
-        >
-          <SvCard
-            as="section"
-            padding="md"
-            data-testid="reopen-approval-row"
+    <div class="sv-r-grid sv-r-split">
+      <SvStateBoundary
+        :state="boundaryState"
+        error-message="We couldn’t load approvals."
+        empty-message="No exceptional reopens are awaiting your approval."
+      >
+        <ul class="flex flex-col gap-3">
+          <li
+            v-for="lock in pending"
+            :key="lock.id"
           >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p class="font-display font-semibold text-heading">
-                  {{ lock.period_start }} → {{ lock.period_end }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  {{ lock.scope === 'merchant' ? 'Merchant-wide' : `Branch: ${lock.branch?.name ?? '—'}` }}
-                </p>
-                <p
-                  v-if="lock.reopen_reason"
-                  class="mt-1 text-sm text-text-muted"
+            <section
+              class="sv-r-record sv-r-record--spine sv-r-tone-alert pl-6"
+              data-testid="reopen-approval-row"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="flex min-w-0 items-start gap-4">
+                  <span
+                    aria-hidden="true"
+                    class="sv-r-icon sv-r-icon--lg sv-r-tone-alert"
+                  >
+                    <SvIconLocked />
+                  </span>
+                  <div class="min-w-0">
+                    <p class="sv-r-eyebrow">
+                      Locked period
+                    </p>
+                    <p class="sv-r-title-lg mt-1">
+                      {{ lock.period_start }} → {{ lock.period_end }}
+                    </p>
+                    <p class="mt-2">
+                      <span class="sv-r-chip">{{ lock.scope === 'merchant' ? 'Merchant-wide' : `Branch: ${lock.branch?.name ?? '—'}` }}</span>
+                    </p>
+                  </div>
+                </div>
+                <SvButton
+                  data-testid="reopen-approve"
+                  :loading="busy"
+                  @click="approve(lock)"
                 >
-                  Reason: {{ lock.reopen_reason }}
-                </p>
+                  Approve reopen
+                </SvButton>
               </div>
-              <SvButton
-                data-testid="reopen-approve"
-                :loading="busy"
-                @click="approve(lock)"
+              <blockquote
+                v-if="lock.reopen_reason"
+                class="mt-4 rounded-card border-l-4 border-sv-border-strong bg-sv-surface-subtle px-4 py-3 text-sm text-text"
               >
-                Approve reopen
-              </SvButton>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
+                Reason: {{ lock.reopen_reason }}
+              </blockquote>
+              <p class="sv-r-muted mt-3">
+                Approving lets Finance execute this reopen. The approval is recorded on the append-only audit trail.
+              </p>
+            </section>
+          </li>
+        </ul>
+      </SvStateBoundary>
+
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Approval separation"
+      >
+        <div class="sv-r-note sv-r-tone-alert">
+          <p class="sv-r-note__title">
+            Separation of duties
+          </p>
+          <ul class="sv-r-note__body mt-2 list-disc space-y-1 pl-5">
+            <li>Finance requests the reopen; you approve it; Finance executes it.</li>
+            <li>The approver must be a different person from the Finance requester — the server refuses otherwise.</li>
+            <li>You cannot create period locks or execute a reopen here.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
   </section>
 </template>
