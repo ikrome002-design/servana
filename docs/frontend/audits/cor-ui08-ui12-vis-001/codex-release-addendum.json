@@ -1,0 +1,136 @@
+{
+  "schema": "servana.cor-ui08-ui12-vis-001.codex-release-addendum/v1",
+  "recorded_at": "2026-10-14T03:13:25.313Z",
+  "phase": "COR-UI08-UI12-VIS-001",
+  "branch": "design/ui08-ui12-reference-grade-redesign",
+  "base": "562ffbbbbc10351a7185e60fda517d51a260f9db",
+  "original_manifest_sha256": "d5b9b99ae7fc9910cf31408ebadbdc046496222c482931f5dc5ae811191fe420",
+  "original_md_sha256": "699865b8cf78d8a10aeef7559f966027d333b553f93243ba8f0707e4dfe6bf34",
+  "original_paths": 651,
+  "authentication": {
+    "status_size_hash_mismatches": 0,
+    "unexpected_paths": 0,
+    "staged_at_entry": 0,
+    "head_equals_base": true,
+    "predecessor_pr": 68,
+    "predecessor_merged_at": "2026-10-13T06:46:56Z"
+  },
+  "scope": {
+    "accounts": 5,
+    "live": 82,
+    "gated": 24,
+    "global_live": 132,
+    "global_gated": 28,
+    "contract_parity_mismatches": 0,
+    "protected_backend_diff": 0
+  },
+  "visual_review": {
+    "reviewer": "Codex agent",
+    "six_reference_images_visually_inspected": true,
+    "before_after_comparisons": 36,
+    "inspected_keys": [
+      "super_administrator.dashboard",
+      "super_administrator.get-started",
+      "merchant_administrator.dashboard",
+      "merchant_administrator.get-started",
+      "merchant_branch.dashboard",
+      "merchant_branch.get-started",
+      "merchant_human_resource.dashboard",
+      "merchant_human_resource.get-started",
+      "merchant_finance.dashboard",
+      "merchant_finance.get-started",
+      "super_administrator.billing-settings",
+      "merchant_administrator.subscription-invoice-detail",
+      "merchant_human_resource.compensation-setup",
+      "merchant_human_resource.compensation-detail",
+      "merchant_finance.cash-up",
+      "merchant_finance.periods",
+      "merchant_administrator.account",
+      "merchant_finance.settings",
+      "merchant_branch.services",
+      "merchant_human_resource.staff",
+      "merchant_finance.payments-validation-detail",
+      "merchant_administrator.setup",
+      "super_administrator.billing-sms",
+      "super_administrator.billing-subscriptions",
+      "merchant_administrator.subscription",
+      "merchant_administrator.branches",
+      "merchant_branch.branch-day",
+      "merchant_branch.cash-up",
+      "merchant_human_resource.availability",
+      "merchant_finance.payments-duplicates",
+      "merchant_finance.payments-validations",
+      "merchant_finance.payouts",
+      "merchant_finance.exports",
+      "super_administrator.account",
+      "merchant_branch.account",
+      "merchant_human_resource.account"
+    ],
+    "all_82_page_ledgers_reviewed": true,
+    "indexed_page_frames_verified": 394,
+    "regression_frames_verified": 116,
+    "hash_mismatches": 0,
+    "decision": "agent_acceptance; product_owner_visual_approval pending",
+    "notes": [
+      "Distinct task composition verified: verdict desk, statement, compensation steps, readiness dimensions, lock timeline, ledger and catalogue.",
+      "Finance dashboard is an evolution of its prior rich composition; not claimed wholly novel.",
+      "Populated synthetic after evidence has no populated-before counterpart.",
+      "Long HR availability form remains a scrollable mobile schedule; no source/style change justified by review.",
+      "Six unchanged light/dark UI13/UI14/UI15 dashboard baselines visually inspected; full hosted suite required to prove current output."
+    ]
+  },
+  "local_checks": {
+    "handoff": "PASS 651 exact paths",
+    "navigation": "PASS 160 current pages",
+    "tokens": "PASS deterministic artifacts and 47 contrast requirements",
+    "diff_check": "PASS",
+    "frame_hashes": "PASS 510",
+    "gitleaks_directory": "one verified generic-api-key false positive at tokens.generated.ts:13",
+    "source_digest": "1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4",
+    "claude_full_windows": "2218 passed / 0 failed / 1 capture-only skipped / 0 flaky; immutable handoff source",
+    "claude_linux": "188 passed / 1 session-closed browser crash; isolated rerun 1 passed; not relabelled green",
+    "hosted_release": "pending exact-final-head Backend, Frontend, Docker, Security, E2E",
+    "api_contract": "PASS 307 paths / 358 operations",
+    "edge_security": "PASS current CSP hash; safe logs/referrer/HSTS/gzip",
+    "owned_file_sensitive_scan": "All 652 owned paths scanned as text where applicable; only verified public token digest finding, no credential"
+  },
+  "deltas": [
+    {
+      "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json",
+      "status": "A",
+      "bytes": null,
+      "sha256": null,
+      "reason": "Independent release verification and exact delta allowlist; self hash external"
+    }
+  ],
+  "release_strategy": "Normal merge commit if exact introducing-commit token digest fingerprint is required; no squash without supported equivalence",
+  "product_owner_visual_approval": "pending",
+  "production_status": "blocked_external; DNS owner and Phase 25",
+  "deferred": [
+    {
+      "item": "82-page aesthetic acceptance",
+      "owner": "Product owner",
+      "entry": "review before/after package"
+    },
+    {
+      "item": "NVDA/VoiceOver",
+      "owner": "Product owner / assistive-tech QA",
+      "entry": "human-device assessment"
+    },
+    {
+      "item": "DNS/TLS rollout and canary",
+      "owner": "DNS owner / repository owner / Phase 25",
+      "entry": "UI17 P1-P10"
+    },
+    {
+      "item": "UI17 D1-D8",
+      "owner": "Product owner",
+      "entry": "separate explicit decisions"
+    },
+    {
+      "item": "Wallet/Reports/Notifications",
+      "owner": "20D-W / Phase 21N",
+      "entry": "External Gate W opens"
+    }
+  ]
+}

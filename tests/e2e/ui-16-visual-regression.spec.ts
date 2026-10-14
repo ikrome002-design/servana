@@ -134,8 +134,11 @@ test.describe('UI-16 visual regression negative control', () => {
     test.skip(testInfo.config.updateSnapshots === 'all' || testInfo.config.updateSnapshots === 'changed', 'baseline generation run');
     const key = 'merchant_finance.dashboard';
     await openForBaseline(page, byKey(key), 'light', 1440, 900);
-    // Recolour the command hero — a change of the kind a careless global CSS edit would make.
-    await page.addStyleTag({ content: '.sv-operational-hero { background: rgb(0 128 0) !important; }' });
+    // Recolour the command surface — a change of the kind a careless global CSS edit would make.
+    // COR-UI08-UI12-VIS-001: the Finance dashboard's command surface is now the refined feature panel
+    // (`.sv-r-feature`); the UI-16 `.sv-operational-hero` no longer renders on this page, so the old
+    // selector would perturb nothing and the control would fail for the wrong reason.
+    await page.addStyleTag({ content: '.sv-r-feature { background: rgb(0 128 0) !important; }' });
     await expect(expect(page).toHaveScreenshot(`${key}--desktop-light.png`, { ...SCREENSHOT, timeout: 3_000 })).rejects.toThrow();
   });
 });

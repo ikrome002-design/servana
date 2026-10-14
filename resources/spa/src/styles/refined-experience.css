@@ -1,0 +1,656 @@
+/*
+ * COR-UI08-UI12-VIS-001 — the refined experience.
+ *
+ * Scope: ONLY documents whose root carries data-sv-experience="refined", which AppShell sets for
+ * the five corrective accounts (Super Administrator, Merchant Administrator, Branch, Human
+ * Resource, Finance). Front Office, Personnel, Audit, the public landing pages and the auth flow
+ * never carry the attribute, so nothing here can reach them. See design-system/experience.ts.
+ *
+ * Authority: every colour is a generated --sv-* token (tokens.json → tokens.css). This file
+ * declares no raw colour value; DesignTokenSourceGuardTest scans it like any other UI source.
+ *
+ * Structure:
+ *   1. token re-mapping       — the refined canvas, radii, shadows and navigation colours
+ *   2. shell                  — floating sidebar panel, canvas top bar, platform header capsule
+ *   3. navigation             — entries, group labels, header triggers and panels, gated entries
+ *   4. page header            — editorial title region replacing the boxed tonal card
+ *   5. states and primitives  — empty/error/loading, status pills, tables, footer
+ *   6. motion                 — entrance and hover feedback, all inside reduced-motion parity
+ *
+ * These rules are deliberately unlayered: Tailwind v4 utilities live in @layer utilities, and a
+ * refinement must win over the utility it refines without !important.
+ */
+
+/* ---------------------------------------------------------------------------------------------
+ * 1. Token re-mapping
+ * ------------------------------------------------------------------------------------------- */
+
+:root[data-sv-experience='refined'] {
+  --sv-color-surface-page: var(--sv-color-refined-canvas);
+  --sv-color-table-header: var(--sv-color-refined-sunken);
+  --sv-color-nav-active-bg: var(--sv-color-refined-nav-active-bg);
+  --sv-color-nav-active-fg: var(--sv-color-refined-nav-active-fg);
+  --sv-radius-card: var(--sv-radius-panel);
+  --sv-radius-control: var(--sv-radius-field);
+  --sv-shadow-card: var(--sv-shadow-panel);
+  --sv-shadow-raised: var(--sv-shadow-float);
+
+  /* Account tone for refined compositions; AppShell does not decide it here — pages do. */
+  --sv-refined-tone: var(--sv-color-brand-primary);
+}
+
+:root.dark[data-sv-experience='refined'] {
+  /* The warm panel shadow becomes a plain depth cue on the dark canvas. */
+  --sv-shadow-panel: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 32px -20px rgb(0 0 0 / 0.6);
+  --sv-shadow-float: 0 2px 6px rgb(0 0 0 / 0.35), 0 28px 56px -24px rgb(0 0 0 / 0.7);
+}
+
+:root[data-sv-experience='refined'] body {
+  background-color: var(--sv-color-refined-canvas);
+  /* Fallback `sv-main` container for refined pages rendered outside the shell (first-time setup);
+     inside the shell the nearer .sv-shell-main container answers. */
+  container: sv-main / inline-size;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 2. Shell
+ * ------------------------------------------------------------------------------------------- */
+
+/*
+ * The DOM is unchanged (header, then a body row holding sidebar, rail and main). On the refined
+ * shell the body row is `display: contents`, which makes its children grid items of the shell, so
+ * the floating sidebar can run the full height beside BOTH the top bar and the content without a
+ * second, divergent template.
+ */
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] > .sv-shell-body {
+  display: contents;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] > .sv-shell-header {
+  grid-column: 2;
+  grid-row: 1;
+  background: transparent;
+  border-block-end-color: transparent;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-sidebar,
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] [data-testid='tablet-navigation-rail'] {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-main {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* Top bar on the canvas: a location (account / page) and round utility controls. */
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header > div:first-child {
+  padding-block: 0.875rem;
+}
+
+/*
+ * Desktop media only: the refined top bar sits in the content column, not across the sidebar, so at
+ * 200% zoom (a desktop layout in half the CSS width) its utility cluster must wrap rather than push
+ * the page wide (COR-DEF-014). The location block truncates first and the row wraps only below
+ * 12rem. Tablet and phone keep the one-line, truncating bar.
+ */
+@media (min-width: 1025px) {
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header > div:first-child {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header > div:first-child > div:first-child {
+    flex: 1 1 12rem;
+  }
+
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header > div:first-child > div:last-child {
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+/* Page-header actions may shrink and wrap inside the content column (COR-DEF-014). */
+:root[data-sv-experience='refined'] [data-testid='sv-page-actions'] {
+  min-inline-size: 0;
+  flex-shrink: 1;
+  flex-wrap: wrap;
+}
+
+:root[data-sv-experience='refined'] .sv-shell-header__account {
+  color: var(--sv-color-text-muted);
+}
+
+:root[data-sv-experience='refined'] .sv-shell-header__crumb {
+  color: var(--sv-color-border-strong);
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-header [data-testid='merchant-context'],
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-header [data-testid='branch-context'] {
+  border-color: var(--sv-color-refined-hairline);
+  background: var(--sv-color-surface-raised);
+  box-shadow: var(--sv-shadow-panel);
+  padding-block: 0.375rem;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] [data-testid='sv-notifications-trigger'] {
+  border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-pill);
+  background: var(--sv-color-surface-raised);
+}
+
+:root[data-sv-experience='refined'] .sv-shell-main {
+  padding-block-start: 0.25rem;
+  /* Compositions that depend on available content width (the account grid) query this container. */
+  container: sv-main / inline-size;
+}
+
+/* The floating sidebar panel (desktop). */
+@media (min-width: 1025px) {
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-sidebar {
+    position: sticky;
+    inset-block-start: var(--sv-refined-shell-inset);
+    inline-size: var(--sv-refined-sidebar-width);
+    max-block-size: calc(100dvh - var(--sv-footer-height-desktop) - var(--sv-safe-area-bottom) - (2 * var(--sv-refined-shell-inset)));
+    margin: var(--sv-refined-shell-inset);
+    margin-inline-end: 0;
+    padding: 1rem 0.75rem 1.25rem;
+    border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+    border-radius: var(--sv-radius-shell);
+    background: var(--sv-color-surface-raised);
+    box-shadow: var(--sv-shadow-panel);
+  }
+
+  /* The brand lives in the sidebar on desktop, so the top bar does not repeat it. */
+  :root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-header__logo,
+  :root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='sidebar'] .sv-shell-header__divider {
+    display: none;
+  }
+
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header > div:first-child,
+  :root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-main {
+    padding-inline: 2rem;
+  }
+}
+
+/* Tablet rail: the same floating language at rail width. */
+@media (min-width: 768px) and (max-width: 1024px) {
+  :root[data-sv-experience='refined'] .sv-shell--refined [data-testid='tablet-navigation-rail'] {
+    position: sticky;
+    inset-block-start: var(--sv-refined-shell-inset);
+    align-self: start;
+    max-block-size: calc(100dvh - var(--sv-footer-height-tablet) - var(--sv-safe-area-bottom) - (2 * var(--sv-refined-shell-inset)));
+    margin: var(--sv-refined-shell-inset);
+    margin-inline-end: 0;
+    border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+    border-radius: var(--sv-radius-shell);
+    background: var(--sv-color-surface-raised);
+    box-shadow: var(--sv-shadow-panel);
+  }
+}
+
+.sv-shell-brand {
+  display: none;
+}
+
+:root[data-sv-experience='refined'] .sv-shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.125rem 0.375rem 1.25rem;
+  padding-block-end: 1rem;
+  border-block-end: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+}
+
+:root[data-sv-experience='refined'] .sv-shell-brand__logo {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 0.875rem;
+  background: var(--sv-color-surface-warm);
+  padding: 0.25rem;
+  object-fit: contain;
+}
+
+:root[data-sv-experience='refined'] .sv-shell-brand__name {
+  display: block;
+  font-family: var(--sv-font-family-display);
+  font-size: 1.0625rem;
+  font-weight: var(--sv-font-weight-extrabold);
+  line-height: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--sv-color-text-heading);
+}
+
+:root[data-sv-experience='refined'] .sv-shell-brand__account {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--sv-font-size-xs);
+  line-height: var(--sv-line-height-xs);
+  color: var(--sv-color-text-muted);
+}
+
+/* The Super Administrator header becomes a floating platform capsule (still the header: ADR-018). */
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header--platform {
+  margin: var(--sv-refined-shell-inset) var(--sv-refined-shell-inset) 0;
+  border: 0;
+  border-radius: var(--sv-radius-shell);
+  background:
+    radial-gradient(circle at 94% -60%, color-mix(in srgb, var(--sv-color-brand-primary) 42%, transparent), transparent 46%),
+    radial-gradient(circle at 0% 140%, color-mix(in srgb, var(--sv-color-brand-secondary) 36%, transparent), transparent 40%),
+    var(--sv-color-refined-feature-bg);
+  box-shadow: var(--sv-shadow-float);
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header--platform .sv-shell-header__account {
+  color: color-mix(in srgb, var(--sv-color-refined-feature-fg) 72%, transparent);
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header--platform .sv-shell-header__crumb {
+  color: color-mix(in srgb, var(--sv-color-refined-feature-fg) 36%, transparent);
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header--platform .sv-shell-header__logo {
+  border-radius: 0.625rem;
+  background: var(--sv-color-surface-warm);
+  padding: 0.125rem;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined .sv-shell-header__strip {
+  margin-inline: 0.75rem;
+  padding: 0.5rem 0.25rem 0.625rem;
+  border-block-start: var(--sv-border-width-hairline) solid color-mix(in srgb, var(--sv-color-refined-feature-fg) 12%, transparent);
+  background: transparent;
+}
+
+:root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='header'] .sv-shell-main {
+  padding-block-start: 1.5rem;
+}
+
+@media (min-width: 1025px) {
+  :root[data-sv-experience='refined'] .sv-shell--refined[data-shell-placement='header'] .sv-shell-main {
+    padding-inline: 2.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 3. Navigation
+ * ------------------------------------------------------------------------------------------- */
+
+:root[data-sv-experience='refined'] .sv-nav-group-label {
+  padding-inline: 0.875rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--sv-color-text-muted);
+}
+
+:root[data-sv-experience='refined'] [data-testid='stacked-primary-nav'] > div {
+  gap: 1.125rem;
+}
+
+:root[data-sv-experience='refined'] .sv-nav-entry {
+  border-radius: var(--sv-radius-field);
+  padding-inline: 0.625rem;
+  font-weight: var(--sv-font-weight-medium);
+  color: var(--sv-color-text-secondary);
+  /*
+   * Transform only. Interpolating background-color while the text colour switches passes through a
+   * ~1:1 midpoint on theme or active changes — the exact defect UI-16 closed (COR-DEF-013).
+   */
+  transition: transform var(--sv-motion-duration-fast) var(--sv-motion-ease-standard);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-entry .sv-nav-entry__icon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  background: transparent;
+  color: var(--sv-color-text-muted);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-entry:hover {
+  background: var(--sv-color-refined-canvas);
+  color: var(--sv-color-text-primary);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-entry:hover .sv-nav-entry__icon {
+  background: transparent;
+  color: var(--sv-color-text-heading);
+}
+
+/*
+ * Active: a filled Deep Earth pill (Savannah Orange in dark), label AND glyph re-coloured, plus
+ * weight and aria-current — never colour alone. Theme pairs switch atomically (UI-16 lesson).
+ */
+:root[data-sv-experience='refined'] .sv-nav-entry.sv-nav-entry--active,
+:root[data-sv-experience='refined'] .sv-nav-entry.sv-nav-entry--active:hover {
+  background: var(--sv-color-refined-nav-active-bg);
+  color: var(--sv-color-refined-nav-active-fg);
+  font-weight: var(--sv-font-weight-semibold);
+  box-shadow: 0 10px 22px -14px var(--sv-color-refined-nav-active-bg);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-entry.sv-nav-entry--active .sv-nav-entry__icon,
+:root[data-sv-experience='refined'] .sv-nav-entry.sv-nav-entry--active:hover .sv-nav-entry__icon {
+  background: transparent;
+  color: var(--sv-color-refined-nav-active-icon);
+}
+
+/* Header triggers on the platform capsule: soft pills, the current group a white pill. */
+:root[data-sv-experience='refined'] .sv-nav-group-trigger {
+  border-radius: var(--sv-radius-pill);
+  padding-inline: 0.875rem;
+  color: color-mix(in srgb, var(--sv-color-refined-feature-fg) 86%, transparent);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-group-trigger:hover {
+  background: color-mix(in srgb, var(--sv-color-refined-feature-fg) 10%, transparent);
+  color: var(--sv-color-refined-feature-fg);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-group-trigger[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--sv-color-refined-feature-fg) 16%, transparent);
+  color: var(--sv-color-refined-feature-fg);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-group-trigger.sv-nav-group-trigger--current,
+:root[data-sv-experience='refined'] .sv-nav-group-trigger.sv-nav-group-trigger--current:hover {
+  background: var(--sv-color-refined-feature-fg);
+  color: var(--sv-color-refined-feature-bg);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-panel {
+  margin-block-start: 0.625rem;
+  padding: 0.375rem;
+  border-color: var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-panel);
+  box-shadow: var(--sv-shadow-float);
+}
+
+:root[data-sv-experience='refined'] .sv-nav-panel .sv-nav-entry,
+:root[data-sv-experience='refined'] .sv-nav-panel .sv-gated-entry {
+  border-radius: var(--sv-radius-field);
+}
+
+/* Gated entries: visibly present, visibly inert, the gate named — quieter than live entries. */
+:root[data-sv-experience='refined'] .sv-gated-entry {
+  border-radius: var(--sv-radius-field);
+  padding-inline: 0.625rem;
+  color: var(--sv-color-text-muted);
+}
+
+:root[data-sv-experience='refined'] .sv-gated-entry .sv-gated-entry__icon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  background: transparent;
+}
+
+:root[data-sv-experience='refined'] .sv-gated-entry .sv-gated-entry__reason {
+  font-size: 0.6875rem;
+  color: var(--sv-color-text-muted);
+}
+
+:root[data-sv-experience='refined'] .sv-gated-entry .sv-gated-entry__pill {
+  border: var(--sv-border-width-hairline) dashed var(--sv-color-border-strong);
+  background: transparent;
+  padding-inline: 0.375rem;
+  letter-spacing: 0.08em;
+}
+
+:root[data-sv-experience='refined'] .sv-gated-entry:hover,
+:root[data-sv-experience='refined'] .sv-gated-entry:focus-visible {
+  background: var(--sv-color-refined-sunken);
+}
+
+/* Mobile drawer. */
+:root[data-sv-experience='refined'] #role-nav-drawer {
+  border-start-end-radius: var(--sv-radius-shell);
+  border-end-end-radius: var(--sv-radius-shell);
+  background: var(--sv-color-surface-raised);
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 4. Page header — editorial, on the canvas, not a boxed card
+ * ------------------------------------------------------------------------------------------- */
+
+:root[data-sv-experience='refined'] .sv-tonal-header {
+  overflow: visible;
+  margin-block-end: 1.75rem;
+  padding: 0.75rem 0 1.75rem;
+  border: 0;
+  border-block-end: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* A soft wash of the account tone behind the title (the Billings reference lesson). */
+:root[data-sv-experience='refined'] .sv-tonal-header::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-block-start: -2rem;
+  inset-inline-end: 0;
+  inline-size: min(56rem, 70%);
+  block-size: 15rem;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 70% at 78% 30%, color-mix(in srgb, var(--sv-tonal) 18%, transparent), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 30% 60%, color-mix(in srgb, var(--sv-color-accent) 12%, transparent), transparent 70%);
+  filter: blur(4px);
+}
+
+:root[data-sv-experience='refined'] .sv-tonal-header .sv-tonal-header__orb,
+:root[data-sv-experience='refined'] .sv-tonal-header .sv-tonal-header__ring {
+  display: none;
+}
+
+:root[data-sv-experience='refined'] .sv-tonal-header .sv-tonal-header__eyebrow {
+  gap: 0.5rem;
+  padding: 0;
+  background: transparent;
+  color: var(--sv-color-text-muted);
+  letter-spacing: 0.16em;
+}
+
+:root[data-sv-experience='refined'] .sv-tonal-header .sv-tonal-header__eyebrow::before {
+  content: '';
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--sv-radius-pill);
+  background: var(--sv-tonal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sv-tonal) 18%, transparent);
+}
+
+:root[data-sv-experience='refined'] .sv-tonal-header [data-testid='sv-page-title'] {
+  margin-block-start: 0.625rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 768px) {
+  :root[data-sv-experience='refined'] .sv-tonal-header [data-testid='sv-page-title'] {
+    font-size: 2.25rem;
+    line-height: 2.625rem;
+  }
+}
+
+:root[data-sv-experience='refined'] .sv-tonal-header [data-testid='sv-page-title'] + p {
+  margin-block-start: 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+  color: var(--sv-color-text-secondary);
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 5. States and primitives
+ * ------------------------------------------------------------------------------------------- */
+
+/* Empty and error states: a layered emblem, a confident message, generous breathing room. */
+:root[data-sv-experience='refined'] .sv-state--empty,
+:root[data-sv-experience='refined'] .sv-state--error {
+  margin-block: 0.5rem;
+  padding: 2.75rem 1.5rem;
+  border: var(--sv-border-width-hairline) dashed var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-panel);
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--sv-color-surface-warm) 80%, transparent), transparent 60%),
+    var(--sv-color-refined-sunken);
+}
+
+:root[data-sv-experience='refined'] .sv-state--empty .sv-state__icon,
+:root[data-sv-experience='refined'] .sv-state--error .sv-state__icon {
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  border-radius: 1.125rem;
+  background: var(--sv-color-surface-raised);
+  color: var(--sv-color-text-heading);
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--sv-color-surface-raised) 55%, transparent),
+    0 0 0 16px color-mix(in srgb, var(--sv-color-surface-raised) 25%, transparent),
+    var(--sv-shadow-panel);
+}
+
+:root[data-sv-experience='refined'] .sv-state--empty .sv-state__icon svg,
+:root[data-sv-experience='refined'] .sv-state--error .sv-state__icon svg {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+}
+
+:root[data-sv-experience='refined'] .sv-state--empty .sv-state__icon {
+  margin-block-end: 1.5rem;
+}
+
+:root[data-sv-experience='refined'] .sv-state--error .sv-state__icon {
+  margin-block-end: 1.5rem;
+  color: var(--sv-color-status-error-fg);
+}
+
+:root[data-sv-experience='refined'] .sv-state--empty .sv-state__message {
+  max-inline-size: 30rem;
+  font-size: 0.9375rem;
+  font-weight: var(--sv-font-weight-semibold);
+  color: var(--sv-color-text-heading);
+}
+
+/* Status pills: borderless soft fills led by a status dot, the label always text (§9.4). */
+:root[data-sv-experience='refined'] [data-testid='sv-status-badge'] {
+  gap: 0.375rem;
+  border-color: transparent;
+  padding-inline: 0.625rem;
+  font-weight: var(--sv-font-weight-semibold);
+}
+
+:root[data-sv-experience='refined'] [data-testid='sv-status-badge']::before {
+  content: '';
+  inline-size: 0.375rem;
+  block-size: 0.375rem;
+  flex-shrink: 0;
+  border-radius: var(--sv-radius-pill);
+  background: currentColor;
+}
+
+/* Tables: a quiet sunken header row, roomier rows, a warm hover. */
+:root[data-sv-experience='refined'] [data-testid='sv-data-table'] thead th {
+  border-color: var(--sv-color-refined-hairline);
+  padding-block: 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+}
+
+:root[data-sv-experience='refined'] [data-testid='sv-data-table'] tbody td {
+  border-color: var(--sv-color-refined-hairline);
+  padding-block: 0.875rem;
+}
+
+/* Footer: a lighter, translucent band over the canvas — same token height (ADR-024). */
+:root[data-sv-experience='refined'] .sv-fixed-footer {
+  border-block-start-color: var(--sv-color-refined-hairline);
+  background: color-mix(in srgb, var(--sv-color-refined-canvas) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+}
+
+/* Buttons: pill-shaped actions with a soft lift, as in every reference. */
+:root[data-sv-experience='refined'] [data-testid='sv-button'] {
+  border-radius: var(--sv-radius-pill);
+  padding-inline: 1.125rem;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 5b. Overlays — the Notifications reference: a layered sheet over a subdued, softly blurred
+ * parent. Dialogs and toasts are teleported under <body>, which is why the scope lives on <html>.
+ * Same SvDialog/SvToast markup, focus trap, roles and close behaviour; presentation only.
+ * ------------------------------------------------------------------------------------------- */
+
+:root[data-sv-experience='refined'] [data-testid='sv-dialog-scrim'] {
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+:root[data-sv-experience='refined'] [data-testid='sv-dialog'] {
+  border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-shell);
+  box-shadow: var(--sv-shadow-float);
+}
+
+/* A warm wash behind the dialog heading, so the sheet reads as one layered card. */
+:root[data-sv-experience='refined'] [data-testid='sv-dialog'] > div:first-child {
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--sv-color-brand-primary) 9%, transparent), transparent 60%),
+    var(--sv-color-surface-raised);
+  padding-block-end: 1.25rem;
+  border-block-end: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+}
+
+:root[data-sv-experience='refined'] [data-testid='sv-dialog-footer'] {
+  border-block-start-color: var(--sv-color-refined-hairline);
+  background: var(--sv-color-refined-sunken);
+}
+
+:root[data-sv-experience='refined'] [data-testid^='sv-toast-']:not([data-testid^='sv-toast-dismiss']):not([data-testid='sv-toast-region']) {
+  border-color: var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-field);
+  box-shadow: var(--sv-shadow-float);
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 6. Motion — purposeful, short, and absent under reduced motion (style.css global rule)
+ * ------------------------------------------------------------------------------------------- */
+
+/*
+ * Transform only — never opacity. A fade blends every text and button colour with the canvas while
+ * it plays, so an AA pair passes only at rest (COR-DEF-010: axe sampled 4.14–4.49 mid-fade). A
+ * translate keeps every frame at full token contrast.
+ */
+@keyframes sv-refined-rise {
+  from {
+    transform: translateY(6px);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-sv-experience='refined'] .sv-shell-main > * {
+    animation: sv-refined-rise var(--sv-motion-duration-normal) var(--sv-motion-ease-standard) both;
+  }
+
+  :root[data-sv-experience='refined'] .sv-nav-entry:active {
+    transform: scale(0.985);
+  }
+
+  :root[data-sv-experience='refined'] [data-testid='sv-dialog'] {
+    animation: sv-refined-rise var(--sv-motion-duration-normal) var(--sv-motion-ease-standard) both;
+  }
+}

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { computed, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { SvIconCheck, SvIconForbidden } from '@/design-system/icons';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -103,48 +103,80 @@ async function save(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="entitlements-heading">
-    <h2
-      id="entitlements-heading"
-      class="font-display text-lg font-bold text-heading"
-    >
-      Plan entitlements
-      <span
-        v-if="plan"
-        class="ml-2 text-sm font-normal text-text-muted"
-      >{{ plan.name }}</span>
-    </h2>
-    <p class="mt-1 text-sm text-text-muted">
-      Feature flags and limits for this plan. A disabled or absent entitlement denies access;
-      an empty limit means unlimited.
-    </p>
+  <!--
+    COR-UI08-UI12-VIS-001: the entitlements read as a capability matrix for ONE plan — capability,
+    whether it is granted, and its limit — on a single panel whose footer holds the add/save tools.
+    Every value is still the server's; an empty limit still means unlimited.
+  -->
+  <section
+    aria-labelledby="entitlements-heading"
+    class="sv-r-panel sv-r-panel--tonal sv-r-tone-teal"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+          Server-enforced capabilities
+        </p>
+        <h2
+          id="entitlements-heading"
+          class="sv-r-title mt-1"
+        >
+          Plan entitlements
+          <span
+            v-if="plan"
+            class="sv-r-chip sv-r-chip--tone sv-r-tone-teal ml-2 align-middle"
+          >{{ plan.name }}</span>
+        </h2>
+        <p class="sv-r-panel__desc">
+          Feature flags and limits for this plan. A disabled or absent entitlement denies access;
+          an empty limit means unlimited.
+        </p>
+      </div>
+    </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="loadError ?? undefined"
       :empty-message="plan === null ? 'Select a plan from the Plans tab to manage its entitlements.' : 'No entitlements defined for this plan yet.'"
       @retry="load"
     >
-      <SvCard class="mt-2">
-        <ul class="flex flex-col divide-y divide-border">
+      <div class="sv-r-ledger">
+        <div
+          class="sv-r-ledger__colhead"
+          style="--sv-r-ledger-cols: minmax(0, 2fr) minmax(0, 1fr) 8rem auto"
+          aria-hidden="true"
+        >
+          <span>Capability</span><span>Access</span><span>Limit</span><span />
+        </div>
+        <ul>
           <li
             v-for="(row, index) in draft.rows"
             :key="row.entitlement_key"
-            class="flex flex-wrap items-center gap-4 py-3"
+            class="sv-r-ledger__row"
+            style="--sv-r-ledger-cols: minmax(0, 2fr) minmax(0, 1fr) 8rem auto"
           >
-            <span class="min-w-[10rem] flex-1 font-medium text-text">{{ row.entitlement_key }}</span>
-            <label class="flex items-center gap-2 text-sm">
+            <span class="flex min-w-0 items-center gap-3">
+              <span
+                aria-hidden="true"
+                class="sv-r-icon"
+                :class="row.enabled ? 'sv-r-tone-green' : 'sv-r-tone-neutral'"
+              >
+                <SvIconCheck v-if="row.enabled" />
+                <SvIconForbidden v-else />
+              </span>
+              <span class="min-w-0 break-all font-mono text-sm font-semibold text-sv-text">{{ row.entitlement_key }}</span>
+            </span>
+            <label class="flex min-h-sv-touch items-center gap-2 text-sm font-medium text-sv-text-secondary">
               <input
                 v-model="row.enabled"
                 type="checkbox"
-                class="h-5 w-5 rounded border-border"
+                class="h-5 w-5 rounded border-border accent-sv-brand"
                 :disabled="!canManage"
                 :aria-label="`Enable ${row.entitlement_key}`"
               >
               Enabled
             </label>
-            <div class="w-32">
+            <div>
               <SvTextInput
                 :id="`limit-${row.entitlement_key}`"
                 label="Limit"
@@ -161,17 +193,18 @@ async function save(): Promise<void> {
             >
               Remove
             </SvButton>
+            <span v-else />
           </li>
         </ul>
-      </SvCard>
+      </div>
     </SvStateBoundary>
 
     <div
       v-if="canManage && plan"
-      class="mt-4 flex flex-col gap-4"
+      class="sv-r-panel__foot flex flex-col gap-4"
     >
-      <div class="flex items-end gap-2">
-        <div class="flex-1">
+      <div class="flex flex-wrap items-end gap-2">
+        <div class="min-w-[14rem] flex-1">
           <SvTextInput
             id="new-entitlement-key"
             label="Add entitlement key"

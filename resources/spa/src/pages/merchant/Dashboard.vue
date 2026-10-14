@@ -13,11 +13,14 @@
  * section is stated as missing rather than shown as zero.
  */
 import { computed, onMounted } from 'vue';
-import SvAlert from '@/components/ui/SvAlert.vue';
-import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
+import SvFeaturePanel from '@/components/refined/SvFeaturePanel.vue';
+import SvKpiCard from '@/components/refined/SvKpiCard.vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
+import SvTonalPageHeader from '@/components/ui/SvTonalPageHeader.vue';
 import { SvIconChevronRight, SvIconLocked } from '@/design-system/icons';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useAuthStore } from '@/stores/authStore';
 import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
 import { useMerchantStore } from '@/stores/merchantStore';
@@ -38,22 +41,30 @@ function sentence(reason: string | null | undefined): string {
 
 /** The owner's own destinations — every one is a live contract route this account holds. */
 const ownerRoutes = [
-  { to: 'merchant.merchant-profile', label: 'Merchant profile', hint: 'Business identity, logo and contact details' },
-  { to: 'merchant.staff', label: 'Staff overview and lifecycle', hint: 'Owner invitations and staff access' },
-  { to: 'merchant.compensation', label: 'Compensation summary', hint: 'Owner view of plans and payout runs' },
-  { to: 'merchant.compensation-payout-approvals', label: 'High-value payout approvals', hint: 'Runs above the owner threshold' },
+  { to: 'merchant.merchant-profile', icon: 'merchant', label: 'Merchant profile', hint: 'Business identity, logo and contact details' },
+  { to: 'merchant.staff', icon: 'staff', label: 'Staff overview and lifecycle', hint: 'Owner invitations and staff access' },
+  { to: 'merchant.compensation', icon: 'compensation', label: 'Compensation summary', hint: 'Owner view of plans and payout runs' },
+  { to: 'merchant.compensation-payout-approvals', icon: 'payout', label: 'High-value payout approvals', hint: 'Runs above the owner threshold' },
 ] as const;
 
 onMounted(() => { void dashboard.fetchOverview(); });
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — the owner's asymmetric editorial dashboard.
+
+    A greeting header, then subscription HEALTH on the dark feature surface (plan, billing state,
+    cycle, and the next invoice with its one action) beside the owner's next-best-action routes;
+    the portfolio band (branches, staff access, owner approvals) beneath; and the two truthfully
+    unavailable runtimes — payment initiation and reporting — kept visible and inert. Every figure
+    is the server's `GET /merchant/dashboard` projection; nothing is summed here.
+  -->
   <section
-    class="mx-auto max-w-7xl"
+    class="sv-r-page"
     data-testid="merchant-dashboard"
   >
-    <SvOperationalHero
-      class="mb-6"
+    <SvTonalPageHeader
       eyebrow="Owner overview"
       :title="`Welcome, ${auth.user?.name ?? 'Merchant Administrator'}`"
       :description="`${merchant.name ?? 'Your business'} — merchant-wide billing, branch, staff and compensation attention without operational superuser controls.`"
@@ -61,106 +72,19 @@ onMounted(() => { void dashboard.fetchOverview(); });
     >
       <template #actions>
         <RouterLink
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-sv-brand px-4 py-2 text-sm font-semibold text-sv-text-on-brand hover:bg-sv-brand-hover"
+          class="sv-r-action sv-focus-ring"
           :to="{ name: 'merchant.branches' }"
         >
           Review branches
         </RouterLink>
         <RouterLink
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+          class="sv-r-action sv-r-action--quiet sv-focus-ring"
           :to="{ name: 'merchant.subscription' }"
         >
           Open subscription
         </RouterLink>
       </template>
-
-      <div
-        v-if="overview"
-        class="grid gap-3 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]"
-      >
-        <article
-          class="rounded-card border border-white/15 bg-white/10 p-4"
-          data-testid="dashboard-subscription"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">
-            Current plan
-          </p>
-          <h2 class="sr-only">
-            Subscription
-          </h2>
-          <template v-if="overview.subscription">
-            <p class="mt-1 font-display text-2xl font-extrabold leading-tight">
-              {{ overview.subscription.plan_name }}
-            </p>
-            <p class="sv-numeric text-sm text-white/80">
-              {{ formatMoney(overview.subscription.amount_minor, overview.subscription.currency) }} / {{ overview.subscription.billing_interval }}
-            </p>
-            <p class="mt-2 text-xs text-white/70">
-              Billing: {{ overview.subscription.billing_status }} · cycle ends {{ overview.subscription.current_period_end }}
-            </p>
-          </template>
-          <p
-            v-else
-            class="mt-1 text-sm text-white/80"
-          >
-            No active subscription was returned.
-          </p>
-        </article>
-
-        <article
-          class="rounded-card border border-white/10 bg-white/5 p-4"
-          data-testid="dashboard-branches"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">
-            Branches
-          </p>
-          <p class="sv-numeric mt-1 font-display text-2xl font-extrabold">
-            {{ overview.branches.active }} active
-          </p>
-          <p class="text-xs text-white/70">
-            {{ overview.branches.total }} total · {{ overview.branches.suspended }} suspended · capacity {{ overview.branches.limit === null ? 'unlimited' : `${overview.branches.total} of ${overview.branches.limit}` }}
-          </p>
-        </article>
-
-        <article
-          class="rounded-card border border-white/10 bg-white/5 p-4"
-          data-testid="dashboard-staff"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">
-            Staff access
-          </p>
-          <p class="sv-numeric mt-1 font-display text-2xl font-extrabold">
-            {{ overview.staff.active }} active
-          </p>
-          <p class="text-xs text-white/70">
-            {{ overview.staff.invited }} invited · {{ overview.staff.suspended }} suspended · {{ overview.staff.pending_owner_invitations }} pending owner invitations
-          </p>
-        </article>
-
-        <article
-          class="rounded-card border border-white/10 bg-white/5 p-4"
-          data-testid="dashboard-compensation"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-white/75">
-            Owner approvals
-          </p>
-          <template v-if="overview.compensation">
-            <p class="sv-numeric mt-1 font-display text-2xl font-extrabold">
-              {{ overview.compensation.pending_high_value_approvals }}
-            </p>
-            <p class="text-xs text-white/70">
-              high-value approvals waiting
-            </p>
-          </template>
-          <p
-            v-else
-            class="mt-1 text-sm text-white/80"
-          >
-            Your permissions do not include the compensation summary.
-          </p>
-        </article>
-      </div>
-    </SvOperationalHero>
+    </SvTonalPageHeader>
 
     <SvStateBoundary
       :state="state"
@@ -168,132 +92,220 @@ onMounted(() => { void dashboard.fetchOverview(); });
       empty-message="No owner overview is available."
       @retry="dashboard.fetchOverview()"
     >
-      <template v-if="overview">
-        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
-          <section
-            class="sv-owner-billing rounded-card border border-sv-border p-5 shadow-card md:p-6"
-            data-testid="dashboard-billing-attention"
+      <div
+        v-if="overview"
+        class="sv-r-stack"
+      >
+        <!-- Row 1: subscription health (feature) beside the owner's next best actions ---------- -->
+        <div class="sv-r-grid sv-r-split-lead">
+          <SvFeaturePanel
+            eyebrow="Subscription health"
+            title="Your Servana plan"
           >
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
-              Subscription billing
-            </p>
-            <h2 class="mt-1 font-display text-xl font-extrabold text-sv-text-heading">
-              Billing attention
-            </h2>
-
-            <div
-              v-if="overview.billing.next_invoice"
-              class="mt-5 flex flex-col gap-4 rounded-card border border-sv-border bg-sv-surface-raised p-4 md:flex-row md:items-center md:justify-between"
-            >
-              <div class="min-w-0">
-                <div class="flex flex-wrap items-center gap-2">
-                  <p class="font-semibold text-sv-text-heading">
-                    {{ overview.billing.next_invoice.invoice_number ?? 'Current invoice' }}
-                  </p>
-                  <SvStatusBadge
-                    size="sm"
-                    :label="statusLabel(overview.billing.next_invoice.status)"
-                    tone="info"
-                  />
-                </div>
-                <p class="sv-numeric mt-1 font-display text-2xl font-extrabold text-sv-text-heading">
-                  {{ formatMoney(overview.billing.next_invoice.balance_minor, overview.billing.next_invoice.currency) }}
+            <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+              <article data-testid="dashboard-subscription">
+                <h2 class="sr-only">
+                  Subscription
+                </h2>
+                <p class="sv-r-feature__label">
+                  Current plan
                 </p>
-                <p class="text-xs text-sv-text-muted">
-                  Balance due
+                <template v-if="overview.subscription">
+                  <p class="sv-r-feature__value sv-r-figure-xl mt-2">
+                    {{ overview.subscription.plan_name }}
+                  </p>
+                  <p class="sv-r-feature__accent sv-numeric mt-2 text-base font-semibold">
+                    {{ formatMoney(overview.subscription.amount_minor, overview.subscription.currency) }} / {{ overview.subscription.billing_interval }}
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    class="sv-r-feature__rule mt-4 block"
+                  />
+                  <p class="sv-r-feature__hint mt-3">
+                    Billing: {{ overview.subscription.billing_status }} · cycle ends {{ overview.subscription.current_period_end }}
+                  </p>
+                </template>
+                <p
+                  v-else
+                  class="sv-r-feature__hint mt-2"
+                >
+                  No active subscription was returned.
+                </p>
+              </article>
+
+              <div
+                class="sv-r-feature__cell"
+                data-testid="dashboard-billing-attention"
+              >
+                <p class="sv-r-feature__eyebrow">
+                  Billing attention
+                </p>
+                <template v-if="overview.billing.next_invoice">
+                  <div class="mt-2 flex flex-wrap items-center gap-2">
+                    <p class="font-semibold">
+                      {{ overview.billing.next_invoice.invoice_number ?? 'Current invoice' }}
+                    </p>
+                    <SvStatusBadge
+                      size="sm"
+                      :label="statusLabel(overview.billing.next_invoice.status)"
+                      tone="info"
+                    />
+                  </div>
+                  <p class="sv-r-feature__value mt-2 text-3xl">
+                    {{ formatMoney(overview.billing.next_invoice.balance_minor, overview.billing.next_invoice.currency) }}
+                  </p>
+                  <p class="sv-r-feature__hint">
+                    Balance due
+                  </p>
+                  <RouterLink
+                    class="sv-r-feature-action sv-focus-ring mt-4"
+                    :to="{ name: 'merchant.subscription-invoice-detail', params: { invoiceUlid: overview.billing.next_invoice.id } }"
+                  >
+                    Review invoice<SvIconChevronRight
+                      aria-hidden="true"
+                      class="h-4 w-4"
+                    />
+                  </RouterLink>
+                </template>
+                <p
+                  v-else
+                  class="sv-r-feature__hint mt-2"
+                >
+                  No outstanding subscription invoice needs attention.
+                </p>
+                <!-- UI16-CONTENT-002: the server sentence already ends with a full stop. -->
+                <p class="sv-r-feature__hint mt-4 border-t border-white/15 pt-3">
+                  <span class="font-semibold text-white">Payment initiation unavailable.</span>
+                  {{ sentence(overview.billing.payment_runtime.reason) }}. No payment success or attempt state is fabricated here.
                 </p>
               </div>
-              <RouterLink
-                class="sv-focus-ring inline-flex min-h-sv-touch shrink-0 items-center gap-1 self-start rounded-control border border-sv-border-strong px-4 py-2 text-sm font-semibold text-sv-text-heading hover:bg-sv-surface-subtle md:self-auto"
-                :to="{ name: 'merchant.subscription-invoice-detail', params: { invoiceUlid: overview.billing.next_invoice.id } }"
-              >
-                Review invoice<SvIconChevronRight
-                  aria-hidden="true"
-                  class="h-4 w-4"
-                />
-              </RouterLink>
             </div>
-            <p
-              v-else
-              class="mt-4 text-sm text-sv-text-muted"
-            >
-              No outstanding subscription invoice needs attention.
-            </p>
+          </SvFeaturePanel>
 
-            <!-- UI16-CONTENT-002: the server sentence already ends with a full stop. -->
-            <SvAlert
-              severity="info"
-              title="Payment initiation unavailable"
-              class="mt-4"
-            >
-              {{ sentence(overview.billing.payment_runtime.reason) }}. No payment success or attempt state is fabricated here.
-            </SvAlert>
-          </section>
-
-          <nav
-            aria-labelledby="owner-routes-heading"
-            class="rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
+          <SvPanel
+            as="aside"
+            eyebrow="Next best action"
+            title="Owner routes"
+            tone="warm"
           >
-            <h2
-              id="owner-routes-heading"
-              class="font-display text-lg font-bold text-sv-text-heading"
-            >
-              Owner routes
-            </h2>
-            <ul class="mt-3 flex flex-col gap-1">
-              <li
-                v-for="item in ownerRoutes"
-                :key="item.to"
-              >
-                <RouterLink
-                  :to="{ name: item.to }"
-                  class="sv-focus-ring group flex min-h-sv-touch items-center justify-between gap-3 rounded-control px-3 py-2.5 hover:bg-sv-surface-subtle"
+            <nav aria-label="Owner routes">
+              <ul class="flex flex-col gap-2">
+                <li
+                  v-for="item in ownerRoutes"
+                  :key="item.to"
                 >
-                  <span class="min-w-0">
-                    <span class="block text-sm font-semibold text-sv-text-heading">{{ item.label }}</span>
-                    <span class="block text-xs text-sv-text-muted">{{ item.hint }}</span>
-                  </span>
-                  <SvIconChevronRight
-                    aria-hidden="true"
-                    class="h-4 w-4 shrink-0 text-sv-text-muted transition-transform duration-sv-fast group-hover:translate-x-0.5"
-                  />
-                </RouterLink>
-              </li>
-            </ul>
-          </nav>
+                  <RouterLink
+                    :to="{ name: item.to }"
+                    class="sv-r-queue__row sv-focus-ring group flex-nowrap"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="sv-r-icon sv-r-tone-warm"
+                    >
+                      <component :is="navigationIcon(item.icon)" />
+                    </span>
+                    <span class="sv-r-queue__label">
+                      {{ item.label }}
+                      <span class="sv-r-queue__detail">{{ item.hint }}</span>
+                    </span>
+                    <SvIconChevronRight
+                      aria-hidden="true"
+                      class="h-4 w-4 shrink-0 text-sv-text-muted transition-transform duration-sv-fast group-hover:translate-x-0.5"
+                    />
+                  </RouterLink>
+                </li>
+              </ul>
+            </nav>
+          </SvPanel>
         </div>
 
+        <!-- Row 2: the portfolio band ---------------------------------------------------------- -->
+        <div class="sv-r-grid sv-r-cols-3">
+          <SvKpiCard
+            label="Branches"
+            tone="green"
+            :icon="navigationIcon('branch')"
+            :to="{ name: 'merchant.branches' }"
+            link-label="Review branches"
+            data-testid="dashboard-branches"
+          >
+            <span class="sv-numeric">{{ overview.branches.active }} active</span>
+            <template #meta>
+              <p class="sv-r-kpi__hint">
+                {{ overview.branches.total }} total · {{ overview.branches.suspended }} suspended · capacity {{ overview.branches.limit === null ? 'unlimited' : `${overview.branches.total} of ${overview.branches.limit}` }}
+              </p>
+            </template>
+          </SvKpiCard>
+
+          <SvKpiCard
+            label="Staff access"
+            tone="teal"
+            :icon="navigationIcon('staff')"
+            :to="{ name: 'merchant.staff' }"
+            link-label="Staff overview"
+            data-testid="dashboard-staff"
+          >
+            <span class="sv-numeric">{{ overview.staff.active }} active</span>
+            <template #meta>
+              <p class="sv-r-kpi__hint">
+                {{ overview.staff.invited }} invited · {{ overview.staff.suspended }} suspended · {{ overview.staff.pending_owner_invitations }} pending owner invitations
+              </p>
+            </template>
+          </SvKpiCard>
+
+          <SvKpiCard
+            label="Owner approvals"
+            tone="sun"
+            :icon="navigationIcon('payout')"
+            :to="overview.compensation ? { name: 'merchant.compensation-payout-approvals' } : null"
+            link-label="Review approvals"
+            data-testid="dashboard-compensation"
+          >
+            <template v-if="overview.compensation">
+              <span class="sv-numeric">{{ overview.compensation.pending_high_value_approvals }}</span>
+            </template>
+            <span
+              v-else
+              class="text-base font-medium text-sv-text-muted"
+            >Not in your permissions</span>
+            <template #meta>
+              <p class="sv-r-kpi__hint">
+                {{ overview.compensation ? 'high-value approvals waiting' : 'Your permissions do not include the compensation summary.' }}
+              </p>
+            </template>
+          </SvKpiCard>
+        </div>
+
+        <!-- Row 3: the gated reporting runtime, inert and exact -------------------------------- -->
         <section
-          class="mt-6 rounded-card border border-dashed border-sv-border-strong bg-sv-surface-subtle p-5"
+          class="sv-r-panel sv-r-panel--dashed"
           data-testid="dashboard-reporting-gate"
         >
-          <h2 class="flex items-center gap-2 font-display text-lg font-bold text-sv-text-heading">
-            <SvIconLocked
+          <div class="flex flex-wrap items-start gap-4">
+            <span
               aria-hidden="true"
-              class="h-5 w-5 text-sv-text-muted"
-            />
-            Performance and daily reports
-          </h2>
-          <p class="mt-2 max-w-3xl text-sm text-sv-text-muted">
-            Revenue, branch/service/staff performance and daily-report delivery are not displayed
-            as zero. Their canonical reporting runtime is unavailable.
-          </p>
-          <p
-            class="mt-3 inline-flex rounded-control bg-sv-surface-raised px-3 py-2 text-sm font-semibold text-sv-text"
-            role="note"
-          >
-            {{ overview.reporting.reason }}
-          </p>
+              class="sv-r-icon sv-r-tone-neutral"
+            >
+              <SvIconLocked />
+            </span>
+            <div class="min-w-0 flex-1">
+              <h2 class="sv-r-title">
+                Performance and daily reports
+              </h2>
+              <p class="sv-r-lede mt-1 max-w-3xl">
+                Revenue, branch/service/staff performance and daily-report delivery are not displayed
+                as zero. Their canonical reporting runtime is unavailable.
+              </p>
+            </div>
+            <p
+              class="sv-r-chip"
+              role="note"
+            >
+              {{ overview.reporting.reason }}
+            </p>
+          </div>
         </section>
-      </template>
+      </div>
     </SvStateBoundary>
   </section>
 </template>
-
-<style scoped>
-.sv-owner-billing {
-  background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-accent) 18%, transparent), transparent 45%),
-    var(--sv-color-surface-raised);
-}
-</style>

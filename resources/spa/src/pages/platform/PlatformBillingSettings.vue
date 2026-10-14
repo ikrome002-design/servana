@@ -40,8 +40,13 @@ const canViewAnything = computed(
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: three versioned rule sheets in one working column — billing defaults
+    (current vs next), documented general keys, and the percentage platform-fee versions — with
+    the rule statement and an in-page index of the sections the viewer may see in the rail.
+  -->
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-billing-settings-screen"
   >
     <SvPageHeader
@@ -62,7 +67,6 @@ const canViewAnything = computed(
         <section
           v-if="canViewBilling"
           aria-labelledby="billing-settings-section"
-          class="mb-10"
         >
           <BillingSettingsSection id="billing-settings-section" />
         </section>
@@ -70,7 +74,6 @@ const canViewAnything = computed(
         <section
           v-if="canViewGeneral"
           aria-labelledby="general-settings-section"
-          class="mb-10"
         >
           <GeneralSettingsSection id="general-settings-section" />
         </section>
@@ -85,6 +88,36 @@ const canViewAnything = computed(
           <p>
             Plan changes and price changes do not prorate the current cycle. A new effective version applies from its own effective date onward.
           </p>
+        </template>
+        <template #rail>
+          <nav
+            class="sv-r-note sv-r-tone-warm"
+            aria-label="On this page"
+          >
+            <p class="sv-r-note__title">
+              On this page
+            </p>
+            <ul class="mt-2 flex flex-col">
+              <li v-if="canViewBilling">
+                <a
+                  href="#billing-settings-section"
+                  class="sv-r-link sv-focus-ring rounded-control"
+                >Billing settings</a>
+              </li>
+              <li v-if="canViewGeneral">
+                <a
+                  href="#general-settings-section"
+                  class="sv-r-link sv-focus-ring rounded-control"
+                >General settings</a>
+              </li>
+              <li v-if="canConfigurePlatformFees">
+                <a
+                  href="#platform-fee-section"
+                  class="sv-r-link sv-focus-ring rounded-control"
+                >Percentage platform fee</a>
+              </li>
+            </ul>
+          </nav>
         </template>
       </PlatformRuleWorkspace>
     </template>

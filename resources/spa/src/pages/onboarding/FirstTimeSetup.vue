@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
+import { applyExperience } from '@/design-system/experience';
+import { SvIconCheck } from '@/design-system/icons';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { formatMoney } from '@/utils/money';
@@ -120,75 +121,112 @@ async function submit(): Promise<void> {
   }
 }
 
+/*
+ * COR-UI08-UI12-VIS-001: this mandatory Merchant Administrator page renders BEFORE the shell, so it
+ * opts into the refined experience itself (and hands it back on leave; the shell re-applies it).
+ */
+applyExperience('refined');
+onBeforeUnmount(() => applyExperience(null));
+
 onMounted(() => { void onboarding.load(); });
 watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
 </script>
 
 <template>
-  <main class="mx-auto w-full max-w-3xl p-4 md:p-6">
-    <header>
-      <p class="text-sm font-semibold text-text-muted">
-        Merchant setup
-      </p>
-      <h1 class="font-display text-2xl font-extrabold text-heading">
+  <!--
+    COR-UI08-UI12-VIS-001 — a spacious guided journey (the Login reference's split composition,
+    translated). A dark brand panel carries the identity, the journey's purpose and the five REAL
+    milestones as a vertical stepper (done / current / ahead), plus the device-draft recovery path;
+    the working panel beside it shows one step at a time with its counter and its own guidance.
+    Every field, rule, validation route and the single transactional submission are unchanged.
+  -->
+  <main class="sv-r-setup mx-auto grid min-h-screen w-full max-w-6xl gap-5 p-4 md:p-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:p-8">
+    <header class="sv-r-feature flex flex-col">
+      <div class="flex items-center gap-3">
+        <img
+          :src="'/assets/brand/Logo.png'"
+          alt="Servana by Citrus"
+          class="h-11 w-11 rounded-xl bg-white object-contain p-1"
+        >
+        <p class="sv-r-feature__eyebrow">
+          Merchant setup
+        </p>
+      </div>
+      <h1 class="mt-6 font-display text-3xl font-extrabold leading-tight text-white">
         Set up your business
       </h1>
-      <p class="mt-1 text-sm text-text-muted">
+      <p class="sv-r-feature__hint mt-3 text-sm leading-6">
         Complete these required steps before opening the operational dashboard. Your trial start
         remains anchored to account creation, not to the day you finish setup.
       </p>
-    </header>
 
-    <SvStateBoundary
-      v-if="onboarding.loading || onboarding.loadError"
-      class="mt-6"
-      :state="onboarding.loading ? 'loading' : 'error'"
-      :error-message="onboarding.loadError ?? undefined"
-      @retry="onboarding.load()"
-    />
-
-    <template v-else>
       <ol
-        class="mt-6 grid grid-cols-2 gap-2 md:grid-cols-5"
+        v-if="!(onboarding.loading || onboarding.loadError)"
+        class="mt-8 flex flex-col gap-1"
         aria-label="Setup progress"
       >
         <li
           v-for="(item, index) in steps"
           :key="item.key"
-          class="flex min-h-[44px] items-center gap-2 rounded-control border px-3 py-2 text-sm"
-          :class="index === step ? 'border-primary bg-surface-alt font-semibold text-heading' : 'border-border text-text-muted'"
+          class="flex min-h-[44px] items-center gap-3 rounded-control px-2 py-1.5 text-sm"
+          :class="index === step ? 'bg-white/10 font-semibold text-white' : index < step ? 'text-white/85' : 'text-white/70'"
           :aria-current="index === step ? 'step' : undefined"
         >
-          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs text-brand-deep">{{ index + 1 }}</span>
+          <span
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+            :class="index < step ? 'bg-sv-accent text-sv-text-on-brand' : index === step ? 'bg-white text-sv-text-on-brand' : 'border border-white/30 text-white/80'"
+          >
+            <SvIconCheck
+              v-if="index < step"
+              aria-hidden="true"
+              class="h-4 w-4"
+            />
+            <template v-else>{{ index + 1 }}</template>
+          </span>
           {{ item.label }}
         </li>
       </ol>
 
-      <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted">
+      <div class="mt-auto pt-8 text-xs text-white/75">
         <span aria-live="polite">Progress is saved on this signed-in device.</span>
         <button
           type="button"
-          class="sv-focus-ring min-h-[44px] rounded-control px-3 underline"
+          class="sv-focus-ring mt-1 block min-h-[44px] rounded-control text-left font-semibold text-white underline"
           @click="discardDraft"
         >
           Discard saved details
         </button>
       </div>
+    </header>
 
-      <SvCard
-        as="section"
-        padding="lg"
-        class="mt-4"
+    <div class="flex min-w-0 flex-col">
+      <SvStateBoundary
+        v-if="onboarding.loading || onboarding.loadError"
+        :state="onboarding.loading ? 'loading' : 'error'"
+        :error-message="onboarding.loadError ?? undefined"
+        @retry="onboarding.load()"
+      />
+
+      <section
+        v-else
+        class="sv-r-panel flex flex-1 flex-col md:p-8"
       >
-        <div v-show="step === 0">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Step {{ step + 1 }} of {{ steps.length }}
+        </p>
+
+        <div
+          v-show="step === 0"
+          class="mt-3"
+        >
+          <h2 class="sv-r-title-lg">
             Choose plan and fee presentation
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
+          <p class="sv-r-lede mt-2">
             Prices come from the currently effective Servana catalogue. Future plan changes take
             effect next cycle and are not prorated.
           </p>
-          <div class="mt-4 flex flex-col gap-4">
+          <div class="mt-6 flex flex-col gap-4">
             <SvSelect
               id="subscription_plan_price"
               v-model="selectedPlanPrice"
@@ -210,14 +248,17 @@ watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
           </div>
         </div>
 
-        <div v-show="step === 1">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <div
+          v-show="step === 1"
+          class="mt-3"
+        >
+          <h2 class="sv-r-title-lg">
             Business profile and billing contact
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
+          <p class="sv-r-lede mt-2">
             The contact phone is also the default billing/M-Pesa phone when Wallet collections become available.
           </p>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
             <SvTextInput
               id="business_category"
               v-model="form.business_category"
@@ -262,14 +303,17 @@ watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
           </div>
         </div>
 
-        <div v-show="step === 2">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <div
+          v-show="step === 2"
+          class="mt-3"
+        >
+          <h2 class="sv-r-title-lg">
             Create your first branch
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
+          <p class="sv-r-lede mt-2">
             The server checks the selected plan entitlement before completing setup.
           </p>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
             <SvTextInput
               id="branch_name"
               v-model="form.branch.name"
@@ -314,15 +358,18 @@ watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
           </div>
         </div>
 
-        <div v-show="step === 3">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <div
+          v-show="step === 3"
+          class="mt-3"
+        >
+          <h2 class="sv-r-title-lg">
             Invite the initial owner team
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
+          <p class="sv-r-lede mt-2">
             Merchant Administrators may invite only a Branch Manager and Human Resource user here.
             They receive Magic Link instructions; no password is created.
           </p>
-          <div class="mt-4 flex flex-col gap-4">
+          <div class="mt-6 flex flex-col gap-4">
             <SvTextInput
               id="branch_manager_email"
               v-model="form.branch_manager_email"
@@ -342,60 +389,63 @@ watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
           </div>
         </div>
 
-        <div v-show="step === 4">
-          <h2 class="font-display text-lg font-bold text-heading">
+        <div
+          v-show="step === 4"
+          class="mt-3"
+        >
+          <h2 class="sv-r-title-lg">
             Review and finish
           </h2>
-          <p class="mt-1 text-sm text-text-muted">
+          <p class="sv-r-lede mt-2">
             Finishing submits one transaction. A failure creates no partial merchant setup.
           </p>
-          <dl class="mt-4 grid gap-4 text-sm md:grid-cols-2">
+          <dl class="sv-r-facts sv-r-facts--2 mt-6 text-sm">
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 Plan
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ selectedPlan?.name ?? '—' }} · {{ selectedPrice ? `${formatMoney(selectedPrice.amount_minor, selectedPrice.currency)} / ${selectedPrice.billing_interval}` : '—' }}
               </dd>
             </div>
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 Service fee tier
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ form.service_fee_tier || '—' }}
               </dd>
             </div>
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 Business
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ form.receipt_display_name || form.business_category }}
               </dd>
             </div>
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 Billing phone
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ form.contact_phone }}
               </dd>
             </div>
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 First branch
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ form.branch.name }} ({{ form.branch.code }})
               </dd>
             </div>
             <div>
-              <dt class="text-text-muted">
+              <dt>
                 Initial team
-              </dt><dd class="font-semibold text-heading">
+              </dt><dd>
                 {{ form.branch_manager_email }} · {{ form.hr_email }}
               </dd>
             </div>
           </dl>
         </div>
 
-        <div class="mt-8 flex items-center justify-between gap-3">
+        <div class="mt-auto flex items-center justify-between gap-3 border-t border-sv-border pt-6">
           <SvButton
             variant="secondary"
             :disabled="step === 0"
@@ -418,7 +468,7 @@ watch(() => onboarding.form, () => onboarding.saveDraft(), { deep: true });
             Finish setup
           </SvButton>
         </div>
-      </SvCard>
-    </template>
+      </section>
+    </div>
   </main>
 </template>

@@ -1,0 +1,260 @@
+{
+  "schema": "cor-ui08-ui12-vis-001.test-matrix.v1",
+  "base_commit": "562ffbbbbc10351a7185e60fda517d51a260f9db",
+  "platform": "Windows 10 Pro 10.0.19045, Node 24.15.0, @playwright/test 1.62 Chromium; Linux baselines in mcr.microsoft.com/playwright:v1.62.0-noble",
+  "working_tree_digest": {
+    "algorithm": "sha256 over sorted (path NUL bytes NUL) of git status --porcelain=v1 -z --untracked-files=all",
+    "value": "b7944af44050be344ecb6d1897182549bea9e0711a66b872243aff0a3d1a4ac9",
+    "paths": 650
+  },
+  "note": "Every gate ran against the final source unless its row says otherwise. Logs were kept in the session scratchpad; the summary line of each is recorded here.",
+  "gates": [
+    {
+      "gate": "lint",
+      "command": "npm run lint",
+      "exit": 0,
+      "seconds": 37.8,
+      "totals": null,
+      "files": null,
+      "tail": " | ✖ 3 problems (0 errors, 3 warnings)"
+    },
+    {
+      "gate": "typecheck",
+      "command": "npm run typecheck",
+      "exit": 0,
+      "seconds": 31.5,
+      "totals": null,
+      "files": null,
+      "tail": "> servana@0.1.0 typecheck | > vue-tsc --noEmit"
+    },
+    {
+      "gate": "vitest",
+      "command": "npm run test",
+      "exit": 0,
+      "seconds": 220.7,
+      "totals": "Tests  1465 passed (1465)",
+      "files": "Test Files  153 passed (153)",
+      "tail": "   Start at  22:13:32 |    Duration  215.30s (transform 22.78s, setup 2.27s, import 202.54s, tests 78.39s, environment 279.99s)"
+    },
+    {
+      "gate": "build",
+      "command": "npm run build",
+      "exit": 0,
+      "seconds": 38.1,
+      "totals": null,
+      "files": null,
+      "tail": " | ✓ built in 6.16s"
+    },
+    {
+      "gate": "ui17-bundle-budget",
+      "command": "node scripts/ui17-bundle-budget.mjs",
+      "exit": 0,
+      "seconds": 12.9,
+      "totals": null,
+      "files": null,
+      "tail": "  shell.merchant_personnel       JS  132.5 KiB  CSS  22.4 KiB  requests 55 |   shell.merchant_audit           JS  145.5 KiB  CSS  22.6 KiB  requests 65"
+    },
+    {
+      "gate": "npm-audit",
+      "command": "npm audit --audit-level=high",
+      "exit": 0,
+      "seconds": 3.6,
+      "totals": null,
+      "files": null,
+      "tail": "found 0 vulnerabilities"
+    },
+    {
+      "gate": "tokens-check",
+      "command": "npm run tokens:check",
+      "exit": 0,
+      "seconds": 0.8,
+      "totals": null,
+      "files": null,
+      "tail": "  resources/spa/src/design-system/tokens.generated.ts sha256=e16520e181b0fb0ba6c3b1d89a823be6a0c30d1b4ffe852cfcdaccff886c21a8 | All artifacts up to date."
+    },
+    {
+      "gate": "nav-check",
+      "command": "npm run nav:check",
+      "exit": 0,
+      "seconds": 5.8,
+      "totals": null,
+      "files": null,
+      "tail": " | UI-07 navigation contract is current: 160 pages, 8 accounts."
+    },
+    {
+      "gate": "content-check",
+      "command": "npm run content:check",
+      "exit": 0,
+      "seconds": 1.6,
+      "totals": null,
+      "files": null,
+      "tail": "  raw HTML findings 0; unsafe link findings 0 | All artifacts up to date."
+    },
+    {
+      "gate": "assets-check",
+      "command": "npm run assets:check",
+      "exit": 0,
+      "seconds": 2.7,
+      "totals": null,
+      "files": null,
+      "tail": "  super_administrator      4 images  1.png→hero, 3.png→problem, 6.png→how_it_works, 9.png→security | All artifacts up to date."
+    },
+    {
+      "gate": "source-inventory",
+      "command": "node scripts/generate-ui-source-inventory.mjs --check",
+      "exit": 0,
+      "seconds": 0.9,
+      "totals": null,
+      "files": null,
+      "tail": "  Audit                     15 pages  audit.servana.ke | All artifacts up to date."
+    },
+    {
+      "gate": "api-contract",
+      "command": "node scripts/check-api-contract.mjs",
+      "exit": 0,
+      "seconds": 15.1,
+      "totals": null,
+      "files": null,
+      "tail": "api:contract:check OK — 307 paths, 358 operations."
+    },
+    {
+      "gate": "ui08-artifacts",
+      "command": "node scripts/check-ui08-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 0.3,
+      "totals": null,
+      "files": null,
+      "tail": " | UI-08 audit artifacts: OK"
+    },
+    {
+      "gate": "ui09-artifacts",
+      "command": "node scripts/check-ui09-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 0.5,
+      "totals": null,
+      "files": null,
+      "tail": "UI-09 audit artifacts: OK — 23 pages, 15 implemented, 8 gated, 0 planned, permission catalogue 169/134/35."
+    },
+    {
+      "gate": "ui10-artifacts",
+      "command": "node scripts/check-ui10-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 0.5,
+      "totals": null,
+      "files": null,
+      "tail": "UI-10 audit artifacts: OK — 18 pages, 15 implemented, 3 gated, 0 planned, permission catalogue 169/134/35, OpenAPI 341 operations."
+    },
+    {
+      "gate": "ui11-artifacts",
+      "command": "node scripts/check-ui11-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 0.4,
+      "totals": null,
+      "files": null,
+      "tail": "UI-11 audit artifacts: OK — 19 pages, 15 implemented, 4 gated, 0 planned, permission catalogue 169/134/35, OpenAPI 344 operations."
+    },
+    {
+      "gate": "ui12-artifacts",
+      "command": "node scripts/check-ui12-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 1.4,
+      "totals": null,
+      "files": null,
+      "tail": "UI-12 audit artifacts: OK — 24 pages, 20 implemented, 4 gated, 0 planned, permission catalogue 169/134/35, OpenAPI 347 operations."
+    },
+    {
+      "gate": "ui13-artifacts",
+      "command": "node scripts/check-ui13-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 3,
+      "totals": null,
+      "files": null,
+      "tail": "UI-13 audit artifacts: OK — 19 pages, 17 implemented, 2 gated, 0 planned, 59 focused browser cases, OpenAPI 350 operations."
+    },
+    {
+      "gate": "ui14-artifacts",
+      "command": "node scripts/check-ui14-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 3.6,
+      "totals": null,
+      "files": null,
+      "tail": "UI-14 audit artifacts: OK — 20 pages, 19 implemented, 1 gated, 0 planned, visual 19/19 >= 27/30."
+    },
+    {
+      "gate": "ui15-artifacts",
+      "command": "node scripts/check-ui15-audit-artifacts.mjs",
+      "exit": 0,
+      "seconds": 3.6,
+      "totals": null,
+      "files": null,
+      "tail": "UI-15 audit artifacts: OK — 15 pages, 14 implemented, 1 gated, 0 planned, visual 14/14 >= 27/30."
+    },
+    {
+      "gate": "ui17-edge-security",
+      "command": "node scripts/ui17-edge-security-contract.mjs",
+      "exit": 0,
+      "seconds": 0.2,
+      "totals": null,
+      "files": null,
+      "tail": "UI-17 edge security contract OK — CSP pins sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk=; 3 server blocks log credential-safe; referrer/HSTS/gzip rules hold."
+    }
+  ],
+  "playwright": [
+    {
+      "id": "PW-1-full-intermediate",
+      "command": "npx playwright test --update-snapshots=none",
+      "source": "intermediate (before COR-DEF-008…014)",
+      "totals": "2005 passed / 131 failed / 1 skipped / 0 flaky (88.3 min)",
+      "exit": 1,
+      "note": "Superseded — not claimed for the final source. Every failure was traced to COR-DEF-008…014 (see defect-closure.json); predecessor evidence it rewrote (384 tracked) was restored by exact path and its 85 new untracked UI-01 screenshots removed."
+    },
+    {
+      "id": "PW-2-targeted-rerun",
+      "command": "npx playwright test <the 13 failing files + cor-ui08-ui12-visual-regression.spec.ts> --update-snapshots=none",
+      "source": "intermediate (all fixes except the UI-16 dark-canvas expectation)",
+      "totals": "1245 passed / 82 failed (56.3 min)",
+      "exit": 1,
+      "note": "The 82 failures were the UI-16 sweep's hardcoded dark canvas (#111827) on the five refined accounts (COR-DEF-013 family); light axe had already passed on all 82. 125 rewritten predecessor files restored."
+    },
+    {
+      "id": "PW-3-ui16-accessibility",
+      "command": "npx playwright test tests/e2e/ui-16-responsive-accessibility-theme.spec.ts --grep \"UI-16 accessibility\" --update-snapshots=none",
+      "source": "final CSS/template source",
+      "totals": "132 passed / 0 failed (8.1 min)",
+      "exit": 0,
+      "note": "Every live page of all eight accounts: axe 0 serious/critical at light 1440 and dark 360; one h1; real dark canvas, no inversion filter."
+    },
+    {
+      "id": "PW-4-visual-compare",
+      "command": "npx playwright test tests/e2e/ui-16-visual-regression.spec.ts tests/e2e/ui-16-archetype-visual-regression.spec.ts tests/e2e/cor-ui08-ui12-visual-regression.spec.ts --grep-invert \"axe populated\"",
+      "source": "final source",
+      "totals": "107 passed / 0 failed (2.6 min)",
+      "exit": 0,
+      "note": "All win32 baselines match the final source (no re-baseline after the late fixes); both negative controls fail the comparison as intended."
+    },
+    {
+      "id": "PW-6-full-final",
+      "command": "npx playwright test --update-snapshots=none",
+      "source": "FINAL source (the handoff working tree)",
+      "totals": "2218 passed / 0 failed / 1 skipped / 0 flaky (1.4 h)",
+      "exit": 0,
+      "note": "Authoritative local run of the whole product (Vite preview origin, win32 baselines). The 1 skip is the capture-scope check, which runs only when COR_CAPTURE is set. The run's known rewrite of predecessor evidence (386 tracked files) was restored by exact path from HEAD and its 85 new untracked UI-01 screenshots removed — no other path changed."
+    },
+    {
+      "id": "PW-5-linux-baselines",
+      "command": "mcr.microsoft.com/playwright:v1.62.0-noble — same three visual specs, --update-snapshots=changed then compare-only",
+      "source": "export of the working tree before the late layout fixes. PW-4 shows those fixes leave every win32 frame unchanged; linux equality was then re-measured on the final source in PW-7.",
+      "totals": "update 105 passed / 2 skipped; verify 107 passed / 0 failed",
+      "exit": 0,
+      "note": "58 linux PNGs copied back (38 changed + 20 new); the 23 out-of-scope linux frames returned byte-identical."
+    },
+    {
+      "id": "PW-7-linux-final-verify",
+      "command": "mcr.microsoft.com/playwright:v1.62.0-noble — UI-16 visual ×2 + corrective spec (incl. 82 populated axe), --update-snapshots=none",
+      "source": "FINAL source (export re-synced from the handoff working tree)",
+      "totals": "188 passed / 1 failed (16.7 min); re-run of the failed test: 1 passed (2.4 min)",
+      "exit": 1,
+      "note": "The single failure was 'Protocol error (Runtime.callFunctionOn): session closed' while waiting for the heading — a browser crash before render, not a visual diff. Re-run alone, same image and source: passed. Linux baselines therefore match the final source; the hosted E2E job remains the authoritative CI check."
+    }
+  ]
+}

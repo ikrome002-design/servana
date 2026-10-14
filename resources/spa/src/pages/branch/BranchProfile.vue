@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 
@@ -48,8 +48,14 @@ onMounted(load);
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — branch identity, editorially. An identity banner (the branch's own name,
+    code, town and contact as read from the server, with the two schedule entry points) sits above
+    the editable profile grouped into identity, location and contact. Creation and ownership stay
+    with the Merchant Administrator; the same fields and save path as before.
+  -->
   <section
-    class="mx-auto max-w-4xl"
+    class="sv-r-page"
     data-testid="branch-profile"
   >
     <SvPageHeader
@@ -63,73 +69,138 @@ onMounted(load);
       empty-message="No assigned branch is available."
       @retry="load"
     >
-      <SvCard
-        as="form"
-        class="grid gap-5 md:grid-cols-2"
-        @submit.prevent="save"
-      >
-        <SvTextInput
-          id="branch-name"
-          v-model="form.name"
-          label="Branch name"
-          required
-        />
-        <SvTextInput
-          id="branch-code"
-          v-model="form.code"
-          label="Branch code"
-          required
-        />
-        <SvTextInput
-          id="branch-address"
-          v-model="form.address"
-          label="Address"
-        />
-        <SvTextInput
-          id="branch-town"
-          v-model="form.town"
-          label="Town"
-        />
-        <SvTextInput
-          id="branch-phone"
-          v-model="form.phone"
-          label="Phone"
-        />
-        <SvTextInput
-          id="branch-email"
-          v-model="form.email"
-          label="Email"
-          type="email"
-        />
-        <SvTextInput
-          id="branch-category"
-          v-model="form.business_category"
-          class="md:col-span-2"
-          label="Business category"
-        />
-        <div class="flex flex-wrap gap-3 md:col-span-2">
-          <SvButton
-            type="submit"
-            variant="primary"
-            :loading="saving"
-          >
-            Save profile
-          </SvButton>
-          <RouterLink
-            v-if="store.branchId"
-            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-4 py-2 text-sm font-semibold text-heading underline"
-            :to="{ name: 'branch.operating-hours', params: { id: store.branchId } }"
-          >
-            Set operating hours
-          </RouterLink>
-          <RouterLink
-            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-4 py-2 text-sm font-semibold text-heading underline"
-            :to="{ name: 'branch.branch-calendar' }"
-          >
-            Manage calendar
-          </RouterLink>
-        </div>
-      </SvCard>
+      <div class="sv-r-stack">
+        <section
+          v-if="store.overview"
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-green"
+          aria-label="Branch identity"
+        >
+          <div class="flex flex-wrap items-center gap-5">
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-icon--lg sv-r-tone-green"
+            >
+              <component :is="navigationIcon('branch')" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="sv-r-eyebrow">
+                Your assigned branch
+              </p>
+              <p class="sv-r-title-lg mt-1 break-words">
+                {{ store.overview.branch.name }}
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <RouterLink
+                v-if="store.branchId"
+                class="sv-r-action sv-r-action--quiet sv-focus-ring"
+                :to="{ name: 'branch.operating-hours', params: { id: store.branchId } }"
+              >
+                Set operating hours
+              </RouterLink>
+              <RouterLink
+                class="sv-r-action sv-r-action--quiet sv-focus-ring"
+                :to="{ name: 'branch.branch-calendar' }"
+              >
+                Manage calendar
+              </RouterLink>
+            </div>
+          </div>
+          <dl class="sv-r-strip mt-5">
+            <div>
+              <dt>Code</dt>
+              <dd>{{ store.overview.branch.code }}</dd>
+            </div>
+            <div>
+              <dt>Town</dt>
+              <dd>{{ store.overview.branch.town ?? 'Not set' }}</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd>{{ store.overview.branch.phone ?? 'Not set' }}</dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd>{{ store.overview.branch.email ?? 'Not set' }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <form
+          class="sv-r-panel flex flex-col gap-6"
+          @submit.prevent="save"
+        >
+          <fieldset>
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green mb-3">
+              Identity
+            </legend>
+            <div class="grid gap-5 md:grid-cols-2">
+              <SvTextInput
+                id="branch-name"
+                v-model="form.name"
+                label="Branch name"
+                required
+              />
+              <SvTextInput
+                id="branch-code"
+                v-model="form.code"
+                label="Branch code"
+                required
+              />
+              <SvTextInput
+                id="branch-category"
+                v-model="form.business_category"
+                class="md:col-span-2"
+                label="Business category"
+              />
+            </div>
+          </fieldset>
+          <fieldset class="border-t border-sv-border pt-5">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal mb-3">
+              Location
+            </legend>
+            <div class="grid gap-5 md:grid-cols-2">
+              <SvTextInput
+                id="branch-address"
+                v-model="form.address"
+                label="Address"
+              />
+              <SvTextInput
+                id="branch-town"
+                v-model="form.town"
+                label="Town"
+              />
+            </div>
+          </fieldset>
+          <fieldset class="border-t border-sv-border pt-5">
+            <legend class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm mb-3">
+              Contact
+            </legend>
+            <div class="grid gap-5 md:grid-cols-2">
+              <SvTextInput
+                id="branch-phone"
+                v-model="form.phone"
+                label="Phone"
+              />
+              <SvTextInput
+                id="branch-email"
+                v-model="form.email"
+                label="Email"
+                type="email"
+              />
+            </div>
+          </fieldset>
+          <div class="flex flex-wrap gap-3 border-t border-sv-border pt-5">
+            <SvButton
+              type="submit"
+              variant="primary"
+              :loading="saving"
+            >
+              Save profile
+            </SvButton>
+          </div>
+        </form>
+      </div>
     </SvStateBoundary>
   </section>
 </template>

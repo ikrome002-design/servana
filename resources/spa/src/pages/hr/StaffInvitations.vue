@@ -2,10 +2,10 @@
 import axios from 'axios';
 import { onMounted } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { useForm } from '@/composables/useForm';
@@ -84,8 +84,14 @@ async function revoke(id: string): Promise<void> {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a focused invitation journey. The form reads as three short steps —
+    who, where, what role — each with its marker, under the target-role boundary; sent invitations
+    run beside it as a status list with their expiry and the two permitted follow-ups. The server
+    still decides which roles may be issued and validates every field.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="hr-staff-invite"
   >
     <SvPageHeader
@@ -94,111 +100,152 @@ async function revoke(id: string): Promise<void> {
       description="Invite an operational user into the assigned branch. The server controls which target roles you may issue."
     />
 
-    <SvAlert
-      v-if="!auth.isMerchantAdmin()"
-      severity="info"
-      title="Human Resource target roles"
-    >
-      You may invite Front Office, Finance, Personnel and Audit users into this branch. You cannot invite or activate a Merchant Administrator or move someone across branches.
-    </SvAlert>
-
-    <SvCard
-      as="section"
-      padding="lg"
-      class="mt-5 max-w-2xl border-t-4 border-t-sv-brand"
-    >
-      <form
-        class="flex flex-col gap-4"
-        novalidate
-        @submit.prevent="submit"
-      >
-        <SvTextInput
-          id="email"
-          v-model="form.values.email"
-          label="Email address"
-          type="email"
-          required
-          :errors="form.errors.email"
-        />
-        <SvSelect
-          id="branch_id"
-          v-model="form.values.branch_id"
-          label="Branch"
-          placeholder="Select a branch"
-          :options="branches.branches.map((b) => ({ value: b.id, label: b.name }))"
-          required
-          :errors="form.errors.branch_id"
-        />
-        <SvSelect
-          id="role"
-          v-model="form.values.role"
-          label="Role"
-          placeholder="Select a role"
-          :options="roleOptions"
-          required
-          :errors="form.errors.role"
-        />
-        <SvButton
-          type="submit"
-          variant="primary"
-          :loading="form.submitting.value"
+    <div class="sv-r-grid sv-r-split-wide">
+      <div class="sv-r-stack min-w-0">
+        <SvAlert
+          v-if="!auth.isMerchantAdmin()"
+          severity="info"
+          title="Human Resource target roles"
         >
-          Send invitation
-        </SvButton>
-      </form>
-    </SvCard>
+          You may invite Front Office, Finance, Personnel and Audit users into this branch. You cannot invite or activate a Merchant Administrator or move someone across branches.
+        </SvAlert>
 
-    <ul
-      class="mt-8 grid gap-3 lg:grid-cols-2"
-      aria-label="Staff invitations"
-    >
-      <li
-        v-for="invitation in staff.invitations"
-        :key="invitation.id"
-      >
-        <SvCard
-          as="article"
-          padding="md"
-        >
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <p class="font-medium text-text">
-                {{ invitation.email }}
-              </p>
-              <p class="text-sm capitalize text-text-muted">
-                {{ invitation.role.replaceAll('_', ' ') }}
-              </p>
+        <section class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm">
+          <form
+            class="sv-r-steps"
+            novalidate
+            @submit.prevent="submit"
+          >
+            <div class="sv-r-step sv-r-step--current">
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >1</span>
+              <SvTextInput
+                id="email"
+                v-model="form.values.email"
+                label="Email address"
+                type="email"
+                required
+                :errors="form.errors.email"
+              />
             </div>
-            <SvStatusBadge
-              :label="invitation.status"
-              :tone="invitation.status === 'accepted' ? 'success' : invitation.status === 'pending' ? 'warning' : 'neutral'"
-              size="sm"
-            />
-          </div>
-          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-            <p class="text-xs text-text-muted">
-              Expires {{ formatDateTime(invitation.expires_at) }}
-            </p>
-            <div
-              v-if="invitation.status === 'pending'"
-              class="flex gap-2"
-            >
+            <div class="sv-r-step">
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >2</span>
+              <SvSelect
+                id="branch_id"
+                v-model="form.values.branch_id"
+                label="Branch"
+                placeholder="Select a branch"
+                :options="branches.branches.map((b) => ({ value: b.id, label: b.name }))"
+                required
+                :errors="form.errors.branch_id"
+              />
+            </div>
+            <div class="sv-r-step">
+              <span
+                aria-hidden="true"
+                class="sv-r-step__marker"
+              >3</span>
+              <SvSelect
+                id="role"
+                v-model="form.values.role"
+                label="Role"
+                placeholder="Select a role"
+                :options="roleOptions"
+                required
+                :errors="form.errors.role"
+              />
+            </div>
+            <div class="pl-[3.25rem]">
               <SvButton
-                variant="secondary"
-                @click="resend(invitation.id)"
+                type="submit"
+                variant="primary"
+                :loading="form.submitting.value"
               >
-                Resend
-              </SvButton>
-              <SvButton
-                variant="ghost"
-                @click="revoke(invitation.id)"
-              >
-                Revoke
+                Send invitation
               </SvButton>
             </div>
-          </div>
-        </SvCard>
-      </li>
-    </ul>
+          </form>
+        </section>
+      </div>
+
+      <section aria-labelledby="sent-invitations-heading">
+        <h2
+          id="sent-invitations-heading"
+          class="sv-r-title mb-3"
+        >
+          Sent invitations
+        </h2>
+        <ul
+          class="flex flex-col gap-3"
+          aria-label="Staff invitations"
+        >
+          <li
+            v-for="invitation in staff.invitations"
+            :key="invitation.id"
+          >
+            <article class="sv-r-record">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex min-w-0 items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    class="sv-r-icon sv-r-tone-warm"
+                  >
+                    <component :is="navigationIcon('invite')" />
+                  </span>
+                  <div class="min-w-0">
+                    <p class="break-all font-medium text-text">
+                      {{ invitation.email }}
+                    </p>
+                    <p class="text-sm capitalize text-text-muted">
+                      {{ invitation.role.replaceAll('_', ' ') }}
+                    </p>
+                  </div>
+                </div>
+                <SvStatusBadge
+                  :label="invitation.status"
+                  :tone="invitation.status === 'accepted' ? 'success' : invitation.status === 'pending' ? 'warning' : 'neutral'"
+                  size="sm"
+                />
+              </div>
+              <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-sv-border pt-3">
+                <p class="text-xs text-text-muted">
+                  Expires {{ formatDateTime(invitation.expires_at) }}
+                </p>
+                <div
+                  v-if="invitation.status === 'pending'"
+                  class="flex gap-2"
+                >
+                  <SvButton
+                    variant="secondary"
+                    size="sm"
+                    @click="resend(invitation.id)"
+                  >
+                    Resend
+                  </SvButton>
+                  <SvButton
+                    variant="ghost"
+                    size="sm"
+                    @click="revoke(invitation.id)"
+                  >
+                    Revoke
+                  </SvButton>
+                </div>
+              </div>
+            </article>
+          </li>
+        </ul>
+        <p
+          v-if="staff.invitations.length === 0"
+          class="sv-r-panel sv-r-panel--dashed sv-r-lede text-center"
+        >
+          No invitations have been sent from this branch yet.
+        </p>
+      </section>
+    </div>
   </section>
 </template>

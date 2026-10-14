@@ -102,6 +102,12 @@ const ROLE_LABELS: Readonly<Record<string, string>> = {
   finance: 'Finance',
 };
 const roleLabel = computed(() => ROLE_LABELS[props.experience] ?? 'Servana account');
+
+/**
+ * COR-UI08-UI12-VIS-001: the five corrective accounts (exactly the ones that render the identity
+ * hero below) get the refined Profile composition; Front Office, Personnel and Audit keep theirs.
+ */
+const refined = computed(() => !['front-office', 'personnel', 'audit'].includes(props.experience));
 /**
  * The server-resolved account context (branch, else merchant); the platform account has neither.
  * Read only if the shell already loaded it — this page issues no extra request for a label.
@@ -212,7 +218,7 @@ async function revokePending(): Promise<void> {
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    :class="refined ? 'sv-r-page sv-r-account' : 'mx-auto w-full max-w-4xl'"
     :data-testid="experience === 'platform' ? 'platform-account-screen' : `${experience}-account-screen`"
   >
     <SvOperationalHero
@@ -225,76 +231,68 @@ async function revokePending(): Promise<void> {
     <!--
       Personnel and Audit render their own Profile-style identity headers that own the h1.
 
-      UI16-VIS-004: the five older accounts used to open on the bare title band every other page
-      shares. They now get the same Profile-reference identity composition UI-14/UI-15 introduced —
-      a tonal band, the initials avatar, the role and branch context, and four server facts — so
-      "who am I signed in as, and how" is answered before any control. Every fact is read from the
-      bootstrap or the session family; nothing here can change a role, a branch or MFA policy.
+      COR-UI08-UI12-VIS-001 (the five corrective accounts): the Profile reference, translated. A
+      dark identity card — the initials avatar in a luminous ring, name, role and sign-in method —
+      beside a details card that owns the h1 and sets the four server facts as a divided
+      label/value grid. Every fact is read from the bootstrap or the session family; nothing here
+      can change a role, a branch or MFA policy.
     -->
     <header
       v-else-if="experience !== 'personnel' && experience !== 'audit'"
-      class="sv-account-hero relative isolate mb-5 overflow-hidden rounded-card border border-sv-border bg-sv-surface-raised shadow-raised"
+      class="sv-r-account__hero sv-r-grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]"
       :data-tone="tone"
       data-testid="sv-page-header"
     >
-      <div
-        aria-hidden="true"
-        class="sv-account-hero__band h-20 md:h-24"
-      />
-      <div class="px-5 pb-6 md:px-8">
-        <div class="flex flex-wrap items-end gap-4">
-          <span
+      <div class="sv-r-feature flex flex-col items-center justify-center text-center">
+        <span
+          aria-hidden="true"
+          class="sv-r-account__avatar inline-flex h-28 w-28 items-center justify-center rounded-full font-display text-4xl font-extrabold"
+        >{{ initials }}</span>
+        <p class="sv-r-feature__title mt-5 break-words">
+          {{ user?.name ?? 'Your account' }}
+        </p>
+        <p class="sv-r-feature__accent mt-1 text-sm font-semibold">
+          {{ roleLabel }}
+        </p>
+        <span class="mt-5 inline-flex items-center gap-1.5 rounded-pill border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white">
+          <SvIconSecurity
             aria-hidden="true"
-            class="sv-account-hero__avatar -mt-10 inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-full font-display text-2xl font-extrabold"
-          >{{ initials }}</span>
-          <div class="min-w-0 pt-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sv-text-muted">
-              Your account
-            </p>
-            <h1
-              class="font-display text-2xl font-extrabold tracking-tight text-sv-text-heading md:text-3xl"
-              data-testid="sv-page-title"
-            >
-              Account and security
-            </h1>
-            <p class="text-sm text-sv-text-secondary">
-              {{ user?.name ?? 'Your account' }} · {{ roleLabel }}
-            </p>
-          </div>
-          <span class="ml-auto inline-flex items-center gap-1 rounded-pill border border-sv-info-border bg-sv-info-bg px-3 py-1 text-xs font-semibold text-sv-info-fg">
-            <SvIconSecurity
-              aria-hidden="true"
-              class="h-4 w-4"
-            />Magic Link sign-in
-          </span>
-        </div>
-        <p class="mt-4 max-w-3xl text-sm leading-6 text-sv-text-secondary">
+            class="h-4 w-4"
+          />Magic Link sign-in
+        </span>
+      </div>
+
+      <div class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Your account
+        </p>
+        <h1
+          class="sv-r-title-lg mt-2 md:text-3xl"
+          data-testid="sv-page-title"
+        >
+          Account and security
+        </h1>
+        <p class="sv-r-lede mt-2 max-w-3xl">
           {{ pageDescription }}
         </p>
         <dl
-          class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4"
+          class="sv-r-facts sv-r-facts--2 mt-4"
           data-testid="account-hero-facts"
         >
           <div
             v-for="fact in heroFacts"
             :key="fact.label"
-            class="rounded-control border border-sv-border bg-sv-surface-raised p-3"
           >
-            <dt class="text-xs text-sv-text-muted">
-              {{ fact.label }}
-            </dt>
-            <dd class="mt-1 text-sm font-semibold text-sv-text-heading">
-              {{ fact.value }}
-            </dd>
+            <dt>{{ fact.label }}</dt>
+            <dd>{{ fact.value }}</dd>
           </div>
         </dl>
       </div>
     </header>
-
     <!-- Identity ------------------------------------------------------------------------------ -->
     <SvCard
       as="section"
-      :class="experience === 'front-office' ? 'mt-5 border-l-4 border-l-sv-brand-secondary' : experience === 'personnel' || experience === 'audit' ? 'mt-5' : ''"
+      :class="experience === 'front-office' ? 'mt-5 border-l-4 border-l-sv-brand-secondary' : experience === 'personnel' || experience === 'audit' ? 'mt-5' : 'sv-r-account__identity'"
       data-testid="account-identity"
     >
       <h2 class="font-display text-lg font-bold text-sv-text-heading">
@@ -354,7 +352,7 @@ async function revokePending(): Promise<void> {
     <!-- MFA ----------------------------------------------------------------------------------- -->
     <SvCard
       as="section"
-      class="mt-6"
+      :class="refined ? 'sv-r-account__mfa' : 'mt-6'"
       data-testid="account-mfa"
     >
       <h2 class="font-display text-lg font-bold text-sv-text-heading">
@@ -470,7 +468,7 @@ async function revokePending(): Promise<void> {
     <!-- Sessions ------------------------------------------------------------------------------ -->
     <SvCard
       as="section"
-      class="mt-6"
+      :class="refined ? 'sv-r-account__sessions' : 'mt-6'"
       data-testid="account-sessions"
     >
       <h2 class="font-display text-lg font-bold text-sv-text-heading">
@@ -556,7 +554,7 @@ async function revokePending(): Promise<void> {
     <!-- Preferences --------------------------------------------------------------------------- -->
     <SvCard
       as="section"
-      class="mt-6"
+      :class="refined ? 'sv-r-account__prefs' : 'mt-6'"
       data-testid="account-preferences"
     >
       <h2 class="font-display text-lg font-bold text-sv-text-heading">
@@ -589,7 +587,7 @@ async function revokePending(): Promise<void> {
     </SvCard>
 
     <p
-      class="mt-6 text-xs text-sv-text-muted"
+      :class="refined ? 'sv-r-account__note sv-r-muted' : 'mt-6 text-xs text-sv-text-muted'"
       data-testid="account-scope-note"
     >
       {{ scopeNote }}
@@ -618,19 +616,11 @@ async function revokePending(): Promise<void> {
 </template>
 
 <style scoped>
-.sv-account-hero {
-  --sv-account-tone: var(--sv-color-brand-primary);
-}
-.sv-account-hero[data-tone='teal'] { --sv-account-tone: var(--sv-color-brand-secondary); }
-.sv-account-hero[data-tone='green'] { --sv-account-tone: var(--sv-color-growth); }
-.sv-account-hero__band {
-  background:
-    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--sv-color-accent) 42%, transparent), transparent 55%),
-    linear-gradient(120deg, color-mix(in srgb, var(--sv-account-tone) 58%, var(--sv-color-surface-raised)), color-mix(in srgb, var(--sv-color-text-on-brand) 30%, var(--sv-color-surface-raised)));
-}
-.sv-account-hero__avatar {
-  background: color-mix(in srgb, var(--sv-account-tone) 18%, var(--sv-color-surface-raised));
-  color: var(--sv-color-text-heading);
-  box-shadow: 0 0 0 4px var(--sv-color-surface-raised), var(--sv-shadow-card);
+.sv-r-account__avatar {
+  background: color-mix(in srgb, var(--sv-color-refined-feature-fg) 12%, transparent);
+  color: var(--sv-color-refined-feature-fg);
+  box-shadow:
+    0 0 0 4px var(--sv-color-refined-feature-accent),
+    0 0 0 12px color-mix(in srgb, var(--sv-color-refined-feature-accent) 18%, transparent);
 }
 </style>

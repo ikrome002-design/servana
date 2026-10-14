@@ -3,14 +3,14 @@
 // Source:     resources/spa/src/design-system/tokens.json
 // Generator:  node scripts/generate-design-tokens.mjs
 // Verify:     node scripts/generate-design-tokens.mjs --check
-// Source SHA-256: 7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b
+// Source SHA-256: 1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4
 //
 // Typed access to the Servana design tokens (ADR-021). Components should consume the CSS custom
 // properties (via Tailwind's semantic aliases) rather than these constants; these exist so tests,
 // contrast guards and the design-system fixture can reason about token VALUES deterministically.
 
 export const DESIGN_TOKEN_SCHEMA_VERSION = '1.0.0';
-export const DESIGN_TOKEN_SOURCE_SHA256 = '7a8d99f9f7404f6dc773a5eaf954dc9ee83def5caed7842d33c5f055c6f86c5b';
+export const DESIGN_TOKEN_SOURCE_SHA256 = '1e89ef542f6cf4f7ca999a860d1d74c40d269a51254912e0eb3b7991f4947fb4';
 
 export type ThemeName = 'light' | 'dark';
 
@@ -62,7 +62,16 @@ export type SemanticColorToken =
   | 'color-footer-surface'
   | 'color-footer-text'
   | 'color-footer-border'
-  | 'color-growth';
+  | 'color-growth'
+  | 'color-refined-canvas'
+  | 'color-refined-sunken'
+  | 'color-refined-hairline'
+  | 'color-refined-nav-active-bg'
+  | 'color-refined-nav-active-fg'
+  | 'color-refined-nav-active-icon'
+  | 'color-refined-feature-bg'
+  | 'color-refined-feature-fg'
+  | 'color-refined-feature-accent';
 
 export type ComponentToken =
   | 'space-0'
@@ -127,7 +136,14 @@ export type ComponentToken =
   | 'table-cell-padding-y'
   | 'safe-area-bottom'
   | 'safe-area-left'
-  | 'safe-area-right';
+  | 'safe-area-right'
+  | 'radius-panel'
+  | 'radius-field'
+  | 'radius-shell'
+  | 'shadow-panel'
+  | 'shadow-float'
+  | 'refined-sidebar-width'
+  | 'refined-shell-inset';
 
 /** Raw brand palette. Present for provenance and tests — never consume directly in a component. */
 export const PALETTE: Readonly<Record<string, string>> = Object.freeze({
@@ -179,6 +195,11 @@ export const PALETTE: Readonly<Record<string, string>> = Object.freeze({
   'teal-400': "#14B8A6",
   'orange-800': "#9A3412",
   'orange-300': "#FDBA74",
+  'linen': "#F5F3EF",
+  'linen-50': "#FAF9F6",
+  'linen-200': "#E9E5DD",
+  'night-950': "#0F151C",
+  'night-900': "#151D26",
 });
 
 export const SEMANTIC_COLORS: Readonly<Record<ThemeName, Readonly<Record<SemanticColorToken, string>>>> =
@@ -232,6 +253,15 @@ export const SEMANTIC_COLORS: Readonly<Record<ThemeName, Readonly<Record<Semanti
       'color-footer-text': "#4B5563",
       'color-footer-border': "#E5E7EB",
       'color-growth': "#3F7D20",
+      'color-refined-canvas': "#F5F3EF",
+      'color-refined-sunken': "#FAF9F6",
+      'color-refined-hairline': "#E9E5DD",
+      'color-refined-nav-active-bg': "#4A2208",
+      'color-refined-nav-active-fg': "#FFFFFF",
+      'color-refined-nav-active-icon': "#F97316",
+      'color-refined-feature-bg': "#4A2208",
+      'color-refined-feature-fg': "#FFFFFF",
+      'color-refined-feature-accent': "#FBBF24",
     }),
     dark: Object.freeze({
       'color-brand-primary': "#F97316",
@@ -282,6 +312,15 @@ export const SEMANTIC_COLORS: Readonly<Record<ThemeName, Readonly<Record<Semanti
       'color-footer-text': "#9CA3AF",
       'color-footer-border': "#374151",
       'color-growth': "#4ADE80",
+      'color-refined-canvas': "#0F151C",
+      'color-refined-sunken': "#151D26",
+      'color-refined-hairline': "#374151",
+      'color-refined-nav-active-bg': "#F97316",
+      'color-refined-nav-active-fg': "#4A2208",
+      'color-refined-nav-active-icon': "#4A2208",
+      'color-refined-feature-bg': "#4A2208",
+      'color-refined-feature-fg': "#FFFFFF",
+      'color-refined-feature-accent': "#FBBF24",
     }),
   }) as Readonly<Record<ThemeName, Readonly<Record<SemanticColorToken, string>>>>;
 
@@ -349,6 +388,13 @@ export const COMPONENT_TOKENS: Readonly<Record<ComponentToken, string>> = Object
   'safe-area-bottom': "env(safe-area-inset-bottom, 0px)",
   'safe-area-left': "env(safe-area-inset-left, 0px)",
   'safe-area-right': "env(safe-area-inset-right, 0px)",
+  'radius-panel': "1.25rem",
+  'radius-field': "0.75rem",
+  'radius-shell': "1.5rem",
+  'shadow-panel': "0 1px 2px rgb(31 41 51 / 0.04), 0 12px 32px -18px rgb(74 34 8 / 0.18)",
+  'shadow-float': "0 2px 6px rgb(31 41 51 / 0.05), 0 24px 48px -24px rgb(74 34 8 / 0.28)",
+  'refined-sidebar-width': "17rem",
+  'refined-shell-inset': "0.75rem",
 }) as Readonly<Record<ComponentToken, string>>;
 
 /**

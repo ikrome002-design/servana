@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -80,39 +79,52 @@ async function submit(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="general-settings-heading">
-    <h2
-      id="general-settings-heading"
-      class="font-display text-lg font-bold text-heading"
-    >
-      General settings
-    </h2>
-    <p class="mt-1 text-sm text-text-muted">
-      Documented platform settings. Only the listed keys are editable — there is no free-form
-      JSON. Saving creates a new effective-dated version. A fresh step-up is required.
-    </p>
+  <!--
+    COR-UI08-UI12-VIS-001: the documented keys as a two-column settings sheet on one panel — each
+    key with its own hint — so the closed key list reads as a deliberate, finite contract.
+  -->
+  <section
+    aria-labelledby="general-settings-heading"
+    class="sv-r-panel"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+          Documented keys only
+        </p>
+        <h2
+          id="general-settings-heading"
+          class="sv-r-title mt-1"
+        >
+          General settings
+        </h2>
+        <p class="sv-r-panel__desc">
+          Documented platform settings. Only the listed keys are editable — there is no free-form
+          JSON. Saving creates a new effective-dated version. A fresh step-up is required.
+        </p>
+      </div>
+    </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="store.error ?? undefined"
       empty-message="No platform settings have been configured yet."
       @retry="store.fetch()"
     >
-      <SvCard class="mt-4">
-        <form
-          class="flex flex-col gap-4"
-          novalidate
-          @submit.prevent="submit"
+      <form
+        class="flex flex-col gap-4"
+        novalidate
+        @submit.prevent="submit"
+      >
+        <p
+          v-if="!canUpdate"
+          class="rounded-control bg-surface-alt px-3 py-2 text-sm text-text-muted"
+          role="note"
         >
-          <p
-            v-if="!canUpdate"
-            class="rounded-control bg-surface-alt px-3 py-2 text-sm text-text-muted"
-            role="note"
-          >
-            You have read-only access to general settings.
-          </p>
+          You have read-only access to general settings.
+        </p>
 
+        <div class="grid gap-x-5 gap-y-4 md:grid-cols-2">
           <SvTextInput
             v-for="entry in GENERAL_SETTINGS_KEYS"
             :id="`setting-${entry.key}`"
@@ -124,25 +136,28 @@ async function submit(): Promise<void> {
             :errors="errors[entry.key]"
             @update:model-value="values[entry.key] = $event"
           />
+        </div>
 
-          <p
-            v-if="actionError"
-            class="text-sm text-error"
-            role="alert"
+        <p
+          v-if="actionError"
+          class="text-sm text-error"
+          role="alert"
+        >
+          {{ actionError }}
+        </p>
+
+        <div
+          v-if="canUpdate"
+          class="sv-r-panel__foot"
+        >
+          <SvButton
+            type="submit"
+            :loading="submitting"
           >
-            {{ actionError }}
-          </p>
-
-          <div v-if="canUpdate">
-            <SvButton
-              type="submit"
-              :loading="submitting"
-            >
-              Save general settings
-            </SvButton>
-          </div>
-        </form>
-      </SvCard>
+            Save general settings
+          </SvButton>
+        </div>
+      </form>
     </SvStateBoundary>
   </section>
 </template>

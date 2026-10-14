@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useBranchPreferredFeeStore } from '@/stores/branchPreferredFeeStore';
 
@@ -35,14 +34,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <SvCard
-    class="mt-6"
+  <!-- COR-UI08-UI12-VIS-001: a read-only platform-rule note in the catalogue's rail. -->
+  <section
+    class="sv-r-note sv-r-tone-sun"
     data-testid="branch-preferred-fee"
   >
-    <h2 class="font-display text-base font-semibold text-heading">
+    <h2 class="sv-r-note__title">
       Preferred-personnel fee (effective)
     </h2>
-    <p class="mt-1 text-sm text-text-muted">
+    <p class="sv-r-note__body">
       The platform-set fee applied when a client requests a preferred personnel member.
       Read-only — managed by the platform.
     </p>
@@ -56,7 +56,7 @@ onMounted(() => {
     >
       <dl
         v-if="store.rule"
-        class="mt-2 grid gap-2 text-sm md:grid-cols-2"
+        class="mt-2 grid gap-2 text-sm"
       >
         <div>
           <dt class="text-text-muted">
@@ -92,5 +92,5 @@ onMounted(() => {
         </div>
       </dl>
     </SvStateBoundary>
-  </SvCard>
+  </section>
 </template>

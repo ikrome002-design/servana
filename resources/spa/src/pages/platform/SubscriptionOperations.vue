@@ -20,7 +20,8 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvDateTime from '@/components/ui/SvDateTime.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
-import SvMetricCard from '@/components/ui/SvMetricCard.vue';
+import SvFeaturePanel from '@/components/refined/SvFeaturePanel.vue';
+import SvKpiCard from '@/components/refined/SvKpiCard.vue';
 import SvMoney from '@/components/ui/SvMoney.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvPermissionState from '@/components/ui/SvPermissionState.vue';
@@ -29,6 +30,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { statusLabel } from '@/utils/statusLabel';
 import {
   usePlatformSubscriptionOperationsStore,
@@ -154,7 +156,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
 
 <template>
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="subscription-operations-screen"
   >
     <SvPageHeader
@@ -167,7 +169,7 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
 
     <template v-else>
       <p
-        class="mb-6 text-xs text-sv-text-muted"
+        class="sv-r-muted -mt-2 mb-5"
         data-testid="subscriptions-last-refreshed"
       >
         Last refreshed
@@ -192,82 +194,92 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
         </SvButton>
       </SvAlert>
 
-      <!-- Summary ------------------------------------------------------------------------- -->
+      <!--
+        COR-UI08-UI12-VIS-001: oversight first. The four server figures lead as a KPI band — the
+        open balance on the dark feature surface because it is the past-due work — with their
+        server definitions one disclosure away; then a toolbar where the segmented tabs and the
+        status filter sit together, above the active ledger on its own panel.
+      -->
       <section
         v-if="store.summary"
         aria-labelledby="subs-summary-heading"
-        class="mb-8"
       >
         <h2
           id="subs-summary-heading"
-          class="mb-3 font-display text-lg font-bold text-sv-text-heading"
+          class="sr-only"
         >
           Platform summary
         </h2>
 
         <div
-          class="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+          class="sv-r-grid-tight sv-r-grid sv-r-cols-4"
           data-testid="subscriptions-summary"
         >
-          <SvMetricCard
+          <SvKpiCard
             label="Subscriptions"
-            context="Every merchant subscription, in any lifecycle state."
+            hint="Every merchant subscription, in any lifecycle state."
+            tone="warm"
+            :icon="navigationIcon('subscription')"
           >
-            <span class="sv-numeric text-2xl font-bold">{{ store.summary.totals.subscriptions }}</span>
-          </SvMetricCard>
-          <SvMetricCard
+            <span class="sv-numeric">{{ store.summary.totals.subscriptions }}</span>
+          </SvKpiCard>
+          <SvKpiCard
             label="Invoices"
-            context="Issued platform subscription invoices."
+            hint="Issued platform subscription invoices."
+            tone="teal"
+            :icon="navigationIcon('invoice')"
           >
-            <span class="sv-numeric text-2xl font-bold">{{ store.summary.totals.invoices }}</span>
-          </SvMetricCard>
-          <SvMetricCard
-            label="Open invoice balance"
-            context="Outstanding balance across unpaid issued invoices."
-            :increase-is-positive="false"
+            <span class="sv-numeric">{{ store.summary.totals.invoices }}</span>
+          </SvKpiCard>
+          <SvFeaturePanel
+            as="div"
+            eyebrow="Open invoice balance"
           >
-            <SvMoney
-              :minor-units="store.summary.totals.open_invoice_balance_minor"
-              size="lg"
-            />
-          </SvMetricCard>
-          <SvMetricCard
+            <p class="sv-r-feature__value sv-r-feature__accent mt-3 text-3xl">
+              <SvMoney
+                :minor-units="store.summary.totals.open_invoice_balance_minor"
+                size="lg"
+              />
+            </p>
+            <p class="sv-r-feature__hint mt-2">
+              Outstanding balance across unpaid issued invoices.
+            </p>
+          </SvFeaturePanel>
+          <SvKpiCard
             label="As of"
-            context="The instant this projection was computed."
+            hint="The instant this projection was computed."
+            tone="neutral"
+            :icon="navigationIcon('history')"
           >
-            <SvDateTime :value="store.summary.as_of" />
-          </SvMetricCard>
+            <span class="text-xl">
+              <SvDateTime :value="store.summary.as_of" />
+            </span>
+          </SvKpiCard>
         </div>
 
-        <details class="mt-4 rounded-card border border-sv-border bg-sv-surface-raised p-4">
-          <summary class="cursor-pointer text-sm font-medium text-sv-text">
+        <details class="sv-r-note sv-r-tone-teal mt-4">
+          <summary class="sv-focus-ring cursor-pointer rounded-control text-sm font-semibold text-sv-text">
             How each figure is defined
           </summary>
           <dl
             v-if="store.definitions"
-            class="mt-3 space-y-2 text-sm"
+            class="sv-r-facts sv-r-facts--3 sv-r-facts--prose mt-2"
           >
             <div>
-              <dt class="font-medium text-sv-text-muted">
-                Subscriptions by status
-              </dt>
-              <dd class="text-sv-text">
+              <dt>Subscriptions by status</dt>
+              <dd>
                 {{ store.definitions.definitions.subscriptions_by_status }}
               </dd>
             </div>
             <div>
-              <dt class="font-medium text-sv-text-muted">
-                Open invoice balance
-              </dt>
-              <dd class="text-sv-text">
+              <dt>Open invoice balance</dt>
+              <dd>
                 {{ store.definitions.definitions.open_invoice_balance_minor }}
               </dd>
             </div>
             <div>
-              <dt class="font-medium text-sv-text-muted">
-                Time range
-              </dt>
-              <dd class="text-sv-text">
+              <dt>Time range</dt>
+              <dd>
                 {{ store.definitions.time_range }}
               </dd>
             </div>
@@ -275,56 +287,57 @@ const statusTone = (status: string): 'success' | 'warning' | 'error' | 'info' | 
         </details>
       </section>
 
-      <!-- Tabs ---------------------------------------------------------------------------- -->
-      <div
-        role="tablist"
-        aria-label="Subscription operations"
-        class="mb-4 flex flex-wrap gap-1 border-b border-sv-border"
-      >
-        <button
-          v-for="item in TABS"
-          :id="`subs-tab-${item.key}`"
-          :key="item.key"
-          type="button"
-          role="tab"
-          :aria-selected="store.tab === item.key"
-          :aria-controls="`subs-panel-${item.key}`"
-          :tabindex="store.tab === item.key ? 0 : -1"
-          class="sv-focus-ring min-h-sv-touch rounded-t-control px-4 py-2 text-sm font-semibold"
-          :class="store.tab === item.key
-            ? 'border-b-2 border-sv-border-strong text-sv-text-heading'
-            : 'text-sv-text-muted hover:text-sv-text'"
-          :data-testid="`subs-tab-${item.key}`"
-          @click="selectTab(item.key)"
+      <!-- Toolbar: segmented tabs beside the status filter ----------------------------------- -->
+      <div class="sv-r-panel sv-r-panel--sunken sv-r-panel--compact flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div
+          role="tablist"
+          aria-label="Subscription operations"
+          class="flex flex-wrap gap-1 rounded-pill bg-sv-surface-raised p-1 shadow-card"
         >
-          {{ item.label }}
-        </button>
-      </div>
+          <button
+            v-for="item in TABS"
+            :id="`subs-tab-${item.key}`"
+            :key="item.key"
+            type="button"
+            role="tab"
+            :aria-selected="store.tab === item.key"
+            :aria-controls="`subs-panel-${item.key}`"
+            :tabindex="store.tab === item.key ? 0 : -1"
+            class="sv-focus-ring min-h-sv-touch rounded-pill px-4 py-2 text-sm font-semibold transition-colors duration-sv-fast"
+            :class="store.tab === item.key
+              ? 'bg-sv-nav-active-bg text-sv-nav-active-fg'
+              : 'text-sv-text-muted hover:bg-sv-surface-subtle hover:text-sv-text'"
+            :data-testid="`subs-tab-${item.key}`"
+            @click="selectTab(item.key)"
+          >
+            {{ item.label }}
+          </button>
+        </div>
 
-      <div class="mb-4 max-w-xs">
-        <SvSelect
-          id="subs-status-filter"
-          :model-value="store.filters.status"
-          label="Filter by status"
-          :options="[
-            { value: '', label: 'All statuses' },
-            { value: 'trialing', label: 'Trialing' },
-            { value: 'active', label: 'Active' },
-            { value: 'in_grace', label: 'In grace' },
-            { value: 'overdue', label: 'Overdue' },
-            { value: 'suspended_billing', label: 'Suspended for billing' },
-            { value: 'cancelled', label: 'Cancelled' },
-          ]"
-          @update:model-value="applyStatus"
-        />
+        <div class="w-full md:w-60">
+          <SvSelect
+            id="subs-status-filter"
+            :model-value="store.filters.status"
+            label="Filter by status"
+            :options="[
+              { value: '', label: 'All statuses' },
+              { value: 'trialing', label: 'Trialing' },
+              { value: 'active', label: 'Active' },
+              { value: 'in_grace', label: 'In grace' },
+              { value: 'overdue', label: 'Overdue' },
+              { value: 'suspended_billing', label: 'Suspended for billing' },
+              { value: 'cancelled', label: 'Cancelled' },
+            ]"
+            @update:model-value="applyStatus"
+          />
+        </div>
       </div>
-
       <div
         :id="`subs-panel-${store.tab}`"
         role="tabpanel"
         :aria-labelledby="`subs-tab-${store.tab}`"
         tabindex="0"
-        class="focus-visible:outline-none"
+        class="sv-r-panel focus-visible:outline-none"
       >
         <!-- Subscriptions ----------------------------------------------------------------- -->
         <template v-if="store.tab === 'subscriptions'">

@@ -1,0 +1,25 @@
+{
+  "schema": "cor-ui08-ui12-vis-001.interaction-state-matrix.v1",
+  "note": "Each state names the executable proof. Results are recorded in test-matrix.json against the final source; nothing here is claimed from an older run.",
+  "cases": [
+    { "state": "initial load, every live page", "scope": "82 corrective pages (and all 132 live)", "proof": "tests/e2e/cor-ui08-ui12-capture.spec.ts (ready locator per page, 3 variants); tests/e2e/ui-16-responsive-accessibility-theme.spec.ts › responsive sweep" },
+    { "state": "seven widths 360/767/768/1024/1025/1280/1440 + 640x400 200%-equivalent, no horizontal overflow, footer reserve", "scope": "all live pages", "proof": "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts › UI-16 responsive sweep" },
+    { "state": "axe 0 serious / 0 critical, light 1440 and dark 360", "scope": "all live pages", "proof": "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts › UI-16 accessibility" },
+    { "state": "light-first paint under OS dark preference; explicit dark persists", "scope": "one dashboard per account", "proof": "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts › UI-16 theme" },
+    { "state": "reduced motion", "scope": "shell, dashboards, Finance task surface", "proof": "ui-16 theme › honours prefers-reduced-motion; tests/e2e/ui-12-finance-experience.spec.ts › reduced-motion; refined motion gated by (prefers-reduced-motion: no-preference) plus the global reduce rule in style.css" },
+    { "state": "active navigation AA through theme transitions", "scope": "sidebar accounts", "proof": "ui-16 theme › active navigation stays AA through both theme transitions" },
+    { "state": "gated pages inert (no route, no request, reason shown)", "scope": "28 rows (24 corrective)", "proof": "ui-16 gates — 28 contract rows stay inert" },
+    { "state": "mobile drawer keyboard reachable, Escape restores focus", "scope": "Finance (sidebar shell)", "proof": "tests/e2e/ui-12-finance-experience.spec.ts › mobile drawer is keyboard reachable and Escape restores focus" },
+    { "state": "Super Administrator header group open", "scope": "header shell", "proof": "tests/e2e/ui-16-visual-regression.spec.ts › Super Administrator header strip with an open group" },
+    { "state": "modal: whole-group decision dialog (focus trap, refined layered sheet)", "scope": "Finance validation detail", "proof": "tests/e2e/cor-ui08-ui12-visual-regression.spec.ts › overlays; resources/spa/src/pages/payments/PaymentGroupValidation.spec.ts (Idempotency-Key, receipt-issued)" },
+    { "state": "form validation: reason required before reject/request-correction", "scope": "Finance", "proof": "PaymentGroupValidation.spec.ts › requires a reason (button disabled)" },
+    { "state": "step-up required safe state and retry", "scope": "Finance payout mark-paid", "proof": "resources/spa/src/pages/finance/PayoutRuns.spec.ts (mark-paid-step-up, verify identity, future date rejected client-side)" },
+    { "state": "permission-hidden controls (UX only)", "scope": "Finance / Front Office", "proof": "PaymentGroupValidation.spec.ts › hides validation controls without checker capability; TaskInbox.spec.ts capability tiles; PeriodLockList.spec.ts hides create/reopen" },
+    { "state": "loading / empty / error states", "scope": "all corrective pages", "proof": "capture index empty_state flag (default fixtures); FinanceAuditView.spec.ts error + empty; CompensationLiabilities.spec.ts empty filter state" },
+    { "state": "populated records, long names and amounts", "scope": "20 pages empty under default fixtures", "proof": "COR_CAPTURE=populated frames (desktop light/dark, 360 mobile) with tests/e2e/support/corPopulated.ts; release-audit LONG_MERCHANT_NAME fixture" },
+    { "state": "masked references never unmasked", "scope": "Finance duplicates/validations", "proof": "FinanceExperiencePages.spec.ts (masked reference shown, raw reference absent)" },
+    { "state": "no browser-calculated or cross-currency money", "scope": "Finance, Merchant Administrator", "proof": "FinanceExperiencePages.spec.ts; CompensationLiabilities.spec.ts (KES and USD rows separate)" },
+    { "state": "experience scope: refined only on five accounts", "scope": "8 account dashboards", "proof": "tests/e2e/cor-ui08-ui12-visual-regression.spec.ts › experience scope" },
+    { "state": "visual negative controls fail on perturbation", "scope": "UI-16 and corrective sets", "proof": "ui-16-visual-regression › negative control (.sv-r-feature); cor-ui08-ui12-visual-regression › negative control (.sv-r-ledger)" }
+  ]
+}

@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
@@ -45,6 +44,28 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
   if (store.refunds.length === 0) return 'empty';
   return 'success';
 });
+/** COR-UI08-UI12-VIS-001: the four-eyes chain with the LOADED refunds counted at each stage. */
+const pipeline = computed(() => [
+  { status: 'requested', label: 'Requested', hint: 'awaiting a distinct approver', tone: 'sv-r-tone-sun' },
+  { status: 'approved', label: 'Approved', hint: 'awaiting finalization', tone: 'sv-r-tone-teal' },
+  { status: 'finalized', label: 'Finalized', hint: 'paid outside Servana and recorded', tone: 'sv-r-tone-green' },
+  { status: 'rejected', label: 'Rejected', hint: 'closed without a refund', tone: 'sv-r-tone-neutral' },
+].map((stage) => ({ ...stage, count: store.refunds.filter((refund) => refund.status === stage.status).length })));
+
+function methodLabel(method: string): string {
+  return PAYMENT_METHODS.find((option) => option.value === method)?.label ?? method.replaceAll('_', ' ');
+}
+
+function statusText(status: string): string {
+  return statusOptions.find((option) => option.value === status)?.label ?? status.replaceAll('_', ' ');
+}
+
+function statusClass(status: string): string {
+  if (status === 'finalized') return 'border-sv-success-border bg-sv-success-bg text-sv-success-fg';
+  if (status === 'requested') return 'border-sv-warning-border bg-sv-warning-bg text-sv-warning-fg';
+  if (status === 'approved') return 'border-sv-info-border bg-sv-info-bg text-sv-info-fg';
+  return 'border-sv-border bg-surface-alt text-text-muted';
+}
 
 async function submitRequest(): Promise<void> {
   if (form.value.payment_record.trim() === '' || amountMinor.value <= 0 || form.value.reason.trim() === '') return;
@@ -75,14 +96,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — external refunds as a FOUR-EYES PIPELINE. The chain (requested → approved
+    by a distinct member → finalized) heads the page with the loaded count at each stage; the
+    refunds follow in a ledger with amount, method, invoice, masked reference and status. Servana
+    records intent only — it never moves money, and the rail says so.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="External refunds"
       eyebrow="Merchant-Client Finance"
       description="Refunds paid to clients outside Servana, recorded and approved here. Servana does not move money."
     >
       <template #actions>
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-end gap-2">
           <SvSelect
             id="refund-status-filter"
             v-model="store.filterStatus"
@@ -107,32 +134,82 @@ onMounted(() => {
       error-message="We couldn’t load refunds."
       empty-message="No refunds match this filter."
     >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="refund in store.refunds"
-          :key="refund.id"
+      <div class="sv-r-stack">
+        <ol
+          class="sv-r-grid-tight md:grid-cols-4"
+          aria-label="Refund approval chain"
         >
-          <SvCard
-            as="button"
-            padding="md"
-            class="w-full text-left"
-            data-testid="refund-row"
-            @click="() => router.push({ name: 'finance.refunds.detail', params: { id: refund.id } })"
+          <li
+            v-for="(stage, index) in pipeline"
+            :key="stage.status"
+            class="sv-r-kpi"
+            :class="stage.tone"
           >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p class="font-display font-semibold text-heading">
-                  {{ refund.amount.formatted }} · {{ refund.method }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  Invoice {{ refund.invoice?.invoice_number ?? '—' }} · ref {{ refund.reference_masked ?? '—' }}
-                </p>
-              </div>
-              <span class="rounded bg-surface-alt px-2 py-0.5 text-xs text-text-muted">{{ refund.status }}</span>
+            <div class="sv-r-kpi__top">
+              <p class="sv-r-kpi__label">
+                {{ index + 1 }} · {{ stage.label }}
+              </p>
             </div>
-          </SvCard>
-        </li>
-      </ul>
+            <p class="sv-r-kpi__value">
+              {{ stage.count }}
+            </p>
+            <p class="sv-r-kpi__hint">
+              {{ stage.hint }}
+            </p>
+          </li>
+        </ol>
+
+        <section
+          class="sv-r-ledger"
+          aria-labelledby="refund-ledger-heading"
+        >
+          <div class="sv-r-ledger__head">
+            <h2
+              id="refund-ledger-heading"
+              class="sv-r-title"
+            >
+              Refund requests
+            </h2>
+            <span class="sv-r-chip">References masked · counts on this page</span>
+          </div>
+          <ul>
+            <li
+              v-for="refund in store.refunds"
+              :key="refund.id"
+              class="border-b border-sv-border last:border-b-0"
+            >
+              <button
+                type="button"
+                class="sv-focus-ring flex w-full flex-wrap items-center justify-between gap-3 px-5 py-4 text-left transition-colors duration-sv-fast hover:bg-surface-alt"
+                data-testid="refund-row"
+                @click="() => router.push({ name: 'finance.refunds.detail', params: { id: refund.id } })"
+              >
+                <span class="min-w-0">
+                  <span class="sv-numeric block font-display text-base font-extrabold text-heading">
+                    {{ refund.amount.formatted }} · <span class="capitalize">{{ methodLabel(refund.method) }}</span>
+                  </span>
+                  <span class="mt-0.5 block text-sm text-text-muted">
+                    Invoice {{ refund.invoice?.invoice_number ?? '—' }} · ref {{ refund.reference_masked ?? '—' }}
+                  </span>
+                </span>
+                <span
+                  class="inline-flex rounded-pill border px-2.5 py-0.5 text-xs font-semibold"
+                  :class="statusClass(refund.status)"
+                >{{ statusText(refund.status) }}</span>
+              </button>
+            </li>
+          </ul>
+        </section>
+
+        <section class="sv-r-note sv-r-tone-neutral">
+          <h2 class="sv-r-note__title">
+            Servana records intent only
+          </h2>
+          <p class="sv-r-note__body">
+            The refund is paid outside Servana. A distinct Finance member approves and finalizes it, and the amount is capped at the component’s remaining refundable value on the server.
+          </p>
+        </section>
+      </div>
     </SvStateBoundary>
 
     <SvDialog

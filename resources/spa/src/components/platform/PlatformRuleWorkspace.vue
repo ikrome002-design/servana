@@ -9,6 +9,11 @@
  * statement into a labelled guidance rail beside them (the Dashboard reference's narrow context
  * column), sticky on desktop and stacked after the content below it. It adds no copy of its own:
  * the rule text is the page's, passed in the `rule` slot, with its original test hook.
+ *
+ * COR-UI08-UI12-VIS-001: the rail became a layered guidance card (tone wash, icon emblem, the rule
+ * set as the card's body) with an optional `rail` slot beneath it for a page's own context — a
+ * scope legend, an effective-date reminder — so each rule page can carry its own side story.
+ * Only Super Administrator pages render this component.
  */
 import { SvIconInfo } from '@/design-system/icons';
 
@@ -19,30 +24,31 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start">
-    <div class="min-w-0">
+  <div class="sv-r-grid sv-r-split">
+    <div class="sv-r-stack min-w-0">
       <slot />
     </div>
     <aside
-      class="sv-rule-rail rounded-card border border-sv-border p-5 shadow-card lg:sticky lg:top-4"
+      class="sv-r-stack-sm sv-r-sticky"
       :aria-label="ruleTitle"
     >
-      <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-sv-text-muted">
-        <SvIconInfo
-          aria-hidden="true"
-          class="h-4 w-4 shrink-0"
-        />{{ ruleTitle }}
-      </p>
-      <div class="mt-3 text-sm leading-6 text-sv-text-secondary">
-        <slot name="rule" />
+      <div class="sv-r-note sv-r-tone-teal">
+        <div class="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            class="sv-r-icon sv-r-tone-teal"
+          >
+            <SvIconInfo />
+          </span>
+          <p class="sv-r-note__title">
+            {{ ruleTitle }}
+          </p>
+        </div>
+        <div class="sv-r-note__body mt-3">
+          <slot name="rule" />
+        </div>
       </div>
+      <slot name="rail" />
     </aside>
   </div>
 </template>
-
-<style scoped>
-.sv-rule-rail {
-  background:
-    linear-gradient(170deg, color-mix(in srgb, var(--sv-color-brand-secondary) 10%, var(--sv-color-surface-raised)), var(--sv-color-surface-raised) 70%);
-}
-</style>

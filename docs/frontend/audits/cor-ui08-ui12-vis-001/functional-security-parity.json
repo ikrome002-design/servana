@@ -1,0 +1,46 @@
+{
+  "schema": "cor-ui08-ui12-vis-001.functional-security-parity.v1",
+  "base_commit": "562ffbbbbc10351a7185e60fda517d51a260f9db",
+  "scope_statement": "Presentation-only correction. Every changed path is under resources/spa/, tests/e2e/ or docs/frontend/; no route, store contract, API call, permission, migration, policy, finance arithmetic or legal copy changed.",
+  "contract_counts": {
+    "eight_account_total": 160,
+    "implemented": 132,
+    "disabled_by_gate": 28,
+    "planned": 0,
+    "unknown": 0,
+    "corrective_scope": { "entries": 106, "live_redesigned": 82, "gated_inert": 24 },
+    "evidence": ["npm run nav:check → 'UI-07 navigation contract is current: 160 pages, 8 accounts.'", "page-inventory-and-status.json counts", "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts 'derives exactly 160 contract rows: 132 implemented, 28 gated, none planned'"]
+  },
+  "api_and_permissions": {
+    "openapi": { "paths": 307, "operations": 358, "evidence": "node scripts/check-api-contract.mjs → 'api:contract:check OK — 307 paths, 358 operations.'" },
+    "permissions": { "total": 169, "active": 134, "planned": 35, "evidence": "docs/auth/permission-matrix.yaml unchanged (git diff --quiet HEAD -- docs/auth → exit 0)" },
+    "backend_paths_changed": 0,
+    "evidence": "git diff --quiet HEAD -- docs/api docs/auth routes app database config → exit 0; git status shows only resources/spa, tests/e2e, docs/frontend"
+  },
+  "experience_scope": {
+    "rule": "data-sv-experience='refined' on <html> for super_administrator, merchant_administrator, merchant_branch, merchant_human_resource, merchant_finance only; presentation never decides access (ADR-017).",
+    "tests": ["tests/e2e/cor-ui08-ui12-visual-regression.spec.ts › experience scope (8 dashboards)", "UI-16 visual suite: no Front Office / Personnel / Audit / landing / legal / auth frame changed (38 changed frames, all five-account)"]
+  },
+  "forbidden_capabilities_preserved": [
+    { "account": "super_administrator", "never": ["merchant creation", "tenant impersonation", "operational staff/branch workflows", "Wallet payment initiation"], "evidence": "no new control or route; header-only navigation kept (ui-16 shell frame)" },
+    { "account": "merchant_administrator", "never": ["Branch/HR/Front Office/Finance operator actions", "client payment collection"], "evidence": "dashboard owner routes link only to owner pages; approvals reuse existing step-up controls" },
+    { "account": "merchant_branch", "never": ["Finance validation/refund", "invoice/payment creation", "HR compensation"], "evidence": "queue, appointments, invoices, payments, receipts remain read-only (no action controls rendered); cash-up maker only" },
+    { "account": "merchant_human_resource", "never": ["self-escalation", "cross-branch management", "Finance approve/mark-paid"], "evidence": "PayoutRuns chain copy avoids Finance verbs (PayoutRuns.spec forbids 'Verify'); staff access edit stays gated" },
+    { "account": "merchant_finance", "never": ["default recording", "invoice creation", "HR pay-term edits", "money movement", "locked-period bypass"], "evidence": "whole-group decisions, step-up dialogs, masked references and per-currency figures unchanged; no 'Issue receipt'; receipt only after validation" }
+  ],
+  "money_and_truth": [
+    "Every amount is the server's formatted string or formatMoney() of server minor units; no cross-currency sum (liability summary per currency).",
+    "Null is never rendered as zero: export row_count null → 'Not counted yet' (COR-DEF-001); task inbox states item age is not reported instead of inventing one.",
+    "Rule description (describeCommissionRule) converts basis points to a percentage for display only."
+  ],
+  "gated_pages": {
+    "count": 24,
+    "rule": "No route, no component, no request; navigation entry stays disabled with its real gate reason and the literal 'Unavailable'.",
+    "tests": ["tests/e2e/ui-16-responsive-accessibility-theme.spec.ts › UI-16 gates — 28 contract rows stay inert"]
+  },
+  "ui17_infrastructure": {
+    "csp": "node scripts/ui17-edge-security-contract.mjs → OK, CSP pins sha256-iXHip2mgvPlld5zyfxveb26d7cVOx/dPvQ6deyJcvpk=",
+    "bundle_budget": "see test-matrix.json (ui17-bundle-budget)",
+    "fonts": "no new font, no data: font; refined CSS uses existing self-hosted Inter/Manrope"
+  }
+}

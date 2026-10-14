@@ -239,25 +239,52 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
       setError(message ?? 'The action could not be completed.');
   }
 }
+
+/** The payout chain this page sits inside. HR owns the first two steps; Finance owns the rest. */
+const CHAIN = [
+  { label: 'Draft a run', owner: 'hr' },
+  { label: 'Submit to Finance', owner: 'hr' },
+  { label: 'Finance checks the run', owner: 'finance' },
+  { label: 'External payment recorded', owner: 'finance' },
+] as const;
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — payout preparation as a REVIEWED DRAFT WORKFLOW. The chain leads: HR
+    drafts and submits (the two steps this page owns, highlighted), Finance checks the run and records the
+    external payment (shown, never offered). Filters sit on one band; each run is a
+    card with the server-snapshotted gross set large, its staff count, period, currency and state.
+    No verify, approve, mark-paid or money-moving control exists here.
+  -->
   <section
-    class="mx-auto max-w-5xl"
+    class="sv-r-page"
     data-testid="hr-payouts"
   >
     <SvPageHeader
       title="Payout run preparation"
       eyebrow="Compensation"
       description="Prepare and submit server-snapshotted branch payout runs to Finance. Human Resource never verifies, approves, marks paid or moves money."
-    />
+    >
+      <template
+        v-if="!(store.forbidden || !canCreate)"
+        #actions
+      >
+        <SvButton
+          data-testid="open-create"
+          @click="openCreate()"
+        >
+          New payout run
+        </SvButton>
+      </template>
+    </SvPageHeader>
 
     <p
       ref="statusRegion"
       role="status"
       tabindex="-1"
       data-testid="payout-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       {{ statusMessage }}
     </p>
@@ -265,28 +292,40 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
     <div
       v-if="store.forbidden || !canCreate"
       data-testid="payout-forbidden"
-      class="mt-6"
+      class="mt-2"
     >
-      <SvCard padding="md">
+      <div class="sv-r-panel sv-r-panel--dashed">
         <p class="text-sm text-text-muted">
           You do not have access to payout runs.
         </p>
-      </SvCard>
+      </div>
     </div>
 
     <template v-else>
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        <SvButton
-          data-testid="open-create"
-          @click="openCreate()"
+      <ol
+        class="mt-2 grid gap-2 md:grid-cols-4"
+        aria-label="Payout workflow"
+      >
+        <li
+          v-for="(stage, index) in CHAIN"
+          :key="stage.label"
+          class="flex items-center gap-3 rounded-card border p-3"
+          :class="stage.owner === 'hr' ? 'border-sv-brand bg-sv-surface-warm' : 'border-dashed border-sv-border-strong bg-sv-surface-raised'"
         >
-          New payout run
-        </SvButton>
-      </div>
+          <span
+            class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+            :class="stage.owner === 'hr' ? 'bg-sv-brand text-sv-text-on-brand' : 'bg-sv-surface-subtle text-sv-text-muted'"
+          >{{ index + 1 }}</span>
+          <span class="min-w-0 text-sm">
+            <span class="block font-semibold text-sv-text-heading">{{ stage.label }}</span>
+            <span class="block text-xs text-sv-text-muted">{{ stage.owner === 'hr' ? 'You, as maker' : 'Finance, as checker' }}</span>
+          </span>
+        </li>
+      </ol>
 
       <!-- filters -->
       <form
-        class="mt-6 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
+        class="sv-r-panel sv-r-panel--sunken mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4"
         novalidate
         aria-label="Payout run filters"
         @submit.prevent="applyFilters"
@@ -338,30 +377,28 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
         empty-message="No payout runs match these filters yet."
         @retry="store.fetchRuns('hr')"
       >
-        <ul class="mt-2 flex flex-col gap-3">
+        <ul class="grid gap-3 md:grid-cols-2">
           <li
             v-for="run in store.runs"
             :key="run.id"
             data-testid="payout-run-row"
           >
-            <SvCard padding="sm">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-semibold text-text">
-                    {{ money(run.gross_total_minor, run.currency) }}
-                    <span class="ml-1 text-xs font-normal text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
-                  </p>
-                  <p class="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                    <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">{{ payoutRunStatusLabel(run.status) }}</span>
-                    <span
-                      v-if="run.is_high_value"
-                      class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted"
-                    >High value</span>
-                  </p>
-                  <p class="mt-1 text-xs text-text-muted">
-                    {{ run.period_start }} → {{ run.period_end }} · {{ run.currency }}
-                  </p>
-                </div>
+            <article class="sv-r-record flex h-full flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-teal">{{ payoutRunStatusLabel(run.status) }}</span>
+                <span
+                  v-if="run.is_high_value"
+                  class="sv-r-chip sv-r-chip--tone sv-r-tone-sun"
+                >High value</span>
+              </div>
+              <p class="sv-r-figure">
+                {{ money(run.gross_total_minor, run.currency) }}
+                <span class="ml-1 text-sm font-medium text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
+              </p>
+              <p class="text-xs text-text-muted">
+                {{ run.period_start }} → {{ run.period_end }} · {{ run.currency }}
+              </p>
+              <div class="mt-auto border-t border-sv-border pt-3">
                 <SvButton
                   variant="secondary"
                   :data-testid="`run-details-${run.id}`"
@@ -370,7 +407,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
                   Open
                 </SvButton>
               </div>
-            </SvCard>
+            </article>
           </li>
         </ul>
 
@@ -397,7 +434,6 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
         </nav>
       </SvStateBoundary>
     </template>
-
     <!-- create modal -->
     <SvDialog
       :open="createOpen"
@@ -413,7 +449,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
         <p
           v-if="createError"
           data-testid="create-error"
-          class="rounded-control bg-red-50 px-3 py-2 text-sm text-error dark:bg-red-900/20"
+          class="rounded-control bg-sv-error-bg px-3 py-2 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ createError }}
@@ -493,7 +529,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
         <p
           v-if="actionError"
           data-testid="action-error"
-          class="rounded-control bg-red-50 px-3 py-2 text-sm text-error dark:bg-red-900/20"
+          class="rounded-control bg-sv-error-bg px-3 py-2 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}

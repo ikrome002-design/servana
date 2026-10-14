@@ -5,6 +5,10 @@
 @import './styles/generated/tokens.css';
 /* Metric-compatible fallbacks named by the font-family tokens (Phase UI-17, UI17-PERF-002). */
 @import './styles/font-fallbacks.css';
+/* COR-UI08-UI12-VIS-001: the refined experience of the five corrective accounts. Every rule is
+   scoped to :root[data-sv-experience='refined'], which only AppShell sets (design-system/experience). */
+@import './styles/refined-experience.css';
+@import './styles/refined-components.css';
 
 /* REM-DEP-003: v4's supported PostCSS integration loads the existing token consumer.
    Source detection is explicit so another worktree cannot contribute utility candidates. */

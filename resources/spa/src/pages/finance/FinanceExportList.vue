@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { SvIconDocument } from '@/design-system/icons';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
@@ -9,6 +9,7 @@ import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceExportStore, SUPPORTED_EXPORT_TYPES, type FinanceExportView } from '@/stores/financeExportStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { formatDateTime } from '@/utils/dates';
 
 /**
  * Finance exports (Plan §65, §67; Phase 18B). Finance requests a scoped, masked export
@@ -27,6 +28,17 @@ const form = ref({ export_type: 'invoices', reason: '' });
 const canCreate = computed(() => permissions.can('finance_export.create'));
 const canDownload = computed(() => permissions.can('finance_export.download'));
 const typeOptions = SUPPORTED_EXPORT_TYPES.map((t) => ({ value: t.value, label: t.label }));
+/** COR-UI08-UI12-VIS-001: the store's own label for an export type, and a tone per server status. */
+function typeLabel(value: string): string {
+  return SUPPORTED_EXPORT_TYPES.find((type) => type.value === value)?.label ?? value.replaceAll('_', ' ');
+}
+
+function statusClass(status: string): string {
+  if (status === 'ready') return 'border-sv-success-border bg-sv-success-bg text-sv-success-fg';
+  if (status === 'failed' || status === 'revoked') return 'border-sv-error-border bg-sv-error-bg text-sv-error-fg';
+  if (status === 'queued' || status === 'processing') return 'border-sv-info-border bg-sv-info-bg text-sv-info-fg';
+  return 'border-sv-border bg-surface-alt text-text-muted';
+}
 
 const statusOptions = [
   { value: '', label: 'All exports' },
@@ -93,14 +105,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — exports as an AUDITED VAULT. Each export is a file record: the data type,
+    scope, status pill, rows, downloads and expiry, with download and revoke where the server state
+    and capability allow. The rail states the two separate authorizations (request vs download), the
+    step-up and the masking; the offered data types are the store's own list.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Exports"
       eyebrow="Reporting & Audit"
       description="Masked, audited exports of finance records. Requesting an export and downloading it are authorised separately."
     >
       <template #actions>
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-end gap-2">
           <SvSelect
             id="export-status-filter"
             v-model="store.filterStatus"
@@ -122,59 +140,105 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-sv-error-fg"
+      class="mb-4 rounded-field border border-sv-error-border bg-sv-error-bg px-4 py-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}
     </p>
 
     <SvStateBoundary
-      class="mt-6"
       :state="boundaryState"
       error-message="We couldn’t load exports."
       empty-message="No exports match this filter."
     >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="exp in store.exports"
-          :key="exp.id"
-        >
-          <SvCard
-            as="section"
-            padding="md"
-            data-testid="export-row"
+      <div class="sv-r-grid sv-r-split">
+        <ul class="flex min-w-0 flex-col gap-3">
+          <li
+            v-for="exp in store.exports"
+            :key="exp.id"
           >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p class="font-display font-semibold text-heading">
-                  {{ exp.export_type }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  {{ exp.status }} · {{ exp.row_count ?? 0 }} rows · {{ exp.download_count }} downloads
-                </p>
+            <section
+              class="sv-r-record"
+              data-testid="export-row"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex min-w-0 items-start gap-3">
+                  <span
+                    aria-hidden="true"
+                    class="sv-r-icon sv-r-tone-teal"
+                  ><SvIconDocument /></span>
+                  <div class="min-w-0">
+                    <p class="font-display text-base font-bold capitalize text-heading">
+                      {{ typeLabel(exp.export_type) }}
+                    </p>
+                    <p class="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                      <span
+                        class="inline-flex rounded-pill border px-2.5 py-0.5 font-semibold capitalize"
+                        :class="statusClass(exp.status)"
+                      >{{ exp.status }}</span>
+                      <span class="text-text-muted">{{ exp.scope === 'branch' ? exp.branch?.name ?? 'Branch' : 'Merchant-wide' }}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <SvButton
+                    v-if="canDownload && exp.status === 'ready'"
+                    data-testid="export-download"
+                    @click="download(exp)"
+                  >
+                    Download
+                  </SvButton>
+                  <SvButton
+                    v-if="canCreate && exp.status === 'ready'"
+                    variant="secondary"
+                    data-testid="export-revoke"
+                    :loading="busy"
+                    @click="revoke(exp)"
+                  >
+                    Revoke
+                  </SvButton>
+                </div>
               </div>
-              <div class="flex flex-wrap gap-2">
-                <SvButton
-                  v-if="canDownload && exp.status === 'ready'"
-                  data-testid="export-download"
-                  @click="download(exp)"
-                >
-                  Download
-                </SvButton>
-                <SvButton
-                  v-if="canCreate && exp.status === 'ready'"
-                  variant="secondary"
-                  data-testid="export-revoke"
-                  :loading="busy"
-                  @click="revoke(exp)"
-                >
-                  Revoke
-                </SvButton>
-              </div>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
+              <dl class="sv-r-strip mt-4">
+                <div>
+                  <dt>Rows</dt>
+                  <dd>{{ exp.row_count === null ? 'Not counted yet' : `${exp.row_count} rows` }}</dd>
+                </div>
+                <div>
+                  <dt>Downloads</dt>
+                  <dd>{{ exp.download_count }} downloads</dd>
+                </div>
+                <div>
+                  <dt>Expires</dt>
+                  <dd>{{ exp.expires_at ? formatDateTime(exp.expires_at) : 'Not set' }}</dd>
+                </div>
+              </dl>
+            </section>
+          </li>
+        </ul>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Export rules"
+        >
+          <section class="sv-r-note sv-r-tone-teal">
+            <h2 class="sv-r-note__title">
+              Two separate permissions
+            </h2>
+            <p class="sv-r-note__body">
+              Requesting an export and downloading it are authorized separately. A request needs a fresh step-up and a reason.
+            </p>
+          </section>
+          <section class="sv-r-note sv-r-tone-neutral">
+            <h2 class="sv-r-note__title">
+              Masked by default
+            </h2>
+            <p class="sv-r-note__body">
+              Exports are scoped to your access and masked. Download links are short-lived and never stored.
+            </p>
+          </section>
+        </aside>
+      </div>
     </SvStateBoundary>
 
     <SvDialog

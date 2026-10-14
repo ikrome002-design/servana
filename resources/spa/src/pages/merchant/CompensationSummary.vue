@@ -3,7 +3,6 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -141,7 +140,20 @@ async function submitApprove(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — two compositions on one page component.
+
+    SUMMARY: what the business owes leads on the dark feature surface, one figure per currency
+    (never combined); what Finance recorded as paid sits beside it in growth green; the payout
+    pipeline reads as status steps with the server's counts, and the owner's pending high-value
+    approvals link to their queue.
+
+    APPROVALS: a bounded decision queue. The maker/checker chain this approval sits inside is
+    stated first (HR prepares, Finance verifies, the owner approves only high-value runs, Finance
+    records the external payment); each run is an approval card with the amount, period, staff count
+    and the threshold snapshot it crossed, and one guarded action that requires a fresh step-up.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       :title="showApprovals && !showSummary ? 'High-value payout approvals' : 'Compensation summary'"
       eyebrow="Compensation & Approvals"
@@ -165,7 +177,7 @@ async function submitApprove(): Promise<void> {
       role="status"
       tabindex="-1"
       data-testid="summary-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       {{ statusMessage }}
     </p>
@@ -173,194 +185,239 @@ async function submitApprove(): Promise<void> {
     <div
       v-if="summaryStore.forbidden || denied"
       data-testid="summary-forbidden"
-      class="mt-6"
+      class="mt-2"
     >
-      <SvCard padding="md">
+      <div class="sv-r-panel sv-r-panel--dashed">
         <p class="text-sm text-text-muted">
           You do not have access to this compensation surface.
         </p>
-      </SvCard>
+      </div>
     </div>
 
     <template v-else>
       <!-- summary -->
       <SvStateBoundary
         v-if="showSummary"
-        class="mt-6"
         :state="summaryState"
         :error-message="summaryStore.error ?? undefined"
         empty-message="No compensation activity yet."
         @retry="summaryStore.fetchSummary()"
       >
-        <!--
-          UI-16 (UI16-VIS-017): owed and paid are now two toned panels with their figures set large,
-          one row per currency — never a combined cross-currency total — instead of small cards
-          floating in a half-empty grid.
-        -->
-        <div class="grid gap-6 lg:grid-cols-2">
-          <section
-            aria-labelledby="outstanding-heading"
-            class="sv-comp-panel rounded-card border p-5 shadow-card"
-            data-tone="owed"
-          >
-            <h2
-              id="outstanding-heading"
-              class="font-display text-lg font-bold text-sv-text-heading"
+        <div class="sv-r-stack">
+          <div class="sv-r-grid sv-r-split-even">
+            <section
+              aria-labelledby="outstanding-heading"
+              class="sv-r-feature"
             >
-              Outstanding liability by currency
-            </h2>
-            <p class="text-xs text-sv-text-muted">
-              What your business owes staff, as Servana calculated it.
-            </p>
-            <div class="mt-4 grid gap-3">
-              <SvCard
-                v-for="row in summaryStore.summary.outstanding_liability_by_currency"
-                :key="row.currency"
-                padding="sm"
-                data-testid="outstanding-card"
-              >
-                <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                  {{ row.currency }}
-                </p>
-                <p class="sv-numeric mt-1 font-display text-3xl font-extrabold text-sv-text-heading">
-                  {{ money(row.combined_net_liability_minor, row.currency) }}
-                </p>
-                <p class="text-xs text-sv-text-muted">
-                  Combined net owed
-                </p>
-              </SvCard>
-              <p
-                v-if="(summaryStore.summary?.outstanding_liability_by_currency?.length ?? 0) === 0"
-                class="text-sm text-text-muted"
-              >
-                Nothing outstanding.
+              <p class="sv-r-feature__eyebrow">
+                Owed to staff
               </p>
-            </div>
-          </section>
+              <h2
+                id="outstanding-heading"
+                class="sv-r-feature__title"
+              >
+                Outstanding liability by currency
+              </h2>
+              <p class="sv-r-feature__hint mt-1">
+                What your business owes staff, as Servana calculated it.
+              </p>
+              <div class="mt-5 grid gap-3">
+                <div
+                  v-for="row in summaryStore.summary.outstanding_liability_by_currency"
+                  :key="row.currency"
+                  class="sv-r-feature__cell"
+                  data-testid="outstanding-card"
+                >
+                  <p class="sv-r-feature__eyebrow">
+                    {{ row.currency }}
+                  </p>
+                  <p class="sv-r-feature__value sv-r-figure-xl mt-2">
+                    {{ money(row.combined_net_liability_minor, row.currency) }}
+                  </p>
+                  <p class="sv-r-feature__hint mt-1">
+                    Combined net owed
+                  </p>
+                </div>
+                <p
+                  v-if="(summaryStore.summary?.outstanding_liability_by_currency?.length ?? 0) === 0"
+                  class="sv-r-feature__hint"
+                >
+                  Nothing outstanding.
+                </p>
+              </div>
+            </section>
+
+            <section
+              aria-labelledby="paid-heading"
+              class="sv-r-panel sv-r-panel--tonal sv-r-tone-green"
+            >
+              <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green">
+                Recorded by Finance
+              </p>
+              <h2
+                id="paid-heading"
+                class="sv-r-title mt-1"
+              >
+                Paid by currency
+              </h2>
+              <p class="sv-r-panel__desc">
+                Payout runs Finance recorded as paid outside Servana.
+              </p>
+              <div class="mt-5 grid gap-3">
+                <div
+                  v-for="row in summaryStore.summary.paid_by_currency"
+                  :key="row.currency"
+                  class="sv-r-record"
+                  data-testid="paid-card"
+                >
+                  <p class="sv-r-eyebrow">
+                    {{ row.currency }}
+                  </p>
+                  <p class="sv-r-figure mt-2">
+                    {{ money(row.paid_gross_minor, row.currency) }}
+                  </p>
+                  <p class="sv-r-muted mt-1">
+                    {{ row.run_count }} paid run(s)
+                  </p>
+                </div>
+                <p
+                  v-if="(summaryStore.summary?.paid_by_currency?.length ?? 0) === 0"
+                  class="sv-r-lede"
+                >
+                  Nothing paid yet.
+                </p>
+              </div>
+            </section>
+          </div>
 
           <section
-            aria-labelledby="paid-heading"
-            class="sv-comp-panel rounded-card border p-5 shadow-card"
-            data-tone="paid"
+            aria-labelledby="status-heading"
+            class="sv-r-panel"
           >
-            <h2
-              id="paid-heading"
-              class="font-display text-lg font-bold text-sv-text-heading"
-            >
-              Paid by currency
-            </h2>
-            <p class="text-xs text-sv-text-muted">
-              Payout runs Finance recorded as paid outside Servana.
-            </p>
-            <div class="mt-4 grid gap-3">
-              <SvCard
-                v-for="row in summaryStore.summary.paid_by_currency"
-                :key="row.currency"
-                padding="sm"
-                data-testid="paid-card"
-              >
-                <p class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                  {{ row.currency }}
+            <div class="sv-r-panel__head">
+              <div>
+                <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+                  Pipeline
                 </p>
-                <p class="sv-numeric mt-1 font-display text-3xl font-extrabold text-sv-text-heading">
-                  {{ money(row.paid_gross_minor, row.currency) }}
-                </p>
-                <p class="text-xs text-text-muted">
-                  {{ row.run_count }} paid run(s)
-                </p>
-              </SvCard>
-              <p
-                v-if="(summaryStore.summary?.paid_by_currency?.length ?? 0) === 0"
-                class="text-sm text-text-muted"
-              >
-                Nothing paid yet.
+                <h2
+                  id="status-heading"
+                  class="sv-r-title mt-1"
+                >
+                  Payout runs by status
+                </h2>
+              </div>
+              <p class="sv-r-chip sv-r-chip--tone sv-r-tone-sun">
+                High-value approvals awaiting you:
+                <span
+                  class="font-extrabold text-text"
+                  data-testid="pending-high-value"
+                >{{ summaryStore.summary.pending_high_value_approvals }}</span>
               </p>
             </div>
+            <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              <li
+                v-for="[status, count] in statusRows"
+                :key="status"
+                data-testid="status-count"
+                class="sv-r-queue__row"
+              >
+                <span class="sv-r-queue__count sv-r-tone-warm">{{ count }}</span>
+                <span class="sv-r-queue__label">{{ payoutRunStatusLabel(status) }}<span class="sr-only">: {{ count }}</span></span>
+              </li>
+            </ul>
           </section>
         </div>
-
-        <section
-          aria-labelledby="status-heading"
-          class="mt-6 rounded-card border border-sv-border bg-sv-surface-raised p-5 shadow-card"
-        >
-          <h2
-            id="status-heading"
-            class="font-display text-lg font-bold text-sv-text-heading"
-          >
-            Payout runs by status
-          </h2>
-          <ul class="mt-2 flex flex-wrap gap-2">
-            <li
-              v-for="[status, count] in statusRows"
-              :key="status"
-              data-testid="status-count"
-              class="rounded-pill border border-sv-border bg-sv-surface-subtle px-3 py-1 text-sm text-sv-text"
-            >
-              {{ payoutRunStatusLabel(status) }}: <span class="font-semibold">{{ count }}</span>
-            </li>
-          </ul>
-          <p class="mt-2 text-sm text-text-muted">
-            High-value approvals awaiting you:
-            <span
-              class="font-semibold text-text"
-              data-testid="pending-high-value"
-            >{{ summaryStore.summary.pending_high_value_approvals }}</span>
-          </p>
-        </section>
       </SvStateBoundary>
 
       <!-- high-value approval queue -->
       <section
         v-if="showApprovals"
         aria-labelledby="queue-heading"
-        class="mt-8"
+        :class="showSummary ? 'mt-6' : ''"
+        class="sv-r-grid sv-r-split"
       >
-        <h2
-          id="queue-heading"
-          class="text-sm font-semibold text-text"
-        >
-          High-value payout approvals
-        </h2>
-        <SvStateBoundary
-          class="mt-2"
-          :state="queueState"
-          :error-message="payoutStore.listError ?? undefined"
-          empty-message="No payout runs need your approval right now."
-          @retry="payoutStore.fetchRuns('merchant')"
-        >
-          <ul class="mt-2 flex flex-col gap-3">
-            <li
-              v-for="run in payoutStore.runs"
-              :key="run.id"
-              data-testid="high-value-row"
-            >
-              <SvCard padding="sm">
-                <div class="flex flex-wrap items-start justify-between gap-3">
-                  <div class="min-w-0">
-                    <p class="font-semibold text-text">
-                      {{ money(run.gross_total_minor, run.currency) }}
-                      <span class="ml-1 text-xs font-normal text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
-                    </p>
-                    <p class="mt-1 text-xs text-text-muted">
-                      {{ run.period_start }} → {{ run.period_end }} · {{ run.currency }} ·
-                      threshold {{ run.high_value_threshold_snapshot_minor === null ? '—' : money(run.high_value_threshold_snapshot_minor, run.currency) }}
-                    </p>
+        <div class="min-w-0">
+          <h2
+            id="queue-heading"
+            class="sv-r-title mb-3"
+          >
+            High-value payout approvals
+          </h2>
+          <SvStateBoundary
+            :state="queueState"
+            :error-message="payoutStore.listError ?? undefined"
+            empty-message="No payout runs need your approval right now."
+            @retry="payoutStore.fetchRuns('merchant')"
+          >
+            <ul class="flex flex-col gap-3">
+              <li
+                v-for="run in payoutStore.runs"
+                :key="run.id"
+                data-testid="high-value-row"
+              >
+                <article class="sv-r-record sv-r-record--spine sv-r-tone-sun pl-6">
+                  <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div class="min-w-0">
+                      <span class="sv-r-chip sv-r-chip--tone sv-r-tone-sun">Above the high-value threshold</span>
+                      <p class="sv-r-figure mt-3">
+                        {{ money(run.gross_total_minor, run.currency) }}
+                        <span class="ml-1 text-sm font-medium text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
+                      </p>
+                      <dl class="sv-r-strip mt-4">
+                        <div>
+                          <dt>Period</dt>
+                          <dd>{{ run.period_start }} → {{ run.period_end }}</dd>
+                        </div>
+                        <div>
+                          <dt>Currency</dt>
+                          <dd>{{ run.currency }}</dd>
+                        </div>
+                        <div>
+                          <dt>Threshold</dt>
+                          <dd>{{ run.high_value_threshold_snapshot_minor === null ? '—' : money(run.high_value_threshold_snapshot_minor, run.currency) }}</dd>
+                        </div>
+                      </dl>
+                    </div>
+                    <SvButton
+                      v-if="canApproveHighValue"
+                      :data-testid="`approve-high-value-${run.id}`"
+                      @click="openApprove(run)"
+                    >
+                      Approve
+                    </SvButton>
                   </div>
-                  <SvButton
-                    v-if="canApproveHighValue"
-                    :data-testid="`approve-high-value-${run.id}`"
-                    @click="openApprove(run)"
-                  >
-                    Approve
-                  </SvButton>
-                </div>
-              </SvCard>
-            </li>
-          </ul>
-        </SvStateBoundary>
+                </article>
+              </li>
+            </ul>
+          </SvStateBoundary>
+        </div>
+
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Approval boundaries"
+        >
+          <div class="sv-r-note sv-r-tone-warm">
+            <p class="sv-r-note__title">
+              Maker and checker chain
+            </p>
+            <ol class="sv-r-note__body mt-2 list-decimal space-y-1 pl-5">
+              <li>Human Resource prepares and submits the run.</li>
+              <li>Finance verifies it.</li>
+              <li>You approve only runs above the high-value threshold.</li>
+              <li>Finance records the external payment. Servana moves no money.</li>
+            </ol>
+          </div>
+          <div class="sv-r-note sv-r-tone-alert">
+            <p class="sv-r-note__title">
+              Fresh step-up
+            </p>
+            <p class="sv-r-note__body">
+              Each approval asks for a fresh identity check before the server accepts it.
+            </p>
+          </div>
+        </aside>
       </section>
     </template>
-
     <!-- approve modal -->
     <SvDialog
       :open="approveOpen"
@@ -399,7 +456,7 @@ async function submitApprove(): Promise<void> {
         <p
           v-if="approveError"
           data-testid="approve-error"
-          class="rounded-control bg-red-50 px-3 py-2 text-sm text-error dark:bg-red-900/20"
+          class="rounded-control bg-sv-error-bg px-3 py-2 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ approveError }}
@@ -431,12 +488,3 @@ async function submitApprove(): Promise<void> {
     </SvDialog>
   </section>
 </template>
-
-<style scoped>
-.sv-comp-panel {
-  --sv-comp: var(--sv-color-brand-primary);
-  border-color: color-mix(in srgb, var(--sv-comp) 30%, var(--sv-color-border-default));
-  background: linear-gradient(165deg, color-mix(in srgb, var(--sv-comp) 10%, var(--sv-color-surface-raised)), var(--sv-color-surface-raised) 65%);
-}
-.sv-comp-panel[data-tone='paid'] { --sv-comp: var(--sv-color-growth); }
-</style>

@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -73,12 +73,32 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-6xl flex-col gap-6">
+  <!--
+    COR-UI08-UI12-VIS-001 — a polished billing overview (the Billings reference, in Servana terms).
+    "Subscription overview" pairs the CURRENT PLAN (its pill, price and both state chips, with the
+    plan entry point) with the two BILLING PERIODS drawn as dated bands; beneath, the scheduled
+    change and the latest invoice sit side by side. Every value is the server's; no state is
+    inferred and no payment control exists here.
+  -->
+  <div class="sv-r-page sv-r-stack">
     <SvPageHeader
+      class="!mb-0"
       title="Subscription and billing"
       eyebrow="Account plan"
       description="See the plan that powers your merchant account, its billing position and the next action that needs owner attention."
-    />
+    >
+      <template
+        v-if="canView && sub"
+        #actions
+      >
+        <SvButton
+          variant="secondary"
+          @click="store.fetchSubscription()"
+        >
+          Refresh subscription
+        </SvButton>
+      </template>
+    </SvPageHeader>
 
     <p
       v-if="!canView"
@@ -97,12 +117,12 @@ onMounted(async () => {
     >
       <div
         v-if="sub"
-        class="flex flex-col gap-6"
+        class="sv-r-stack"
       >
         <!-- Billing read-only explanation -->
         <div
           v-if="billingReadOnly"
-          class="rounded-control border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-text"
+          class="sv-r-record sv-r-record--spine sv-r-tone-sun pl-6 text-sm text-text"
           role="status"
         >
           <p class="font-semibold">
@@ -116,68 +136,111 @@ onMounted(async () => {
           </p>
         </div>
 
-        <!-- Status summary -->
-        <SvCard
-          padding="none"
-          class="overflow-hidden border-t-4 border-t-sv-brand"
-        >
-          <div class="grid gap-5 bg-sv-surface-warm p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-6">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Current plan
-              </p>
-              <h2 class="mt-1 font-display text-2xl font-bold text-heading">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Subscription overview
+        </p>
+        <div class="sv-r-grid sv-r-split-even -mt-3">
+          <!-- Current plan -->
+          <section
+            class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm flex flex-col"
+            aria-labelledby="sub-current-plan"
+          >
+            <p class="sv-r-kpi__label">
+              Current plan
+            </p>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <h2
+                id="sub-current-plan"
+                class="sv-r-chip sv-r-chip--tone sv-r-tone-green !text-sm"
+              >
                 {{ sub.plan?.name ?? 'Not available' }}
               </h2>
-              <p class="mt-1 text-base text-text">
-                {{ formatMoney(sub.price.amount_minor, sub.price.currency) }}
-                <span class="text-text-muted">/ {{ sub.billing_interval }}</span>
-              </p>
             </div>
-            <div class="flex flex-wrap gap-2 md:justify-end">
-              <span
-                class="rounded-full border border-sv-success-border bg-sv-success-bg px-3 py-1 text-sm font-semibold text-sv-success-fg"
-              >
+            <p class="sv-r-figure mt-3">
+              {{ formatMoney(sub.price.amount_minor, sub.price.currency) }}
+              <span class="text-base font-medium text-text-muted">/ {{ sub.billing_interval }}</span>
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-green">
                 <span data-testid="subscription-status">{{ label(SUBSCRIPTION_STATUS_LABELS, sub.status) }}</span>
                 subscription
               </span>
-              <span
-                class="rounded-full border border-sv-info-border bg-sv-info-bg px-3 py-1 text-sm font-semibold text-sv-info-fg"
-              >
+              <span class="sv-r-chip sv-r-chip--tone sv-r-chip--dot sv-r-tone-teal">
                 <span data-testid="billing-status">{{ label(BILLING_STATUS_LABELS, sub.billing_status) }}</span>
                 billing
               </span>
             </div>
-          </div>
-          <dl class="grid gap-5 p-5 md:grid-cols-2 md:p-6">
-            <div class="rounded-control bg-surface-alt p-4">
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Trial period
-              </dt>
-              <dd class="mt-2 text-base font-medium text-text">
-                {{ dateOnly(sub.trial_started_at) }} → {{ dateOnly(sub.trial_ends_at) }}
-              </dd>
+            <div
+              v-if="can('merchant.subscription.plan_change')"
+              class="mt-auto pt-5"
+            >
+              <RouterLink
+                :to="{ name: 'merchant.subscription-plan' }"
+                class="sv-r-action sv-r-action--dark sv-focus-ring"
+              >
+                Manage plan
+              </RouterLink>
             </div>
-            <div class="rounded-control bg-surface-alt p-4">
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Current billing period
-              </dt>
-              <dd class="mt-2 text-base font-medium text-text">
-                {{ sub.current_period_start }} → {{ sub.current_period_end }}
-              </dd>
-            </div>
-          </dl>
-        </SvCard>
+          </section>
 
-        <div class="grid gap-6 lg:grid-cols-2">
-          <!-- Scheduled plan change -->
-          <SvCard class="h-full">
-            <h2 class="font-display text-lg font-bold text-heading">
-              Scheduled plan change
+          <!-- Billing periods -->
+          <section
+            class="sv-r-panel"
+            aria-labelledby="sub-periods"
+          >
+            <h2
+              id="sub-periods"
+              class="sv-r-kpi__label"
+            >
+              Billing periods
             </h2>
+            <dl class="mt-4 flex flex-col gap-5">
+              <div>
+                <dt class="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  Trial period
+                </dt>
+                <dd class="mt-2">
+                  <span
+                    aria-hidden="true"
+                    class="relative mx-1.5 block h-0.5 bg-sv-border-strong"
+                  ><span class="absolute -left-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-accent" /><span class="absolute -right-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-accent" /></span>
+                  <span class="mt-2 flex justify-between text-sm font-medium text-text">
+                    <span>{{ dateOnly(sub.trial_started_at) }}</span>
+                    <span class="sr-only"> → </span>
+                    <span>{{ dateOnly(sub.trial_ends_at) }}</span>
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  Current billing period
+                </dt>
+                <dd class="mt-2">
+                  <span
+                    aria-hidden="true"
+                    class="relative mx-1.5 block h-0.5 bg-sv-border-strong"
+                  ><span class="absolute -left-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-brand-secondary" /><span class="absolute -right-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-brand-secondary" /></span>
+                  <span class="mt-2 flex justify-between text-sm font-medium text-text">
+                    <span>{{ sub.current_period_start }}</span>
+                    <span class="sr-only"> → </span>
+                    <span>{{ sub.current_period_end }}</span>
+                  </span>
+                </dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+
+        <div class="sv-r-grid sv-r-split-even">
+          <!-- Scheduled plan change -->
+          <SvPanel
+            eyebrow="Next cycle"
+            title="Scheduled plan change"
+            tone="sun"
+          >
             <p
               v-if="!sub.scheduled_plan_change"
-              class="mt-2 text-sm text-text-muted"
+              class="sv-r-lede"
               data-testid="no-scheduled-change"
             >
               No plan change is scheduled. Changes take effect at the next billing cycle with no
@@ -185,49 +248,41 @@ onMounted(async () => {
             </p>
             <p
               v-else
-              class="mt-2 text-sm text-text"
+              class="sv-r-lede"
               data-testid="scheduled-change-summary"
             >
               Changing to <strong>{{ sub.scheduled_plan_change?.target_plan?.name ?? 'Not available' }}</strong>
               ({{ formatMoney(sub.scheduled_plan_change.target_price.amount_minor, sub.scheduled_plan_change.target_price.currency) }})
               on <strong>{{ sub.scheduled_plan_change.effective_at }}</strong>.
             </p>
-            <div
-              v-if="can('merchant.subscription.plan_change')"
-              class="mt-4"
-            >
-              <RouterLink
-                :to="{ name: 'merchant.subscription-plan' }"
-                class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                Manage plan
-              </RouterLink>
-            </div>
-          </SvCard>
+          </SvPanel>
 
           <!-- Latest invoice -->
-          <SvCard class="h-full">
-            <div class="flex items-center justify-between gap-4">
-              <h2 class="font-display text-lg font-bold text-heading">
-                Latest invoice
-              </h2>
+          <SvPanel
+            eyebrow="Billing history"
+            title="Latest invoice"
+            tone="teal"
+          >
+            <template
+              v-if="can('merchant.subscription.invoice.view')"
+              #actions
+            >
               <RouterLink
-                v-if="can('merchant.subscription.invoice.view')"
                 :to="{ name: 'merchant.subscription-invoices' }"
-                class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                class="sv-r-link sv-focus-ring rounded-control"
               >
                 All invoices
               </RouterLink>
-            </div>
+            </template>
             <p
               v-if="latestInvoice === null"
-              class="mt-2 text-sm text-text-muted"
+              class="sv-r-lede"
             >
               No invoices have been issued yet.
             </p>
             <div
               v-else
-              class="mt-2 text-sm text-text"
+              class="text-sm text-text"
               data-testid="latest-invoice"
             >
               <p>
@@ -242,16 +297,7 @@ onMounted(async () => {
                 Payment reference pending — see your billing dashboard
               </p>
             </div>
-          </SvCard>
-        </div>
-
-        <div class="flex justify-end">
-          <SvButton
-            variant="secondary"
-            @click="store.fetchSubscription()"
-          >
-            Refresh subscription
-          </SvButton>
+          </SvPanel>
         </div>
       </div>
     </SvStateBoundary>

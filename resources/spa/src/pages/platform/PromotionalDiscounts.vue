@@ -27,7 +27,7 @@ const { can } = useCan();
 
 <template>
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-promotions-screen"
   >
     <SvPageHeader

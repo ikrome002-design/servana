@@ -6,6 +6,43 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign of UI-08 … UI-12 (`design/ui08-ui12-reference-grade-redesign`) — local_complete; uncommitted handoff; product-owner visual acceptance pending
+
+Base `562ffbbb…` (UI-17 PR #68 merge). The product owner rejected the look of the five oldest
+authenticated experiences; all **82 live pages** (17 / 15 / 15 / 15 / 20) are recomposed and the
+**24 gated pages stay inert**. Presentation only: no route, API (307 / 358), permission
+(169 / 134 / 35), store contract, finance arithmetic, migration or legal copy changed; contract
+160 = 132 + 28 unchanged. Front Office, Personnel, Audit, public, legal, FAQ and auth are unchanged.
+
+- **Scoped experience**: `design-system/experience.ts` + `AppShell` mark `<html data-sv-experience="refined">`
+  for the five accounts only; all refinements key off it (`styles/refined-experience.css`), so the other
+  three accounts render byte-identically (scope guard in the new visual spec).
+- **Tokens**: warm `linen` canvas and `night` dark canvas, refined semantic colours, panel/field/shell
+  radii, panel/float shadows; ten new generator-checked contrast requirements.
+- **Shell**: floating sidebar panel with a filled active pill; Super Administrator Deep Earth header
+  capsule with pill groups; editorial page header; translucent footer; refined states, badges, tables,
+  buttons, dialogs (blurred scrim, layered sheet) and toasts; reduced-motion parity.
+- **Composition kit**: `sv-r-*` layout/record/ledger/timeline/feature classes in `@layer components` and
+  `SvPanel`, `SvKpiCard`, `SvFeaturePanel`.
+- **Pages**: every live page recomposed around its contract (command centres, rule workspaces, ledgers,
+  lifecycle boards, verdict desk, case files, statements, contract clauses, timelines, identity cards,
+  stepped forms) — see `docs/frontend/audits/cor-ui08-ui12-vis-001/page-redesign-acceptance.json`.
+- **Fixes found in review**: null export row count no longer shown as `0` (COR-DEF-001); Nairobi-formatted
+  dates on liability adjustments and preferred-fee rules (COR-DEF-002); commission rule described in
+  words via a shared `describeCommissionRule` (COR-DEF-003); cash-up variance wrap (COR-DEF-004).
+- **Fixes found by the full suite** (COR-DEF-008…014): no checker vocabulary for a viewer on payment
+  detail; original "Prices & entitlements" selector label kept; transform-only motion (no mid-fade or
+  theme-transition contrast dips); calendar tiles keep table semantics and every `dl` holds only
+  `dt`/`dd`; Branch financial records stay `<article>`; multi-column compositions and the account grid
+  answer to a `sv-main` content container (1025px with sidebar, 200% zoom) and the desktop top bar may
+  wrap; compact padding on the platform access roster.
+- **Tests**: new `tests/e2e/cor-ui08-ui12-visual-regression.spec.ts` (13 archetypes, 6 dense dark/mobile
+  frames, decision-dialog overlay, eight-account experience scope, negative control) with win32 + linux
+  baselines; populated synthetic overlay `tests/e2e/support/corPopulated.ts`; evidence writer
+  `tests/e2e/cor-ui08-ui12-capture.spec.ts`; 38 UI-16 frames of the five accounts re-baselined per
+  platform (no other account's frame moved); UI-16 negative control repointed to `.sv-r-feature`
+  (COR-DEF-005).
+
 ### Phase UI-17 — Performance, security, production deployment and closeout (`phase-ui-17-performance-security-production-closeout`) — local_complete; GitHub code release pending; production blocked_external
 
 Base `1e8bd5f7…` (UI-16 PR #67). **Nothing is deployed**: `servana.ke` is a lame delegation (0 of 8 hosts

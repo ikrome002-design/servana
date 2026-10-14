@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -187,7 +186,13 @@ async function submitRespond(): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — earnings queries as a RESPONSE DESK. Each query reads as the staff
+    member's own question: its type and subject above, the message in a quoted bubble, and the
+    status and routing as chips, with one action to respond. The rail keeps the additive-correction
+    rule visible; the respond dialog is unchanged.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Earnings queries"
       eyebrow="Compensation Finance"
@@ -199,7 +204,8 @@ async function submitRespond(): Promise<void> {
       role="status"
       tabindex="-1"
       data-testid="query-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      :class="statusMessage ? 'mb-4' : ''"
     >
       {{ statusMessage }}
     </p>
@@ -207,63 +213,45 @@ async function submitRespond(): Promise<void> {
     <div
       v-if="store.forbidden || !canRespond"
       data-testid="query-forbidden"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
     >
-      <SvCard padding="md">
-        <p class="text-sm text-text-muted">
-          You do not have access to earnings queries.
-        </p>
-      </SvCard>
+      <p class="text-sm text-text-muted">
+        You do not have access to earnings queries.
+      </p>
     </div>
 
-    <template v-else>
-      <form
-        class="mt-6 flex flex-wrap items-end gap-3"
-        novalidate
-        aria-label="Earnings query filters"
-        @submit.prevent="applyStatus"
-      >
-        <SvSelect
-          id="filter-status"
-          label="Status"
-          :model-value="store.statusFilter"
-          :options="EARNINGS_QUERY_STATUS_FILTER"
-          @update:model-value="store.statusFilter = $event"
-        />
-        <SvButton
-          type="submit"
-          data-testid="apply-filters"
+    <div
+      v-else
+      class="sv-r-grid sv-r-split"
+    >
+      <div class="min-w-0">
+        <SvStateBoundary
+          :state="listState"
+          :error-message="store.listError ?? undefined"
+          empty-message="No earnings queries match this filter."
+          @retry="store.fetchQueries('finance')"
         >
-          Apply
-        </SvButton>
-      </form>
-
-      <SvStateBoundary
-        class="mt-6"
-        :state="listState"
-        :error-message="store.listError ?? undefined"
-        empty-message="No earnings queries match this filter."
-        @retry="store.fetchQueries('finance')"
-      >
-        <ul class="mt-2 flex flex-col gap-3">
-          <li
-            v-for="query in store.queries"
-            :key="query.id"
-            data-testid="query-row"
-          >
-            <SvCard padding="sm">
+          <ul class="flex flex-col gap-3">
+            <li
+              v-for="query in store.queries"
+              :key="query.id"
+              data-testid="query-row"
+              class="sv-r-record"
+            >
               <div class="flex flex-wrap items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-semibold text-text">
+                <div class="min-w-0 flex-1">
+                  <p class="sv-r-eyebrow">
+                    {{ earningsQuerySubjectLabel(query.subject_type) }}
+                  </p>
+                  <p class="mt-1 font-display text-base font-bold text-heading">
                     {{ earningsQueryTypeLabel(query.query_type) }}
                   </p>
-                  <p class="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                    <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">{{ earningsQueryStatusLabel(query.status) }}</span>
-                    <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">{{ earningsQuerySubjectLabel(query.subject_type) }}</span>
-                    <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">Routed to {{ assignedRoleLabel(query.assigned_role) }}</span>
-                  </p>
-                  <p class="mt-1 break-words text-sm text-text">
+                  <blockquote class="mt-3 break-words rounded-field rounded-tl-none border border-sv-border bg-surface-alt px-4 py-3 text-sm text-text">
                     {{ query.body }}
+                  </blockquote>
+                  <p class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                    <span class="sv-r-chip">{{ earningsQueryStatusLabel(query.status) }}</span>
+                    <span class="sv-r-chip">Routed to {{ assignedRoleLabel(query.assigned_role) }}</span>
                   </p>
                 </div>
                 <SvButton
@@ -274,33 +262,67 @@ async function submitRespond(): Promise<void> {
                   Open
                 </SvButton>
               </div>
-            </SvCard>
-          </li>
-        </ul>
+            </li>
+          </ul>
 
-        <nav
-          v-if="store.meta.last_page > 1"
-          class="mt-4 flex items-center justify-between"
-          aria-label="Earnings queries pagination"
+          <nav
+            v-if="store.meta.last_page > 1"
+            class="mt-4 flex items-center justify-between"
+            aria-label="Earnings queries pagination"
+          >
+            <SvButton
+              variant="secondary"
+              :disabled="store.meta.current_page <= 1"
+              @click="goPage(store.meta.current_page - 1)"
+            >
+              Previous
+            </SvButton>
+            <span class="text-sm text-text-muted">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
+            <SvButton
+              variant="secondary"
+              :disabled="store.meta.current_page >= store.meta.last_page"
+              @click="goPage(store.meta.current_page + 1)"
+            >
+              Next
+            </SvButton>
+          </nav>
+        </SvStateBoundary>
+      </div>
+
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Query filters and rules"
+      >
+        <form
+          class="sv-r-panel flex flex-col gap-3"
+          novalidate
+          aria-label="Earnings query filters"
+          @submit.prevent="applyStatus"
         >
+          <SvSelect
+            id="filter-status"
+            label="Status"
+            :model-value="store.statusFilter"
+            :options="EARNINGS_QUERY_STATUS_FILTER"
+            @update:model-value="store.statusFilter = $event"
+          />
           <SvButton
-            variant="secondary"
-            :disabled="store.meta.current_page <= 1"
-            @click="goPage(store.meta.current_page - 1)"
+            type="submit"
+            data-testid="apply-filters"
           >
-            Previous
+            Apply
           </SvButton>
-          <span class="text-sm text-text-muted">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
-          <SvButton
-            variant="secondary"
-            :disabled="store.meta.current_page >= store.meta.last_page"
-            @click="goPage(store.meta.current_page + 1)"
-          >
-            Next
-          </SvButton>
-        </nav>
-      </SvStateBoundary>
-    </template>
+        </form>
+        <section class="sv-r-note sv-r-tone-teal">
+          <h2 class="sv-r-note__title">
+            Corrections are additive
+          </h2>
+          <p class="sv-r-note__body">
+            Resolving a query can record a separate signed adjustment. The original earnings entry is never rewritten.
+          </p>
+        </section>
+      </aside>
+    </div>
 
     <!-- detail + respond modal -->
     <SvDialog

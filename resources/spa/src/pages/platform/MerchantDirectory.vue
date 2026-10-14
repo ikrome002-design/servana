@@ -28,6 +28,7 @@
  */
 import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvFilterBar from '@/components/ui/SvFilterBar.vue';
@@ -39,6 +40,7 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useCan } from '@/composables/useCan';
+import { SvIconLocked, SvIconWarning } from '@/design-system/icons';
 import { usePlatformMerchantStore, type PlatformMerchant } from '@/stores/platformMerchantStore';
 import { merchantDetailLocation } from '@/components/platform/merchants/merchantRoutes';
 import {
@@ -108,8 +110,13 @@ async function goToPage(page: number): Promise<void> {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: a governance DIRECTORY. An attention callout (only when the server's
+    statuses on this page warrant it) leads; the directory ledger with its filter sits on one
+    panel; the rail carries the directory's boundary and the fields it truthfully cannot show.
+  -->
   <div
-    class="mx-auto w-full max-w-5xl"
+    class="sv-r-page"
     data-testid="platform-merchant-directory-screen"
   >
     <SvPageHeader
@@ -120,150 +127,194 @@ async function goToPage(page: number): Promise<void> {
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-else>
-      <p
-        v-if="attentionCount > 0"
-        class="mb-4 text-sm text-sv-text-muted"
-        data-testid="directory-attention-summary"
-      >
-        {{ attentionCount }} of the merchants on this page are operationally suspended, overdue or
-        billing-suspended. Filter by operational status to review them.
-      </p>
-
-      <SvFilterBar
-        label="Directory filters"
-        :active-count="activeFilterCount"
-        @clear="clearFilters"
-      >
-        <SvSelect
-          id="directory-status-filter"
-          label="Operational status"
-          :model-value="store.filterStatus"
-          :options="OPERATIONAL_STATUS_FILTER_OPTIONS"
-          @update:model-value="applyStatus($event)"
-        />
-      </SvFilterBar>
-
-      <!-- Desktop and tablet: a semantic table. -->
-      <div class="hidden md:block">
-        <SvDataTable
-          :columns="columns"
-          :rows="store.merchants"
-          :row-key="(row) => row.id"
-          caption="Platform merchant directory"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No merchants match this view. Merchants appear here after they self-register."
-          @retry="load"
+    <div
+      v-else
+      class="sv-r-grid sv-r-split"
+    >
+      <div class="sv-r-stack min-w-0">
+        <div
+          v-if="attentionCount > 0"
+          class="sv-r-record sv-r-record--spine sv-r-tone-alert flex items-start gap-4 pl-6"
         >
-          <template #cell:name="{ row }">
-            <RouterLink
-              :to="merchantDetailLocation(row.id)"
-              class="font-medium text-sv-text underline underline-offset-2"
-              :data-testid="`merchant-directory-link-${row.id}`"
+          <span
+            aria-hidden="true"
+            class="sv-r-icon sv-r-tone-alert"
+          >
+            <SvIconWarning />
+          </span>
+          <p
+            class="sv-r-lede"
+            data-testid="directory-attention-summary"
+          >
+            {{ attentionCount }} of the merchants on this page are operationally suspended, overdue or
+            billing-suspended. Filter by operational status to review them.
+          </p>
+        </div>
+
+        <SvPanel
+          eyebrow="Platform merchants"
+          title="Directory"
+          tone="warm"
+        >
+          <template #actions>
+            <span
+              v-if="meta !== null"
+              class="sv-r-chip sv-r-chip--tone sv-r-tone-warm"
+              data-testid="directory-total"
+            >{{ meta.total }} merchants</span>
+          </template>
+          <SvFilterBar
+            label="Directory filters"
+            :active-count="activeFilterCount"
+            @clear="clearFilters"
+          >
+            <SvSelect
+              id="directory-status-filter"
+              label="Operational status"
+              :model-value="store.filterStatus"
+              :options="OPERATIONAL_STATUS_FILTER_OPTIONS"
+              @update:model-value="applyStatus($event)"
+            />
+          </SvFilterBar>
+
+          <!-- Desktop and tablet: a semantic table. -->
+          <div class="hidden md:block">
+            <SvDataTable
+              :columns="columns"
+              :rows="store.merchants"
+              :row-key="(row) => row.id"
+              caption="Platform merchant directory"
+              :state="dataState"
+              :error-message="store.error ?? undefined"
+              empty-message="No merchants match this view. Merchants appear here after they self-register."
+              @retry="load"
             >
-              {{ row.name }}
-            </RouterLink>
-          </template>
-          <template #cell:operational_status="{ row }">
-            <SvStatusBadge
-              :label="operationalLabel(row.operational_status)"
-              :tone="operationalTone(row.operational_status)"
-              size="sm"
-              sr-prefix="Operational status:"
-            />
-          </template>
-          <template #cell:billing_status="{ row }">
-            <SvStatusBadge
-              :label="billingLabel(row.billing_status)"
-              :tone="billingTone(row.billing_status)"
-              size="sm"
-              sr-prefix="Billing status:"
-            />
-          </template>
-        </SvDataTable>
+              <template #cell:name="{ row }">
+                <RouterLink
+                  :to="merchantDetailLocation(row.id)"
+                  class="font-medium text-sv-text underline underline-offset-2"
+                  :data-testid="`merchant-directory-link-${row.id}`"
+                >
+                  {{ row.name }}
+                </RouterLink>
+              </template>
+              <template #cell:operational_status="{ row }">
+                <SvStatusBadge
+                  :label="operationalLabel(row.operational_status)"
+                  :tone="operationalTone(row.operational_status)"
+                  size="sm"
+                  sr-prefix="Operational status:"
+                />
+              </template>
+              <template #cell:billing_status="{ row }">
+                <SvStatusBadge
+                  :label="billingLabel(row.billing_status)"
+                  :tone="billingTone(row.billing_status)"
+                  size="sm"
+                  sr-prefix="Billing status:"
+                />
+              </template>
+            </SvDataTable>
+          </div>
+
+          <!-- Mobile: labelled record cards, never a sideways-scrolling table. -->
+          <div class="md:hidden">
+            <SvResponsiveRecordList
+              :columns="columns"
+              :rows="store.merchants"
+              :row-key="(row) => row.id"
+              caption="Platform merchant directory"
+              :state="dataState"
+              :error-message="store.error ?? undefined"
+              empty-message="No merchants match this view. Merchants appear here after they self-register."
+              @retry="load"
+            >
+              <template #cell:name="{ row }">
+                <RouterLink
+                  :to="merchantDetailLocation(row.id)"
+                  class="font-medium text-sv-text underline underline-offset-2"
+                  :data-testid="`merchant-directory-link-${row.id}`"
+                >
+                  {{ row.name }}
+                </RouterLink>
+              </template>
+              <template #cell:operational_status="{ row }">
+                <SvStatusBadge
+                  :label="operationalLabel(row.operational_status)"
+                  :tone="operationalTone(row.operational_status)"
+                  size="sm"
+                  sr-prefix="Operational status:"
+                />
+              </template>
+              <template #cell:billing_status="{ row }">
+                <SvStatusBadge
+                  :label="billingLabel(row.billing_status)"
+                  :tone="billingTone(row.billing_status)"
+                  size="sm"
+                  sr-prefix="Billing status:"
+                />
+              </template>
+            </SvResponsiveRecordList>
+          </div>
+
+          <SvPagination
+            v-if="meta !== null && meta.last_page > 1"
+            class="mt-4"
+            :current-page="meta.current_page"
+            :last-page="meta.last_page"
+            :total="meta.total"
+            label="Directory pages"
+            data-testid="directory-pagination"
+            @change="goToPage"
+          />
+        </SvPanel>
       </div>
 
-      <!-- Mobile: labelled record cards, never a sideways-scrolling table. -->
-      <div class="md:hidden">
-        <SvResponsiveRecordList
-          :columns="columns"
-          :rows="store.merchants"
-          :row-key="(row) => row.id"
-          caption="Platform merchant directory"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No merchants match this view. Merchants appear here after they self-register."
-          @retry="load"
-        >
-          <template #cell:name="{ row }">
-            <RouterLink
-              :to="merchantDetailLocation(row.id)"
-              class="font-medium text-sv-text underline underline-offset-2"
-              :data-testid="`merchant-directory-link-${row.id}`"
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Directory boundaries"
+      >
+        <div class="sv-r-note sv-r-tone-warm">
+          <div class="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-tone-warm"
             >
-              {{ row.name }}
-            </RouterLink>
-          </template>
-          <template #cell:operational_status="{ row }">
-            <SvStatusBadge
-              :label="operationalLabel(row.operational_status)"
-              :tone="operationalTone(row.operational_status)"
-              size="sm"
-              sr-prefix="Operational status:"
-            />
-          </template>
-          <template #cell:billing_status="{ row }">
-            <SvStatusBadge
-              :label="billingLabel(row.billing_status)"
-              :tone="billingTone(row.billing_status)"
-              size="sm"
-              sr-prefix="Billing status:"
-            />
-          </template>
-        </SvResponsiveRecordList>
-      </div>
-
-      <SvPagination
-        v-if="meta !== null && meta.last_page > 1"
-        class="mt-4"
-        :current-page="meta.current_page"
-        :last-page="meta.last_page"
-        :total="meta.total"
-        label="Directory pages"
-        data-testid="directory-pagination"
-        @change="goToPage"
-      />
-
-      <SvAlert
-        severity="info"
-        title="Not yet available on this page"
-        class="mt-8"
-        data-testid="directory-unavailable-evidence"
-      >
-        <ul class="list-disc space-y-1 pl-5">
-          <li>
-            Plan, billing interval, branch count, staff count, overdue amount and last activity are
-            not carried by the merchant read, so no column claims them.
-          </li>
-          <li>
-            Search and the plan, billing-mode, trial-cohort, overdue and risk filters are not
-            accepted by the shipped read; operational status is the only filter it allowlists.
-          </li>
-          <li>
-            Saved filters and a masked directory export have no operation behind them. No export
-            control is shown, because one that cannot produce a file would be a false affordance.
-          </li>
-        </ul>
-      </SvAlert>
-
-      <p
-        class="mt-4 text-xs text-sv-text-muted"
-        data-testid="directory-boundary-note"
-      >
-        Merchants self-register. This page offers no way to create a merchant, create its first
-        administrator, sign in as one of its users, or change anything a merchant operates.
-      </p>
-    </template>
+              <SvIconLocked />
+            </span>
+            <p class="sv-r-note__title">
+              Governance, not operation
+            </p>
+          </div>
+          <p
+            class="sv-r-note__body"
+            data-testid="directory-boundary-note"
+          >
+            Merchants self-register. This page offers no way to create a merchant, create its first
+            administrator, sign in as one of its users, or change anything a merchant operates.
+          </p>
+        </div>
+        <SvAlert
+          severity="info"
+          title="Not yet available on this page"
+          data-testid="directory-unavailable-evidence"
+        >
+          <ul class="list-disc space-y-1 pl-5">
+            <li>
+              Plan, billing interval, branch count, staff count, overdue amount and last activity are
+              not carried by the merchant read, so no column claims them.
+            </li>
+            <li>
+              Search and the plan, billing-mode, trial-cohort, overdue and risk filters are not
+              accepted by the shipped read; operational status is the only filter it allowlists.
+            </li>
+            <li>
+              Saved filters and a masked directory export have no operation behind them. No export
+              control is shown, because one that cannot produce a file would be a false affordance.
+            </li>
+          </ul>
+        </SvAlert>
+      </aside>
+    </div>
   </div>
 </template>

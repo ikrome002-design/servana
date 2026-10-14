@@ -36,7 +36,7 @@
 import { computed, onMounted } from 'vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import SvPanel from '@/components/refined/SvPanel.vue';
 import SvDataTable from '@/components/ui/SvDataTable.vue';
 import SvFilterBar from '@/components/ui/SvFilterBar.vue';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
@@ -145,8 +145,14 @@ onMounted(() => {
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: a LIST + INSPECTOR evidence workspace. Filters sit on a sunken band, the
+    masked event ledger owns the working column, and the rail is the inspector: an opened event's
+    masked facts, what changed and its recorded context; otherwise, what this record guarantees
+    and why no export control exists. Nothing on the page mutates anything.
+  -->
   <div
-    class="mx-auto w-full max-w-5xl"
+    class="sv-r-page"
     data-testid="platform-audit-screen"
   >
     <SvPageHeader
@@ -157,322 +163,338 @@ onMounted(() => {
 
     <SvPermissionState v-if="!canView" />
 
-    <template v-else>
-      <SvFilterBar
-        label="Audit filters"
-        :active-count="activeFilterCount"
-        @clear="store.clearFilters()"
-      >
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-          <SvTextInput
-            id="audit-action"
-            v-model="store.filters.action"
-            label="Action"
-            placeholder="e.g. merchant.suspended"
-            @keyup.enter="store.applyFilters()"
-          />
-          <SvSelect
-            id="audit-severity"
-            v-model="store.filters.severity"
-            label="Severity"
-            :options="SEVERITY_OPTIONS"
-            @update:model-value="store.applyFilters()"
-          />
-          <SvTextInput
-            id="audit-actor"
-            v-model="store.filters.actor"
-            label="Actor identifier"
-            placeholder="26-character user identifier"
-            @keyup.enter="store.applyFilters()"
-          />
-          <SvTextInput
-            id="audit-date-from"
-            v-model="store.filters.date_from"
-            label="From"
-            type="date"
-            @change="store.applyFilters()"
-          />
-          <SvTextInput
-            id="audit-date-to"
-            v-model="store.filters.date_to"
-            label="To"
-            type="date"
-            @change="store.applyFilters()"
-          />
-          <SvSelect
-            id="audit-sort"
-            v-model="store.filters.sort"
-            label="Sort"
-            :options="SORT_OPTIONS"
-            @update:model-value="store.applyFilters()"
-          />
+    <div
+      v-else
+      class="sv-r-grid sv-r-split"
+    >
+      <div class="sv-r-stack min-w-0">
+        <div class="sv-r-panel sv-r-panel--sunken">
+          <SvFilterBar
+            label="Audit filters"
+            :active-count="activeFilterCount"
+            @clear="store.clearFilters()"
+          >
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <SvTextInput
+                id="audit-action"
+                v-model="store.filters.action"
+                label="Action"
+                placeholder="e.g. merchant.suspended"
+                @keyup.enter="store.applyFilters()"
+              />
+              <SvSelect
+                id="audit-severity"
+                v-model="store.filters.severity"
+                label="Severity"
+                :options="SEVERITY_OPTIONS"
+                @update:model-value="store.applyFilters()"
+              />
+              <SvTextInput
+                id="audit-actor"
+                v-model="store.filters.actor"
+                label="Actor identifier"
+                placeholder="26-character user identifier"
+                @keyup.enter="store.applyFilters()"
+              />
+              <SvTextInput
+                id="audit-date-from"
+                v-model="store.filters.date_from"
+                label="From"
+                type="date"
+                @change="store.applyFilters()"
+              />
+              <SvTextInput
+                id="audit-date-to"
+                v-model="store.filters.date_to"
+                label="To"
+                type="date"
+                @change="store.applyFilters()"
+              />
+              <SvSelect
+                id="audit-sort"
+                v-model="store.filters.sort"
+                label="Sort"
+                :options="SORT_OPTIONS"
+                @update:model-value="store.applyFilters()"
+              />
+            </div>
+          </SvFilterBar>
         </div>
-      </SvFilterBar>
 
-      <!--
+        <SvPanel
+          eyebrow="Immutable record"
+          title="Platform audit events"
+          description="Append-only, masked on the server. Open an event to inspect it."
+          tone="teal"
+        >
+          <!--
         UI08-RESP-001: six columns — two of them long machine tokens (`merchant.suspended`, a
         correlation id) — pushed the document 9px past the 768px tablet floor. The table is
         therefore desktop-only here and tablet reads the labelled record cards, which is what the
         plan asks for on a tablet anyway ("condense columns on tablets").
       -->
-      <div class="hidden lg:block">
-        <SvDataTable
-          :columns="columns"
-          :rows="store.events"
-          :row-key="(row) => row.id"
-          caption="Platform audit events"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No platform audit events match these filters."
-          @retry="store.fetchEvents()"
-        >
-          <template #cell:severity="{ row }">
-            <SvStatusBadge
-              :label="severityPresentation(row.severity).label"
-              :tone="severityTone(row.severity)"
-              size="sm"
-              sr-prefix="Severity:"
-            />
-          </template>
-          <template #cell:action="{ row }">
-            <button
-              type="button"
-              class="sv-focus-ring break-words text-left font-medium text-sv-text underline underline-offset-2"
-              :data-testid="`audit-event-open-${row.id}`"
-              @click="store.fetchEvent(row.id)"
+          <div class="hidden lg:block">
+            <SvDataTable
+              :columns="columns"
+              :rows="store.events"
+              :row-key="(row) => row.id"
+              caption="Platform audit events"
+              :state="dataState"
+              :error-message="store.error ?? undefined"
+              empty-message="No platform audit events match these filters."
+              @retry="store.fetchEvents()"
             >
-              {{ row.action }}
-            </button>
-          </template>
-        </SvDataTable>
+              <template #cell:severity="{ row }">
+                <SvStatusBadge
+                  :label="severityPresentation(row.severity).label"
+                  :tone="severityTone(row.severity)"
+                  size="sm"
+                  sr-prefix="Severity:"
+                />
+              </template>
+              <template #cell:action="{ row }">
+                <button
+                  type="button"
+                  class="sv-focus-ring break-words text-left font-medium text-sv-text underline underline-offset-2"
+                  :data-testid="`audit-event-open-${row.id}`"
+                  @click="store.fetchEvent(row.id)"
+                >
+                  {{ row.action }}
+                </button>
+              </template>
+            </SvDataTable>
+          </div>
+
+          <div class="lg:hidden">
+            <SvResponsiveRecordList
+              :columns="columns"
+              :rows="store.events"
+              :row-key="(row) => row.id"
+              caption="Platform audit events"
+              :state="dataState"
+              :error-message="store.error ?? undefined"
+              empty-message="No platform audit events match these filters."
+              @retry="store.fetchEvents()"
+            >
+              <template #cell:severity="{ row }">
+                <SvStatusBadge
+                  :label="severityPresentation(row.severity).label"
+                  :tone="severityTone(row.severity)"
+                  size="sm"
+                  sr-prefix="Severity:"
+                />
+              </template>
+              <template #cell:action="{ row }">
+                <button
+                  type="button"
+                  class="sv-focus-ring break-words text-left font-medium text-sv-text underline underline-offset-2"
+                  :data-testid="`audit-event-open-${row.id}`"
+                  @click="store.fetchEvent(row.id)"
+                >
+                  {{ row.action }}
+                </button>
+              </template>
+            </SvResponsiveRecordList>
+          </div>
+
+          <SvPagination
+            v-if="store.meta !== null && store.meta.last_page > 1"
+            class="mt-4"
+            :current-page="store.meta.current_page"
+            :last-page="store.meta.last_page"
+            :total="store.meta.total"
+            label="Audit pages"
+            data-testid="audit-pagination"
+            @change="store.goToPage"
+          />
+        </SvPanel>
       </div>
 
-      <div class="lg:hidden">
-        <SvResponsiveRecordList
-          :columns="columns"
-          :rows="store.events"
-          :row-key="(row) => row.id"
-          caption="Platform audit events"
-          :state="dataState"
-          :error-message="store.error ?? undefined"
-          empty-message="No platform audit events match these filters."
-          @retry="store.fetchEvents()"
-        >
-          <template #cell:severity="{ row }">
-            <SvStatusBadge
-              :label="severityPresentation(row.severity).label"
-              :tone="severityTone(row.severity)"
-              size="sm"
-              sr-prefix="Severity:"
-            />
-          </template>
-          <template #cell:action="{ row }">
-            <button
-              type="button"
-              class="sv-focus-ring break-words text-left font-medium text-sv-text underline underline-offset-2"
-              :data-testid="`audit-event-open-${row.id}`"
-              @click="store.fetchEvent(row.id)"
-            >
-              {{ row.action }}
-            </button>
-          </template>
-        </SvResponsiveRecordList>
-      </div>
-
-      <SvPagination
-        v-if="store.meta !== null && store.meta.last_page > 1"
-        class="mt-4"
-        :current-page="store.meta.current_page"
-        :last-page="store.meta.last_page"
-        :total="store.meta.total"
-        label="Audit pages"
-        data-testid="audit-pagination"
-        @change="store.goToPage"
-      />
-
-      <!-- Event detail. Read-only; every value arrived masked. -->
-      <SvCard
-        v-if="store.current !== null || store.detailError !== null"
-        as="section"
-        class="mt-6"
-        data-testid="audit-event-detail"
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Event inspector"
       >
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <h2 class="font-display text-lg font-bold text-sv-text-heading break-words">
-            {{ store.current?.action ?? 'Audit event' }}
-          </h2>
-          <SvButton
-            variant="ghost"
-            size="sm"
-            data-testid="audit-event-close"
-            @click="store.closeEvent()"
-          >
-            Close
-          </SvButton>
-        </div>
-
-        <p
-          v-if="store.detailError !== null"
-          class="mt-2 text-sm text-sv-text-muted"
-          role="status"
-          data-testid="audit-event-detail-unavailable"
+        <!-- Event detail. Read-only; every value arrived masked. -->
+        <section
+          v-if="store.current !== null || store.detailError !== null"
+          class="sv-r-panel sv-r-panel--tonal sv-r-tone-teal"
+          data-testid="audit-event-detail"
         >
-          {{ store.detailError }}
-        </p>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-lg font-bold text-sv-text-heading break-words">
+              {{ store.current?.action ?? 'Audit event' }}
+            </h2>
+            <SvButton
+              variant="ghost"
+              size="sm"
+              data-testid="audit-event-close"
+              @click="store.closeEvent()"
+            >
+              Close
+            </SvButton>
+          </div>
 
-        <template v-else-if="store.current">
-          <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                Severity
-              </dt>
-              <dd class="mt-1 text-sm text-sv-text">
-                {{ store.current.severity }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                Actor
-              </dt>
-              <dd class="mt-1 text-sm text-sv-text">
-                {{ store.current.actor ?? '—' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                Subject
-              </dt>
-              <dd class="mt-1 text-sm text-sv-text">
-                {{ store.current.subject_type ?? '—' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                Occurred
-              </dt>
-              <dd class="mt-1 text-sm text-sv-text">
-                {{ store.current.created_at ?? '—' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                Correlation
-              </dt>
-              <dd
-                class="mt-1 break-words text-sm text-sv-text"
-                data-testid="audit-event-correlation"
-              >
-                {{ store.current.correlation_id ?? '—' }}
-              </dd>
-            </div>
-          </dl>
-
-          <section
-            v-if="changes.length > 0"
-            class="mt-6"
-            aria-label="Recorded change"
-            data-testid="audit-event-changes"
+          <p
+            v-if="store.detailError !== null"
+            class="mt-2 text-sm text-sv-text-muted"
+            role="status"
+            data-testid="audit-event-detail-unavailable"
           >
-            <h3 class="font-display text-sm font-bold text-sv-text-heading">
-              What changed
-            </h3>
-            <dl class="mt-2 flex flex-col gap-2">
-              <div
-                v-for="change in changes"
-                :key="change.field"
-                class="rounded-control border border-sv-border p-3"
-              >
+            {{ store.detailError }}
+          </p>
+
+          <template v-else-if="store.current">
+            <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3">
+              <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                  {{ change.field }}
+                  Severity
                 </dt>
                 <dd class="mt-1 text-sm text-sv-text">
-                  <span data-testid="audit-change-before">{{ change.before }}</span>
-                  <SvIconChevronRight
-                    aria-hidden="true"
-                    class="mx-1 inline-block h-4 w-4 align-text-bottom text-sv-text-muted"
-                  />
-                  <span class="sr-only">changed to</span>
-                  <span data-testid="audit-change-after">{{ change.after }}</span>
+                  {{ store.current.severity }}
                 </dd>
               </div>
-            </dl>
-          </section>
-
-          <section
-            class="mt-6"
-            aria-label="Recorded context"
-          >
-            <h3 class="font-display text-sm font-bold text-sv-text-heading">
-              Context (masked)
-            </h3>
-            <p
-              v-if="remainingContext.length === 0"
-              class="mt-2 text-sm text-sv-text-muted"
-            >
-              No further context was recorded.
-            </p>
-            <dl
-              v-else
-              class="mt-2 flex flex-col gap-2"
-            >
-              <div
-                v-for="[key, value] in remainingContext"
-                :key="key"
-                class="grid grid-cols-1 gap-1 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]"
-              >
+              <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
-                  {{ key }}
+                  Actor
                 </dt>
-                <dd class="break-words text-sm text-sv-text">
-                  {{ value }}
+                <dd class="mt-1 text-sm text-sv-text">
+                  {{ store.current.actor ?? '—' }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                  Subject
+                </dt>
+                <dd class="mt-1 text-sm text-sv-text">
+                  {{ store.current.subject_type ?? '—' }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                  Occurred
+                </dt>
+                <dd class="mt-1 text-sm text-sv-text">
+                  {{ store.current.created_at ?? '—' }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                  Correlation
+                </dt>
+                <dd
+                  class="mt-1 break-words text-sm text-sv-text"
+                  data-testid="audit-event-correlation"
+                >
+                  {{ store.current.correlation_id ?? '—' }}
                 </dd>
               </div>
             </dl>
-          </section>
-        </template>
-      </SvCard>
 
-      <SvAlert
-        severity="info"
-        title="What this record guarantees, and what it cannot show"
-        class="mt-8"
-        data-testid="audit-integrity-statement"
-      >
-        <ul class="list-disc space-y-1 pl-5">
-          <li>
-            Audit rows are append-only: the database rejects any update or delete, so nothing on
-            this page can be edited, resolved away or removed.
-          </li>
-          <li>
-            Actor emails and every recorded value are masked on the server before they are sent.
-            There is no request that returns unmasked audit data.
-          </li>
-          <li>
-            Hash-chain verification status and verifier incidents are not exposed by any endpoint,
-            so no integrity indicator is shown. An indicator with nothing behind it would be a
-            fabricated assurance.
-          </li>
-          <li>
-            Filtering is by action, severity, actor, date and sort order. Filtering by merchant,
-            branch, module, entity, event status or correlation identifier is not accepted by the
-            shipped read.
-          </li>
-        </ul>
-      </SvAlert>
+            <section
+              v-if="changes.length > 0"
+              class="mt-6"
+              aria-label="Recorded change"
+              data-testid="audit-event-changes"
+            >
+              <h3 class="font-display text-sm font-bold text-sv-text-heading">
+                What changed
+              </h3>
+              <dl class="mt-2 flex flex-col gap-2">
+                <div
+                  v-for="change in changes"
+                  :key="change.field"
+                  class="rounded-control border border-sv-border p-3"
+                >
+                  <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                    {{ change.field }}
+                  </dt>
+                  <dd class="mt-1 text-sm text-sv-text">
+                    <span data-testid="audit-change-before">{{ change.before }}</span>
+                    <SvIconChevronRight
+                      aria-hidden="true"
+                      class="mx-1 inline-block h-4 w-4 align-text-bottom text-sv-text-muted"
+                    />
+                    <span class="sr-only">changed to</span>
+                    <span data-testid="audit-change-after">{{ change.after }}</span>
+                  </dd>
+                </div>
+              </dl>
+            </section>
 
-      <SvAlert
-        severity="info"
-        title="Export is not available yet"
-        class="mt-4"
-        data-testid="audit-export-disposition"
-      >
-        <p>
-          A permissioned, masked platform audit export is planned under
-          <code>platform.audit.export</code>, which the permission matrix records as planned and
-          owned by Phase 23. The audit exports that exist today are branch-scoped merchant exports
-          and cannot produce the platform chain, so no export control is offered here.
-        </p>
-      </SvAlert>
-    </template>
+            <section
+              class="mt-6"
+              aria-label="Recorded context"
+            >
+              <h3 class="font-display text-sm font-bold text-sv-text-heading">
+                Context (masked)
+              </h3>
+              <p
+                v-if="remainingContext.length === 0"
+                class="mt-2 text-sm text-sv-text-muted"
+              >
+                No further context was recorded.
+              </p>
+              <dl
+                v-else
+                class="mt-2 flex flex-col gap-2"
+              >
+                <div
+                  v-for="[key, value] in remainingContext"
+                  :key="key"
+                  class="grid grid-cols-1 gap-1 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]"
+                >
+                  <dt class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+                    {{ key }}
+                  </dt>
+                  <dd class="break-words text-sm text-sv-text">
+                    {{ value }}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+          </template>
+        </section>
+
+        <SvAlert
+          severity="info"
+          title="What this record guarantees, and what it cannot show"
+          data-testid="audit-integrity-statement"
+        >
+          <ul class="list-disc space-y-1 pl-5">
+            <li>
+              Audit rows are append-only: the database rejects any update or delete, so nothing on
+              this page can be edited, resolved away or removed.
+            </li>
+            <li>
+              Actor emails and every recorded value are masked on the server before they are sent.
+              There is no request that returns unmasked audit data.
+            </li>
+            <li>
+              Hash-chain verification status and verifier incidents are not exposed by any endpoint,
+              so no integrity indicator is shown. An indicator with nothing behind it would be a
+              fabricated assurance.
+            </li>
+            <li>
+              Filtering is by action, severity, actor, date and sort order. Filtering by merchant,
+              branch, module, entity, event status or correlation identifier is not accepted by the
+              shipped read.
+            </li>
+          </ul>
+        </SvAlert>
+
+        <SvAlert
+          severity="info"
+          title="Export is not available yet"
+          data-testid="audit-export-disposition"
+        >
+          <p>
+            A permissioned, masked platform audit export is planned under
+            <code>platform.audit.export</code>, which the permission matrix records as planned and
+            owned by Phase 23. The audit exports that exist today are branch-scoped merchant exports
+            and cannot produce the platform chain, so no export control is offered here.
+          </p>
+        </SvAlert>
+      </aside>
+    </div>
   </div>
 </template>

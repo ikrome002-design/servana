@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -10,6 +9,7 @@ import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { formatDateTime } from '@/utils/dates';
 import {
   FEE_CALCULATION_BASES,
   FEE_CALCULATION_TYPES,
@@ -206,16 +206,28 @@ async function confirmCancel(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="fee-rules-heading">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+  <!--
+    COR-UI08-UI12-VIS-001: a fee-rules workspace — the filters and the draft action share the panel
+    header; each rule is a fee-tier card whose TERMS are its figure, with scope, basis and the
+    effective window as facts and a spine in the rule's lifecycle tone. Active terms still say they
+    are read-only; only draft/scheduled rules offer approve/cancel.
+  -->
+  <section
+    aria-labelledby="fee-rules-heading"
+    class="sv-r-panel"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Effective-dated fee tiers
+        </p>
         <h2
           id="fee-rules-heading"
-          class="font-display text-lg font-bold text-heading"
+          class="sv-r-title mt-1"
         >
           Preferred-personnel fee rules
         </h2>
-        <p class="mt-1 text-sm text-text-muted">
+        <p class="sv-r-panel__desc">
           Platform-default and service-scoped fee rules. Active terms are immutable — change a
           rule by superseding it with a new version.
         </p>
@@ -228,7 +240,7 @@ async function confirmCancel(): Promise<void> {
       </SvButton>
     </div>
 
-    <div class="mt-4 grid max-w-md gap-4 md:grid-cols-2">
+    <div class="mb-5 grid gap-4 rounded-card bg-sv-surface-subtle p-4 md:grid-cols-2">
       <SvSelect
         id="fee-scope-filter"
         label="Scope"
@@ -246,41 +258,49 @@ async function confirmCancel(): Promise<void> {
     </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="store.error ?? undefined"
       empty-message="No preferred-personnel fee rules match this filter."
       @retry="store.fetchRules()"
     >
-      <ul class="mt-2 flex flex-col gap-3">
+      <ul class="flex flex-col gap-3">
         <li
           v-for="rule in store.rules"
           :key="rule.id"
           data-testid="fee-rule-row"
         >
-          <SvCard padding="sm">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p class="font-semibold text-text">
-                  {{ terms(rule) }}
-                  <span class="ml-2 rounded-control bg-surface-alt px-2 py-0.5 text-xs text-text-muted">
+          <div
+            class="sv-r-record sv-r-record--spine pl-6"
+            :class="{
+              'sv-r-tone-warm': rule.status === 'active',
+              'sv-r-tone-sun': rule.status === 'scheduled' || rule.status === 'draft',
+              'sv-r-tone-neutral': isTerminalFeeStatus(rule.status),
+            }"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="sv-r-chip">
                     {{ rule.scope === 'service' ? 'Service' : 'Platform default' }}
                   </span>
                   <span
-                    class="ml-2 rounded-control px-2 py-0.5 text-xs"
+                    class="sv-r-chip sv-r-chip--tone sv-r-chip--dot"
                     :class="{
-                      'bg-primary/15 text-sv-text-heading': rule.status === 'active',
-                      'bg-cream text-sv-text-heading': rule.status === 'scheduled' || rule.status === 'draft',
-                      'bg-surface-alt text-text-muted': isTerminalFeeStatus(rule.status),
+                      'sv-r-tone-warm': rule.status === 'active',
+                      'sv-r-tone-sun': rule.status === 'scheduled' || rule.status === 'draft',
+                      'sv-r-tone-neutral': isTerminalFeeStatus(rule.status),
                     }"
                   >{{ rule.status }}</span>
+                </div>
+                <p class="sv-r-figure-md mt-2">
+                  {{ terms(rule) }}
                 </p>
-                <p class="mt-1 text-sm text-text-muted">
+                <p class="sv-r-muted mt-1">
                   {{ rule.calculation_basis === 'service_item_net_amount' ? 'Net basis' : 'Gross basis' }} ·
-                  from {{ rule.effective_from }}<span v-if="rule.effective_to"> to {{ rule.effective_to }}</span>
+                  from {{ formatDateTime(rule.effective_from) }}<span v-if="rule.effective_to"> to {{ formatDateTime(rule.effective_to) }}</span>
                 </p>
               </div>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <SvButton
                   v-if="canManage && (rule.status === 'draft' || rule.status === 'scheduled')"
                   variant="secondary"
@@ -304,11 +324,11 @@ async function confirmCancel(): Promise<void> {
                 </SvButton>
                 <span
                   v-if="rule.status === 'active'"
-                  class="self-center text-xs text-text-muted"
+                  class="sv-r-chip"
                 >Active terms are read-only</span>
               </div>
             </div>
-          </SvCard>
+          </div>
         </li>
       </ul>
     </SvStateBoundary>

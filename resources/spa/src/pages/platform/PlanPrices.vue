@@ -25,14 +25,21 @@ import PlatformRuleWorkspace from '@/components/platform/PlatformRuleWorkspace.v
 const { can } = useCan();
 const selectedPlan = ref<SubscriptionPlan | null>(null);
 
+/** The five canonical billing intervals, as the page description names them. */
+const INTERVALS = ['Weekly', 'Bi-weekly', 'Monthly', 'Quarterly', 'Annual'] as const;
+
 function onSelect(plan: SubscriptionPlan): void {
   selectedPlan.value = plan;
 }
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001: a compact plan SELECTOR framing the selected plan's price schedule, with
+    the no-proration / no-grandfathering rule and the five canonical intervals in the rail.
+  -->
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-prices-screen"
   >
     <SvPageHeader
@@ -46,11 +53,12 @@ function onSelect(plan: SubscriptionPlan): void {
     <template v-else>
       <!-- UI16-VIS-016: the page's own rule statement moves into the guidance rail. -->
       <PlatformRuleWorkspace>
-        <section
-          aria-label="Choose a plan"
-          class="mb-10"
-        >
-          <SubscriptionPlansSection @select="onSelect" />
+        <section aria-label="Choose a plan">
+          <SubscriptionPlansSection
+            layout="selector"
+            :selected-id="selectedPlan?.id ?? null"
+            @select="onSelect"
+          />
         </section>
 
         <section aria-label="Plan prices">
@@ -71,6 +79,22 @@ function onSelect(plan: SubscriptionPlan): void {
           <p data-testid="prices-immutability-note">
             A price change is not applied mid-cycle and is not back-applied. Issued invoices keep the price snapshot they were created with, and merchants are not automatically grandfathered onto an older price.
           </p>
+        </template>
+        <template #rail>
+          <div class="sv-r-note sv-r-tone-warm">
+            <p class="sv-r-note__title">
+              Billing intervals
+            </p>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              <li
+                v-for="interval in INTERVALS"
+                :key="interval"
+                class="sv-r-chip"
+              >
+                {{ interval }}
+              </li>
+            </ul>
+          </div>
         </template>
       </PlatformRuleWorkspace>
     </template>

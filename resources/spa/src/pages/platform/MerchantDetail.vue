@@ -84,7 +84,7 @@ async function load(): Promise<void> {
 
 <template>
   <div
-    class="mx-auto w-full max-w-4xl"
+    class="sv-r-page"
     data-testid="platform-merchant-detail-screen"
   >
     <SvPageHeader
@@ -126,61 +126,72 @@ async function load(): Promise<void> {
         @retry="load"
       />
 
-      <template v-else-if="merchant">
+      <!--
+        COR-UI08-UI12-VIS-001: governance zones in the working column; the evidence this page
+        truthfully cannot show, and the two ways onward, in the rail beside them.
+      -->
+      <div
+        v-else-if="merchant"
+        class="sv-r-grid sv-r-split"
+      >
         <MerchantGovernancePanel
           :merchant="merchant"
           heading-level="h2"
         />
 
-        <!--
-          The contract's evidence tabs. Each one that has no platform read is NAMED, with the reason,
-          rather than rendered as an empty tab — an empty "Invoices" tab asserts that this merchant
-          has no invoices, which is a claim this page cannot make.
-        -->
-        <SvAlert
-          severity="info"
-          title="Evidence not yet available on this page"
-          class="mt-8"
-          data-testid="merchant-detail-unavailable-evidence"
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Related evidence"
         >
-          <ul class="list-disc space-y-1 pl-5">
-            <li>
-              A per-merchant governance timeline is not available: the platform audit read cannot be
-              scoped to one merchant, so any list here would be a partial one presented as complete.
-              Platform governance events are searchable on the platform audit page.
-            </li>
-            <li>
-              Subscription invoices, Wallet payment attempts and billing-recovery status are not
-              read per merchant here. Platform-wide subscription operations cover them.
-            </li>
-            <li>
-              Branches, staff overview and referral or qualification facts have no platform-scoped
-              read. They are merchant-owned data and are not exposed to platform governance.
-            </li>
-            <li>
-              Notes exist only as the mandatory reason recorded with a governance action, and
-              evidence attachment is not implemented.
-            </li>
-          </ul>
-        </SvAlert>
+          <!--
+            The contract's evidence tabs. Each one that has no platform read is NAMED, with the reason,
+            rather than rendered as an empty tab — an empty "Invoices" tab asserts that this merchant
+            has no invoices, which is a claim this page cannot make.
+          -->
+          <SvAlert
+            severity="info"
+            title="Evidence not yet available on this page"
+            data-testid="merchant-detail-unavailable-evidence"
+          >
+            <ul class="list-disc space-y-1 pl-5">
+              <li>
+                A per-merchant governance timeline is not available: the platform audit read cannot be
+                scoped to one merchant, so any list here would be a partial one presented as complete.
+                Platform governance events are searchable on the platform audit page.
+              </li>
+              <li>
+                Subscription invoices, Wallet payment attempts and billing-recovery status are not
+                read per merchant here. Platform-wide subscription operations cover them.
+              </li>
+              <li>
+                Branches, staff overview and referral or qualification facts have no platform-scoped
+                read. They are merchant-owned data and are not exposed to platform governance.
+              </li>
+              <li>
+                Notes exist only as the mandatory reason recorded with a governance action, and
+                evidence attachment is not implemented.
+              </li>
+            </ul>
+          </SvAlert>
 
-        <div class="mt-6 flex flex-wrap items-center gap-6">
-          <SvLink
-            v-if="can('platform.audit.view')"
-            :to="{ name: PLATFORM_AUDIT_ROUTE_NAME }"
-            data-testid="merchant-detail-audit-link"
-          >
-            Search platform governance events
-          </SvLink>
-          <SvLink
-            :to="{ name: MERCHANT_DIRECTORY_ROUTE_NAME }"
-            variant="subtle"
-            data-testid="merchant-detail-back-link"
-          >
-            Back to the merchant directory
-          </SvLink>
-        </div>
-      </template>
+          <div class="sv-r-note sv-r-tone-warm flex flex-col items-start gap-1">
+            <SvLink
+              v-if="can('platform.audit.view')"
+              :to="{ name: PLATFORM_AUDIT_ROUTE_NAME }"
+              data-testid="merchant-detail-audit-link"
+            >
+              Search platform governance events
+            </SvLink>
+            <SvLink
+              :to="{ name: MERCHANT_DIRECTORY_ROUTE_NAME }"
+              variant="subtle"
+              data-testid="merchant-detail-back-link"
+            >
+              Back to the merchant directory
+            </SvLink>
+          </div>
+        </aside>
+      </div>
     </template>
   </div>
 </template>

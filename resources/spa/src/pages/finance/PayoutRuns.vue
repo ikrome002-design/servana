@@ -35,6 +35,14 @@ const canView = computed(() => can('payout_run.verify'));
 const canApprove = computed(() => can('payout_run.approve_standard'));
 const canReject = computed(() => can('payout_run.reject'));
 const canMarkPaid = computed(() => can('payout_run.mark_paid'));
+/** COR-UI08-UI12-VIS-001: the chain a run travels, as the server's state machine defines it. */
+const SETTLEMENT_CHAIN = [
+  { label: 'Submitted', hint: 'HR prepared the run' },
+  { label: 'Finance verified', hint: 'amounts checked here' },
+  { label: 'Owner approval', hint: 'high-value runs only' },
+  { label: 'Approved', hint: 'ready for external payment' },
+  { label: 'Paid externally', hint: 'settlement recorded' },
+] as const;
 
 /* ---------------------------------------------------------------- a11y */
 const statusRegion = ref<HTMLElement | null>(null);
@@ -236,7 +244,14 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — payout runs as a SETTLEMENT CHAIN. The chain a run travels (submitted →
+    Finance verified → owner approval when high value → approved → external payment recorded)
+    heads the page; runs follow as records with the gross total leading, staff count, status and
+    period, each opening the unchanged detail dialog. Filters sit in the rail beside the statement
+    that Servana records a settlement and never moves money.
+  -->
+  <section class="sv-r-page">
     <SvPageHeader
       title="Payout runs"
       eyebrow="Compensation Finance"
@@ -248,7 +263,8 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
       role="status"
       tabindex="-1"
       data-testid="payout-status"
-      class="mt-2 text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      class="text-sm font-medium text-success focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      :class="statusMessage ? 'mb-4' : ''"
     >
       {{ statusMessage }}
     </p>
@@ -256,90 +272,66 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
     <div
       v-if="store.forbidden || !canView"
       data-testid="payout-forbidden"
-      class="mt-6"
+      class="sv-r-panel sv-r-panel--dashed"
     >
-      <SvCard padding="md">
-        <p class="text-sm text-text-muted">
-          You do not have access to payout runs.
-        </p>
-      </SvCard>
+      <p class="text-sm text-text-muted">
+        You do not have access to payout runs.
+      </p>
     </div>
 
-    <template v-else>
-      <form
-        class="mt-6 grid gap-3 rounded-card border border-sv-border bg-sv-surface-raised p-4 shadow-card md:grid-cols-2 lg:grid-cols-4"
-        novalidate
-        aria-label="Payout run filters"
-        @submit.prevent="applyFilters"
-      >
-        <SvSelect
-          id="filter-status"
-          label="Status"
-          :model-value="store.filters.status"
-          :options="PAYOUT_RUN_STATUS_FILTER"
-          @update:model-value="store.filters.status = $event"
-        />
-        <SvTextInput
-          id="filter-currency"
-          label="Currency"
-          help="3-letter code, e.g. KES"
-          :model-value="store.filters.currency"
-          @update:model-value="store.filters.currency = $event"
-        />
-        <SvTextInput
-          id="filter-branch"
-          label="Branch reference"
-          help="26-character branch reference"
-          :model-value="store.filters.branch_ulid"
-          @update:model-value="store.filters.branch_ulid = $event"
-        />
-        <div class="flex items-end gap-2">
-          <SvButton
-            type="submit"
-            data-testid="apply-filters"
-          >
-            Apply
-          </SvButton>
-          <SvButton
-            type="button"
-            variant="secondary"
-            data-testid="clear-filters"
-            @click="clearFilters"
-          >
-            Clear
-          </SvButton>
-        </div>
-      </form>
-
-      <SvStateBoundary
-        class="mt-6"
-        :state="listState"
-        :error-message="store.listError ?? undefined"
-        empty-message="No payout runs match these filters."
-        @retry="store.fetchRuns('finance')"
-      >
-        <ul class="mt-2 flex flex-col gap-3">
+    <div
+      v-else
+      class="sv-r-grid sv-r-split"
+    >
+      <div class="sv-r-stack min-w-0">
+        <ol
+          class="grid gap-2 md:grid-cols-5"
+          aria-label="Payout run settlement chain"
+        >
           <li
-            v-for="run in store.runs"
-            :key="run.id"
-            data-testid="payout-run-row"
+            v-for="(stage, index) in SETTLEMENT_CHAIN"
+            :key="stage.label"
+            class="rounded-field border border-sv-border bg-surface-alt px-3 py-3"
           >
-            <SvCard padding="sm">
-              <div class="flex flex-wrap items-start justify-between gap-3">
+            <p class="font-display text-xs font-extrabold text-text-muted">
+              {{ String(index + 1).padStart(2, '0') }}
+            </p>
+            <p class="mt-1 text-sm font-semibold text-heading">
+              {{ stage.label }}
+            </p>
+            <p class="mt-0.5 text-xs text-text-muted">
+              {{ stage.hint }}
+            </p>
+          </li>
+        </ol>
+
+        <SvStateBoundary
+          :state="listState"
+          :error-message="store.listError ?? undefined"
+          empty-message="No payout runs match these filters."
+          @retry="store.fetchRuns('finance')"
+        >
+          <ul class="flex flex-col gap-3">
+            <li
+              v-for="run in store.runs"
+              :key="run.id"
+              data-testid="payout-run-row"
+              class="sv-r-record sv-r-record--spine"
+              :class="run.is_high_value ? 'sv-r-tone-sun' : 'sv-r-tone-teal'"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="font-semibold text-text">
+                  <p class="sv-numeric font-display text-xl font-extrabold text-heading">
                     {{ money(run.gross_total_minor, run.currency) }}
-                    <span class="ml-1 text-xs font-normal text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
+                    <span class="ml-1 font-sans text-xs font-normal text-text-muted">gross · {{ run.item_count ?? 0 }} staff</span>
                   </p>
-                  <p class="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                    <span class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted">{{ payoutRunStatusLabel(run.status) }}</span>
+                  <p class="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                    <span class="inline-flex rounded-pill border border-sv-border bg-surface-alt px-2.5 py-0.5 font-semibold text-text">{{ payoutRunStatusLabel(run.status) }}</span>
                     <span
                       v-if="run.is_high_value"
-                      class="rounded-control bg-surface-alt px-2 py-0.5 text-text-muted"
+                      class="inline-flex rounded-pill border border-sv-warning-border bg-sv-warning-bg px-2.5 py-0.5 font-semibold text-sv-warning-fg"
                     >High value</span>
-                  </p>
-                  <p class="mt-1 text-xs text-text-muted">
-                    {{ run.period_start }} → {{ run.period_end }} · {{ run.currency }}
+                    <span class="text-text-muted">{{ run.period_start }} → {{ run.period_end }} · {{ run.currency }}</span>
                   </p>
                 </div>
                 <SvButton
@@ -350,33 +342,94 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
                   Open
                 </SvButton>
               </div>
-            </SvCard>
-          </li>
-        </ul>
+            </li>
+          </ul>
 
-        <nav
-          v-if="store.meta.last_page > 1"
-          class="mt-4 flex items-center justify-between"
-          aria-label="Payout runs pagination"
+          <nav
+            v-if="store.meta.last_page > 1"
+            class="mt-4 flex items-center justify-between"
+            aria-label="Payout runs pagination"
+          >
+            <SvButton
+              variant="secondary"
+              :disabled="store.meta.current_page <= 1"
+              @click="goPage(store.meta.current_page - 1)"
+            >
+              Previous
+            </SvButton>
+            <span class="text-sm text-text-muted">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
+            <SvButton
+              variant="secondary"
+              :disabled="store.meta.current_page >= store.meta.last_page"
+              @click="goPage(store.meta.current_page + 1)"
+            >
+              Next
+            </SvButton>
+          </nav>
+        </SvStateBoundary>
+      </div>
+
+      <aside
+        class="sv-r-stack-sm sv-r-sticky"
+        aria-label="Payout run filters and rules"
+      >
+        <form
+          class="sv-r-panel flex flex-col gap-3"
+          novalidate
+          aria-label="Payout run filters"
+          @submit.prevent="applyFilters"
         >
-          <SvButton
-            variant="secondary"
-            :disabled="store.meta.current_page <= 1"
-            @click="goPage(store.meta.current_page - 1)"
-          >
-            Previous
-          </SvButton>
-          <span class="text-sm text-text-muted">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
-          <SvButton
-            variant="secondary"
-            :disabled="store.meta.current_page >= store.meta.last_page"
-            @click="goPage(store.meta.current_page + 1)"
-          >
-            Next
-          </SvButton>
-        </nav>
-      </SvStateBoundary>
-    </template>
+          <p class="sv-r-eyebrow">
+            Filter runs
+          </p>
+          <SvSelect
+            id="filter-status"
+            label="Status"
+            :model-value="store.filters.status"
+            :options="PAYOUT_RUN_STATUS_FILTER"
+            @update:model-value="store.filters.status = $event"
+          />
+          <SvTextInput
+            id="filter-currency"
+            label="Currency"
+            help="3-letter code, e.g. KES"
+            :model-value="store.filters.currency"
+            @update:model-value="store.filters.currency = $event"
+          />
+          <SvTextInput
+            id="filter-branch"
+            label="Branch reference"
+            help="26-character branch reference"
+            :model-value="store.filters.branch_ulid"
+            @update:model-value="store.filters.branch_ulid = $event"
+          />
+          <div class="flex flex-wrap gap-2">
+            <SvButton
+              type="submit"
+              data-testid="apply-filters"
+            >
+              Apply
+            </SvButton>
+            <SvButton
+              type="button"
+              variant="secondary"
+              data-testid="clear-filters"
+              @click="clearFilters"
+            >
+              Clear
+            </SvButton>
+          </div>
+        </form>
+        <section class="sv-r-note sv-r-tone-neutral">
+          <h2 class="sv-r-note__title">
+            Servana records, it does not pay
+          </h2>
+          <p class="sv-r-note__body">
+            A run is paid outside Servana first. Marking it paid records that settlement with its external reference and needs a fresh step-up.
+          </p>
+        </section>
+      </aside>
+    </div>
 
     <!-- detail modal -->
     <SvDialog

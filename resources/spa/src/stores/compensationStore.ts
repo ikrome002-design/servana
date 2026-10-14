@@ -84,6 +84,22 @@ export function modelRequiresCommissionRule(model: string): boolean {
   return model === 'commission_only' || model === 'salary_plus_commission';
 }
 
+/**
+ * A declared commission rule in words — "15.00% of Service price" or "KES 500.00 of Paid amount".
+ * Display only: the rate is the server's basis points shown as a percentage, never applied to money.
+ */
+export function describeCommissionRule(
+  rule: CommissionRule,
+  formatAmount: (minor: number | null, currency: string | null) => string,
+): string {
+  const value =
+    rule.calculation_type === 'percentage'
+      ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%`
+      : formatAmount(rule.fixed_amount_minor, rule.currency);
+  const basis = COMMISSION_CALCULATION_BASES.find((b) => b.value === rule.calculation_basis)?.label ?? rule.calculation_basis;
+  return `${value} of ${basis}`;
+}
+
 export function isTerminalPlanStatus(status: string): boolean {
   return ['expired', 'superseded', 'rejected', 'cancelled'].includes(status);
 }

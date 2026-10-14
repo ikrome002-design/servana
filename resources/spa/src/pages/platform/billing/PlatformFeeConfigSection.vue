@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
@@ -246,74 +245,88 @@ async function confirmCancel(): Promise<void> {
 </script>
 
 <template>
-  <section aria-labelledby="platform-fee-config-heading">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+  <!--
+    COR-UI08-UI12-VIS-001: one panel — header with the status filter and the draft action on the
+    same row — whose records carry a lifecycle spine (active in growth green, every other state
+    neutral) and state their terms, currency, effective window and reason as separate facts.
+  -->
+  <section
+    aria-labelledby="platform-fee-config-heading"
+    class="sv-r-panel"
+  >
+    <div class="sv-r-panel__head">
+      <div class="min-w-0">
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green">
+          Versioned, immutable once approved
+        </p>
         <h2
           id="platform-fee-config-heading"
-          class="font-display text-lg font-bold text-heading"
+          class="sv-r-title mt-1"
         >
           Percentage platform-fee configuration
         </h2>
-        <p class="mt-1 text-sm text-text-muted">
+        <p class="sv-r-panel__desc">
           The percentage fee Servana charges merchants on validated merchant-client activity. Approved terms
           are immutable — change a configuration by superseding it with a new version. Every change requires a
           fresh step-up.
         </p>
       </div>
-      <SvButton
-        v-if="canManage"
-        @click="openCreate"
-      >
-        New draft configuration
-      </SvButton>
-    </div>
-
-    <div class="mt-4 max-w-xs">
-      <SvSelect
-        id="platform-fee-status-filter"
-        label="Status"
-        :model-value="store.filterStatus"
-        :options="statusFilterOptions"
-        @update:model-value="(store.filterStatus = $event), reload()"
-      />
+      <div class="flex flex-wrap items-end gap-3">
+        <div class="w-44">
+          <SvSelect
+            id="platform-fee-status-filter"
+            label="Status"
+            :model-value="store.filterStatus"
+            :options="statusFilterOptions"
+            @update:model-value="(store.filterStatus = $event), reload()"
+          />
+        </div>
+        <SvButton
+          v-if="canManage"
+          @click="openCreate"
+        >
+          New draft configuration
+        </SvButton>
+      </div>
     </div>
 
     <SvStateBoundary
-      class="mt-4"
       :state="boundaryState"
       :error-message="store.error ?? undefined"
       empty-message="No platform-fee configurations match this filter."
       @retry="store.fetchConfigurations()"
     >
-      <ul class="mt-2 flex flex-col gap-3">
+      <ul class="flex flex-col gap-3">
         <li
           v-for="config in store.configurations"
           :key="config.id"
           data-testid="platform-fee-config-row"
         >
-          <SvCard padding="sm">
+          <div
+            class="sv-r-record sv-r-record--spine pl-6"
+            :class="config.status === 'active' ? 'sv-r-tone-green' : 'sv-r-tone-neutral'"
+          >
             <div class="flex flex-wrap items-start justify-between gap-3">
               <div class="min-w-0">
-                <p class="font-semibold text-text">
+                <p class="sv-r-title">
                   {{ platformFeeConfigTermsLabel(config) }}
-                  <span class="ml-2 rounded-control bg-surface-alt px-2 py-0.5 text-xs text-text-muted">
-                    {{ config.currency }}
-                  </span>
+                </p>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <span class="sv-r-chip">{{ config.currency }}</span>
                   <span
-                    class="ml-2 rounded-control px-2 py-0.5 text-xs"
-                    :class="config.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : 'bg-surface-alt text-text-muted'"
+                    class="sv-r-chip sv-r-chip--tone sv-r-chip--dot"
+                    :class="config.status === 'active' ? 'sv-r-tone-green' : 'sv-r-tone-neutral'"
                   >
                     {{ statusLabel(config.status) }}
                   </span>
-                </p>
-                <p class="mt-1 text-xs text-text-muted">
+                </div>
+                <p class="sv-r-muted mt-2">
                   Effective {{ config.effective_from }}<span v-if="config.effective_to"> – {{ config.effective_to }}</span>
                   · {{ config.change_reason }}
                 </p>
                 <p
                   v-if="config.approved_at"
-                  class="mt-0.5 text-xs text-text-muted"
+                  class="sv-r-muted mt-0.5"
                 >
                   Approved {{ config.approved_at }}
                 </p>
@@ -351,7 +364,7 @@ async function confirmCancel(): Promise<void> {
                 </SvButton>
               </div>
             </div>
-          </SvCard>
+          </div>
         </li>
       </ul>
     </SvStateBoundary>

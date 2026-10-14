@@ -29,12 +29,12 @@ const emit = defineEmits<{ action: [] }>();
 
 <template>
   <div
-    class="flex flex-col items-center py-12 text-center"
+    class="sv-state sv-state--empty flex flex-col items-center py-12 text-center"
     data-testid="sv-empty-state"
   >
     <div
       aria-hidden="true"
-      class="mb-4 flex h-16 w-16 items-center justify-center rounded-pill bg-sv-surface-warm text-sv-text-muted"
+      class="sv-state__icon mb-4 flex h-16 w-16 items-center justify-center rounded-pill bg-sv-surface-warm text-sv-text-muted"
     >
       <component
         :is="icon ?? SvIconDocument"

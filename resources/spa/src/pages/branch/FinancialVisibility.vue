@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { SvIconLocked } from '@/design-system/icons';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
@@ -27,8 +27,14 @@ watch(() => props.kind, load);
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a read-only finance LEDGER. A locked banner states what this workspace
+    can never do; rows set reference and time, a status chip, and the server's amount right-aligned.
+    No record, validate, edit, void or adjust control exists here — Front Office records, Finance
+    checks.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     :data-testid="`branch-${kind}`"
   >
     <SvPageHeader
@@ -37,10 +43,16 @@ watch(() => props.kind, load);
       :description="description"
     />
     <div
-      class="mb-4 rounded-control border border-sv-info-border bg-sv-info-bg px-4 py-3 text-sm text-sv-info-fg"
+      class="sv-r-record sv-r-record--spine sv-r-tone-teal mb-5 flex items-start gap-3 pl-6 text-sm text-sv-text-secondary"
       role="note"
     >
-      Context only: this workspace exposes no payment references, client contact, maker identity or financial mutation controls.
+      <span
+        aria-hidden="true"
+        class="sv-r-icon sv-r-tone-teal"
+      >
+        <SvIconLocked />
+      </span>
+      <span class="pt-2">Context only: this workspace exposes no payment references, client contact, maker identity or financial mutation controls.</span>
     </div>
     <SvStateBoundary
       :state="state"
@@ -48,43 +60,63 @@ watch(() => props.kind, load);
       :empty-message="`No branch ${kind === 'invoices' ? 'invoices' : 'payment records'} are available.`"
       @retry="load"
     >
-      <ul
-        class="grid gap-3"
+      <section
+        class="sv-r-ledger"
         :aria-label="title"
       >
-        <li
-          v-for="row in rows"
-          :key="row.id"
+        <div class="sv-r-ledger__head">
+          <p class="sv-r-title">
+            {{ title }}
+          </p>
+          <span class="sv-r-chip">Read-only</span>
+        </div>
+        <div
+          class="sv-r-ledger__colhead"
+          style="--sv-r-ledger-cols: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr)"
+          aria-hidden="true"
         >
-          <SvCard
-            as="article"
-            class="grid gap-3 md:grid-cols-[1.2fr_.8fr_.8fr] md:items-center"
+          <span>Reference</span><span>Status</span><span class="text-right">{{ kind === 'invoices' ? 'Balance' : 'Recorded' }}</span>
+        </div>
+        <ul :aria-label="title">
+          <!-- Each record is an <article> (the UI-10 contract reads `main article` as the record card). -->
+          <li
+            v-for="row in rows"
+            :key="row.id"
+            class="border-b border-sv-border last:border-b-0"
           >
-            <div>
-              <p class="font-display font-bold text-heading">
-                {{ kind === 'invoices' ? ('invoice_number' in row && row.invoice_number ? row.invoice_number : 'Draft invoice') : ('invoice' in row ? row.invoice?.invoice_number ?? 'Payment record' : 'Payment record') }}
-              </p>
-              <p class="mt-1 text-xs text-text-muted">
-                {{ row.created_at ? formatDateTime(row.created_at) : 'Date unavailable' }}
-              </p>
-            </div>
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Status
-              </p><p class="mt-1 font-semibold capitalize text-heading">
-                {{ row.status.replaceAll('_', ' ') }}
-              </p>
-            </div>
-            <div class="md:text-right">
-              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                {{ kind === 'invoices' ? 'Balance' : 'Recorded' }}
-              </p><p class="mt-1 font-bold text-heading">
-                {{ formatMoney(kind === 'invoices' && 'balance_minor' in row ? row.balance_minor : 'total_amount_minor' in row ? row.total_amount_minor : 0, row.currency) }}
-              </p>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
+            <article
+              class="sv-r-ledger__row"
+              style="--sv-r-ledger-cols: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr)"
+            >
+              <div>
+                <p class="font-display font-bold text-heading">
+                  {{ kind === 'invoices' ? ('invoice_number' in row && row.invoice_number ? row.invoice_number : 'Draft invoice') : ('invoice' in row ? row.invoice?.invoice_number ?? 'Payment record' : 'Payment record') }}
+                </p>
+                <p class="mt-1 text-xs text-text-muted">
+                  {{ row.created_at ? formatDateTime(row.created_at) : 'Date unavailable' }}
+                </p>
+              </div>
+              <div>
+                <p class="sr-only">
+                  Status
+                </p><span
+                  class="sv-r-chip sv-r-chip--tone sv-r-chip--dot capitalize"
+                  :class="kind === 'invoices' ? 'sv-r-tone-teal' : 'sv-r-tone-sun'"
+                >
+                  {{ row.status.replaceAll('_', ' ') }}
+                </span>
+              </div>
+              <div class="md:text-right">
+                <p class="text-xs font-semibold uppercase tracking-wide text-text-muted md:sr-only">
+                  {{ kind === 'invoices' ? 'Balance' : 'Recorded' }}
+                </p><p class="sv-numeric font-display text-lg font-extrabold text-heading">
+                  {{ formatMoney(kind === 'invoices' && 'balance_minor' in row ? row.balance_minor : 'total_amount_minor' in row ? row.total_amount_minor : 0, row.currency) }}
+                </p>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </section>
     </SvStateBoundary>
   </section>
 </template>

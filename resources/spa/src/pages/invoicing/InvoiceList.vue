@@ -11,6 +11,7 @@ import { useInvoiceStore } from '@/stores/invoiceStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import { invoiceStatusLabel } from '@/utils/invoice';
 import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import { useRefinedExperience } from '@/design-system/experience';
 
 // Invoice list (Plan §40; Phase 17). Shared by Front Office and Finance — client
 // contact is masked, money is server-formatted KES, and "New invoice" appears only
@@ -20,6 +21,8 @@ const store = useInvoiceStore();
 const permissions = usePermissionStore();
 const route = useRoute();
 const router = useRouter();
+/** COR-UI08-UI12-VIS-001: Finance renders the refined ledger; Front Office keeps its composition. */
+const refined = useRefinedExperience();
 
 const isFinance = computed(() => route.meta.roleIdentity === 'merchant_finance');
 const canCreate = computed(() => permissions.can('invoice.create'));
@@ -62,7 +65,95 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl">
+  <!--
+    COR-UI08-UI12-VIS-001 — Finance (refined experience) reads the invoice register as a LEDGER:
+    invoice, client, total, validated-paid and balance in columns, all server-formatted, with the
+    status at the row's end. Front Office keeps its UI-13 composition below, byte for byte.
+  -->
+  <section
+    v-if="refined"
+    class="sv-r-page"
+  >
+    <SvPageHeader
+      title="Invoices"
+      eyebrow="Merchant-Client Finance"
+      description="Every client invoice and its server-owned balance. Finance validates payments; it does not edit an issued invoice."
+    >
+      <template #actions>
+        <div class="w-full md:w-56">
+          <SvSelect
+            id="invoice-status-filter"
+            v-model="store.filterStatus"
+            label="Filter"
+            :options="statusOptions"
+            @update:model-value="() => store.fetchInvoices()"
+          />
+        </div>
+      </template>
+    </SvPageHeader>
+
+    <SvStateBoundary
+      :state="boundaryState"
+      empty-message="No invoices match this filter."
+      error-message="We couldn’t load invoices."
+      @retry="() => store.fetchInvoices()"
+    >
+      <section
+        class="sv-r-ledger"
+        style="--sv-r-ledger-cols: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)"
+        aria-labelledby="invoice-register-heading"
+      >
+        <div class="sv-r-ledger__head">
+          <h2
+            id="invoice-register-heading"
+            class="sv-r-title"
+          >
+            Invoice register
+          </h2>
+          <span class="sv-r-chip">Server totals and status remain authoritative</span>
+        </div>
+        <div
+          class="sv-r-ledger__colhead"
+          aria-hidden="true"
+        >
+          <span>Invoice</span><span>Client</span><span class="text-right">Total</span><span class="text-right">Validated</span><span class="text-right">Balance</span><span class="text-right">Status</span>
+        </div>
+        <ul aria-label="Invoices">
+          <li
+            v-for="invoice in store.invoices"
+            :key="invoice.id"
+            class="sv-r-ledger__row text-sm"
+          >
+            <span class="font-display text-base font-bold text-heading">
+              <RouterLink
+                :to="detailRoute(invoice.id)"
+                class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control pr-3 hover:underline"
+              >
+                {{ invoice.invoice_number ?? 'Draft' }}
+              </RouterLink>
+            </span>
+            <span class="min-w-0 text-text-muted">{{ invoice.client?.full_name ?? 'Client' }}</span>
+            <span class="sv-numeric font-display font-extrabold text-heading md:text-right">{{ invoice.total.formatted }}</span>
+            <span class="sv-numeric text-text-muted md:text-right"><span class="md:sr-only">Validated </span>{{ invoice.validated_paid?.formatted ?? '—' }}</span>
+            <span class="sv-numeric font-semibold text-heading md:text-right"><span class="md:sr-only">Balance </span>{{ invoice.balance?.formatted ?? '—' }}</span>
+            <span class="md:text-right">
+              <SvStatusBadge
+                :label="invoiceStatusLabel(invoice.status)"
+                :tone="invoiceTone(invoice.status)"
+                sr-prefix="Invoice status:"
+                data-testid="invoice-status-badge"
+              />
+            </span>
+          </li>
+        </ul>
+      </section>
+    </SvStateBoundary>
+  </section>
+
+  <section
+    v-else
+    class="mx-auto max-w-6xl"
+  >
     <SvOperationalHero
       v-if="!isFinance"
       eyebrow="Billing handoff"

@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router';
 import GetStartedChecklist from '@/components/onboarding/GetStartedChecklist.vue';
 import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import SvTonalPageHeader from '@/components/ui/SvTonalPageHeader.vue';
+import { useRefinedExperience } from '@/design-system/experience';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
@@ -27,6 +29,8 @@ const branchExperience = useBranchExperienceStore();
 const hrWorkspace = useHrWorkspaceStore();
 const frontOfficeWorkspace = useFrontOfficeWorkspaceStore();
 const personnelExperience = usePersonnelExperienceStore();
+/** COR-UI08-UI12-VIS-001: Merchant Administrator, Branch, HR and Finance get the editorial journey. */
+const refined = useRefinedExperience();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -203,10 +207,43 @@ function reopen(): void {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <div :class="refined ? 'sv-r-page' : 'mx-auto max-w-5xl'">
     <template v-if="identity && userId">
+      <!--
+        COR-UI08-UI12-VIS-001: the refined accounts open on an editorial header that owns the h1,
+        then their three role principles as numbered cards — the boundaries the Scope already fixes,
+        stated before the first step rather than inside a dark slab.
+      -->
+      <template v-if="refined && orientation">
+        <SvTonalPageHeader
+          :eyebrow="orientation.eyebrow"
+          :title="orientation.title"
+          :description="orientation.description"
+          :context="orientation.context"
+        />
+        <ul
+          v-if="orientation.facts"
+          class="sv-r-grid sv-r-cols-3 mb-6"
+          aria-label="How this role works"
+        >
+          <li
+            v-for="(fact, index) in orientation.facts"
+            :key="fact.title"
+            class="sv-r-record flex items-start gap-4"
+          >
+            <span
+              aria-hidden="true"
+              class="sv-r-icon sv-r-icon--lg sv-r-tone-sun font-display text-base font-extrabold"
+            >0{{ index + 1 }}</span>
+            <span class="min-w-0">
+              <strong class="block font-display text-base font-extrabold text-sv-text-heading">{{ fact.title }}</strong>
+              <span class="sv-r-lede mt-1 block">{{ fact.body }}</span>
+            </span>
+          </li>
+        </ul>
+      </template>
       <SvOperationalHero
-        v-if="orientation"
+        v-else-if="orientation"
         class="mb-5"
         :eyebrow="orientation.eyebrow"
         :title="orientation.title"
@@ -230,7 +267,7 @@ function reopen(): void {
       </SvOperationalHero>
       <div
         v-if="dismissed"
-        class="rounded-card border border-border bg-surface p-6 text-center"
+        :class="refined ? 'sv-r-panel sv-r-panel--tonal sv-r-tone-sun mx-auto max-w-xl text-center' : 'rounded-card border border-border bg-surface p-6 text-center'"
       >
         <h2 class="font-display text-lg font-bold text-heading">
           Get-started is hidden

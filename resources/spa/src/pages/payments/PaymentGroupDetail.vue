@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
@@ -55,6 +54,8 @@ const canCorrect = computed(() => permissions.can('customer_payment.reference_co
 const duplicates = computed<DuplicateCheck[]>(() => group.value?.duplicate_checks ?? []);
 const isPending = computed(() => group.value?.status === 'pending_validation');
 const isCorrectable = computed(() => group.value?.status === 'correction_required');
+/** COR-UI08-UI12-VIS-001: whether this user has any decision open on this group (UX only). */
+const canDecide = computed(() => (isPending.value && (canValidate.value || canReject.value)) || (isCorrectable.value && canCorrect.value));
 const needsReason = computed(() => deciding.value === 'reject' || deciding.value === 'request-correction');
 
 const decisionTitle: Record<Decision, string> = {
@@ -146,8 +147,16 @@ onMounted(load);
 </script>
 
 <template>
+  <!--
+    COR-UI08-UI12-VIS-001 — a VERDICT DESK. The group reads as one statement: a fact strip (invoice,
+    whole-group total, maker, server status), then every component in a ledger with its masked
+    reference and amount, then any held duplicate references. The decision rail beside it carries
+    the only whole-group controls (capability-gated; the server enforces maker/checker, locks,
+    idempotency and step-up) and states what each decision does to receipts. No component-only
+    validation and no manual receipt issue exist.
+  -->
   <section
-    class="mx-auto max-w-6xl"
+    class="sv-r-page"
     data-testid="finance-payment-validation-detail"
   >
     <SvPageHeader
@@ -163,132 +172,204 @@ onMounted(load);
     >
       <p
         v-if="receiptIssued"
-        class="mb-4 rounded-lg bg-surface-alt px-3 py-2 text-sm text-heading"
+        class="mb-4 rounded-field border border-sv-success-border bg-sv-success-bg px-4 py-3 text-sm font-semibold text-sv-success-fg"
         role="status"
         data-testid="receipt-issued"
       >
         Validated. One original receipt has been issued for this group.
       </p>
 
-      <SvCard
-        as="section"
-        padding="md"
-      >
-        <div class="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <p class="text-xs text-text-muted">
-              Invoice {{ group?.invoice?.invoice_number ?? '—' }}
-            </p>
-            <p class="font-display text-lg font-semibold text-heading">
-              <SvMoney :formatted="group?.total?.formatted ?? null" />
-            </p>
-            <p class="mt-0.5 text-sm text-text-muted">
-              Recorded by {{ group?.maker?.name ?? '—' }} · Status: {{ group?.status }}
-            </p>
-          </div>
+      <div class="sv-r-grid sv-r-split">
+        <div class="sv-r-stack min-w-0">
+          <dl class="sv-r-strip">
+            <div>
+              <dt>Invoice</dt>
+              <dd>{{ group?.invoice?.invoice_number ?? '—' }}</dd>
+            </div>
+            <div>
+              <dt>Group total</dt>
+              <dd class="sv-r-figure-md">
+                <SvMoney :formatted="group?.total?.formatted ?? null" />
+              </dd>
+            </div>
+            <div>
+              <dt>Recorded by</dt>
+              <dd>{{ group?.maker?.name ?? '—' }}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd class="capitalize">
+                {{ group?.status?.replaceAll('_', ' ') }}
+              </dd>
+            </div>
+          </dl>
 
-          <!-- Finance checker whole-group decisions (no partial component validation) -->
-          <div
-            v-if="isPending"
-            class="flex flex-wrap gap-2"
-            data-testid="validation-actions"
+          <section
+            class="sv-r-ledger"
+            style="--sv-r-ledger-cols: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto"
+            aria-labelledby="payment-components-heading"
           >
-            <SvButton
-              v-if="canValidate"
-              data-testid="validate-open"
-              @click="openDecision('validate')"
+            <div class="sv-r-ledger__head">
+              <h2
+                id="payment-components-heading"
+                class="sv-r-title"
+              >
+                Components
+              </h2>
+              <span class="sv-r-chip">{{ (group?.components ?? []).length }} in this group · decided together</span>
+            </div>
+            <div
+              class="sv-r-ledger__colhead"
+              aria-hidden="true"
             >
-              Validate group
-            </SvButton>
-            <SvButton
-              v-if="canReject"
-              variant="secondary"
-              data-testid="reject-open"
-              @click="openDecision('reject')"
-            >
-              Reject
-            </SvButton>
-            <SvButton
-              v-if="canReject"
-              variant="ghost"
-              data-testid="request-correction-open"
-              @click="openDecision('request-correction')"
-            >
-              Request correction
-            </SvButton>
-          </div>
-          <div
-            v-else-if="isCorrectable && canCorrect"
-            data-testid="resubmit-actions"
+              <span>Method</span><span>Reference</span><span class="text-right">Amount</span><span />
+            </div>
+            <ul aria-label="Payment components">
+              <li
+                v-for="component in group?.components ?? []"
+                :key="component.id"
+                class="sv-r-ledger__row text-sm"
+              >
+                <span class="font-semibold capitalize text-heading">{{ component.method.replaceAll('_', ' ') }}</span>
+                <span class="sv-numeric text-text-muted">{{ component.reference_masked ?? 'No reference' }}</span>
+                <span class="sv-numeric font-display font-extrabold text-heading md:text-right"><SvMoney :formatted="component.amount?.formatted ?? null" /></span>
+                <span class="md:text-right">
+                  <SvButton
+                    v-if="isCorrectable && canCorrect"
+                    variant="ghost"
+                    data-testid="correct-reference-open"
+                    @click="correcting = { id: component.id, reference: '' }"
+                  >
+                    Correct reference
+                  </SvButton>
+                </span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Held duplicate references awaiting override (Phase 18A) -->
+          <section
+            v-if="duplicates.length > 0"
+            class="sv-r-panel sv-r-panel--tonal sv-r-tone-sun"
+            data-testid="duplicate-review"
           >
-            <SvButton
-              data-testid="resubmit-open"
-              @click="openDecision('resubmit')"
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-sun">
+              Held
+            </p>
+            <h2 class="sv-r-title mt-1">
+              Duplicate references held for review
+            </h2>
+            <ul class="sv-r-queue mt-4">
+              <li
+                v-for="check in duplicates"
+                :key="check.id"
+                class="sv-r-queue__row sv-r-tone-sun"
+              >
+                <span class="sv-r-queue__label capitalize">
+                  {{ check.method.replaceAll('_', ' ') }}
+                  <span class="sv-r-queue__detail normal-case">Reference ends {{ check.reference_masked ?? '—' }}</span>
+                </span>
+                <SvButton
+                  v-if="canOverride"
+                  variant="secondary"
+                  data-testid="override-open"
+                  @click="overriding = check"
+                >
+                  Override
+                </SvButton>
+              </li>
+            </ul>
+            <p
+              v-if="!canOverride"
+              class="sv-r-muted mt-3"
             >
-              Resubmit for validation
-            </SvButton>
-          </div>
+              Only Finance with the override capability can release a suspected duplicate.
+            </p>
+          </section>
         </div>
 
-        <ul
-          class="mt-4 flex flex-col gap-2"
-          aria-label="Payment components"
+        <aside
+          class="sv-r-stack-sm sv-r-sticky"
+          aria-label="Group decision"
         >
-          <li
-            v-for="component in group?.components ?? []"
-            :key="component.id"
-            class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-alt px-3 py-2 text-sm"
-          >
-            <span class="font-semibold text-heading">{{ component.method }}</span>
-            <span class="text-text-muted">{{ component.reference_masked ?? 'No reference' }}</span>
-            <span class="font-semibold text-heading"><SvMoney :formatted="component.amount?.formatted ?? null" /></span>
-            <SvButton
-              v-if="isCorrectable && canCorrect"
-              variant="ghost"
-              data-testid="correct-reference-open"
-              @click="correcting = { id: component.id, reference: '' }"
+          <section class="sv-r-panel">
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+              Checker decision
+            </p>
+            <h2 class="sv-r-title mt-1">
+              Decide the whole group
+            </h2>
+            <!-- Finance checker whole-group decisions (no partial component validation) -->
+            <div
+              v-if="isPending"
+              class="mt-4 flex flex-col gap-2"
+              data-testid="validation-actions"
             >
-              Correct reference
-            </SvButton>
-          </li>
-        </ul>
-      </SvCard>
-
-      <!-- Held duplicate references awaiting override (Phase 18A) -->
-      <SvCard
-        v-if="duplicates.length > 0"
-        as="section"
-        padding="md"
-        class="mt-4 border-l-4 border-l-sv-warning-border"
-        data-testid="duplicate-review"
-      >
-        <h2 class="font-display text-base font-semibold text-heading">
-          Duplicate references held for review
-        </h2>
-        <ul class="mt-2 flex flex-col gap-2">
-          <li
-            v-for="check in duplicates"
-            :key="check.id"
-            class="flex flex-wrap items-center justify-between gap-2 text-sm"
-          >
-            <span>{{ check.method }} · ends {{ check.reference_masked ?? '—' }}</span>
-            <SvButton
-              v-if="canOverride"
-              variant="secondary"
-              data-testid="override-open"
-              @click="overriding = check"
+              <SvButton
+                v-if="canValidate"
+                data-testid="validate-open"
+                @click="openDecision('validate')"
+              >
+                Validate group
+              </SvButton>
+              <SvButton
+                v-if="canReject"
+                variant="secondary"
+                data-testid="reject-open"
+                @click="openDecision('reject')"
+              >
+                Reject
+              </SvButton>
+              <SvButton
+                v-if="canReject"
+                variant="ghost"
+                data-testid="request-correction-open"
+                @click="openDecision('request-correction')"
+              >
+                Request correction
+              </SvButton>
+              <p
+                v-if="!canValidate && !canReject"
+                class="sv-r-muted"
+              >
+                Your role can view this group but cannot decide it.
+              </p>
+            </div>
+            <div
+              v-else-if="isCorrectable && canCorrect"
+              class="mt-4"
+              data-testid="resubmit-actions"
             >
-              Override
-            </SvButton>
-          </li>
-        </ul>
-        <p
-          v-if="!canOverride"
-          class="mt-2 text-sm text-text-muted"
-        >
-          Only Finance with the override capability can release a suspected duplicate.
-        </p>
-      </SvCard>
+              <SvButton
+                data-testid="resubmit-open"
+                @click="openDecision('resubmit')"
+              >
+                Resubmit for validation
+              </SvButton>
+            </div>
+            <p
+              v-else
+              class="sv-r-muted mt-3"
+            >
+              No decision is open for a group in this status.
+            </p>
+          </section>
+          <!-- Decision consequences only for someone who can decide; a viewer sees no checker vocabulary. -->
+          <section
+            v-if="canDecide"
+            class="sv-r-note sv-r-tone-teal"
+          >
+            <h2 class="sv-r-note__title">
+              What each decision does
+            </h2>
+            <ul class="sv-r-note__body list-disc space-y-1 pl-4">
+              <li>Validate issues exactly one original receipt for the group.</li>
+              <li>Reject or request correction issues no receipt and needs a reason.</li>
+              <li>The recording maker can never validate their own group.</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
     </SvStateBoundary>
 
     <!-- Whole-group decision confirmation -->

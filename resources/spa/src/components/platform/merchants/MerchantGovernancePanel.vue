@@ -27,11 +27,11 @@ import axios from 'axios';
 import { computed, nextTick, ref } from 'vue';
 import SvAlert from '@/components/ui/SvAlert.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePlatformMerchantStore, type PlatformMerchant } from '@/stores/platformMerchantStore';
 import {
@@ -150,106 +150,136 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
 </script>
 
 <template>
-  <!-- `SvCard` sets its own `data-testid`, so the panel's identity lives on its own wrapper. -->
-  <div data-testid="merchant-governance-panel">
-    <SvCard>
-      <component
-        :is="heading"
-        class="font-display text-lg font-bold text-heading"
-        data-testid="merchant-detail-name"
-      >
-        {{ merchant.name }}
-      </component>
-
-      <!--
-        Operational and billing status are two SEPARATE labelled cards, not two rows of one status
-        block. Conflating them is what makes an operator believe a payment reopened a merchant that
-        was suspended for policy reasons.
-      -->
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <div
-          class="rounded-control border border-border p-4"
-          data-testid="operational-status-card"
+  <!--
+    COR-UI08-UI12-VIS-001: four separate zones, because these are four different kinds of fact —
+    WHO the tenant is, its OPERATIONAL status (platform governance), its BILLING status (the billing
+    lifecycle), and the governance CONTROLS with their reasons and preservation guarantee. The
+    statuses keep their own tone and their own source line so they can never read as one state.
+  -->
+  <div
+    class="sv-r-stack"
+    data-testid="merchant-governance-panel"
+  >
+    <!-- Identity -->
+    <section class="sv-r-panel sv-r-panel--tonal sv-r-tone-warm">
+      <div class="flex flex-wrap items-start gap-4">
+        <span
+          aria-hidden="true"
+          class="sv-r-icon sv-r-icon--lg sv-r-tone-warm"
         >
-          <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Operational status
+          <component :is="navigationIcon('merchant')" />
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="sv-r-eyebrow">
+            Tenant identity
           </p>
-          <p
-            class="mt-2 font-semibold text-heading"
-            data-testid="operational-status"
+          <component
+            :is="heading"
+            class="sv-r-title-lg mt-1 break-words"
+            data-testid="merchant-detail-name"
           >
-            {{ operationalLabel(merchant.operational_status) }}
-          </p>
-          <SvStatusBadge
-            class="mt-2"
-            :label="operationalLabel(merchant.operational_status)"
-            :tone="operationalTone(merchant.operational_status)"
-            size="sm"
-            sr-prefix="Operational status:"
-          />
-          <p class="mt-2 text-xs text-text-muted">
-            Set by platform governance.
-          </p>
-        </div>
-
-        <div
-          class="rounded-control border border-border p-4"
-          data-testid="billing-status-card"
-        >
-          <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Billing status
-          </p>
-          <p
-            class="mt-2 font-semibold text-heading"
-            data-testid="detail-billing-status"
-          >
-            {{ billingLabel(merchant.billing_status) }}
-          </p>
-          <SvStatusBadge
-            class="mt-2"
-            :label="billingLabel(merchant.billing_status)"
-            :tone="billingTone(merchant.billing_status)"
-            size="sm"
-            sr-prefix="Billing status:"
-          />
-          <p class="mt-2 text-xs text-text-muted">
-            Set by the billing lifecycle. Governance actions here never change it.
-          </p>
+            {{ merchant.name }}
+          </component>
+          <dl class="mt-4 flex flex-wrap gap-2">
+            <div
+              v-if="merchant.registered_at"
+              class="sv-r-chip"
+            >
+              <dt>Registered</dt>
+              <dd class="font-bold">
+                {{ merchant.registered_at.slice(0, 10) }}
+              </dd>
+            </div>
+            <div
+              v-if="merchant.setup_completed_at"
+              class="sv-r-chip"
+            >
+              <dt>Setup completed</dt>
+              <dd class="font-bold">
+                {{ merchant.setup_completed_at.slice(0, 10) }}
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
+    </section>
 
-      <dl class="mt-4 grid gap-3 md:grid-cols-2">
+    <!--
+      Operational and billing status are two SEPARATE labelled cards, not two rows of one status
+      block. Conflating them is what makes an operator believe a payment reopened a merchant that
+      was suspended for policy reasons.
+    -->
+    <div class="sv-r-grid sv-r-cols-2">
+      <div
+        class="sv-r-record sv-r-record--spine sv-r-tone-warm pl-6"
+        data-testid="operational-status-card"
+      >
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+          Operational status
+        </p>
+        <p
+          class="sv-r-figure-md mt-3"
+          data-testid="operational-status"
+        >
+          {{ operationalLabel(merchant.operational_status) }}
+        </p>
+        <SvStatusBadge
+          class="mt-2"
+          :label="operationalLabel(merchant.operational_status)"
+          :tone="operationalTone(merchant.operational_status)"
+          size="sm"
+          sr-prefix="Operational status:"
+        />
+        <p class="sv-r-muted mt-3">
+          Set by platform governance.
+        </p>
+      </div>
+
+      <div
+        class="sv-r-record sv-r-record--spine sv-r-tone-teal pl-6"
+        data-testid="billing-status-card"
+      >
+        <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-teal">
+          Billing status
+        </p>
+        <p
+          class="sv-r-figure-md mt-3"
+          data-testid="detail-billing-status"
+        >
+          {{ billingLabel(merchant.billing_status) }}
+        </p>
+        <SvStatusBadge
+          class="mt-2"
+          :label="billingLabel(merchant.billing_status)"
+          :tone="billingTone(merchant.billing_status)"
+          size="sm"
+          sr-prefix="Billing status:"
+        />
+        <p class="sv-r-muted mt-3">
+          Set by the billing lifecycle. Governance actions here never change it.
+        </p>
+      </div>
+    </div>
+
+    <!-- Reasons and controls -->
+    <section
+      class="sv-r-panel sv-r-panel--dashed"
+      aria-label="Governance controls"
+    >
+      <p class="sv-r-eyebrow">
+        Governance controls
+      </p>
+      <dl
+        v-if="merchant.billing_status_reason || merchant.suspension_reason"
+        class="sv-r-facts sv-r-facts--2 mt-2"
+      >
         <div v-if="merchant.billing_status_reason">
-          <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Billing status reason
-          </dt>
-          <dd class="mt-1 text-text">
-            {{ merchant.billing_status_reason }}
-          </dd>
+          <dt>Billing status reason</dt>
+          <dd>{{ merchant.billing_status_reason }}</dd>
         </div>
         <div v-if="merchant.suspension_reason">
-          <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Last governance reason
-          </dt>
-          <dd class="mt-1 text-text">
-            {{ merchant.suspension_reason }}
-          </dd>
-        </div>
-        <div v-if="merchant.registered_at">
-          <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Registered
-          </dt>
-          <dd class="mt-1 text-text">
-            {{ merchant.registered_at.slice(0, 10) }}
-          </dd>
-        </div>
-        <div v-if="merchant.setup_completed_at">
-          <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-            Setup completed
-          </dt>
-          <dd class="mt-1 text-text">
-            {{ merchant.setup_completed_at.slice(0, 10) }}
-          </dd>
+          <dt>Last governance reason</dt>
+          <dd>{{ merchant.suspension_reason }}</dd>
         </div>
       </dl>
 
@@ -261,7 +291,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
         {{ actionError }}
       </p>
 
-      <div class="mt-6 flex flex-wrap gap-3">
+      <div class="mt-5 flex flex-wrap gap-3">
         <SvButton
           v-if="canGovern(merchant, 'suspend')"
           variant="destructive"
@@ -288,76 +318,75 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
       </div>
 
       <p
-        class="mt-4 text-xs text-text-muted"
+        class="sv-r-muted mt-4"
         data-testid="governance-preservation-notice"
       >
         Governance actions change operational status only. Nothing is deleted: records, invoices and
         the append-only audit trail are preserved, and a billing suspension is cleared by the billing
         lifecycle rather than by reactivation here.
       </p>
-
-      <!-- Governance confirmation: mandatory reason + impact preview -->
-      <SvDialog
-        :open="pendingAction !== null"
-        :title="modalTitle"
-        description="This changes the merchant’s operational status only — it never affects billing. A reason is required and a fresh security step-up may be requested."
-        @close="closeModal"
+    </section>
+    <!-- Governance confirmation: mandatory reason + impact preview -->
+    <SvDialog
+      :open="pendingAction !== null"
+      :title="modalTitle"
+      description="This changes the merchant’s operational status only — it never affects billing. A reason is required and a fresh security step-up may be requested."
+      @close="closeModal"
+    >
+      <form
+        class="flex flex-col gap-4"
+        novalidate
+        @submit.prevent="confirm"
       >
-        <form
-          class="flex flex-col gap-4"
-          novalidate
-          @submit.prevent="confirm"
+        <SvAlert
+          severity="warning"
+          title="What this will do"
+          data-testid="governance-impact-preview"
         >
-          <SvAlert
-            severity="warning"
-            title="What this will do"
-            data-testid="governance-impact-preview"
-          >
-            <ul class="list-disc space-y-1 pl-5">
-              <li
-                v-for="line in impactLines"
-                :key="line"
-              >
-                {{ line }}
-              </li>
-            </ul>
-          </SvAlert>
+          <ul class="list-disc space-y-1 pl-5">
+            <li
+              v-for="line in impactLines"
+              :key="line"
+            >
+              {{ line }}
+            </li>
+          </ul>
+        </SvAlert>
 
-          <SvTextArea
-            id="governance-reason"
-            label="Reason"
-            :model-value="reason"
-            placeholder="Why is this action being taken?"
-            required
-            @update:model-value="reason = $event"
-          />
-          <p
-            v-if="actionError"
-            class="text-sm text-error"
-            role="alert"
+        <SvTextArea
+          id="governance-reason"
+          label="Reason"
+          :model-value="reason"
+          placeholder="Why is this action being taken?"
+          required
+          @update:model-value="reason = $event"
+        />
+        <p
+          v-if="actionError"
+          class="text-sm text-error"
+          role="alert"
+        >
+          {{ actionError }}
+        </p>
+        <div class="flex justify-end gap-3">
+          <SvButton
+            variant="secondary"
+            type="button"
+            @click="closeModal"
           >
-            {{ actionError }}
-          </p>
-          <div class="flex justify-end gap-3">
-            <SvButton
-              variant="secondary"
-              type="button"
-              @click="closeModal"
-            >
-              Cancel
-            </SvButton>
-            <SvButton
-              type="submit"
-              :variant="pendingAction === 'reactivate' ? 'primary' : 'destructive'"
-              :loading="submitting"
-              :disabled="confirmDisabled"
-              data-testid="confirm-governance"
-            >
-              Confirm
-            </SvButton>
-          </div>
-        </form>
-      </SvDialog>
-    </SvCard>
+            Cancel
+          </SvButton>
+          <SvButton
+            type="submit"
+            :variant="pendingAction === 'reactivate' ? 'primary' : 'destructive'"
+            :loading="submitting"
+            :disabled="confirmDisabled"
+            data-testid="confirm-governance"
+          >
+            Confirm
+          </SvButton>
+        </div>
+      </form>
+    </SvDialog>
   </div>
 </template>

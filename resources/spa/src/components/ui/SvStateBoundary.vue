@@ -20,7 +20,7 @@ const emit = defineEmits<{
     role="status"
     aria-busy="true"
     aria-label="Loading…"
-    class="space-y-3"
+    class="sv-state sv-state--loading space-y-3"
   >
     <div class="h-4 w-3/4 animate-pulse rounded-control bg-surface-alt" />
     <div class="h-4 w-1/2 animate-pulse rounded-control bg-surface-alt" />
@@ -30,15 +30,15 @@ const emit = defineEmits<{
   <!-- Empty state: warm, with primary action (Plan §6.4). -->
   <div
     v-else-if="state === 'empty'"
-    class="flex flex-col items-center py-12 text-center"
+    class="sv-state sv-state--empty flex flex-col items-center py-12 text-center"
   >
     <div
       aria-hidden="true"
-      class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream text-3xl"
+      class="sv-state__icon mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream text-3xl"
     >
       <SvIconDocument class="h-8 w-8" />
     </div>
-    <p class="text-sm font-medium text-text">
+    <p class="sv-state__message text-sm font-medium text-text">
       {{ emptyMessage ?? 'Nothing here yet.' }}
     </p>
     <button
@@ -54,12 +54,12 @@ const emit = defineEmits<{
   <!-- Error state: retry affordance (Plan §6.4). -->
   <div
     v-else-if="state === 'error'"
-    class="flex flex-col items-center py-12 text-center"
+    class="sv-state sv-state--error flex flex-col items-center py-12 text-center"
     role="alert"
   >
     <div
       aria-hidden="true"
-      class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-3xl dark:bg-red-900/20"
+      class="sv-state__icon mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-3xl dark:bg-red-900/20"
     >
       <SvIconWarning class="h-8 w-8" />
     </div>

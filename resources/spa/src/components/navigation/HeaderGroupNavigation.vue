@@ -313,8 +313,8 @@ onBeforeUnmount(() => {
           type="button"
           :aria-expanded="openId === group.id"
           :aria-controls="group.id"
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-control px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
-          :class="activeGroupName === group.name ? 'bg-white/15 font-semibold' : ''"
+          class="sv-nav-group-trigger sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-control px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
+          :class="activeGroupName === group.name ? 'sv-nav-group-trigger--current bg-white/15 font-semibold' : ''"
           :data-testid="`nav-group-trigger-${group.id}`"
           @click="toggle(group.id)"
           @keydown="onTriggerKeydown($event, group.id)"
@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
         <ul
           v-if="openId === group.id"
           :id="group.id"
-          class="absolute left-0 z-sv-popover mt-2 max-h-[70vh] w-max min-w-[14rem] max-w-[calc(100vw-2rem)] overflow-y-auto rounded-card border border-sv-border bg-sv-surface-raised py-1 shadow-overlay"
+          class="sv-nav-panel absolute left-0 z-sv-popover mt-2 max-h-[70vh] w-max min-w-[14rem] max-w-[calc(100vw-2rem)] overflow-y-auto rounded-card border border-sv-border bg-sv-surface-raised py-1 shadow-overlay"
           :aria-label="group.name"
           @keydown="onPanelKeydown($event, group.id)"
         >
@@ -398,7 +398,7 @@ onBeforeUnmount(() => {
           type="button"
           :aria-expanded="openId === 'nav-group-overflow'"
           aria-controls="nav-group-overflow"
-          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-control px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
+          class="sv-nav-group-trigger sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-control px-3 py-2 text-sm font-medium text-white hover:bg-white/10"
           data-testid="nav-overflow-trigger"
           @click="toggle('nav-group-overflow')"
           @keydown="onTriggerKeydown($event, 'nav-group-overflow')"
@@ -413,7 +413,7 @@ onBeforeUnmount(() => {
         <div
           v-if="openId === 'nav-group-overflow'"
           id="nav-group-overflow"
-          class="absolute right-0 z-sv-popover mt-2 max-h-[70vh] w-max min-w-[14rem] max-w-[calc(100vw-2rem)] overflow-y-auto rounded-card border border-sv-border bg-sv-surface-raised py-1 shadow-overlay"
+          class="sv-nav-panel absolute right-0 z-sv-popover mt-2 max-h-[70vh] w-max min-w-[14rem] max-w-[calc(100vw-2rem)] overflow-y-auto rounded-card border border-sv-border bg-sv-surface-raised py-1 shadow-overlay"
           data-testid="nav-overflow-panel"
           @keydown="onPanelKeydown($event, 'nav-group-overflow')"
         >
@@ -421,7 +421,7 @@ onBeforeUnmount(() => {
             v-for="group in overflowGroups"
             :key="`overflow-${group.id}`"
           >
-            <p class="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
+            <p class="sv-nav-group-label px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-sv-text-muted">
               {{ group.name }}
             </p>
             <ul :aria-label="group.name">
@@ -476,7 +476,7 @@ onBeforeUnmount(() => {
       >
         <p
           :id="`${group.id}-label`"
-          class="px-3 pb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-sv-text-muted"
+          class="sv-nav-group-label px-3 pb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-sv-text-muted"
         >
           {{ group.name }}
         </p>

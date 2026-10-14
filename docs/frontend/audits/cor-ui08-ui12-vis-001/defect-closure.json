@@ -1,0 +1,207 @@
+{
+  "schema": "cor-ui08-ui12-vis-001.defect-closure.v1",
+  "note": "One record per unique root cause (manifesto §0). Root-cause families RC-01…RC-08 cover the product-owner design rejection; COR-DEF-* records are concrete defects found and closed during this phase.",
+  "families": [
+    {
+      "id": "RC-01",
+      "title": "Shell and navigation without personality",
+      "observed": "Flat full-height sidebar / plain header strip on a cream canvas; active entry a faint tint (before frames, all 82 pages).",
+      "root_cause": "Shared AppShell and navigation styled once for all eight accounts; no scoped experience layer existed.",
+      "fix": "Experience scope on <html> for the five accounts; floating sidebar panel with filled active pill; Super Administrator Deep Earth header capsule with pill groups; refined tokens.",
+      "files": ["resources/spa/src/design-system/experience.ts", "resources/spa/src/components/layout/AppShell.vue", "resources/spa/src/components/navigation/HeaderGroupNavigation.vue", "resources/spa/src/styles/refined-experience.css", "resources/spa/src/design-system/tokens.json"],
+      "affected_pages": 82,
+      "tests": ["tests/e2e/cor-ui08-ui12-visual-regression.spec.ts (experience scope, 8 accounts)", "tests/e2e/ui-16-visual-regression.spec.ts (shell archetypes)"],
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-02",
+      "title": "Generic page header + card stack",
+      "observed": "Every page opened with the same boxed header and a vertical stack of equal cards.",
+      "root_cause": "SvPageHeader/SvCard were the only composition primitives; no layout vocabulary for splits, rails, feature panels.",
+      "fix": "Editorial header treatment (wash, eyebrow dot, large title) and the sv-r composition kit (splits, rails, feature panels, notes, steps).",
+      "files": ["resources/spa/src/styles/refined-components.css", "resources/spa/src/components/refined/SvPanel.vue", "resources/spa/src/components/refined/SvFeaturePanel.vue"],
+      "affected_pages": 82,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-03",
+      "title": "Records as flat rows or clickable cards",
+      "observed": "Lists rendered as identical cards or full-width buttons with a status word.",
+      "root_cause": "No ledger, lane, timeline or ticket anatomy in the design system.",
+      "fix": "Ledger (column band, hover rows, md column headers), lifecycle lanes, timelines, ticket and spine records, queue rows.",
+      "affected_pages": 49,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-04",
+      "title": "Undifferentiated KPI grid",
+      "observed": "Dashboards and summaries as four equal tiles.",
+      "root_cause": "Single tile primitive with no hierarchy.",
+      "fix": "Dark feature panel leading an asymmetric split; SvKpiCard with tone, icon and drill-through; per-currency statement cards.",
+      "files": ["resources/spa/src/components/refined/SvKpiCard.vue"],
+      "affected_pages": 14,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-05",
+      "title": "Forms as one long column",
+      "observed": "Setup, profile, availability and compensation forms as an undivided field list.",
+      "root_cause": "No fieldset/step/preview composition.",
+      "fix": "Grouped fieldsets with toned legends, numbered steps, preview rails, identity cards beside editable fields.",
+      "affected_pages": 10,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-06",
+      "title": "States without design",
+      "observed": "Empty and error states as grey text in a bordered box.",
+      "root_cause": "SvStateBoundary/SvEmptyState had no refined treatment.",
+      "fix": "State classes on SvStateBoundary/SvEmptyState and a soft icon-well panel in the refined experience.",
+      "files": ["resources/spa/src/components/ui/SvStateBoundary.vue", "resources/spa/src/components/ui/SvEmptyState.vue"],
+      "affected_pages": 82,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-07",
+      "title": "Detail pages as label/value lists",
+      "observed": "Account, merchant, staff, invoice and compensation details as two-column definition lists.",
+      "root_cause": "No identity/statement/contract anatomy.",
+      "fix": "Dark identity cards, statement documents, numbered contract clauses, fact strips.",
+      "affected_pages": 13,
+      "status": "local_complete"
+    },
+    {
+      "id": "RC-08",
+      "title": "Dialogs and toasts without layering",
+      "observed": "Flat white sheet over a flat scrim.",
+      "root_cause": "Overlays shared one presentation with all accounts.",
+      "fix": "Refined dialog sheet (blurred scrim, hairline, radius-shell, float shadow, warm heading wash, sunken footer, rise-in under no-preference) and refined toasts; markup and focus behaviour unchanged.",
+      "files": ["resources/spa/src/styles/refined-experience.css"],
+      "tests": ["tests/e2e/cor-ui08-ui12-visual-regression.spec.ts (overlay frame)"],
+      "status": "local_complete"
+    }
+  ],
+  "defects": [
+    {
+      "id": "COR-DEF-001",
+      "observed": "Finance exports showed '0 rows' for a processing export whose row_count is null.",
+      "evidence": "populated capture merchant_finance.exports (pre-fix frame reviewed in session).",
+      "affected_files": ["resources/spa/src/pages/finance/FinanceExportList.vue"],
+      "root_cause": "Template used `row_count ?? 0`, fabricating a zero the server never reported (pre-existing in UI-12).",
+      "fix": "Render 'Not counted yet' when row_count is null.",
+      "tests": "npx vitest run pages/finance (45 passed); populated capture re-run",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-002",
+      "observed": "Raw ISO timestamps on the Finance adjustments ledger and the Super Administrator preferred-fee rules.",
+      "evidence": "populated frames merchant_finance.compensation-liabilities and super_administrator.billing-preferred-personnel-fees.",
+      "affected_files": ["resources/spa/src/pages/finance/CompensationLiabilities.vue", "resources/spa/src/pages/platform/billing/PreferredFeeRulesSection.vue"],
+      "root_cause": "Templates interpolated the server string directly instead of the Nairobi formatter.",
+      "fix": "formatDateTime() from utils/dates.",
+      "tests": "npx vitest run pages/finance pages/platform (45 + 191 passed)",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-003",
+      "observed": "HR compensation detail named the commission rule by its ULID.",
+      "affected_files": ["resources/spa/src/stores/compensationStore.ts", "resources/spa/src/pages/hr/Compensation.vue", "resources/spa/src/pages/hr/CompensationDetail.vue"],
+      "root_cause": "The rule description lived as a local function in Compensation.vue only.",
+      "fix": "Extracted describeCommissionRule() into the store (display only) and used it on both pages; no duplicated logic.",
+      "tests": "npx vitest run pages/hr stores/compensationStore (86 passed)",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-004",
+      "observed": "Finance cash-up variance wrapped onto two lines at 1440.",
+      "root_cause": "A redundant inline 'Variance' label inside a narrow ledger column.",
+      "fix": "Label visible only below md (sr-only at md+), matching the expected/counted cells.",
+      "affected_files": ["resources/spa/src/pages/finance/CashUpReviewList.vue"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-005",
+      "observed": "The UI-16 visual negative control recoloured `.sv-operational-hero`, which no longer renders on the Finance dashboard.",
+      "root_cause": "The redesigned dashboard replaced the hero with the refined feature panel, so the control would perturb nothing and fail for the wrong reason.",
+      "fix": "Control now recolours `.sv-r-feature`; verified FAILING the comparison as intended (UI-16 suites 78/78).",
+      "affected_files": ["tests/e2e/ui-16-visual-regression.spec.ts"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-006",
+      "observed": "vue-tsc: QueueReadOnly lanes Map keyed by string passed to queueStatusLabel(QueueEntryStatus).",
+      "root_cause": "Wave D lane grouping typed its key too loosely.",
+      "fix": "Key typed as the entry status union.",
+      "affected_files": ["resources/spa/src/pages/branch/QueueReadOnly.vue"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-007",
+      "observed": "Internal platform access table overflowed inside a split layout at 1440.",
+      "root_cause": "A wide roster table placed in the narrow main column of a split.",
+      "fix": "Stacked layout with the privileges note first.",
+      "affected_files": ["resources/spa/src/pages/platform/InternalPlatformAccess.vue"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-008",
+      "observed": "Full Playwright: payment.spec.ts › 'hides the override control without the capability and shows no receipt/validate action' failed — the page body contained 'validate'/'receipt'.",
+      "root_cause": "The redesigned decision rail always rendered its 'What each decision does' note, exposing checker vocabulary to a viewer who cannot decide (a UX regression against the UI-12/Phase 18A contract).",
+      "fix": "The note renders only when the user has a decision open (`canDecide`); a viewer sees neutral copy.",
+      "affected_files": ["resources/spa/src/pages/payments/PaymentGroupDetail.vue"],
+      "tests": "npx vitest run src/pages/payments (9 passed); payment.spec.ts re-run on the rebuilt source — see test-matrix.json",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-009",
+      "observed": "Full Playwright: phase-20a-billing.spec.ts › plans and prices tests timed out looking for the 'Prices & entitlements' button.",
+      "root_cause": "The redesign renamed the plan selector's accessible name per page ('Price schedule' / 'Entitlements'), breaking the Phase 20A contract.",
+      "fix": "Both pages keep the original visible and accessible label 'Prices & entitlements' (no aria-label mismatch, WCAG 2.5.3).",
+      "affected_files": ["resources/spa/src/pages/platform/PlanPrices.vue", "resources/spa/src/pages/platform/PlansAndEntitlements.vue"],
+      "tests": "CommercialPages.spec.ts passed; phase-20a-billing.spec.ts re-run on the rebuilt source — see test-matrix.json",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-010",
+      "observed": "Full Playwright: phase-23-release-audit axe failed color-contrast on many refined pages; measured colours were blends (e.g. orange #e46b17 / #f97e29 instead of token #F97316, muted #8f96a2 instead of token #9CA3AF), ratios 4.12–4.49.",
+      "root_cause": "The refined entrance animation faded opacity 0→1; the release audit does not force reduced motion, so axe sampled every text and button mid-fade, blended with the canvas. The token pairs themselves meet AA at rest.",
+      "fix": "sv-refined-rise is transform-only (translateY), so every frame renders full token colour; still disabled under reduced motion.",
+      "affected_files": ["resources/spa/src/styles/refined-experience.css"],
+      "tests": "phase-23-release-audit axe re-run on the rebuilt source — see test-matrix.json",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-011",
+      "observed": "Full Playwright: REM-SCR-002B branch calendar determinism (2 tests) found no `row` for the created exception; axe definition-list/dlitem on the HR dashboard and subscription invoice detail.",
+      "root_cause": "The redesign changed SEMANTICS, not just look: calendar exceptions became a plain list (the contract reads table rows/cells), the HR readiness dl wrapped dt/dd in an extra div, the invoice totals dl nested the date grid inside it. The compensation contract clauses had a non-dt/dd child too (found by inspection).",
+      "fix": "Calendar tiles carry ARIA table semantics (table/row/cell + hidden column headers); dl groups hold only dt/dd (decorative bar as an aria-hidden dd, dates in their own dl, clause number inside the dt).",
+      "affected_files": ["resources/spa/src/pages/branch/BranchCalendar.vue", "resources/spa/src/pages/hr/HrDashboard.vue", "resources/spa/src/pages/merchant/SubscriptionInvoiceDetail.vue", "resources/spa/src/pages/hr/CompensationDetail.vue"],
+      "tests": "re-run of phase-23-release-audit, ui-09, ui-11, rem-dep-003, ui-16 axe; new populated axe sweep (82 pages × light 1440 + dark 360) — see test-matrix.json",
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-012",
+      "observed": "Full Playwright: account pages overflowed at 1025px (scrollWidth 1115/1157 > 1025) in ui-09, ui-10 and the UI-16 sweep; Branch read-only invoices lost the `main article` record card the UI-10 contract measures.",
+      "root_cause": "The account grid went two-column on a viewport breakpoint although the floating sidebar leaves ~677px of content at 1025px, so the sessions table overflowed; the finance read view rendered records as list items only.",
+      "fix": "Account grid and all kit grids use the `sv-main` container query (two-column from 52rem / 56rem of real content); Branch financial records are <article> elements inside the ledger list.",
+      "affected_files": ["resources/spa/src/styles/refined-components.css", "resources/spa/src/styles/refined-experience.css", "resources/spa/src/pages/branch/FinancialVisibility.vue"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-013",
+      "observed": "Full Playwright: 'active navigation stays AA through both theme transitions' measured a 1:1 midpoint; UI-16 first-paint test expected the standard light canvas.",
+      "root_cause": "The refined nav entry (and pill actions) re-introduced a background-color transition while the text colour switches instantly — the defect UI-16 had closed. The first-paint assertion encoded the standard canvas, not the refined linen canvas the owner-directed redesign introduces.",
+      "fix": "Nav entries and pill actions transition transform only. The UI-16 test asserts the refined light canvas (rgb 245 243 239) for the five accounts and the standard one elsewhere — still failing any dark first paint.",
+      "affected_files": ["resources/spa/src/styles/refined-experience.css", "resources/spa/src/styles/refined-components.css", "tests/e2e/ui-16-responsive-accessibility-theme.spec.ts"],
+      "status": "local_complete"
+    },
+    {
+      "id": "COR-DEF-014",
+      "observed": "Full Playwright: 200% CSS-zoom overflow in phase-20e/20f/20g/20h; platform access overflowed 5px at 1025px.",
+      "root_cause": "At 2x CSS zoom a 1280px desktop lays out in 640 CSS px while media queries still report desktop: the refined top bar sits in the content column with a non-wrapping utility cluster, page actions were set not to shrink, kit grids keyed off the viewport, and pill actions could not shrink. The access roster's panel padding pushed a six-column table over at exactly 1025px.",
+      "fix": "At desktop media the top bar may wrap (location truncates first, 12rem basis); page actions may shrink/wrap; kit grids answer to the content container; pill actions cap at 100%; access roster panels use compact padding. Measured with a temporary diagnostic (deleted): 0px overflow on five accounts at 2x zoom. Visual baselines unchanged (107/107 compare-only).",
+      "affected_files": ["resources/spa/src/styles/refined-experience.css", "resources/spa/src/styles/refined-components.css", "resources/spa/src/pages/platform/InternalPlatformAccess.vue"],
+      "status": "local_complete"
+    }
+  ]
+}

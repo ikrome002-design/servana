@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvCard from '@/components/ui/SvCard.vue';
+import { navigationIcon } from '@/navigation/navigationIcons';
 import SvEmptyState from '@/components/ui/SvEmptyState.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
@@ -309,6 +309,14 @@ onMounted(() => {
         class="promotions__panel"
       >
         <div class="promotions__toolbar">
+          <div class="min-w-0">
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-warm">
+              Campaigns
+            </p>
+            <p class="sv-r-muted mt-1">
+              Each campaign shows its discount, who it targets and when it applies.
+            </p>
+          </div>
           <SvButton
             variant="primary"
             @click="showPromotionForm = !showPromotionForm"
@@ -414,19 +422,36 @@ onMounted(() => {
             v-for="p in promotions.promotions"
             :key="p.id"
           >
-            <SvCard>
+            <!--
+              COR-UI08-UI12-VIS-001: a campaign card — emblem, name and state, the discount set as
+              the card's figure, then eligibility and cadence as labelled facts and the audited
+              lifecycle actions in a footer.
+            -->
+            <article class="promotions__card sv-r-record">
               <div class="promotions__item">
                 <div class="min-w-0 flex-1">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="promotions__item-title">
-                      {{ p.name }}
-                    </h3>
-                    <SvStatusBadge
-                      size="sm"
-                      :label="statusLabel(p.status)"
-                      :tone="offerTone(p.status)"
-                    />
+                  <div class="flex items-start gap-3">
+                    <span
+                      aria-hidden="true"
+                      class="sv-r-icon sv-r-icon--lg sv-r-tone-warm"
+                    >
+                      <component :is="navigationIcon('promotion')" />
+                    </span>
+                    <div class="min-w-0">
+                      <h3 class="promotions__item-title">
+                        {{ p.name }}
+                      </h3>
+                      <SvStatusBadge
+                        class="mt-1"
+                        size="sm"
+                        :label="statusLabel(p.status)"
+                        :tone="offerTone(p.status)"
+                      />
+                    </div>
                   </div>
+                  <p class="promotions__figure">
+                    {{ describeValue(p) }}
+                  </p>
                   <!-- UI16-CONTENT-001: labelled facts instead of "KES … · scope token · status token". -->
                   <dl class="promotions__facts">
                     <div>
@@ -454,7 +479,7 @@ onMounted(() => {
                   </SvButton>
                 </div>
               </div>
-            </SvCard>
+            </article>
           </li>
         </ul>
       </div>
@@ -466,6 +491,14 @@ onMounted(() => {
         class="promotions__panel"
       >
         <div class="promotions__toolbar">
+          <div class="min-w-0">
+            <p class="sv-r-eyebrow sv-r-eyebrow--dot sv-r-tone-green">
+              Offer windows
+            </p>
+            <p class="sv-r-muted mt-1">
+              Each offer shows its free period, its effective window and who it targets.
+            </p>
+          </div>
           <SvButton
             variant="primary"
             @click="showOfferForm = !showOfferForm"
@@ -562,18 +595,43 @@ onMounted(() => {
             v-for="o in offers.offers"
             :key="o.id"
           >
-            <SvCard>
+            <!--
+              COR-UI08-UI12-VIS-001: an offer-window card — the free period set as the figure, its
+              effective window drawn as a labelled band (start, then end or "onward"), the target
+              and state beside it. No utilisation total is shown: none is served.
+            -->
+            <article class="promotions__card sv-r-record">
               <div class="promotions__item">
                 <div class="min-w-0 flex-1">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="promotions__item-title">
-                      {{ o.name }}
-                    </h3>
-                    <SvStatusBadge
-                      size="sm"
-                      :label="statusLabel(o.status)"
-                      :tone="offerTone(o.status)"
-                    />
+                  <div class="flex items-start gap-3">
+                    <span
+                      aria-hidden="true"
+                      class="sv-r-icon sv-r-icon--lg sv-r-tone-green"
+                    >
+                      <component :is="navigationIcon('calendar')" />
+                    </span>
+                    <div class="min-w-0">
+                      <h3 class="promotions__item-title">
+                        {{ o.name }}
+                      </h3>
+                      <SvStatusBadge
+                        class="mt-1"
+                        size="sm"
+                        :label="statusLabel(o.status)"
+                        :tone="offerTone(o.status)"
+                      />
+                    </div>
+                  </div>
+                  <p class="promotions__figure">
+                    {{ o.free_period_days }} days
+                  </p>
+                  <div
+                    class="promotions__window"
+                    aria-hidden="true"
+                  >
+                    <span>{{ o.effective_from }}</span>
+                    <span class="promotions__window-bar" />
+                    <span>{{ o.effective_to ?? 'Onward' }}</span>
                   </div>
                   <dl class="promotions__facts">
                     <div>
@@ -601,7 +659,7 @@ onMounted(() => {
                   </SvButton>
                 </div>
               </div>
-            </SvCard>
+            </article>
           </li>
         </ul>
       </div>
@@ -641,11 +699,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/*
+ * COR-UI08-UI12-VIS-001: campaign and offer-window cards in a two-column catalogue, a form that
+ * opens as a raised two-column panel, and the facts as a sunken labelled band. Tokens only.
+ */
 .promotions__header {
   margin-bottom: 1.5rem;
 }
 .promotions__title {
-  font-family: var(--font-heading, 'Manrope', sans-serif);
+  font-family: var(--sv-font-family-display);
   font-size: 1.5rem;
 }
 .promotions__subtitle {
@@ -666,53 +728,110 @@ onMounted(() => {
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  color: var(--color-text, inherit);
+  color: var(--sv-color-text-primary);
 }
 .promotions__tab--active {
   border-bottom-color: var(--sv-color-brand-primary);
   font-weight: 600;
 }
 .promotions__toolbar {
-  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
 }
 .promotions__form {
   display: grid;
-  gap: 0.75rem;
-  max-width: 40rem;
+  gap: 1rem;
   margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+  border-radius: var(--sv-radius-panel);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--sv-color-brand-primary) 10%, transparent), transparent 45%),
+    var(--sv-color-surface-raised);
+  box-shadow: var(--sv-shadow-panel);
+}
+@media (min-width: 768px) {
+  .promotions__form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .promotions__form > :first-child,
+  .promotions__form > .promotions__error,
+  .promotions__form > button {
+    grid-column: 1 / -1;
+  }
+  .promotions__form > button {
+    justify-self: start;
+  }
 }
 .promotions__list {
   list-style: none;
   padding: 0;
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
+}
+@media (min-width: 1025px) {
+  .promotions__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.promotions__card {
+  height: 100%;
 }
 .promotions__item {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 1rem;
-  flex-wrap: wrap;
+  height: 100%;
 }
 .promotions__item-title {
-  font-family: var(--sv-font-family-display, 'Manrope', sans-serif);
+  font-family: var(--sv-font-family-display);
   font-size: 1.0625rem;
   font-weight: 800;
   color: var(--sv-color-text-heading);
 }
-/* UI16-CONTENT-001: three labelled facts in a quiet tinted strip, wrapping on narrow screens. */
+.promotions__figure {
+  margin-top: 1rem;
+  font-family: var(--sv-font-family-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sv-color-text-heading);
+}
+.promotions__window {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sv-color-text-secondary);
+}
+.promotions__window-bar {
+  flex: 1;
+  height: 0.375rem;
+  border-radius: var(--sv-radius-pill);
+  background: linear-gradient(90deg, var(--sv-color-growth), color-mix(in srgb, var(--sv-color-growth) 20%, transparent));
+}
+/* UI16-CONTENT-001: labelled facts in a quiet sunken band, wrapping on narrow screens. */
 .promotions__facts {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.75rem;
-  margin-top: 0.75rem;
-  padding: 0.625rem 0.875rem;
-  border-radius: var(--sv-radius-control);
-  background: var(--sv-color-surface-subtle);
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--sv-radius-field);
+  background: var(--sv-color-refined-sunken);
+  border: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
 }
 .promotions__facts dt {
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--sv-color-text-muted);
 }
@@ -729,7 +848,13 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: var(--sv-border-width-hairline) solid var(--sv-color-refined-hairline);
+}
+.promotions__actions:empty {
+  display: none;
 }
 .promotions__modal-actions {
   display: flex;

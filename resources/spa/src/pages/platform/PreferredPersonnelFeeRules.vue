@@ -23,7 +23,7 @@ const { can } = useCan();
 
 <template>
   <div
-    class="mx-auto w-full max-w-6xl"
+    class="sv-r-page"
     data-testid="platform-preferred-fees-screen"
   >
     <SvPageHeader
@@ -42,6 +42,16 @@ const { can } = useCan();
           <p data-testid="preferred-fees-immutability-note">
             Existing invoices never recalculate when a rule changes — each invoice keeps the fee terms that were in force when it was issued. Branch users can see the effective rule but cannot edit it.
           </p>
+        </template>
+        <template #rail>
+          <div class="sv-r-note sv-r-tone-sun">
+            <p class="sv-r-note__title">
+              Money truth
+            </p>
+            <p class="sv-r-note__body">
+              A rule describes terms only. The fee charged on an invoice is computed and frozen by the server when that invoice is issued.
+            </p>
+          </div>
         </template>
       </PlatformRuleWorkspace>
     </template>
