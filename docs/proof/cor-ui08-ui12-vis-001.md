@@ -109,3 +109,45 @@ by exact path from HEAD; no predecessor file is part of the handoff.
 
 `claude-to-codex-handoff.json` / `.md` — NUL-safe path/status/size/SHA-256 inventory; manifest
 digest in the `.md`.
+
+## Codex release verification and COR-REL-002
+
+PR #69 publishes one corrective code phase. Codex authenticated the frozen 651-path handoff,
+reviewed six references and 36 before/after comparisons, and verified 510 frame hashes.
+The original manifest remains unchanged; current Codex deltas are recorded independently in
+`docs/frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json`.
+
+First hosted run `38505857221`, head `6f25b07`, retained its real failure: Backend reported
+1 failed / 5 skipped / 3,639 passed (53,025 assertions), with `UiIconSourceGuardTest` identifying
+three date-separator glyphs. The local guard reproduced exactly 1 failed / 16 passed.
+Root cause: a template-string range and two isolated screen-reader spans presented an arrow
+as a standalone glyph to the line-based icon guard. Precise correction: use the explicit word
+"to" for these date ranges; no icon-policy/test weakening, date/business-rule change or new library.
+The unchanged icon guard then passed 17/17 (23 assertions). Only the populated Compensation
+Detail evidence is visually invalidated; the two Subscription Dashboard separators are hidden.
+Focused browser/unit/type checks and fresh five-job final-head CI are required before merge.
+
+The five inherited Backend skips are one opt-in Phase 24 wall-clock benchmark
+(`SERVANA_RUN_BENCHMARK=1`; performance owner) and four old `FutureResourceIsolationTest`
+placeholders owned by Invoicing Phase 17, Payments Phase 18, Exports Phase 18/19 and Personnel
+Phase 16. Their historical skip markers remain unchanged; this corrective visual phase introduces
+no skipped security test and does not claim those placeholders ran. Current functional/isolation
+coverage and the existing UI-15 export-security step remain part of hosted Backend validation.
+
+Code release is pending. Product-owner aesthetic acceptance, manual screen-reader assessment,
+UI-17 production prerequisites and Gate-W work remain separately owned and pending.
+
+### COR-REL-003 — populated mobile term readability
+
+Independent review of the fresh 360px Compensation Detail frame found values clipped by an
+unconditional 15rem label column. The new negative text-fit test failed at 360px: 82px scroll
+width against a 26px value column. The page now stacks labels and values below 768px, retains
+the existing wider grid, and lets values wrap. Two light/dark tests assert all five values fit
+at seven required widths plus 640×400 (200% equivalent), without raising any timeout.
+The focused corrected-source run passed 5/5: one three-variant capture, both affected populated
+axe cases and both readability matrices. Targeted lint, typecheck/build and four Subscription
+Dashboard unit cases passed. The first local fork-worker startup timeout (zero tests/imports)
+and initial concurrent-run axe timeout remain recorded in the release addendum; no test was
+weakened or silently waived. The actual clipped frame is retained in `codex-defects/`; only
+three populated after frames, their current index and the populated review-sheet column changed.
+Historical UI-16 records and all regression goldens remain untouched by this correction.

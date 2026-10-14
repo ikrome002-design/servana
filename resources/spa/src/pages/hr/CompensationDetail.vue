@@ -61,7 +61,7 @@ const clauses = computed(() => current.value ? [
         minor === null || currency === null ? '—' : formatMoney(minor, currency))
       : 'No commission rule',
   },
-  { label: 'Effective window', value: `${current.value.effective_from} → ${current.value.effective_to ?? 'open ended'}` },
+  { label: 'Effective window', value: `${current.value.effective_from} to ${current.value.effective_to ?? 'open ended'}` },
   { label: 'Change reason', value: current.value.change_reason ?? 'Not recorded' },
 ] : []);
 </script>
@@ -129,7 +129,7 @@ const clauses = computed(() => current.value ? [
               <div
                 v-for="(clause, index) in clauses"
                 :key="clause.label"
-                class="grid grid-cols-[minmax(0,15rem)_minmax(0,1fr)] items-baseline gap-3 border-b border-sv-border py-4 last:border-b-0"
+                class="grid grid-cols-1 items-baseline gap-3 border-b border-sv-border py-4 last:border-b-0 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]"
               >
                 <!-- The clause number lives inside the dt so the group holds only dt/dd (axe definition-list). -->
                 <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
@@ -137,7 +137,7 @@ const clauses = computed(() => current.value ? [
                     aria-hidden="true"
                     class="inline-block w-10 font-display text-sm font-extrabold normal-case tracking-normal text-sv-text-muted"
                   >{{ String(index + 1).padStart(2, '0') }}</span>{{ clause.label }}
-                </dt><dd class="text-sm font-semibold text-text">
+                </dt><dd class="min-w-0 break-words text-sm font-semibold text-text">
                   {{ clause.value }}
                 </dd>
               </div>

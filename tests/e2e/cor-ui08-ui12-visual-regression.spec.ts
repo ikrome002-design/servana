@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { choosePopulatedSubject, stubPopulated } from './support/corPopulated';
-import { assertAxeClean, readyLocator } from './support/releaseAudit';
+import { assertAxeClean, assertNoHorizontalOverflow, readyLocator } from './support/releaseAudit';
 import { liveContractPages, prepareVisual, type ContractPage } from './support/ui16Visual';
 
 /**
@@ -160,3 +160,28 @@ test.describe('COR-UI08-UI12-VIS-001 visual regression negative control', () => 
     await expect(expect(page).toHaveScreenshot(`${key}--desktop-light.png`, { ...SCREENSHOT, timeout: 3_000 })).rejects.toThrow();
   });
 });
+
+
+for (const theme of ['light', 'dark'] as const) {
+  test('populated compensation terms remain readable at every required width and 200% equivalent: ' + theme, async ({ page }) => {
+    await open(page, byKey('merchant_human_resource.compensation-detail'), theme, 1440, 900);
+    const values = page.getByTestId('hr-compensation-detail').locator('dl').first().locator('dd');
+    await expect(values).toHaveCount(5);
+    for (const width of [360, 767, 768, 1024, 1025, 1280, 1440, 640]) {
+      await page.setViewportSize({ width, height: width === 640 ? 400 : 900 });
+      await assertNoHorizontalOverflow(page, 'populated compensation terms ' + theme + ' ' + width);
+      for (const value of await values.all()) {
+        const bounds = await value.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const panel = element.closest('article')!.getBoundingClientRect();
+          return { client: element.clientWidth, scroll: element.scrollWidth, left: box.left, right: box.right, panelLeft: panel.left, panelRight: panel.right };
+        });
+        expect(bounds.client, 'term has a readable content width').toBeGreaterThan(0);
+        expect(bounds.scroll, 'term text is not clipped horizontally at ' + width).toBeLessThanOrEqual(bounds.client + 1);
+        expect(bounds.left).toBeGreaterThanOrEqual(bounds.panelLeft);
+        expect(bounds.right).toBeLessThanOrEqual(bounds.panelRight + 1);
+        expect(bounds.right).toBeLessThanOrEqual(width + 1);
+      }
+    }
+  });
+}

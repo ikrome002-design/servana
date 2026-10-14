@@ -206,7 +206,7 @@ onMounted(async () => {
                   ><span class="absolute -left-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-accent" /><span class="absolute -right-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-accent" /></span>
                   <span class="mt-2 flex justify-between text-sm font-medium text-text">
                     <span>{{ dateOnly(sub.trial_started_at) }}</span>
-                    <span class="sr-only"> → </span>
+                    <span class="sr-only"> to </span>
                     <span>{{ dateOnly(sub.trial_ends_at) }}</span>
                   </span>
                 </dd>
@@ -222,7 +222,7 @@ onMounted(async () => {
                   ><span class="absolute -left-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-brand-secondary" /><span class="absolute -right-1.5 -top-1 h-2.5 w-2.5 rounded-full bg-sv-brand-secondary" /></span>
                   <span class="mt-2 flex justify-between text-sm font-medium text-text">
                     <span>{{ sub.current_period_start }}</span>
-                    <span class="sr-only"> → </span>
+                    <span class="sr-only"> to </span>
                     <span>{{ sub.current_period_end }}</span>
                   </span>
                 </dd>

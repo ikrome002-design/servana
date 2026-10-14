@@ -59,3 +59,12 @@ and does not block the code pull request (prompt §8).
 | Date | — |
 | Pages accepted | — |
 | Pages needing changes (with notes) | — |
+
+## Codex review correction (2026-10-14)
+
+Compensation Detail had clipped populated mobile terms despite the original agent score.
+Review the [actual clipped frame](codex-defects/hr-compensation-detail-mobile-clipped.png)
+and [corrected mobile terms](screenshots/populated/mobile-light/merchant_human_resource.compensation-detail.png).
+The labels now stack above complete values; the updated comparison sheet uses the actual corrected
+desktop frame. Two light/dark text-fit tests cover all required widths and 200% equivalent.
+Product-owner approval remains pending for every page.

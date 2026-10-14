@@ -6356,7 +6356,14 @@
         "populated": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/desktop-light/merchant_human_resource.compensation-detail.png",
         "default_fixture_empty_state": false
       },
-      "review_status": "agent-reviewed / pending product-owner visual acceptance"
+      "review_status": "agent-reviewed / pending product-owner visual acceptance",
+      "codex_corrections": {
+        "ids": [
+          "COR-REL-002",
+          "COR-REL-003"
+        ],
+        "note": "Explicit date-range wording; populated mobile clauses stack below 768px after independent review proved clipping. Light/dark text-fit checks cover seven widths plus 200% equivalent. Original agent scores remain separate from owner acceptance."
+      }
     },
     {
       "key": "merchant_human_resource.compensation-setup",

@@ -6,7 +6,9 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign of UI-08 … UI-12 (`design/ui08-ui12-reference-grade-redesign`) — local_complete; uncommitted handoff; product-owner visual acceptance pending
+### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign of UI-08 … UI-12 (`design/ui08-ui12-reference-grade-redesign`) — local_complete; PR #69 release verification; product-owner visual acceptance pending
+
+- Codex release verification (2026-10-14): PR #69 pending protected merge; six references, 36 comparisons and 510 frame hashes verified. COR-REL-002 corrects three date separators to explicit "to" after the hosted icon-source guard failed; original failure retained, guard 17/17 after correction, no rule/test weakening. COR-REL-003 fixes populated mobile compensation values clipped by a 15rem label column; all widths and both themes now have a text-fit regression. Focused browser checks 5/5. Owner aesthetic approval remains pending.
 
 Base `562ffbbb…` (UI-17 PR #68 merge). The product owner rejected the look of the five oldest
 authenticated experiences; all **82 live pages** (17 / 15 / 15 / 15 / 20) are recomposed and the

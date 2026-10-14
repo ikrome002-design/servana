@@ -4,7 +4,7 @@
   "determinism": "UI-16 release-audit harness: pinned 2026-07-15 Africa/Nairobi clock, fixed identifiers, synthetic privacy-safe fixtures; self-hosted fonts awaited; reduced motion; animations and caret disabled. Populated frames add support/corPopulated.ts synthetic records.",
   "capture_spec": "tests/e2e/cor-ui08-ui12-capture.spec.ts (COR_CAPTURE=before|after|populated)",
   "before_source": "562ffbbbbc10351a7185e60fda517d51a260f9db (built before any source edit)",
-  "after_source": "design/ui08-ui12-reference-grade-redesign working tree (uncommitted handoff)",
+  "after_source": "Authenticated Claude handoff plus reviewed Codex COR-REL-002/003 corrections; see codex-release-addendum.json. Only populated compensation-detail frames refreshed; unaffected frames retained.",
   "counts": {
     "pages": 82,
     "before": 82,
@@ -2291,24 +2291,24 @@
       "populated": [
         {
           "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/desktop-light/merchant_human_resource.compensation-detail.png",
-          "sha256": "3124587d6d9b2cde4288f8dd5c932637696ff8c093ed185a19b22a3535d5d48a",
-          "bytes": 238368,
+          "sha256": "07c43442e24db895c528d9aed5da78bb369a0b3965a019e00100fb5bdb123043",
+          "bytes": 238848,
           "viewport": "1440x900",
           "theme": "light",
           "empty_state": false
         },
         {
           "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/desktop-dark/merchant_human_resource.compensation-detail.png",
-          "sha256": "dc054d1504891864abce13d4e1923d34b93a1e13979f9e735f3dc16b442ec476",
-          "bytes": 234658,
+          "sha256": "5b157ba97a764c3e1e4cf20dcf9b7d026fe8900a729314b81f24711a9f5a9e33",
+          "bytes": 235135,
           "viewport": "1440x900",
           "theme": "dark",
           "empty_state": false
         },
         {
           "path": "docs/frontend/audits/cor-ui08-ui12-vis-001/screenshots/populated/mobile-light/merchant_human_resource.compensation-detail.png",
-          "sha256": "76a543b579530e8d883963b8285b7a59e6d75ad80911d95007cfe4d3a132471e",
-          "bytes": 149069,
+          "sha256": "3a937f5156f0268257982b90e2ed77f12edf83296c469b0b01bbd63fe6da0b92",
+          "bytes": 149228,
           "viewport": "360x800",
           "theme": "light",
           "empty_state": false

@@ -156,7 +156,7 @@ while the repository records said the work was complete.
 | UI-17 | Performance, security, production deployment, closeout | 🟡 code `merged` (PR [#68](https://github.com/ikrome002-design/servana/pull/68), merge `562ffbbb…`; verified live 2026-10-13 on the COR-UI08-UI12-VIS-001 branch) — **not** `verified_complete`: live production acceptance `blocked_external` (DNS lame delegation, no deployment platform); owner decisions D1–D8 open | `phase-ui-17-performance-security-production-closeout` (deleted) | [ui-17.md](proof/ui-17.md) | See the UI-17 section and its 2026-10-13 merge reconciliation |
 | COR-UI08-UI12-VIS-001 | Corrective reference-grade visual redesign of UI-08 … UI-12 (82 live pages) | 🟡 `local_complete` — uncommitted handoff to Codex (base `562ffbbb…`); **product-owner visual acceptance pending** | `design/ui08-ui12-reference-grade-redesign` | [cor-ui08-ui12-vis-001.md](proof/cor-ui08-ui12-vis-001.md) | Section below |
 
-### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign (UI-08 … UI-12) — local_complete (uncommitted handoff)
+### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign (UI-08 … UI-12) — local_complete; PR #69 release verification
 
 ```text
 phase_id: COR-UI08-UI12-VIS-001 (corrective; not UI-18; does not reopen UI-08…UI-12 functionally)
@@ -195,7 +195,7 @@ rewritten by the full runs was restored by exact path. Details: the proof and `t
 | REM-EXP-001 · REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 · REM-RE-002 | existing owners | unchanged |
 | 20D-W · 21R-B · 21N · the 28 gated pages | after External Gate W | Gate W **closed**; not started |
 
-**Next exact action:** Codex — `docs/frontend/audits/cor-ui08-ui12-vis-001/claude-to-codex-handoff.md`.
+**Codex release checkpoint (2026-10-14):** PR [#69](https://github.com/ikrome002-design/servana/pull/69), implementation `135b05d`, precise public-digest fingerprint `6f25b07`. Independent six-reference/36-comparison review and 510 hashes passed. First hosted Backend failed the three date-glyph source-contract cases (COR-REL-002); date-glyph correction passes the unchanged 17-case guard; COR-REL-003 also fixes populated mobile Compensation Detail clipping, with two new width/theme tests and a 5/5 focused browser run. Fresh exact-head five-job CI remains pending. Code is not merged; owner visual approval remains pending. The handoff lifecycle above records the original entry, not the current Git state. See the [release addendum](frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json).
 
 ### Phase UI-17 — Performance, security, production deployment and closeout — local_complete (uncommitted handoff)
 
