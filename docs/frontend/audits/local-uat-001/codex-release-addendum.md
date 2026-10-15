@@ -190,3 +190,19 @@ Deferred work retains its existing owners and entry conditions in PROGRESS/runbo
 manual whole-product UAT; 82-page aesthetic approval; UI-17 D1–D8 and NVDA/VoiceOver;
 Gate W / 20D-W / 21R-B / 21N; DNS/TLS and Phase 25 P1–P10; existing remediation records;
 LUAT-F01, F03 and F04 owner decisions. No production deployment authorized.
+
+## LUAT-REL-005 — early CI step lacks the test-database environment
+
+| Field | Evidence |
+|---|---|
+| Observed failure | PR #70, head `7212e0383ecb6d57c8e799735c588371a5f4d4dd`, run 38742062293 attempt 1, Backend job 116446013582, step 9 `Tests — genuine ClamAV EICAR integration`: exit 1 before assertions. Log: `Refusing to run tests: the test database 'servana_test' could not be prepared ... fe_sendauth: no password supplied. The suite never falls back to 'servana'.` |
+| Environment / root cause | Ubuntu hosted PHP 8.3, PostgreSQL 16 service already creates servana_test. This early step supplied only ClamAV variables; later database-backed steps supplied the full PostgreSQL test variables. The new bootstrap therefore read the developer name from .env.example and correctly refused to prepare a connection without credentials. The failure was not a ClamAV detection failure: the prior readiness step reported clamd reachable. |
+| Correct fix / exact diff | Add the same six explicit PostgreSQL test variables to the early ClamAV step in `.github/workflows/ci.yml`. No test, bootstrap safeguard, skip policy, timeout, scanner or required check changes. These are the existing isolated CI service's public fixture credentials, not application user passwords or production credentials. |
+| Validation | Patched Symfony YAML parse and named-step database/driver/service parity check pass; explicitly named-test-DB bootstrap check passes. Actual EICAR detection and complete acceptance must pass in the next full exact-head hosted run. |
+| Full gate / retained history | First run remains a real failed candidate; concurrency may cancel unfinished jobs when the corrected head is pushed. Earlier green checks never substitute for all five jobs on the new immutable head. No manual successful status or protection bypass. |
+| Remaining risk | The next hosted run is authoritative for this runner/service configuration; local development does not pretend to be the hosted ClamAV service. |
+
+Initial release commit `7212e0383ecb6d57c8e799735c588371a5f4d4dd` remains unchanged.
+This correction adds one authorized path (`.github/workflows/ci.yml`), bringing the PR to 75 paths,
+and updates this addendum with actual CI evidence. Original Claude manifest/handoff remain immutable.
+Workflow raw-file SHA-256: `5c426708add8a90a593eba0a2b4fcbaf5f8f8d3f5febbf15ff4f92b23399a58f`.
