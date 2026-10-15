@@ -28,7 +28,7 @@ describe('Verify.vue', () => {
     routeQuery = {};
   });
 
-  it('verifies a present token and routes an active merchant to the role landing', async () => {
+  it('verifies a present token and routes an active merchant to its authenticated home /dashboard (LUAT-D04)', async () => {
     routeQuery = { token: 'good-token' };
     post.mockResolvedValueOnce({
       data: {
@@ -47,7 +47,7 @@ describe('Verify.vue', () => {
     await flushPromises();
 
     expect(post).toHaveBeenCalledWith('/auth/magic-link/verify', { token: 'good-token' });
-    expect(replace).toHaveBeenCalledWith({ name: 'merchant.landing' });
+    expect(replace).toHaveBeenCalledWith({ name: 'merchant.dashboard' });
   });
 
   it('routes a pending_setup owner to the first-time setup wizard', async () => {

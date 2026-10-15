@@ -145,7 +145,7 @@ test.describe("Magic Link UI", () => {
         await expect(page).toHaveURL(/\/auth\/check-email(?:\?.*)?$/);
     });
 
-    test("verify consumes the token and redirects to the role landing on success", async ({
+    test("verify consumes the token and redirects to the authenticated home /dashboard on success (LUAT-D04)", async ({
         page,
     }) => {
         await stubLoggedOutBootstrap(page);
@@ -158,7 +158,7 @@ test.describe("Magic Link UI", () => {
 
         await page.goto("/auth/verify?token=good-token");
 
-        await expect(page).toHaveURL(/\/merchant\/?$/);
+        await expect(page).toHaveURL(/\/dashboard\/?$/);
     });
 
     test("verify shows a uniform error for an invalid or expired token", async ({

@@ -74,6 +74,14 @@ async function stubMe(page: Page, role: string, permissions: string[]): Promise<
 
 async function stubAppointments(page: Page, opts: { listStatus?: string; detailCan?: Record<string, boolean>; createConflict?: boolean; checkInInvalid?: boolean } = {}): Promise<void> {
   await page.route('**/api/v1/clients**', (r) => r.fulfill(ok({ data: [CLIENT] })));
+  // LOCAL-UAT-001 (LUAT-D01): Front Office pickers read the narrow Front Office selection endpoints,
+  // never the Branch Manager catalogue (service.view).
+  await page.route('**/api/v1/front-office/service-options**', (r) =>
+    r.fulfill(ok({ data: [{ id: SERVICE.id, name: SERVICE.name, duration_minutes: SERVICE.duration_minutes }] })),
+  );
+  await page.route('**/api/v1/front-office/services/*/personnel-options**', (r) =>
+    r.fulfill(ok({ data: [{ staff_profile_id: 'st1', staff_name: 'Bob Stylist', active: true }] })),
+  );
   await page.route('**/api/v1/services**', (r) => {
     if (r.request().url().includes('/eligibility')) {
       return r.fulfill(ok({ data: [{ service_id: 'sv1', staff_profile_id: 'st1', staff_name: 'Bob Stylist', active: true }] }));

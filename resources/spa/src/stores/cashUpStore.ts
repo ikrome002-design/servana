@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Branch cash-up + day-close reconciliation (Plan §45; ADR-0007; Phase 18B). UX state
@@ -39,7 +40,7 @@ export interface CashUpView {
 }
 
 function idempotencyKey(): string {
-  return crypto.randomUUID();
+  return randomUuid();
 }
 
 export const useCashUpStore = defineStore('cashUp', () => {

@@ -8,7 +8,7 @@ import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
-import { apiClient } from '@/services/apiClient';
+import { fetchPersonnelOptions } from '@/services/frontOfficeSelections';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueEntry, ServiceEligibility } from '@/types/models';
@@ -63,8 +63,8 @@ async function openAssign(dialog: 'assign' | 'transfer'): Promise<void> {
   const serviceId = entry.value?.service?.id;
   if (serviceId !== undefined) {
     try {
-      const { data } = await apiClient.get<{ data: ServiceEligibility[] }>(`/services/${serviceId}/eligibility`);
-      eligible.value = data.data;
+      // LUAT-D01: the purpose names the one workflow this list feeds (assign or transfer).
+      eligible.value = await fetchPersonnelOptions(serviceId, dialog === 'assign' ? 'queue_assign' : 'queue_transfer');
     } catch {
       eligible.value = [];
     }

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components, paths } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Internal platform access — Citrus Labs staff identity lifecycle (COR-UI08-001 §11; Phase UI-08,
@@ -103,7 +104,7 @@ export const usePlatformAccessStore = defineStore('platformAccess', () => {
     const { data } = await apiClient.post<{ data: PlatformAccessInvitation }>(
       '/platform/internal-access/invitations',
       payload,
-      { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      { headers: { 'Idempotency-Key': randomUuid() } },
     );
     await load();
     return data.data;

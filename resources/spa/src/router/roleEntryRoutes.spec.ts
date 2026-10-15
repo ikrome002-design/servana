@@ -32,6 +32,15 @@ describe('role entry routes', () => {
     }
   });
 
+  it('sends every account to its authenticated home /dashboard after sign-in (LUAT-D04)', () => {
+    // UI/UX plan §4.1 and config/account-hosts.json `default_authenticated_route`: the public
+    // landing is `/`; the post-sign-in destination is `/dashboard` for all eight accounts.
+    for (const identity of ROLE_IDENTITIES) {
+      const resolved = router.resolve({ name: ROLE_ENTRY[identity].landingRouteName });
+      expect(resolved.path, identity).toBe('/dashboard');
+    }
+  });
+
   it('every live navigation item resolves to a registered route', () => {
     const names = routeNames();
     for (const identity of ROLE_IDENTITIES) {
@@ -77,10 +86,10 @@ describe('role entry routes', () => {
       mfa: { required: false, enrolled: false, confirmed: false, verified: false, enrollment_required: false, challenge_required: false, step_up_fresh: false, step_up_fresh_until: null, recovery_codes_remaining: 0 },
     });
     expect(activeRoleIdentity()).toBe('merchant_finance');
-    expect(landingRouteName()).toBe('finance.landing');
+    expect(landingRouteName()).toBe('finance.dashboard');
   });
 
-  it('routes a platform-staff user to the platform landing', () => {
+  it('routes a platform-staff user to the platform dashboard', () => {
     const auth = useAuthStore();
     auth.applyBootstrap({
       user: { id: 'sa1', email: 's@b.co', name: 'S', status: 'active', email_verified_at: null, is_platform_staff: true, theme_preference: null, resolved_theme: 'light' as const },
@@ -92,7 +101,7 @@ describe('role entry routes', () => {
       branch_ids: [],
       mfa: { required: false, enrolled: false, confirmed: false, verified: false, enrollment_required: false, challenge_required: false, step_up_fresh: false, step_up_fresh_until: null, recovery_codes_remaining: 0 },
     });
-    expect(landingRouteName()).toBe('platform.landing');
+    expect(landingRouteName()).toBe('platform.dashboard');
   });
 
   it('falls back to login when no role can be resolved', () => {

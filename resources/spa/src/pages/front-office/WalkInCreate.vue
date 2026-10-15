@@ -7,11 +7,11 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
-import { apiClient } from '@/services/apiClient';
+import { fetchPersonnelOptions, fetchServiceOptions, type FrontOfficeServiceOption } from '@/services/frontOfficeSelections';
 import { useClientStore } from '@/stores/clientStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
-import type { QueueAssignmentMode, Service, ServiceEligibility } from '@/types/models';
+import type { QueueAssignmentMode, ServiceEligibility } from '@/types/models';
 import { SvIconBack } from '@/design-system/icons';
 
 // Front Office walk-in wizard (Plan §37; Phase 16B). Find an existing branch client
@@ -30,7 +30,7 @@ const newClient = ref({ full_name: '', phone: '' });
 const serviceId = ref('');
 const assignmentMode = ref<QueueAssignmentMode>('next_available');
 const personnelId = ref('');
-const services = ref<Service[]>([]);
+const services = ref<FrontOfficeServiceOption[]>([]);
 const eligible = ref<ServiceEligibility[]>([]);
 const working = ref(false);
 
@@ -58,15 +58,22 @@ const canSubmit = computed(() => {
   return true;
 });
 
+// LUAT-D01: Front Office selection reads, never the Branch Manager catalogue. A newer service
+// choice aborts the older request so a slow response can never repopulate stale personnel.
+let eligibilityRequest: AbortController | null = null;
+
 async function loadEligibility(): Promise<void> {
+  eligibilityRequest?.abort();
   eligible.value = [];
   personnelId.value = '';
   if (serviceId.value === '') return;
+  const request = new AbortController();
+  eligibilityRequest = request;
   try {
-    const { data } = await apiClient.get<{ data: ServiceEligibility[] }>(`/services/${serviceId.value}/eligibility`);
-    eligible.value = data.data;
+    const options = await fetchPersonnelOptions(serviceId.value, 'walk_in', request.signal);
+    if (!request.signal.aborted) eligible.value = options;
   } catch {
-    eligible.value = [];
+    if (!request.signal.aborted) eligible.value = [];
   }
 }
 
@@ -95,8 +102,7 @@ async function submit(): Promise<void> {
 
 onMounted(async () => {
   try {
-    const { data } = await apiClient.get<{ data: Service[] }>('/services', { params: { status: 'active' } });
-    services.value = data.data;
+    services.value = await fetchServiceOptions('walk_in');
   } catch {
     services.value = [];
   }

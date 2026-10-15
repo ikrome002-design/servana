@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * External refunds (Plan §44; Phase 18B). UX state only — the API (RefundPolicy +
@@ -78,7 +79,7 @@ export const useRefundStore = defineStore('refund', () => {
 
   async function request(payload: { payment_record: string; amount_minor: number; method: string; reason: string; reference?: string }): Promise<RefundView> {
     const { data } = await apiClient.post<{ data: RefundView }>('/refunds', payload, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -87,7 +88,7 @@ export const useRefundStore = defineStore('refund', () => {
   /** approve / reject / finalize. approve + finalize require a fresh MFA step-up (server-enforced). */
   async function decide(id: string, verb: 'approve' | 'reject' | 'finalize'): Promise<RefundView> {
     const { data } = await apiClient.post<{ data: RefundView }>(`/refunds/${id}/${verb}`, {}, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;

@@ -7,6 +7,7 @@ namespace App\Http\Requests\Scheduling;
 use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Enums\QueueEntryStatus;
 use App\Http\Api\ApiPagination;
+use App\Http\Requests\Concerns\NormalizesQueryBooleans;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,11 +20,19 @@ use Illuminate\Validation\Rule;
  */
 final class QueueIndexRequest extends FormRequest
 {
+    use NormalizesQueryBooleans;
+
     public const SORTS = ['position', '-position', 'queued_at', '-queued_at', 'created_at', '-created_at'];
 
     public function authorize(): bool
     {
         return true; // QueueEntryPolicy is the boundary
+    }
+
+    /** `?active=true` is the contract's own serialisation of a query boolean (LUAT-D02). */
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeQueryBooleans(['active']);
     }
 
     /** @return array<string, mixed> */

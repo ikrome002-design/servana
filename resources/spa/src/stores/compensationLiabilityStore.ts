@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Phase 20G Finance COMPENSATION-LIABILITY read surface + manual adjustment (Plan §61/§80, §19.3;
@@ -230,7 +231,7 @@ export const useCompensationLiabilityStore = defineStore('compensationLiability'
   async function createAdjustment(payload: CreateAdjustmentPayload): Promise<CompensationAdjustment> {
     const hash = JSON.stringify(payload);
     if (pendingKey === null || pendingHash !== hash) {
-      pendingKey = crypto.randomUUID();
+      pendingKey = randomUuid();
       pendingHash = hash;
     }
     creating.value = true;

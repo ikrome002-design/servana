@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Platform billing/general settings (Plan §13.9, §47, §50; ADR-011; Phase 20A). UX
@@ -67,7 +68,7 @@ export const usePlatformBillingSettingsStore = defineStore('platformBillingSetti
   /** Create the next effective billing-settings version (fresh step-up, server-enforced). */
   async function updateBillingSettings(payload: BillingSettingsPayload): Promise<PlatformSettings> {
     const { data } = await apiClient.put<{ data: PlatformSettings }>('/platform/billing-settings', payload, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -76,7 +77,7 @@ export const usePlatformBillingSettingsStore = defineStore('platformBillingSetti
   /** Create the next effective version updating only the allowlisted general `settings`. */
   async function updateGeneralSettings(settings: Record<string, string | null>): Promise<PlatformSettings> {
     const { data } = await apiClient.put<{ data: PlatformSettings }>('/platform/settings', { settings }, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;

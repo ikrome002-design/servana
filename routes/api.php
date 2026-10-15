@@ -45,6 +45,7 @@ use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\Finance\FinanceWorkspaceController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
+use App\Http\Controllers\Api\V1\FrontOffice\FrontOfficeSelectionController;
 use App\Http\Controllers\Api\V1\FrontOffice\FrontOfficeWorkspaceController;
 use App\Http\Controllers\Api\V1\Hr\HrServiceOptionController;
 use App\Http\Controllers\Api\V1\Hr\HrWorkspaceController;
@@ -899,6 +900,15 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('front-office/payment-status', [FrontOfficeWorkspaceController::class, 'paymentStatus'])
                 ->middleware(EnsurePermission::class.':customer_payment.record')
                 ->name('front-office.payment-status.index');
+
+            // LOCAL-UAT-001 (LUAT-D01) — Front Office operational selection reads. Gated in the
+            // controller by the EXISTING permission of the workflow named by `purpose`
+            // (queue.create / appointment.create / appointment.assign / appointment.transfer /
+            // queue.assign / queue.transfer); `service.view` stays Branch Manager only.
+            Route::get('front-office/service-options', [FrontOfficeSelectionController::class, 'services'])
+                ->name('front-office.service-options.index');
+            Route::get('front-office/services/{service}/personnel-options', [FrontOfficeSelectionController::class, 'personnel'])
+                ->name('front-office.personnel-options.index');
 
             // Appointments (Scope §, Plan §36; Phase 16A). Front Office owns all
             // mutations (`appointment.*`, branch_mutation); Branch Manager has

@@ -154,7 +154,8 @@ while the repository records said the work was complete.
 | UI-15 | Audit experience (15 pages) | ✅ `verified_complete` | PR [#66](https://github.com/ikrome002-design/servana/pull/66) merged `2026-10-11` — normal squash `088a6cd764534ac5a4e44d1ce8c1e72cebfd480b`, final reviewed head `0ae694b8b8fc37e36ad7296eff9fdfec09cbb002`, equal reviewed/merge tree `73bd2171145a82059b5580a605527000db077d3c`. Exact-head CI run `38160619788` passed Backend/Frontend/Docker/Security/E2E; governance comment `6112205584` (actor `ikrome002-design`); blank decision, **0** submitted reviews, **0** approvals (**not** independent approval); source branch `phase-ui-15-audit-experience` absent local + remote. `UI15-SEC-OBS-001` export-domain authorization closed in the merged code (`AuditExportDomainAuthorizationTest`, 30 cases / 125 assertions). **14 implemented / 1 disabled_by_gate / 0 planned / 0 removed = 15**. | [ui-15.md](proof/ui-15.md) | Reconciled live exactly once on the UI-16 branch (2026-10-12) |
 | UI-16 | Responsive, accessibility, theme, visual regression (incl. UI-08…UI-12 visual remediation) | ✅ `verified_complete` | PR [#67](https://github.com/ikrome002-design/servana/pull/67) merged `2026-10-12T19:01:07Z` — **normal merge commit** `1e8bd5f744a65329ced22c0275b728929aae5245` (parents `088a6cd7…` then final reviewed head `43526c48650ef9559cafe8d1df451b055c0eec2d`), reviewed tree == merge tree `25780c741e02f18fa4e030057636428c77840815`. Exact-head CI `38288846434` five jobs SUCCESS (E2E: archetype step 24 passed, full suite **2,107 passed**, no failed/flaky line in the job log). Governance comment `6130701107`; `reviewDecision` blank, **0** reviews / **0** approvals (**not** independent approval); source branch absent local + remote. **132 implemented / 28 disabled_by_gate / 0 planned / 0 removed = 160**. The 122 active baselines are agent-accepted release files, **not** product-owner approval. | [ui-16.md](proof/ui-16.md) | Reconciled live exactly once on the UI-17 branch (2026-10-13) |
 | UI-17 | Performance, security, production deployment, closeout | 🟡 code `merged` (PR [#68](https://github.com/ikrome002-design/servana/pull/68), merge `562ffbbb…`; verified live 2026-10-13 on the COR-UI08-UI12-VIS-001 branch) — **not** `verified_complete`: live production acceptance `blocked_external` (DNS lame delegation, no deployment platform); owner decisions D1–D8 open | `phase-ui-17-performance-security-production-closeout` (deleted) | [ui-17.md](proof/ui-17.md) | See the UI-17 section and its 2026-10-13 merge reconciliation |
-| COR-UI08-UI12-VIS-001 | Corrective reference-grade visual redesign of UI-08 … UI-12 (82 live pages) | 🟡 `local_complete` — uncommitted handoff to Codex (base `562ffbbb…`); **product-owner visual acceptance pending** | `design/ui08-ui12-reference-grade-redesign` | [cor-ui08-ui12-vis-001.md](proof/cor-ui08-ui12-vis-001.md) | Section below |
+| COR-UI08-UI12-VIS-001 | Corrective reference-grade visual redesign of UI-08 … UI-12 (82 live pages) | 🟡 code `merged` — PR [#69](https://github.com/ikrome002-design/servana/pull/69) **normal merge commit** `c7e963c88cced493364705e9e25ab2206862e0c7` (parents `562ffbbb…` then final reviewed head `b4d28e0b641c010d3a71145ff3fedcd8c22df90f`), merged `2026-10-14T16:54:14Z`; exact-head run `38516839765` five jobs SUCCESS; `reviewDecision` blank / 0 reviews (**not** independent approval); source branch absent. Verified read-only with `gh`/`git` on 2026-10-15 at the start of LOCAL-UAT-001 (the reported 2,222-test E2E figure was not re-counted). **Product-owner visual acceptance still pending.** | `design/ui08-ui12-reference-grade-redesign` (deleted) | [cor-ui08-ui12-vis-001.md](proof/cor-ui08-ui12-vis-001.md) | Section below |
+| LOCAL-UAT-001 | Complete-application local browser readiness and acceptance (eight `.test` hosts, real stack) | 🟡 `local_complete` — uncommitted handoff to Codex (base `c7e963c8…`); **product-owner hands-on UAT pending**; production not authorized | `phase-local-browser-uat-001` | [local-uat-001.md](proof/local-uat-001.md) | Section below · [runbook](runbooks/local-browser-uat.md) |
 
 ### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign (UI-08 … UI-12) — local_complete; PR #69 release verification
 
@@ -196,6 +197,53 @@ rewritten by the full runs was restored by exact path. Details: the proof and `t
 | 20D-W · 21R-B · 21N · the 28 gated pages | after External Gate W | Gate W **closed**; not started |
 
 **Codex release checkpoint (2026-10-14):** PR [#69](https://github.com/ikrome002-design/servana/pull/69), implementation `135b05d`, precise public-digest fingerprint `6f25b07`. Independent six-reference/36-comparison review and 510 hashes passed. First hosted Backend failed the three date-glyph source-contract cases (COR-REL-002); date-glyph correction passes the unchanged 17-case guard; COR-REL-003 also fixes populated mobile Compensation Detail clipping, with two new width/theme tests and a 5/5 focused browser run. Fresh exact-head five-job CI remains pending. Code is not merged; owner visual approval remains pending. The handoff lifecycle above records the original entry, not the current Git state. See the [release addendum](frontend/audits/cor-ui08-ui12-vis-001/codex-release-addendum.json).
+
+**Merge reconciliation (2026-10-15, at the start of LOCAL-UAT-001; read-only `gh`/`git`, once).** The
+checkpoint above is the historical record and is left as written. PR #69 has since **merged** as normal
+merge commit `c7e963c8…` (parents `562ffbbb…`, `b4d28e0b…`) at `2026-10-14T16:54:14Z`; exact-head run
+`38516839765` passed Frontend, Backend, E2E, Docker and Security; 0 reviews (not independent approval);
+source branch deleted; `main == origin/main == c7e963c8…`. Code `merged`; owner visual acceptance pending.
+
+### LOCAL-UAT-001 — complete-application local browser readiness — local_complete (uncommitted handoff); owner UAT pending
+
+```text
+phase_id: LOCAL-UAT-001 (local environment and browser acceptance readiness; not UI-18, not Phase 25)
+branch: phase-local-browser-uat-001 (created from clean main == origin/main == c7e963c8…, 0 0)
+base SHA: c7e963c88cced493364705e9e25ab2206862e0c7 (PR #69 merge)
+hosts_script_reviewed: pass (fixture self-test 21/21)
+windows_uac_elevation_outcome: attempt 1 cancelled (no change); attempt 2 approved by the owner, child exit 0
+windows_hosts_mapping_status: pass_8_of_8 (native System.Net.Dns → 127.0.0.1 only; BOM/CRLF/unrelated lines preserved)
+ordinary_windows_browser_reachable: pass (desktop browser pane + Playwright Chromium on the native resolver)
+local_stack_healthy: pass (11 services; /health/deep app, database, redis, cache, queue, meilisearch, s3 = ok)
+real_magic_link_verified: pass (UI login → queued mail → Mailpit → host-bound verify → MFA → /dashboard; replay 422; wrong host 422)
+real_api_database_workflows_verified: pass (see the proof's workflow table)
+authenticated_route_inventory_verified: pass (160 = 132 implemented live + 28 disabled_by_gate inert)
+functional_c1_blockers: none open (LUAT-D01 resolved_verified under the owner's "Narrow FO endpoint" decision)
+manual_owner_uat: pending
+product_owner_visual_approval: pending
+github_code_release: not_started_by_claude (Codex Prompt 2)
+production_deployment: not_authorized / blocked_external
+```
+
+| work_item | source_requirement | previous_state | baseline_evidence | root_cause_where_applicable | work_completed | proof/test | status | why_deferred_or_skipped | owning_role | owning_phase_or_gate | entry_condition | next_action |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Eight Windows host mappings | UI/UX §4.4 | not mapped | resolver FAIL 8/8 | `.test` has no public resolver | reviewed `servana-hosts.ps1`, one UAC approval | native resolver 8/8; file read-back | pass | — | Claude | LOCAL-UAT-001 | — | none |
+| Local stack, workflow commands | Prompt §4–5; Plan §26.1 | stack stopped; dev image older than Dockerfile | `docker compose ps`; image date | stale `servana-app:dev` (pre PH24 opcache) | rebuilt image; `servana-local.ps1` | start ×2 / restart / stop→start, 29/29 gates | pass | — | Claude | LOCAL-UAT-001 | — | none |
+| Local dataset | Prompt §6 | DB had only `migrations` | row counts | no local seeder existed | `LocalUatDatasetSeeder` (2 merchants, 3 branches, 8 accounts) | idempotent re-run | pass | — | Claude | LOCAL-UAT-001 | — | none |
+| LUAT-D01 Front Office selection (C1) | UI/UX App. A §10.4.7–10.4.10; Plan §19 | five FO screens 403 | live 403 + matrix | screens used `service.view` catalogue reads | owner chose **Narrow FO endpoint**; two purpose-bound read routes | 12 API + 3 client + 5 live browser | resolved_verified | — | Claude (owner decision 2026-10-15) | LOCAL-UAT-001 | — | none |
+| LUAT-D02 query booleans | OpenAPI query `type: boolean` | four list screens empty | live 422 `active` | `boolean` rule rejects `true` | `NormalizesQueryBooleans` on 5 requests | 6 tests (negative control kept) | resolved_verified | — | Claude | LOCAL-UAT-001 | — | none |
+| LUAT-D03 tests wipe dev DB | CLAUDE.md §6.13; data safety | non-parallel run used `servana` | users 0 after a run | bootstrap never isolated the DB | redirect to `<name>_test`, fail closed | canary survives; serial + parallel | resolved_verified | — | Claude | LOCAL-UAT-001 | — | none |
+| LUAT-D04 post-sign-in home | UI/UX §4.1 | 5 accounts landed on legacy `/<role>` | native browser `/branch` | stale `ROLE_ENTRY.landingRouteName` | point at `*.dashboard` | 28 + Verify specs; browser | resolved_verified | — | Claude | LOCAL-UAT-001 | — | none |
+| LUAT-D05 insecure-context UUID | Plan §11.5 idempotency | toasts and financial POSTs crash on HTTP | `crypto.randomUUID is not a function` | API exists only in secure contexts | `utils/uuid.ts`, 28 calls | 2 unit tests; live walk-in | resolved_verified | — | Claude | LOCAL-UAT-001 | — | none |
+| LUAT-F01 `/register` on other hosts | UI/UX §4.2 | renders when typed directly | 7 hosts | SPA route not host-gated | recorded only | public-host spec annotation | open (UI scope) | UI route-scope change outside local readiness; no boundary moves (backend binds MA host) | product owner → UI owner | UI programme | owner decision | decide whether to gate the route |
+| LUAT-F03 email in URL | privacy rule | `/auth/check-email?email=` | browser URL | SPA passes address in query | recorded only | — | open | UI change; edge logs strip queries | product owner → UI owner | UI programme | owner decision | review |
+| LUAT-F04 historical token in container log | Plan §24.5 | one pre-UI-17 log line | `docker compose logs nginx` | log written before UI17-SEC-001 | recorded only; current format proven path-only | 32 verify lines path-only | open (local hygiene) | deleting container logs needs owner consent | product owner | local machine | owner consent | `docker compose up -d --force-recreate nginx` |
+| Super Admin billing settings 404 | Plan billing | 404 on fresh install | controller `abort_if(null)` | intended until first save | none | page renders its own state | not_a_defect | — | — | — | — | owner may configure it |
+| Already complete — reused | Phase 2, UI-02, UI-03, UI-07, UI-16, UI-17, COR PR #69 | verified/merged | git/gh | — | reused, not repeated | live eight-host run | reused | — | — | — | — | — |
+| 28 gated contracts | UI-07 status matrix | disabled_by_gate | crawl | Gate W / 21N / HR contracts | verified inert | 28 gated checks | deferred | external | Wallet/21N/UI owners | External Gate W · 20D-W · 21R-B · 21N | Gate W open | none now |
+| Production DNS/TLS/hosting | UI-17 §§76–78; Phase 25 | blocked | UI-17 proof | external | none | — | blocked_external | not authorized | DNS owner → Phase 25 | Phase 25 | separate go-live authorization | — |
+| Human acceptance | UI/UX §28 | pending | — | — | owner checklist in runbook §6 | — | manual_owner_pending | agents never self-approve | product owner | — | owner review | use the runbook |
+| REM-EXP-001 · REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 · REM-RE-002 | existing records | unchanged | — | — | none | — | unchanged | outside scope | existing owners | existing gates | unchanged | unchanged |
 
 ### Phase UI-17 — Performance, security, production deployment and closeout — local_complete (uncommitted handoff)
 

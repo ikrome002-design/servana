@@ -6,11 +6,11 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
-import { apiClient } from '@/services/apiClient';
+import { fetchPersonnelOptions, fetchServiceOptions, type FrontOfficeServiceOption } from '@/services/frontOfficeSelections';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { useClientStore } from '@/stores/clientStore';
 import { useNotificationStore } from '@/stores/notificationStore';
-import type { Client, Service, ServiceEligibility } from '@/types/models';
+import type { Client, ServiceEligibility } from '@/types/models';
 import { toBusinessIso } from '@/utils/appointment';
 
 // Book a Front Office appointment (Plan §36; Phase 16A). The backend derives the
@@ -26,7 +26,7 @@ const serviceId = ref('');
 const startsAt = ref('');
 const assignedPersonnel = ref('');
 
-const services = ref<Service[]>([]);
+const services = ref<FrontOfficeServiceOption[]>([]);
 const eligible = ref<ServiceEligibility[]>([]);
 const submitting = ref(false);
 const formError = ref<string | null>(null);
@@ -42,15 +42,22 @@ const personnelOptions = computed(() => [
 
 const selectedService = computed(() => services.value.find((s) => s.id === serviceId.value) ?? null);
 
+// LUAT-D01: Front Office selection reads, never the Branch Manager catalogue. A newer service
+// choice aborts the older request so a slow response can never repopulate stale personnel.
+let eligibilityRequest: AbortController | null = null;
+
 watch(serviceId, async (id) => {
+  eligibilityRequest?.abort();
   assignedPersonnel.value = '';
   eligible.value = [];
   if (id === '') return;
+  const request = new AbortController();
+  eligibilityRequest = request;
   try {
-    const { data } = await apiClient.get<{ data: ServiceEligibility[] }>(`/services/${id}/eligibility`);
-    eligible.value = data.data;
+    const options = await fetchPersonnelOptions(id, 'appointment', request.signal);
+    if (!request.signal.aborted) eligible.value = options;
   } catch {
-    eligible.value = [];
+    if (!request.signal.aborted) eligible.value = [];
   }
 });
 
@@ -79,9 +86,13 @@ async function submit(): Promise<void> {
 
 onMounted(() => {
   void clients.fetchClients();
-  void apiClient.get<{ data: Service[] }>('/services').then(({ data }) => {
-    services.value = data.data.filter((s) => s.status === 'active');
-  });
+  void fetchServiceOptions('appointment')
+    .then((options) => {
+      services.value = options;
+    })
+    .catch(() => {
+      services.value = [];
+    });
 });
 </script>
 
