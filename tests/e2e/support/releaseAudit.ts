@@ -1023,6 +1023,9 @@ const SHARED_FIXTURES: Fixture[] = [
   { match: /^\/front-office\/workspace$/, body: { data: { overview: FRONT_OFFICE_OVERVIEW } } },
   { match: /^\/front-office\/activity$/, body: { data: [FRONT_OFFICE_ACTIVITY], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
   { match: /^\/front-office\/payment-status$/, body: { data: [FRONT_OFFICE_PAYMENT_STATUS], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  // LOCAL-UAT-001 (LUAT-D01): the Front Office pickers' own narrow selection reads.
+  { match: /^\/front-office\/service-options$/, body: { data: [{ id: FRONT_OFFICE_SERVICE.id, name: FRONT_OFFICE_SERVICE.name, duration_minutes: FRONT_OFFICE_SERVICE.duration_minutes }] } },
+  { match: /^\/front-office\/services\/[^/]+\/personnel-options$/, body: { data: [{ staff_profile_id: IDS.staff, staff_name: 'Amina Wanjiku', active: true }] } },
   { match: /^\/services\/[^/]+\/eligibility$/, body: { data: [{ id: id('ELIGIBILITY'), staff_profile_id: IDS.staff, staff_name: 'Amina Wanjiku', active: true }] } },
   { match: /^\/appointments\/[^/]+$/, body: { data: FRONT_OFFICE_APPOINTMENT } },
   { match: /^\/appointments$/, body: { data: [FRONT_OFFICE_APPOINTMENT], meta: { ...EMPTY_LIST.meta, total: 1 } } },

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components, paths } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Platform SMS billing settings, usage and charge reconciliation (COR-UI08-001 §9; Phase UI-08,
@@ -179,7 +180,7 @@ export const usePlatformSmsBillingStore = defineStore('platformSmsBilling', () =
     const { data } = await apiClient.post<{ data: SmsBillingRule }>(
       '/platform/sms-billing-settings/versions',
       payload,
-      { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      { headers: { 'Idempotency-Key': randomUuid() } },
     );
     await load();
     return data.data;

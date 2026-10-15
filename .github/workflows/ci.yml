@@ -138,6 +138,12 @@ jobs:
 
       - name: Tests — genuine ClamAV EICAR integration
         env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: servana_test
+          DB_USERNAME: servana
+          DB_PASSWORD: servana
           CLAMAV_HOST: 127.0.0.1
           CLAMAV_PORT: 3310
           CLAMAV_CONNECT_TIMEOUT: 3

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Receipts (Plan §43; Phase 18B). UX state only — the API (ReceiptPolicy +
@@ -77,7 +78,7 @@ export const useReceiptStore = defineStore('receipt', () => {
 
   async function reissue(id: string, reason: string): Promise<ReceiptView> {
     const { data } = await apiClient.post<{ data: ReceiptView }>(`/receipts/${id}/reissue`, { reason }, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;

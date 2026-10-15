@@ -59,6 +59,49 @@ $runId = getenv('CI_TEST_RUN_ID')
     ?: 'local';
 $namespace = 'servana_test_'.$runId.'_'.$parallelToken.'_';
 
+/*
+ | Never the developer database (LOCAL-UAT-001, LUAT-D03).
+ |
+ | The Docker dev containers export DB_DATABASE=servana — the developer's working database. A
+ | NON-parallel run (`php artisan test --filter …`) inherited it, and RefreshDatabase's migrate:fresh
+ | dropped every local table, silently erasing the local UAT dataset. A run whose database is not
+ | already a test database is redirected to `<name>_test`, created here when missing. Parallel workers
+ | are left alone: Laravel already gives each one its own `<name>_test_<n>` database. CI is unchanged
+ | (it already uses `servana_test`). If the test database cannot be prepared the run stops — it never
+ | falls back to the developer database.
+ */
+$database = getenv('DB_DATABASE') ?: null;
+if ($database === null && is_readable(__DIR__.'/../.env')) {
+    preg_match('/^DB_DATABASE=(.*)$/m', (string) file_get_contents(__DIR__.'/../.env'), $match);
+    $database = isset($match[1]) ? trim($match[1], " \t\"'") : null;
+}
+
+if (is_string($database) && $database !== '' && ! getenv('LARAVEL_PARALLEL_TESTING')
+    && preg_match('/_test(_\d+)?$/', $database) !== 1) {
+    $testDatabase = $database.'_test';
+
+    if ((getenv('DB_CONNECTION') ?: 'pgsql') === 'pgsql') {
+        try {
+            $pdo = new PDO(
+                sprintf('pgsql:host=%s;port=%s;dbname=postgres', getenv('DB_HOST') ?: '127.0.0.1', getenv('DB_PORT') ?: '5432'),
+                getenv('DB_USERNAME') ?: null,
+                getenv('DB_PASSWORD') ?: null,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            );
+            $exists = $pdo->prepare('SELECT 1 FROM pg_database WHERE datname = ?');
+            $exists->execute([$testDatabase]);
+            if ($exists->fetchColumn() === false) {
+                $pdo->exec('CREATE DATABASE "'.str_replace('"', '""', $testDatabase).'"');
+            }
+        } catch (Throwable $e) {
+            fwrite(STDERR, "Refusing to run tests: the test database '{$testDatabase}' could not be prepared ({$e->getMessage()}). The suite never falls back to '{$database}'.\n");
+            exit(1);
+        }
+    }
+
+    $forcedTestEnv['DB_DATABASE'] = $testDatabase;
+}
+
 $forcedTestEnv['REDIS_PREFIX'] = $namespace;
 $forcedTestEnv['CACHE_PREFIX'] = $namespace;
 $forcedTestEnv['SERVANA_TEST_NAMESPACE'] = $namespace;

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components, paths } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Platform feature flags (COR-UI08-001 §12; Phase UI-08, contract page §5.4.20).
@@ -97,7 +98,7 @@ export const usePlatformFeatureFlagStore = defineStore('platformFeatureFlag', ()
     const { data } = await apiClient.post<{ data: FeatureFlagChangeRequest }>(
       `/platform/feature-flags/${encodeURIComponent(flagKey)}/change-requests`,
       payload,
-      { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      { headers: { 'Idempotency-Key': randomUuid() } },
     );
     await load();
     return data.data;

@@ -1,0 +1,555 @@
+{
+  "schema": "local-uat-001.claude-to-codex-handoff.v1",
+  "phase_id": "LOCAL-UAT-001",
+  "branch": "phase-local-browser-uat-001",
+  "base_head": "c7e963c88cced493364705e9e25ab2206862e0c7",
+  "origin_main_at_start": "c7e963c88cced493364705e9e25ab2206862e0c7",
+  "predecessor": "PR #69 MERGED 2026-10-14T16:54:14Z, merge c7e963c8 (parents 562ffbbb, b4d28e0b), run 38516839765 five jobs success, 0 reviews",
+  "release_authorized_for_codex_after_verification": true,
+  "release_authorization_scope": "code PR eligibility only, after Codex's own exact-head verification; never product-owner UAT/visual approval and never production deployment",
+  "scope": "LOCAL-UAT-001 local browser readiness: LUAT-D01..D05 fixes, local tooling, real-stack acceptance suite, documentation",
+  "owner_decisions": [
+    {
+      "id": "LUAT-D01",
+      "decision": "Narrow FO endpoint",
+      "date": "2026-10-15",
+      "constraints": "no new permission key; service.view unchanged; purpose-bound existing keys"
+    },
+    {
+      "id": "UAC",
+      "decision": "Retry now (approved)",
+      "date": "2026-10-15"
+    }
+  ],
+  "evidence": {
+    "proof": "docs/proof/local-uat-001.md",
+    "runbook": "docs/runbooks/local-browser-uat.md",
+    "status_register": "docs/frontend/audits/local-uat-001/status-register.json",
+    "progress_section": "docs/PROGRESS.md#local-uat-001--complete-application-local-browser-readiness--local_complete-uncommitted-handoff-owner-uat-pending"
+  },
+  "test_matrix": {
+    "local_uat_real_stack": "256 passed / 0 failed / 0 flaky / 0 skipped (native resolver)",
+    "backend_full_parallel": "3092 passed / 14 skipped / 1 failed (own test, corrected; serial + parallel green)",
+    "backend_focused_parallel": "19 passed",
+    "backend_docs": "96 passed",
+    "vitest": "1471 / 1471 (second run; first run 2 import timeouts under load)",
+    "mocked_playwright_full": "2216 passed / 6 failed (pre-change contract mocks) / 83 skipped",
+    "mocked_playwright_affected_rerun": "1384 passed / 0 failed / 83 skipped",
+    "static_gates": "pint, larastan L8, eslint (0 errors), vue-tsc, build, nav/content/assets/tokens/api/ui-source/host checks, ui17 edge security + bundle budget, npm audit 0, composer audit clean, gitleaks 0 on changed paths",
+    "hosts_selftest": "21/21"
+  },
+  "excluded": [
+    ".env",
+    "storage/app/local-uat/*",
+    "test-results/*",
+    "public/spa/*",
+    "Windows hosts file and backup",
+    "Mailpit contents",
+    "database volumes",
+    "scratch scripts"
+  ],
+  "known_blockers_for_full_acceptance": [
+    "manual product-owner UAT pending",
+    "product-owner visual approval pending",
+    "production not authorized"
+  ],
+  "open_observations": [
+    "LUAT-F01",
+    "LUAT-F03",
+    "LUAT-F04"
+  ],
+  "index_staged_paths": 0,
+  "path_count": 70,
+  "files": [
+    {
+      "path": "app/Http/Controllers/Api/V1/FrontOffice/FrontOfficeSelectionController.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 4222,
+      "sha256": "0e02b756271e8473930a8262c39dc5bee00e86c1646ae9bda6240bc1eb601ae1"
+    },
+    {
+      "path": "app/Http/Requests/Concerns/NormalizesQueryBooleans.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1237,
+      "sha256": "fd8f7cbe4ec20555187a352bfab499b200e529d5cb4dc2c88bf1ad297c86c92d"
+    },
+    {
+      "path": "app/Http/Requests/FrontOffice/FrontOfficePersonnelOptionRequest.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1454,
+      "sha256": "e86bd4df082837c8252253152ef13ae7f706c8229378e5bd3ec26e30446210ac"
+    },
+    {
+      "path": "app/Http/Requests/FrontOffice/FrontOfficeServiceOptionRequest.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1196,
+      "sha256": "789cd979ef1960a5ae80e4076e8fdd9c473711f4ee7f9f799735bfb1305acc85"
+    },
+    {
+      "path": "app/Http/Requests/Platform/PlatformSubscriptionQueryRequest.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 4067,
+      "sha256": "f5ff01b6ea43eb7155aca2213e2a12d3db689b106abf63237434c5900cd19f4e"
+    },
+    {
+      "path": "app/Http/Requests/Scheduling/PersonnelQueueIndexRequest.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 1405,
+      "sha256": "212a7e304c227c10cc6c0da0b9876f8c6c7954f5031193a878153f199e96cbc1"
+    },
+    {
+      "path": "app/Http/Requests/Scheduling/PersonnelServiceSessionIndexRequest.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 1500,
+      "sha256": "ff5a61629c341bbc251b1f28cb7c8443d1676653a9997bd18ec7f26706e3c231"
+    },
+    {
+      "path": "app/Http/Requests/Scheduling/QueueIndexRequest.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 2047,
+      "sha256": "83c35094009ad1372a7fc4c7abb9659d03b543a7421ffcf44dad3b8a948582a9"
+    },
+    {
+      "path": "app/Http/Requests/Scheduling/ServiceSessionIndexRequest.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 1567,
+      "sha256": "8eada94e4c1213555e184d434133a214cc8a45b664bbfd7d6caa1da70a504bad"
+    },
+    {
+      "path": "app/Http/Resources/FrontOfficePersonnelOptionResource.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 943,
+      "sha256": "dd85f9567eb92eca7d3ecf532d08042c303af73a602ce6a875837026b10f66c5"
+    },
+    {
+      "path": "app/Http/Resources/FrontOfficeServiceOptionResource.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 832,
+      "sha256": "76eb295e080f2a72fbd176e770eb55ae48a6a8baf3d5be49afa89e192a434058"
+    },
+    {
+      "path": "database/seeders/LocalUat/LocalUatDatasetSeeder.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 30933,
+      "sha256": "dbd3c5b29126cf65540000c1b56dad08752570bb374414804e56baf7af3bba56"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 413137,
+      "sha256": "76138f54cbedc97b708cf1f503aa7bcceb76e650d6b306bc2fcff97207bc3dad"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 549696,
+      "sha256": "d306c2aad21ff02117a9c22e6e9453774bdac968764ed9c613a4d897f365a450"
+    },
+    {
+      "path": "docs/api/openapi.json",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 2630833,
+      "sha256": "d3c4b2abf20b8d46911da037ac7c57ddd859ec33dafe1dc9079fa99a5866acc0"
+    },
+    {
+      "path": "docs/frontend/audits/local-uat-001/claude-to-codex-handoff.json",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "docs/frontend/audits/local-uat-001/claude-to-codex-handoff.md",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "docs/frontend/audits/local-uat-001/status-register.json",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 30333,
+      "sha256": "6ababbedcfa51765adfcfb2a085f0cbdbd4ef0194dd15612de84b95f70adadc8"
+    },
+    {
+      "path": "docs/proof/local-uat-001.md",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 21322,
+      "sha256": "958e64d7e78f9606a409d45d847474387d647266538f17c85977fec6bacd2f5d"
+    },
+    {
+      "path": "docs/runbooks/local-browser-uat.md",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 12285,
+      "sha256": "9ce4e9664951388bf2b30d956059071cbdf17142e2e49ac9afede73513c8bf78"
+    },
+    {
+      "path": "playwright.local-uat.config.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 2178,
+      "sha256": "a22c62c73aad1ba599fe8a0081ac93043f1d6c9f801cbecff10dab2ab1e73033"
+    },
+    {
+      "path": "resources/spa/src/pages/auth/Verify.spec.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 3387,
+      "sha256": "7ddc1cb421e1d50c45bbdff0ec96db2c793f5c52c1db6dc8445475d9ffb4507a"
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/AppointmentCreate.vue",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 5772,
+      "sha256": "2b4ff19d302c998f7c120d69fca3f5ab5f98601b70bbd79347af1d930080eb68"
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/AppointmentDetail.vue",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 11162,
+      "sha256": "122dd5d828cf7e4d0ef66549daa6e7c08c3072878a1e82f64df6ff7f7168a119"
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/QueueEntryDetail.vue",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 10662,
+      "sha256": "4e944384d4f144ab14f5ae261ad236404fbddbb54ef8791d43631311235453ae"
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/QueueTransfer.vue",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 7127,
+      "sha256": "b0032601913dae6607f49ec9dbb82d63ae0917ec030f939b4a0c4c042a8b60bd"
+    },
+    {
+      "path": "resources/spa/src/pages/front-office/WalkInCreate.vue",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 9403,
+      "sha256": "56827bb3b4599e42254aba8bef3ae4e6e3a28d11c4dbe9b4b413728685eac950"
+    },
+    {
+      "path": "resources/spa/src/router/roleEntryRoutes.spec.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 4952,
+      "sha256": "cb06c287d0927c8a6240caa86e70f40b0cf47cee8b213e672e50589d05ea1fac"
+    },
+    {
+      "path": "resources/spa/src/services/frontOfficeSelections.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1604,
+      "sha256": "ac65cb7acb21d48181ca37a5087456573788a525f52f197a829a5fb044b63487"
+    },
+    {
+      "path": "resources/spa/src/services/frontOfficeSelections.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1838,
+      "sha256": "52ce2c1f02a3fb72a8d3a3258e212037ab6a97f995dc1415809781ed87ab16d4"
+    },
+    {
+      "path": "resources/spa/src/stores/cashUpStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 4392,
+      "sha256": "8b73089995150c56ea5522f368e837465c092af374c46d47ad02b74620dd81e9"
+    },
+    {
+      "path": "resources/spa/src/stores/compensationLiabilityStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 10045,
+      "sha256": "a8074fadad7dc2bb819d8face908aaf7eaf4ba1bd9945ead9dd1ed1d5b1b85ef"
+    },
+    {
+      "path": "resources/spa/src/stores/earningsQueryStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 5750,
+      "sha256": "770c71f876e131b4d0a5bb22a1fd05eb816736c10d29d929f2cd63ebe7527c90"
+    },
+    {
+      "path": "resources/spa/src/stores/invoiceStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 3646,
+      "sha256": "c2bb373ff81271b613f1815ed4b686fda422256aee033c6a8fd06cf32d1dd018"
+    },
+    {
+      "path": "resources/spa/src/stores/notificationStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 629,
+      "sha256": "d76caa2e1d2771b476e2e525ca32df9df8093bf1176a0bc92c9a5caad7b9725c"
+    },
+    {
+      "path": "resources/spa/src/stores/paymentStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 7361,
+      "sha256": "ab29a5dbc517d80acf1d149f2b5db261dd15ee3f30143b8f4b91b9ce86141864"
+    },
+    {
+      "path": "resources/spa/src/stores/payoutRunStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 9366,
+      "sha256": "97b49ece78cb0f34c9b1cd05595aac740b89c7805b6953ad167e0d5a174f5034"
+    },
+    {
+      "path": "resources/spa/src/stores/periodLockStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 3567,
+      "sha256": "90e2285347e6a01c47fd7e19d7b67a84c42ddaefadeda3c5c31ab5d36f0dfeea"
+    },
+    {
+      "path": "resources/spa/src/stores/planPriceStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 2997,
+      "sha256": "8e2287fdf1ad699ca650c93a98928484a16347fc38c0688148927be251e3b4d5"
+    },
+    {
+      "path": "resources/spa/src/stores/platformAccessStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 6668,
+      "sha256": "8a4c995fcaa8064a072013d92bccb27c0f9d491b65d93607e8ceb47a0f30630b"
+    },
+    {
+      "path": "resources/spa/src/stores/platformBillingSettingsStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 3742,
+      "sha256": "b4afdbc149b446e01737bb7c103aa5051bc6c98d1f90ab949085ecc5c2a1503f"
+    },
+    {
+      "path": "resources/spa/src/stores/platformFeatureFlagStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 5373,
+      "sha256": "87e52c338edd245d4f07aeb05007b7a0a10ba58a2654b3beef7810d5f1352b61"
+    },
+    {
+      "path": "resources/spa/src/stores/platformSmsBillingStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 9049,
+      "sha256": "2eb8b397db5d6c77d41ed2e20d3cb8857f363c41211fb39fd01d1384deadff42"
+    },
+    {
+      "path": "resources/spa/src/stores/preferredPersonnelFeeStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 5497,
+      "sha256": "d4e45de492e8d90c98f30102794aadf76ff0e562e6e8a6cec807557612d2a0a1"
+    },
+    {
+      "path": "resources/spa/src/stores/receiptStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 2976,
+      "sha256": "8b918df8b4004a6148112289b792358f855b2f3012592bd4bd2d735edecf0fcc"
+    },
+    {
+      "path": "resources/spa/src/stores/refundStore.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 3396,
+      "sha256": "2d631b6faeee5675c2a3ad91a30167809acd71989b48289ff346adee60f72a3c"
+    },
+    {
+      "path": "resources/spa/src/types/generated/api.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 1041305,
+      "sha256": "e58951e785ba0edd274337122a8fba565e69eb034211a92fb9921bdff931748a"
+    },
+    {
+      "path": "resources/spa/src/types/roles.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 6385,
+      "sha256": "4cec0a37436ab95013dda97d902db15b27ac6801eb89484a47ab7de5e25ae993"
+    },
+    {
+      "path": "resources/spa/src/utils/uuid.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 878,
+      "sha256": "08ebed17abfd1bfc42e0ec7218677f63863ec9e0283d6ab66001f9a52047d7d7"
+    },
+    {
+      "path": "resources/spa/src/utils/uuid.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1108,
+      "sha256": "9a90d50fc8859ee109195712ae091c8589a9ce96c7bd234bc92860cccd1966ae"
+    },
+    {
+      "path": "routes/api.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 153750,
+      "sha256": "c3b9b67d712ec51b0392b5184e7d39d1744781601d0b0957d4e3b1064316afe9"
+    },
+    {
+      "path": "scripts/dev/servana-hosts.ps1",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 13108,
+      "sha256": "d8ea1ce26a6911bfe6c29b2b2f2a76d761e87e6c59abbbe5dd523983b33da3ea"
+    },
+    {
+      "path": "scripts/dev/servana-local.ps1",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 10303,
+      "sha256": "1758cf17df54c933d0ad70c96879caf9a38202a57ac66321daab7c4618e072af"
+    },
+    {
+      "path": "scripts/dev/tests/servana-hosts.selftest.ps1",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 6024,
+      "sha256": "3a84894ff188e2e401435df17cbfccafa0f31c9c245e809380d92667cb21b15c"
+    },
+    {
+      "path": "tests/Feature/FrontOffice/FrontOfficeSelectionApiTest.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 11689,
+      "sha256": "37e78b8f89dff6c114804aada919e6cd39699d2a8c00daeb8e6ed322db1ee396"
+    },
+    {
+      "path": "tests/Feature/Scheduling/QueryStringBooleanFilterTest.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 3326,
+      "sha256": "ee43ce3ccbd155c8436d8c55af0964175c9a772079ff540bcfcf61d51bcb25fc"
+    },
+    {
+      "path": "tests/Unit/TestDatabaseIsolationTest.php",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1190,
+      "sha256": "85bfa7fcca12544d167e136cf574cccb69eb300dbc22b8a4d506dd525ea3fbb7"
+    },
+    {
+      "path": "tests/bootstrap.php",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 5341,
+      "sha256": "b8c7011dd4cda88ee5150ac848a0b399fa3624a21a5a1102831417cd03a02e6e"
+    },
+    {
+      "path": "tests/e2e-local-uat/00-sign-in.setup.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 1261,
+      "sha256": "acb151745bde62b7325798806f116bf6cf32947849e1085686bd2faa689bcb61"
+    },
+    {
+      "path": "tests/e2e-local-uat/05-public-hosts.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 5691,
+      "sha256": "9feb37660b60c3bb0048c6aca9193acc03bbfc0681b0ceb4baf3bc53675b28d3"
+    },
+    {
+      "path": "tests/e2e-local-uat/10-role-workflows.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 16234,
+      "sha256": "f48f86e3f94949ac9ec261408d2c4bbf8d09f90bade57a9da098afbb1136c3f2"
+    },
+    {
+      "path": "tests/e2e-local-uat/12-front-office-selection.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 10316,
+      "sha256": "2add8f11700db60a46085bcb31b75a7e864dfd0bd4cfea263db9e46b47b5c44d"
+    },
+    {
+      "path": "tests/e2e-local-uat/15-merchant-self-registration.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 3957,
+      "sha256": "e2cc51bb17ee5db04b6b14f96afa023c083f68f9e3a042f4e174eaab8ba8f1e6"
+    },
+    {
+      "path": "tests/e2e-local-uat/20-authenticated-pages.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 8705,
+      "sha256": "dc0c7b132c717ce5b46aa92f12d147b974b5cd4d13d6fd3f24321a4f609f83c1"
+    },
+    {
+      "path": "tests/e2e-local-uat/30-cross-cutting.spec.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 5951,
+      "sha256": "fd6d41ab0908c79289cbe10456fca44dde2d4f5d5bf3baab93139f30eb81a80f"
+    },
+    {
+      "path": "tests/e2e-local-uat/support/localUat.ts",
+      "status": "untracked",
+      "git_status": "??",
+      "bytes": 15599,
+      "sha256": "212c6a0804114c17fb0834ed72cec2a1deb93fd4767486a6ba548b85b58e6858"
+    },
+    {
+      "path": "tests/e2e/appointments.spec.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 12879,
+      "sha256": "4c245941331f2d0ab842aafe8e6ce64d8f9c4722728978074aeef47a3c05321f"
+    },
+    {
+      "path": "tests/e2e/auth-magic-link.spec.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 7996,
+      "sha256": "7be2520cce2f332a79c1ad9f7fd2f3acb0e82849c1d062d6177497e395a10051"
+    },
+    {
+      "path": "tests/e2e/queue.spec.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 14559,
+      "sha256": "3d3ef06a2957c9153eaeaf09db8e536b916fb29143a2eb1a659b2667a7357875"
+    },
+    {
+      "path": "tests/e2e/support/releaseAudit.ts",
+      "status": "modified",
+      "git_status": " M",
+      "bytes": 83967,
+      "sha256": "49453b53fb4fba6c39d66737117b1d6abfa2e1fa772acc7df545e8a752308b47"
+    }
+  ]
+}

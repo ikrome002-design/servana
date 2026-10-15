@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { randomUuid } from '@/utils/uuid';
 
 export interface Toast {
   id: string;
@@ -11,7 +12,7 @@ export const useNotificationStore = defineStore('notification', () => {
   const toasts = ref<Toast[]>([]);
 
   function addToast(toast: Omit<Toast, 'id'>): string {
-    const id = crypto.randomUUID();
+    const id = randomUuid();
     toasts.value.push({ ...toast, id });
     return id;
   }

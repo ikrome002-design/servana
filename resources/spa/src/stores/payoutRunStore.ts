@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Phase 20H payout-run UX surface (Plan §62, §25.5, §19.3). State only — the API
@@ -118,7 +119,7 @@ export const usePayoutRunStore = defineStore('payoutRun', () => {
   /** Idempotent-key header for a financial mutation, keyed by a stable action+payload hash. */
   function idempotentHeaders(hash: string): { 'Idempotency-Key': string } {
     if (pendingKey === null || pendingHash !== hash) {
-      pendingKey = crypto.randomUUID();
+      pendingKey = randomUuid();
       pendingHash = hash;
     }
     return { 'Idempotency-Key': pendingKey };

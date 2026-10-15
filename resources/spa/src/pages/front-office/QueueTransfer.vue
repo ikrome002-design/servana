@@ -8,7 +8,7 @@ import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
-import { apiClient } from '@/services/apiClient';
+import { fetchPersonnelOptions } from '@/services/frontOfficeSelections';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueEntry, ServiceEligibility } from '@/types/models';
@@ -39,8 +39,8 @@ async function load(): Promise<void> {
     entry.value = await queue.fetchEntry(queueUlid.value);
     const serviceId = entry.value.service?.id;
     if (serviceId) {
-      const { data } = await apiClient.get<{ data: ServiceEligibility[] }>('/services/' + serviceId + '/eligibility');
-      eligible.value = data.data;
+      // LUAT-D01: Front Office transfer choices, never the Branch Manager catalogue read.
+      eligible.value = await fetchPersonnelOptions(serviceId, 'queue_transfer');
     }
   } catch {
     error.value = true;

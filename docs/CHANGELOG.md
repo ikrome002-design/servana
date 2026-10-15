@@ -6,6 +6,54 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### LOCAL-UAT-001 — complete-application local browser readiness (`phase-local-browser-uat-001`) — local_complete; product-owner UAT pending
+
+Base `c7e963c8…` (PR #69 merge). Makes the whole implemented application usable in an ordinary Windows
+browser on the eight `http://*.servana.test:8080` hosts against the real nginx → Laravel → PostgreSQL /
+Redis / queue / Mailpit stack, and fixes the defects that only a real browser on that stack could expose.
+Not production, not owner approval. Proof: [`docs/proof/local-uat-001.md`](proof/local-uat-001.md);
+runbook: [`docs/runbooks/local-browser-uat.md`](runbooks/local-browser-uat.md).
+
+- **LUAT-D01 (C1, owner decision "Narrow FO endpoint")** — five Front Office screens (walk-in, appointment
+  create/detail, queue entry, queue transfer) read the Branch Manager catalogue (`GET /services`,
+  `/services/{service}/eligibility`, `service.view`) and were refused with 403 in real use. New read-only
+  `GET /api/v1/front-office/service-options?purpose=` and
+  `GET /api/v1/front-office/services/{service}/personnel-options?purpose=`, each `purpose` mapped
+  server-side to the EXISTING key of its one workflow (`queue.create`, `appointment.create`,
+  `appointment.assign`, `appointment.transfer`, `queue.assign`, `queue.transfer`); picker fields only;
+  active services, active employed personnel with active eligibility, acting branch only. **No permission
+  key added; `service.view` unchanged.** OpenAPI 307/358 → 309/360 (regenerated); 12 API tests + 3 client
+  tests + 5 live browser flows.
+- **LUAT-D02** — `?active=true` (the OpenAPI-declared query-boolean serialisation the SPA sends) was 422 on
+  the branch queue, Front Office queue/sessions and Personnel work-queue lists, so those screens showed no
+  data. `NormalizesQueryBooleans` maps the literal `true`/`false` before validation on the five affected
+  list requests; any other value is still refused. 6 tests.
+- **LUAT-D03** — a non-parallel `php artisan test` in the app container used the developer database
+  (`DB_DATABASE=servana`) and `RefreshDatabase` dropped every local table. `tests/bootstrap.php` now
+  redirects such runs to `<name>_test` (created when missing) and never falls back; parallel and CI
+  unchanged. Proven with a dev-database canary.
+- **LUAT-D04** — after sign-in, five accounts landed on legacy in-app "role landing" routes (`/platform`,
+  `/merchant`, `/branch`, `/hr`, `/finance`) instead of the authenticated home `/dashboard` (UI/UX plan
+  §4.1, `default_authenticated_route`). `ROLE_ENTRY` now points every account at its `*.dashboard` route.
+- **LUAT-D05** — `crypto.randomUUID()` exists only in secure contexts, so on plain-HTTP local hosts every
+  toast crashed after a successful save and every Idempotency-Key-protected financial action failed before
+  sending. `utils/uuid.ts` (`randomUuid()`, `getRandomValues` fallback) replaces 28 calls in 16 stores.
+- **Local tooling** — `scripts/dev/servana-hosts.ps1` (reviewed, idempotent hosts mapping; BOM/CRLF/
+  unrelated-line preservation; conflict refusal; fixture self-test 21/21), `scripts/dev/servana-local.ps1`
+  (preflight/hosts/start/status/restart/stop/logs/migrate/seed/build/watch/uat),
+  `LocalUatDatasetSeeder` (two synthetic merchants, three branches, eight-account identities; local-only,
+  idempotent), `playwright.local-uat.config.ts` + `tests/e2e-local-uat/` (real-stack acceptance, native
+  Windows resolver).
+- **Existing mocked specs** updated only for the two approved contract changes: `appointments.spec.ts`,
+  `queue.spec.ts` and `support/releaseAudit.ts` stub the new Front Office selection reads (LUAT-D01);
+  `auth-magic-link.spec.ts` and `Verify.spec.ts` expect `/dashboard` (LUAT-D04). No assertion weakened,
+  no baseline regenerated.
+- **Recorded, not changed (owner/UI scope):** LUAT-F01 `/register` form still renders when typed directly on
+  non-Merchant-Administrator hosts (no landing link; backend binds the link to the Merchant Administrator
+  host); LUAT-F03 `/auth/check-email?email=` carries the address in the URL; LUAT-F04 a pre-UI-17 nginx
+  container log still holds one long-expired sign-in URL. Super Administrator billing settings answer 404
+  until first saved — intended fresh-install behaviour, not a defect.
+
 ### COR-UI08-UI12-VIS-001 — corrective reference-grade visual redesign of UI-08 … UI-12 (`design/ui08-ui12-reference-grade-redesign`) — local_complete; PR #69 release verification; product-owner visual acceptance pending
 
 - Codex release verification (2026-10-14): PR #69 pending protected merge; six references, 36 comparisons and 510 frame hashes verified. COR-REL-002 corrects three date separators to explicit "to" after the hosted icon-source guard failed; original failure retained, guard 17/17 after correction, no rule/test weakening. COR-REL-003 fixes populated mobile compensation values clipped by a 15rem label column; all widths and both themes now have a text-fit regression. Focused browser checks 5/5. Owner aesthetic approval remains pending.

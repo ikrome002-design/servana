@@ -8,6 +8,7 @@ use App\Domain\Billing\Enums\BillingInterval;
 use App\Domain\Billing\Enums\MerchantSubscriptionStatus;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Merchants\Models\Merchant;
+use App\Http\Requests\Concerns\NormalizesQueryBooleans;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,9 +24,17 @@ use Illuminate\Validation\Rule;
  */
 final class PlatformSubscriptionQueryRequest extends FormRequest
 {
+    use NormalizesQueryBooleans;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    /** `?has_scheduled_plan_change=true` is the contract's own serialisation of a query boolean (LUAT-D02). */
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeQueryBooleans(['has_scheduled_plan_change']);
     }
 
     /** @return array<string, mixed> */

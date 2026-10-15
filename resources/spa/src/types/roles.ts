@@ -52,7 +52,12 @@ export interface RoleEntry {
   layout: string;
   /** Where the primary dashboard navigation lives for this role. */
   navPlacement: NavPlacement;
-  /** Live landing route name (role home after login). */
+  /**
+   * Where a signed-in user lands after Magic Link / MFA: the account's AUTHENTICATED HOME, which is
+   * its `/dashboard` (UI/UX plan §4.1; `default_authenticated_route` in config/account-hosts.json).
+   * The public landing page is `/` on the account host and is never a post-sign-in destination
+   * (LOCAL-UAT-001, LUAT-D04).
+   */
   landingRouteName: string;
   /** Live guided get-started route name. */
   getStartedRouteName: string;
@@ -69,7 +74,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Super Administrator',
     layout: 'PlatformAdminLayout',
     navPlacement: 'header',
-    landingRouteName: 'platform.landing',
+    landingRouteName: 'platform.dashboard',
     getStartedRouteName: 'platform.get-started',
   },
   merchant_administrator: {
@@ -78,7 +83,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Merchant Administrator',
     layout: 'MerchantLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'merchant.landing',
+    landingRouteName: 'merchant.dashboard',
     getStartedRouteName: 'merchant.get-started',
   },
   merchant_branch: {
@@ -87,7 +92,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Branch Manager',
     layout: 'BranchLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'branch.landing',
+    landingRouteName: 'branch.dashboard',
     getStartedRouteName: 'branch.get-started',
   },
   merchant_human_resource: {
@@ -99,7 +104,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     // Was BranchLayout — the one account that presented under another account's identity.
     layout: 'HumanResourceLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'hr.landing',
+    landingRouteName: 'hr.dashboard',
     getStartedRouteName: 'hr.get-started',
   },
   merchant_finance: {
@@ -108,7 +113,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Finance',
     layout: 'FinanceLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'finance.landing',
+    landingRouteName: 'finance.dashboard',
     getStartedRouteName: 'finance.get-started',
   },
   merchant_front_office: {

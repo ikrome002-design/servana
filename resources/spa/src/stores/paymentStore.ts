@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Merchant-client payment recording (Plan §41; Phase 18A). UX state only — the API
@@ -114,7 +115,7 @@ export const usePaymentStore = defineStore('payment', () => {
     idempotencyKey?: string,
   ): Promise<PaymentRecordingGroupView> {
     duplicate.value = null;
-    const key = idempotencyKey ?? crypto.randomUUID();
+    const key = idempotencyKey ?? randomUuid();
     try {
       const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
         `/invoices/${invoiceId}/payment-recording-groups`,
@@ -133,7 +134,7 @@ export const usePaymentStore = defineStore('payment', () => {
 
   /** Finance: override a suspected-duplicate reference check (requires a fresh step-up). */
   async function overrideDuplicate(checkId: string, reason: string, idempotencyKey?: string): Promise<void> {
-    const key = idempotencyKey ?? crypto.randomUUID();
+    const key = idempotencyKey ?? randomUuid();
     await apiClient.post(
       `/payment-reference-checks/${checkId}/override`,
       { reason },
@@ -148,7 +149,7 @@ export const usePaymentStore = defineStore('payment', () => {
    */
   async function validateGroup(id: string): Promise<PaymentRecordingGroupView> {
     const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
-      `/payment-recording-groups/${id}/validate`, {}, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      `/payment-recording-groups/${id}/validate`, {}, { headers: { 'Idempotency-Key': randomUuid() } },
     );
     return data.data;
   }
@@ -156,7 +157,7 @@ export const usePaymentStore = defineStore('payment', () => {
   /** Finance checker: reject a whole pending group with a mandatory reason (no receipt). */
   async function rejectGroup(id: string, reason: string): Promise<PaymentRecordingGroupView> {
     const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
-      `/payment-recording-groups/${id}/reject`, { reason }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      `/payment-recording-groups/${id}/reject`, { reason }, { headers: { 'Idempotency-Key': randomUuid() } },
     );
     return data.data;
   }
@@ -164,7 +165,7 @@ export const usePaymentStore = defineStore('payment', () => {
   /** Finance checker: return a whole pending group for correction (mandatory reason; no receipt). */
   async function requestCorrection(id: string, reason: string): Promise<PaymentRecordingGroupView> {
     const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
-      `/payment-recording-groups/${id}/request-correction`, { reason }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      `/payment-recording-groups/${id}/request-correction`, { reason }, { headers: { 'Idempotency-Key': randomUuid() } },
     );
     return data.data;
   }
@@ -172,14 +173,14 @@ export const usePaymentStore = defineStore('payment', () => {
   /** Finance: correct a component payment reference on a correctable group. */
   async function correctReference(recordId: string, reference: string): Promise<void> {
     await apiClient.post(
-      `/payment-records/${recordId}/correct-reference`, { reference }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      `/payment-records/${recordId}/correct-reference`, { reference }, { headers: { 'Idempotency-Key': randomUuid() } },
     );
   }
 
   /** Finance: resubmit a corrected group back to pending_validation. */
   async function resubmitGroup(id: string): Promise<PaymentRecordingGroupView> {
     const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
-      `/payment-recording-groups/${id}/resubmit`, {}, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      `/payment-recording-groups/${id}/resubmit`, {}, { headers: { 'Idempotency-Key': randomUuid() } },
     );
     return data.data;
   }

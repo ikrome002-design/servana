@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Financial period locks + controlled reopen (Plan §46; ADR-0007; Phase 18B). UX state
@@ -57,7 +58,7 @@ export const usePeriodLockStore = defineStore('periodLock', () => {
 
   async function create(payload: { branch?: string; period_start: string; period_end: string; exception_required?: boolean }): Promise<PeriodLockView> {
     const { data } = await apiClient.post<{ data: PeriodLockView }>('/period-locks', payload, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -65,7 +66,7 @@ export const usePeriodLockStore = defineStore('periodLock', () => {
 
   async function requestReopen(id: string, reason: string): Promise<PeriodLockView> {
     const { data } = await apiClient.post<{ data: PeriodLockView }>(`/period-locks/${id}/reopen`, { reason }, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -74,7 +75,7 @@ export const usePeriodLockStore = defineStore('periodLock', () => {
   /** Merchant Administrator: approve an exceptional reopen (approver != requester). */
   async function approveException(id: string): Promise<PeriodLockView> {
     const { data } = await apiClient.post<{ data: PeriodLockView }>(`/period-locks/${id}/reopen/approve`, {}, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -83,7 +84,7 @@ export const usePeriodLockStore = defineStore('periodLock', () => {
   /** Finance: execute the reopen (requires a fresh MFA step-up, server-enforced). */
   async function execute(id: string): Promise<PeriodLockView> {
     const { data } = await apiClient.post<{ data: PeriodLockView }>(`/period-locks/${id}/reopen/execute`, {}, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;

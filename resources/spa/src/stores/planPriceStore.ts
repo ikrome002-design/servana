@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Effective-dated subscription-plan prices (Plan §13.8, §47; ADR-011; Phase 20A). UX state
@@ -59,7 +60,7 @@ export const usePlanPriceStore = defineStore('planPrice', () => {
   /** Create a current or future effective-dated price (financial create → idempotency key). */
   async function createPrice(planId: string, payload: CreatePricePayload): Promise<PlanPrice> {
     const { data } = await apiClient.post<{ data: PlanPrice }>(`/platform/plans/${planId}/prices`, payload, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     prices.value = [...prices.value, data.data];
     return data.data;

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { Invoice } from '@/types/models';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Invoicing (Plan §40, §25.3; Phase 17). UX state only — the API (InvoicePolicy +
@@ -61,7 +62,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
   /** Finalize a draft. The idempotency key makes a retry replay the stored success. */
   async function finalize(id: string, idempotencyKey?: string): Promise<Invoice> {
-    const key = idempotencyKey ?? crypto.randomUUID();
+    const key = idempotencyKey ?? randomUuid();
     const { data } = await apiClient.post<{ data: Invoice }>(`/invoices/${id}/finalize`, null, {
       headers: { 'Idempotency-Key': key },
     });

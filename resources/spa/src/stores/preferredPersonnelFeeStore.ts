@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Preferred-personnel fee rules — platform administration (Plan §13.10, §47; ADR-011;
@@ -110,7 +111,7 @@ export const usePreferredPersonnelFeeStore = defineStore('preferredPersonnelFee'
 
   async function createRule(payload: CreateFeeRulePayload): Promise<FeeRule> {
     const { data } = await apiClient.post<{ data: FeeRule }>('/platform/preferred-personnel-fee-rules', payload, {
-      headers: { 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': randomUuid() },
     });
     current.value = data.data;
     return data.data;
@@ -129,7 +130,7 @@ export const usePreferredPersonnelFeeStore = defineStore('preferredPersonnelFee'
     const { data } = await apiClient.post<{ data: FeeRule }>(
       `/platform/preferred-personnel-fee-rules/${id}/supersede`,
       payload,
-      { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+      { headers: { 'Idempotency-Key': randomUuid() } },
     );
     current.value = data.data;
     return data.data;

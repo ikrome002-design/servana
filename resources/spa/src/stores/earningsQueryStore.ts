@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { apiClient } from '@/services/apiClient';
 import type { components } from '@/types/generated/api';
+import { randomUuid } from '@/utils/uuid';
 
 /**
  * Phase 20H earnings-query UX (Plan §63, §19.3; §H12; D-H12-1). State only — the API is the security
@@ -138,7 +139,7 @@ export const useEarningsQueryStore = defineStore('earningsQuery', () => {
   async function respond(id: string, payload: RespondPayload): Promise<EarningsQuery> {
     const hash = `${id}:${JSON.stringify(payload)}`;
     if (pendingKey === null || pendingHash !== hash) {
-      pendingKey = crypto.randomUUID();
+      pendingKey = randomUuid();
       pendingHash = hash;
     }
     mutating.value = true;

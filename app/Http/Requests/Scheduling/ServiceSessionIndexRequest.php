@@ -6,6 +6,7 @@ namespace App\Http\Requests\Scheduling;
 
 use App\Domain\Scheduling\Enums\ServiceSessionStatus;
 use App\Http\Api\ApiPagination;
+use App\Http\Requests\Concerns\NormalizesQueryBooleans;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,11 +19,19 @@ use Illuminate\Validation\Rule;
  */
 final class ServiceSessionIndexRequest extends FormRequest
 {
+    use NormalizesQueryBooleans;
+
     public const SORTS = ['created_at', '-created_at', 'started_at', '-started_at', 'completed_at', '-completed_at'];
 
     public function authorize(): bool
     {
         return true; // ServiceSessionPolicy is the boundary
+    }
+
+    /** `?active=true` is the contract's own serialisation of a query boolean (LUAT-D02). */
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeQueryBooleans(['active']);
     }
 
     /** @return array<string, mixed> */
